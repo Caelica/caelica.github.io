@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>CSS中引入自定义字体 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-CSS中引入自定义字体"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  CSS中引入自定义字体
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/04/18/CSS中引入自定义字体/" class="article-date">
+  <time datetime="2022-04-18T13:42:36.000Z" itemprop="datePublished">2022-04-18</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>CSS中字体的一些常见用法，以及利用@Font-face规则在网页中使用自定义的字体<a id="more"></a></p>
+</blockquote>
+<p>经过配置后，实现了在博客中自定义字体的功能，如目前博客标题的效果：</p>
+<img src="/2022/04/18/CSS中引入自定义字体/1.png" title="A">
+
+<p>&emsp;&emsp;一般我们在网页中使用的字体通常都是所谓的“安全字体（Web-safe）”，通常指的是Arial、Courier New、Georgia、Times New Roman、Verdana等字体，这些字体因为无论在哪种浏览器的情况下一般都是被支持的，故称为“Web-safe”。这些都是英文字体，在中文的环境下也有一些被认为相对“安全”的字体，如黑体（SimHei）、宋体（SimSun）、仿宋（FangSong）、楷体（KaiTi）、微软雅黑（Microsoft YaHei）等，这些中文字体的名字也是有英文写法的，这里也一并写出。</p>
+<p>&emsp;&emsp;这里还有个“通用字体族”的概念，可以指一类字体。其中最常见的是“Sans-serif”和“Serif”，Sans-serif应该是法语，字面意思就是“无衬线”，衬线指的是字符笔划末端出现的横线、斜线或突起等变化，相对的“Serif”就是“（有）衬线字体”。Times New Roman和宋体应该算是Serif中典型的例子，这两个都属于衬线字体；而黑体和Arial就属于Sans-serif，可以发现它们的笔划末端是平直的、没有变化的。其余的通用字体族如等宽字体（Monospace）等在这里不作多述。</p>
+<p>&emsp;&emsp;了解了这些字体后，我们就可以声明并引入它们。如这里把元素“title”字体的属性定义为Times New Roman和宋体：</p>
+<p>在配置网页样式的地方声明所使用的字体：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">font-family</span>: <span class="string">"Times New Roman"</span>, SimSun, 宋体, Sans-serif;</span><br></pre></td></tr></table></figure>
+
+<p>在元素位置处将其引入：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.title</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="attribute">font-family</span>: <span class="string">"Times New Roman"</span>, SimSun, 宋体;</span><br><span class="line">	<span class="attribute">font-size</span>: <span class="number">2.5em</span>;</span><br><span class="line">	<span class="attribute">font-weight</span>: bold; </span><br><span class="line">	<span class="attribute">font-style</span>: italic;</span><br><span class="line">	<span class="attribute">text-align</span>: center;</span><br><span class="line">	<span class="attribute">line-height</span>: <span class="number">1em</span>;</span><br><span class="line">	<span class="attribute">letter-spacing</span>: <span class="number">2px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里有几点注意：</p>
+<ol>
+<li>声明和引入字体的时候，英文字体放在中文前面，因为优先级是从左往右的，如果中文字体在前且该中文字体对英文字符生效（如宋体），就会让英文字符都服从这个中文字体，后面的Times New Roman就失效了；</li>
+<li>如果字体的名字有多个单词（如Times New Roman），需要打上引号；</li>
+<li>中文字体是可以直接使用中文的，但还是建议中文名和英文名都写上；</li>
+<li>为什么声明字体的时候最后都会放一个“Sans-serif”，这是一个保险措施，因为如果前面使用的字体是一些偏门字体或全都没有生效，则最后这个字体族“Sans-serif”一定能生效，这样可以保证字体最终显示出来。</li>
+<li>font的属性：<br> font-size控制字体大小，可以用em或px作单位，1em大概等于16px，用px的话建议避免出现小数点；<br> font-weight控制字体的粗细，可以是normal、bold，或100-900之间的整百数值，400相当于normal，700相对于bold。可以看到数值越大就越粗。<br> font-style控制字体的样式，也就是说字体是不是斜体，值可以是normal、italic和oblique，italic和oblique都是斜体，区别在于italic应用字体中包含的斜体字符，而oblique只是单纯让正字符倾斜，如果字体文件不包含斜体字符的话，italic就不生效，而只能用obllique。所以一般优先用italic。</li>
+</ol>
+<p>&emsp;&emsp;这之后，我们再来看如何实现一个“自定义”的个性化字体。因为不管宋体还是Arial这些字体都太常见了，搞不出花样，所以这里就有一个@Font-face的规则来让我们引入自选的字体来实现个性化。</p>
+<p>用@font-face声明字体的基本写法：</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@font-face</span><br><span class="line">&#123;</span><br><span class="line">	font-family: &lt;YourFontsName&gt;;</span><br><span class="line">	src: &lt;url&gt; <span class="meta">[&lt;format&gt;]</span>,<span class="meta">[&lt;source&gt; [&lt;format&gt;]</span>], *;</span><br><span class="line">	[font-weight: &lt;weight&gt;];</span><br><span class="line">    [font-style: &lt;style&gt;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这其中，font-family后面是要给个性化字体起的名字，这个名字可以自定义。src的url路径可以是相对路径也可以是绝对路径，甚至可以是网址，让它指向字体文件所在的位置就行了。format则是浏览器要识别的字体对应的格式。</p>
+<p>&emsp;&emsp;而关键则在于这个字体文件格式上，虽然.ttf是最常见的字体格式，但不同浏览器用的字体文件格式还挺多的，除了truetype(.ttf)之外，还有opentype（.otf）、truetype-aat、embedded-opentype(.eot)、svg(.svg)、woff(.woff)等，这些其他的格式的用处在这里不作多述，自然是俱备为好。首先我们得搞到字体文件（一般是ttf格式的），然后通过字体格式转换的工具（或网页）将其转换为所需的不同格式。获得这些文件后，将其都放到网页服务器的某一目录里，比如建一个叫font的文件夹。</p>
+<p>然后就可以在url中指向这个位置了。如本博客的标题logo的@font-face的写法为：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@font-face</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="attribute">font-family</span>: <span class="string">'AphroditeSlimPro'</span>; <span class="comment">/* Title flourish */</span></span><br><span class="line">	<span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'../font/AphroditeSlimPro/AphroditeSlimPro.eot'</span>); <span class="comment">/* IE9 */</span></span><br><span class="line">	<span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'../font/AphroditeSlimPro/AphroditeSlimPro.eot?#iefix'</span>) <span class="built_in">format</span>(<span class="string">'embedded-opentype'</span>),</span><br><span class="line">	<span class="built_in">url</span>(<span class="string">'../font/AphroditeSlimPro/AphroditeSlimPro.woff'</span>) <span class="built_in">format</span>(<span class="string">'woff'</span>),</span><br><span class="line">	<span class="built_in">url</span>(<span class="string">'../font/AphroditeSlimPro/AphroditeSlimPro.otf'</span>) <span class="built_in">format</span>(<span class="string">'otf'</span>),</span><br><span class="line">	<span class="built_in">url</span>(<span class="string">'../font/AphroditeSlimPro/AphroditeSlimPro.ttf'</span>) <span class="built_in">format</span>(<span class="string">'truetype'</span>),</span><br><span class="line">	<span class="built_in">url</span>(<span class="string">'../font/AphroditeSlimPro/AphroditeSlimPro.svg#icoAph'</span>) <span class="built_in">format</span>(<span class="string">'svg'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;其中加入的#iefix是为了让url实现特征化以避免IE9版本之前的某些冲突错误，而第一个不带format属性的格式也是为了解决一些兼容问题。至于font-weight等属性，因为我在引入调用的时候已经写了，在声明中就可以忽略掉。这些都完成后，就可以直接在元素中引入AphroditeSlimPro的字体，结果就如上面的图示。这样因为字体文件实际上已经进入了网页服务器，我们在系统本身不含有这个字体的设备上查看该网页的时候，也是可以加载出这个字体的。</p>
+<p>&emsp;&emsp;上面还说到，这个url可以调用一个网址，这也就是说字体文件并不是必须在服务器里，也可以放在其他地方，只要它随时可以调用就行，字体也不局限于文字，如本博客左下的几个按钮的图标（小飞机、小蓝鸟等）也是通过@font-face来实现的，这通常称为“icon font”，我直接调用了阿里巴巴矢量图标库的图标文件。该图标库的网址为<a href="http://www.iconfont.cn" target="_blank" rel="noopener">www.iconfont.cn</a> ，它的好处是可以直接生成@font-face的代码段，只需要复制粘贴进来就行了。不过如果想实现自定义网上没有的东西的话，还是得做上面的步骤。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/04/18/Y7000P更换散热模组/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            Y7000P更换散热模组
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/04/17/This-is-for-the-Record/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">This is for the Record</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

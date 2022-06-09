@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Win10家庭版启用远程桌面&amp;启用组策略 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Win10家庭版启用远程桌面and启用组策略"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Win10家庭版启用远程桌面&amp;启用组策略
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/09/01/Win10家庭版启用远程桌面and启用组策略/" class="article-date">
+  <time datetime="2021-09-01T02:53:25.000Z" itemprop="datePublished">2021-09-01</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>解决Win10家庭版两个被封锁的关键功能的缺陷。<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;以前就发现家庭版打不开组策略，不过这个问题解决起来相对容易，而最近又发现家庭版没法开启远程桌面，解决相对困难一些，所以这次就把两个问题总和到一块，后面再发现家庭版的问题也一并更新在本文。</p>
+<hr>
+<h2 id="Win10家庭版启用远程桌面"><a href="#Win10家庭版启用远程桌面" class="headerlink" title="Win10家庭版启用远程桌面"></a><p align="left">Win10家庭版启用远程桌面</p></h2><p>Win10系统其实都自带远程桌面功能的，但并不是所有版本都能启用，家庭版系统就肯定不行，若从此电脑&gt;属性&gt;远程桌面尝试进入，会出现：</p>
+<img src="/2021/09/01/Win10家庭版启用远程桌面and启用组策略/1.png" title="a">
+
+<p>若从控制面板&gt;系统和安全&gt;系统&gt;允许远程访问尝试进入，则会发现缺少了一栏，只有远程协助而没有远程桌面选项：</p>
+<img src="/2021/09/01/Win10家庭版启用远程桌面and启用组策略/2.png" title="b">
+
+<p>一般来说恢复远程桌面功能最简单的方法是下载安装一个自动化工具RDPWrap。下载地址为：</p>
+<p><a href="https://github.com/stascorp/rdpwrap/releases" target="_blank" rel="noopener">https://github.com/stascorp/rdpwrap/releases</a></p>
+<p>从Github上看到该项目自从2017年底就停止更新了，其中的一些具有时效性的文件很可能已经不适用于目前的系统，不过我们可以在该项目的issue中自行搜索，从网友们那寻找类似问题的协助。</p>
+<p>解压后运行 RDPCheck.exe 检查本机是否支持远程桌面服务。如果是家庭版，十有八九会在Connecting之后提示连接失败（显示 Socket error）。</p>
+<p>如果失败，右键以系统管理员身份运行 install.bat，安装完成后，运行RDPConf.exe进行状态检测，如果看到三行绿字就没问题了，直接看文末。</p>
+<p>然而重点来了，如果是家庭版系统，往往这里的 Listener state 是失败的（红字Not listening 和 not supported），解决这个问题需要替换或修改三个.dll文件：</p>
+<ol>
+<li>位于C:\Program Files\RDP Wrapper\ 的 rdpwrap.ini，这是RDPWrap安装的，故该路径只有执行过 install.bat 才会出现。因 RDPWrap 自动安装的 rdpwrap.ini 早已不适用于目前的许多系统，故需要自行修改，建议到 <a href="https://github.com/stascorp/rdpwrap/issues/" target="_blank" rel="noopener">https://github.com/stascorp/rdpwrap/issues/</a> 里寻找当前时间合适的代码，不一定就非要找到和当前系统完全一致的，只要差不多是这几个月更新以后的代码就行了。</li>
+</ol>
+<p>若替换或修改时出现“该文件已在程序中打开”，是因为Windows的远程桌面会话服务 【Remote Desktop Services】 正在运行导致的，需要先将其停掉，该服务可以在计算机管理页面的服务中找到，可以从这里进行操作，不过这里建议用cmd直接命令：运行cmd，输入net stop termservice，开启的命令为 net start termservice。修改完建议将其再打开，若打开失败可以试着再开一次，实在不行或发现服务里启停按钮卡死，则重启电脑一般即可恢复。</p>
+<ol start="2">
+<li>位于 C:\Windows\System32 的 termsrv.dll，需要对其进行魔改。此文件属于系统文件，修改前务必备份。</li>
+</ol>
+<p>修改此文件需要高级权限，方法是 右键&gt;属性&gt;安全&gt;高级&gt;看到其所有者名为“TrustedInstaller”，点击更改，对象输入Administrators&gt;确定&gt;确定&gt;用Administrators取得完全控制权，即可。</p>
+<p>将该文件的一个备份用十六进制编辑器（自行下载一个能用的即可）打开，搜索字节序列 【39 81 3C 06 00 00 0F 84】，该字段一定能够被找到，该字段加上紧邻其后的四个字符构成本次需要修改的整体，如 【39 81 3C 06 00 00 0F 84 DB 61 01 00】，后四个字符可能因系统内核版本不同而有所变化，这里只是以 【39 81 3C 06 00 00 0F 84 DB 61 01 00】 举例。然后将 【39 81 3C 06 00 00 0F 84 DB 61 01 00】 整条替换为 【B8 00 01 00 00 89 81 38 06 00 00 90】</p>
+<p>修改后保存退出，将这个魔改好的 termsrv.dll 复制进 System32 替换掉原有的 termsrv.dll ，替换完成后重启电脑。重启后检查一下 【Remote Desktop Services】 是否正常运行。</p>
+<ol start="3">
+<li>位于 C:\Windows\System32 的 rfxvmt.dll，此文件一般没有权限保护，直接用这里的备份替换掉它。我不太清楚这个文件有什么作用，有可能也没啥实际作用，保险起见修改前可以对其备份。</li>
+</ol>
+<p>这三条全部修改成功后再次检查一下 【Remote Desktop Services】 是否能正常运行，此时启动 RDPConf.exe 再次检测，一般来说 Listener state 就会变绿了。我这里成功以后试这样的：</p>
+<img src="/2021/09/01/Win10家庭版启用远程桌面and启用组策略/3.png" title="c">
+
+<p>RDPConf.exe 全部绿字后打开 RDPCheck.exe 即可看到一个Win10的登录界面。</p>
+<p>另：家庭版就算你改好了也没法从正常渠道进远程桌面，每次需要自己手动打开远程桌面的exe，它位于：C:\WINDOWS\system32\mstsc.exe，建议将这个东西生成一个快捷方式固定到开始菜单或桌面。</p>
+<p>重点说一下，Win10系统如果进行大规模更新，上述第一条修改（rdpwrap.ini）很可能失效，则需要再次寻找合适的rdpwrap.ini进行修改。这里也可以看出一个正版Win10家庭版系统是有多不方便，以后买机子还是重装个专业版比较靠谱。</p>
+<hr>
+<h2 id="Win10家庭版启用组策略"><a href="#Win10家庭版启用组策略" class="headerlink" title="Win10家庭版启用组策略"></a>Win10家庭版启用组策略</h2><p>这个相对容易，只需运行一个.bat：<br>先新建一个txt文档，即 新建文本文档.txt，打开后直接把以下代码复制进去：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"></span><br><span class="line">　　<span class="built_in">pushd</span> "%~dp0"</span><br><span class="line"></span><br><span class="line">　　<span class="built_in">dir</span> /b <span class="variable">%systemroot%</span>\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~<span class="number">3</span>*.mum &gt;gp.txt</span><br><span class="line"></span><br><span class="line">　　<span class="built_in">dir</span> /b  <span class="variable">%systemroot%</span>\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~<span class="number">3</span>*.mum &gt;&gt;gp.txt</span><br><span class="line"></span><br><span class="line">　　<span class="keyword">for</span> /f <span class="variable">%%i</span> <span class="keyword">in</span> ('<span class="built_in">findstr</span> /i . gp.txt <span class="number">2</span>^&gt;<span class="built_in">nul</span>') <span class="keyword">do</span> dism /online /norestart /add-package:"<span class="variable">%systemroot%</span>\servicing\Packages\<span class="variable">%%i</span>"</span><br><span class="line"></span><br><span class="line">　　<span class="built_in">pause</span></span><br></pre></td></tr></table></figure>
+
+<p>重点来了，这里必须另存为，然后编码选择ANSI，文件名改为 gpedit.bat，或者也可以另存为后再把文件名改为 gpedit.bat，这时右键这个bat选择以管理员身份运行，耐心等待完成即可（若卡死，等一下然后重启电脑先试下面的步骤，成功则结束，失败再运行一次bat）。</p>
+<p>结束后，Win+R打开运行，输入 gpedit.msc，回车即可打开组策略。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/09/01/云服务器搭建游戏服务器实战/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            云服务器搭建游戏服务端实战
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/08/12/2014-2021年Steam全球流量统计图/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">2014-2021年Steam全球流量统计图</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

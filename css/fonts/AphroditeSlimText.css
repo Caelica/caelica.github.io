@@ -1,0 +1,22 @@
+/* 
+* Aphrodite Slim Text
+* version 001.000
+
+* for flourish Title
+
+
+*/
+@font-face {
+    font-family: "AphroditeSlimText"; /* Title flourish */
+    src: url('../fonts/AphroditeSlimText/AphroditeSlimText.eot'); /* IE9 */
+    src: url('../fonts/AphroditeSlimText/AphroditeSlimText.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../fonts/AphroditeSlimText/AphroditeSlimText.woff') format('woff'),
+    url('../fonts/AphroditeSlimText/AphroditeSlimText.otf') format('otf'),
+    url('../fonts/AphroditeSlimText/AphroditeSlimText.ttf') format('truetype'),/* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+    url('../fonts/AphroditeSlimText/AphroditeSlimText.svg#icoAph') format('svg');
+    font-display: swap;
+    }
+
+
+
+

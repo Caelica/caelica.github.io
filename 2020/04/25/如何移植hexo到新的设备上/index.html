@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>如何移植hexo到新的设备上 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-如何移植hexo到新的设备上"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  如何移植hexo到新的设备上
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/04/25/如何移植hexo到新的设备上/" class="article-date">
+  <time datetime="2020-04-25T01:08:08.000Z" itemprop="datePublished">2020-04-25</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">4 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>关于更换机器后如何移植hexo的简述<a id="more"></a></p>
+</blockquote>
+<p>最近新入手一个电脑，想把整个博客都移植到新电脑上编辑操作，看了很多教程后大概明白了步骤，可能是因为都是静态文件的原因，搬起来还挺简单的，似乎即使新设备是mac系统一样可以这么操作。以下是具体步骤：</p>
+<p>1.给新设备安装Git和Node.js，这个是必须得有的。</p>
+<p>2.给新设备添加SSH密钥。打开Git Bash：<br>虽然新设备肯定是没有SSH了，不过这里为完备起见，可用下面的方法检测本机器已经拥有的的SSH：<br><code>$ ls -al ~/.ssh</code><br>如果终端输出的是：<br><code>cannot access ... No such file or directory</code><br>那么就说明本地没有SSH key<br>如果显示出一堆 id_rsa 和 id_rsa.pub文件的存在以及它们的创建日期，就说明此设备存在SSH，需要考虑移除该设备的SSH。简单来说就是直接把<code>C:\Users\机器用户名\</code> 下的.ssh文件夹给删了就行了。</p>
+<p>好的现在开始正式创建SSH key，Git Bash里输入：<br><code>$ ssh-keygen -t rsa -C &quot;你的GitHub邮箱地址&quot;</code><br>然后三次回车键（跳过passphrase口令，即给SSH本身设置一个保护密码，相当于二道锁，建议跳过），就在用户目录生成了一个名为.ssh的文件夹，里面有id_rsa和id_rsa.pub两个文件，用户目录就是C:\Users\XXX这里。ssh文件可以备份一下，登录Github的用户界面,找到Settings里面的SSH and GPG keys，里面可以看到旧的ssh密钥，点击new SSH key添加一个新的ssh密钥，Title可以自定义，内容填入记事本打开id_rsa.pub里的内容（开头为ssh-rsa后面跟着一大串字母）。点保存即可，旧的SSH也可以移除了。</p>
+<p>可以测试一下ssh，在Git Bash里输入<br><code>$ ssh -T git@github.com</code>（注意这里的邮箱地址就是<a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>，并不是个人邮箱）<br>此时可能跳出一行host确认信息，直接输入yes，此时会看到：Hi &lt;你的用户名&gt;! You’ve successfully authenticated, but GitHub does not provide shell access.则表示配置成功。</p>
+<p>接下来还需要配置<br><code>$ git config --global user.name</code>（格式为”xxxxxxxx”// 即github的登陆用户名，非昵称）<br><code>$ git config --global user.email</code>（”<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>“// 即github注册邮箱）<br>这个不配置的话似乎会在hexo d的时候跳出”please tell me who are you”的问题。</p>
+<p>3.接下来就是装hexo，打开Git Bash，输入<br><code>$ npm install hexo-cli -g</code><br>这步其实非常慢，回车键发现没反应需要等，等了N久都没用或者出错怎么办？可以强关Git，在Git里执行npm uninstall hexo卸载hexo（没装上的话这步是没用的，以防万一），然后在C:\Users\用户名\AppData\Roaming里把npm和npm-cache文件夹都删掉，这样让新设备回到安装前的初始状态，再尝试安装hexo。</p>
+<p>有人说国内hexo的npm源有问题，经我测试是没有问题的，npm hexo的时候也没有挂梯子，正常安装即可。</p>
+<p>4.这里我们确认hexo已经安装好了，就可以开始创建本地仓库。建议自己建一个路径简单的文件夹，这里注意一下，最好和旧设备的路径是一样的，比如我的是D:\Blog\Aetherial，空文件夹建好后，将旧博客的一些文件复制进来，这些文件是：</p>
+<p>source/（博客文章内容）<br>theme/（博客主题）<br>scaffolds/（文章模板）<br>_config.yml（网站配置文件）<br>package.json（有关使用的包）<br>.gitignore（忽略选项）</p>
+<p>其他文件不要复制进来。</p>
+<p>上述文件都复制好以后，在git bash中cd到该目录：<br><code>$ cd /d/blog/aetherial</code>（这是我的目录）<br>然后<br><code>$ npm install</code>（注意，不是npm init）<br>这步安装完，大部工作就解决了。</p>
+<p>5.为了使用hexo d还需要执行<br><code>$ npm install hexo-deployer-git --save</code><br>若博客还设置有RSS订阅还需<br><code>$ npm install hexo-generator-feed --save</code>（这里认为config.yml里的配置都是正常的）</p>
+<p>6.这样就彻底完成了。可以用本地预览服务先看一下：<br><code>$ hexo s -p 5555</code><br>这里的5555是自己随便定的端口名称，不同的程序使用的端口五花八门，有可能会出现端口占用冲突的问题，建议就5555。</p>
+<p>7.本地预览能成功的话那基本就没啥问题了，可以尝试hexo clean、hexo g一遍，看看能否正常工作。最后新建一个测试用的博客文章，尝试hexo d，验证一下是否上传成功。刚移植完后第一次hexo d似乎要输入一遍Github的账号和密码确认，之后就不用了，因为已经添加了ssh密钥。</p>
+<p>本地预览失败？重新检查步骤4以后的内容，特别是_config.yml里的内容是不是正确。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/05/03/hexo添加网易云音乐播放器/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            hexo添加网易云音乐播放器
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">Steam社区里利用高仿网站钓鱼的骗术</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

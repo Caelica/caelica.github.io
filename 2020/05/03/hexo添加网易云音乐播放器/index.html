@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>hexo添加网易云音乐播放器 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-hexo添加网易云音乐播放器"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  hexo添加网易云音乐播放器
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/05/03/hexo添加网易云音乐播放器/" class="article-date">
+  <time datetime="2020-05-03T07:39:35.000Z" itemprop="datePublished">2020-05-03</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">3 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
+</blockquote>
+<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
+<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
+
+<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
+<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
+<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
+<p>不再重叠了~</p>
+<hr>
+<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
+<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
+<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
+<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/05/29/关于Photoshop中Alt键呼出菜单栏的问题/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            关于Photoshop中Alt键呼出菜单栏的问题
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/04/25/如何移植hexo到新的设备上/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">如何移植hexo到新的设备上</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

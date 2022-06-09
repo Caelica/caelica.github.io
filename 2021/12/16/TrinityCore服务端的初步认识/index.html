@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>TrinityCore服务端的初步认识 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-TrinityCore服务端的初步认识"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  TrinityCore服务端的初步认识
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/12/16/TrinityCore服务端的初步认识/" class="article-date">
+  <time datetime="2021-12-16T09:25:21.000Z" itemprop="datePublished">2021-12-16</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">22 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>简述以TrinirtCore为基础的WOW服务端的结构、作用以及一些架设要点，不涉及源码编译。 <a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;在之前的文章《<a href="https://caelica.github.io/2021/09/01/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E6%B8%B8%E6%88%8F%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E6%88%98/"><font color="blue">云服务器搭建游戏服务器实战</font></a>》中初步实现了对一般意义上的MMORPG的服务端搭建，但问题也很明显，就是服务端稳定性普遍不足。本次使用比较普遍的端核即TrinityCore，在不涉及源码编译的情况下（也就是直接使用别人编译好的端）进一步了解WOW服务端结构。相信这篇文章也适用于想了解WOW服务端工作原理的新手小白。因为本人也只是初学者，难免有认识错误的地方，本文也将在后续的学习中进行修正。</p>
+<p>TrinityCore的官方wiki页面为：<a href="https://trinitycore.atlassian.net/wiki/spaces/tc/overview" target="_blank" rel="noopener">https://trinitycore.atlassian.net/wiki/spaces/tc/overview</a> ，可查询具体细节问题；<br>TrinityCore的Github项目为：<a href="https://github.com/TrinityCore" target="_blank" rel="noopener">https://github.com/TrinityCore</a> ，可于此找到项目源码及搜索各种issue。</p>
+<h2 id="什么是TrinityCore"><a href="#什么是TrinityCore" class="headerlink" title="什么是TrinityCore"></a><p align="left">什么是TrinityCore</p></h2><p>&emsp;&emsp;Trinity是基于MANGOS、SD2、UDB、ACID及其他各种补丁之上发展而来的一个MMORPG服务端项目，Trinity最著名的服务端是3.3.5a的WLK版本。多年来在TrinityCore的技术基础上诞生了很多自制端，可以说目前市面上能看到的很多私服都是基于Trinity的技术修改而来。</p>
+<p>&emsp;&emsp;Trinity本身发展较早，在网络上多年来拥有了相当多的衍生端，以及团队、社区、论坛、技术文件等，这使得Trinity端的各种问题解决起来都相对方便。本人测试过的Trinity 3.3.5 12340（TW）相当稳定，故十分推荐从Trinity 3.3.5开始学习WOW端的搭建，能少走很多弯路，且3.3.5可以说是WOW历史上公认的最经典的版本，也具有一定的收藏和娱乐价值。</p>
+<p>&emsp;&emsp;Trinity的端一般都需要安装VC++和OpenSSL的的运行环境，环境包一般都在下载的端里带的有，简述如下：</p>
+<ol>
+<li>安装 vcredist_x86；</li>
+<li>安装 Win32OpenSSL，路径默认到C盘，中途选择“The OpenSSL binaries”的选项；</li>
+</ol>
+<h2 id="TrinityCore的文件结构及说明"><a href="#TrinityCore的文件结构及说明" class="headerlink" title="TrinityCore的文件结构及说明"></a><p align="left">TrinityCore的文件结构及说明</p></h2><p>&emsp;&emsp;Trinity的结构可以说是比较简单明了的，我这里简单用一个图来说明TrinityCore的文件结构：</p>
+<img src="/2021/12/16/TrinityCore服务端的初步认识/1.jpg" title="a">
+
+<p>&emsp;&emsp;Trinity文件夹下应当存在两个主要文件夹，名称不一定，这里将其称为Server和Core。另外还最好存在一个名为JRC.exe的辅助工具，全名应为Jeutie’s Repack Restarter，它将worldserver、Authserver以及MySQL和Apache服务的启动停止功能集成在一个软件里，并可以快捷打开.conf配置文件，只要指定好路径以后就可以使用这些功能，是一个很方便的工具。</p>
+<p>&emsp;&emsp;回到Trinity本身，Server下主要是服务器的数据库与程序，其中MySQL集成了MySQL（至于版本，一般都是MySQL5）程序本体以及数据库，但是注意这里并没有带数据库管理工具，需要自行安装（我使用Navicat8，建立一个localhost3306就可以连接数据库了）；Apache是一个Web服务器软件，用来提供一个可以自助注册的注册页面；剩下的php等文件是该注册页面的内容，如果在启动Apache后无法从127.0.0.1打开注册页面，多是因为缺少了注册页面的内容。</p>
+<p>&emsp;&emsp;Core下存在三类内容，maps、vmaps、mmaps、dbc、logs等文件夹；启动器和启动器配置文件；.dll文件。</p>
+<p>&emsp;&emsp;先说第一类，maps、vmaps、mmaps、dbc这四项内容是非常重要的，可以说这些内容直接决定了一个端的基本质量。这里很有必要详细说明各种文件的作用，而且强调一点，这四项都是一定要有的，否则根本没法正常使用，并非很多内容里说的除了maps都是“可选”；且就算服务端的确包含了这些地图数据，但在配置文件（worldserver.conf）里有可能默认禁用了vmaps等模组（其值为0），一定要将其全部启用（值改为1）：<br>maps是世界的逻辑地图，各种坐标定位、坐标名称、传送关系等均靠maps实现，没有maps内容是绝对不行的。</p>
+<p>vmaps（vector maps）是矢量地图，可以理解为是一种具有真实矢量关系的视觉地图，它控制地图的方向关系。若缺少mmaps则会出现野怪单位arggo（wow术语，即产生仇恨）离它们距离虽近，但实际上无法看到的地方（比如墙后、地下室等）的bug。</p>
+<p>mmaps（movement maps）是移动地图，它控制行动路线上的关系，若缺少vmaps则会导致怪物穿墙杀向玩家，掉入虚空、单位一跳一跳踏空而行的典型bug。</p>
+<p>dbc是一系列功能性内容，控制如成就、天赋、法术施放时间、地图势力范围等等众多功能性内容。网络上有一张表注明了dbc文件中各个文件的作用：</p>
+<details>
+<summary><p align="left"><font size="4"><font color="#2A65FF">点此展开dbc具体内容</font></font></p></summary>
+
+<p>Achievement.dbc 记录了成就的详细内容–名字，描述等等 !<br>Achievement_Category.dbc 成就的分类[像：”经典旧世”、”任务”、”战场”、”荣誉击杀” 、”战斗、”消耗品”……等等]<br>Achievement_Criteria.dbc 记录了成就的达成要求<br>AnimationData.dbc 里面是各种行为、动作的镜头动作<br>AreaTable.dbc 地区表，记录了小地区的信息–名字、范围等[比如” 奈辛瓦里远征队营地”、” 莫格罗什要塞”等……] )<br>AreaTrigger.dbc 传送点坐标<br>AuctionHouse.dbc 拍卖行种类 )<br>BankBagSlotPrices.dbc 开银行栏位的价钱<br>BarberShopStyle.dbc 理发店能做的发型<br>BattlemasterList.dbc 战场、竞技场种类<br>Cfg_Categories.dbc 记录了WOW的各个服务大区[居然还有一到十区、网易的3.13果然很赶工]<br>由Char打头的dbc 记录了角色的脸型、发型、发色、肤色、特征[胡须、耳环]等包含的种类<br>CharSections.dbc 角色的各部位贴图文件<br>CharStartOutfit.dbc 出生时的装备<br>CharTitles.dbc 角色能获取的称号总类别ChatChannels.dbc 系统默认频道总类别<br>ChatProfanity.dbc 敏感字眼 开启过滤后会显示成****的那些词<br>ChrClasses.dbc 职业总类别<br>ChrRaces.dbc 所有种族[包括但不仅限于玩家]<br>CinematicCamera.dbc 每个种族出生的种族介绍的镜头[比如，你建了一个人类，背后就有一个家伙唠叨人类的起源、特长、特征等等，然后同时，镜头从暴风城一路飞到北郡，介绍完最后一句话，镜头刚到走到你身上，就是记录的这个玩意]<br>CreatureDisplayInfo.dbc和CreatureDisplayInfoExtra.dbc 两个记录了生物的ID、模型、贴图、装备等。这其中的关联要理清的话，要花很大的功夫。猫扑模型区有很详细的介绍<br>CreatureFamily.dbc 生物所属的类型[其实就是指野兽的分类，Family是野兽独有的属性，“生物”在这特指野兽]<br>CreatureModelData.dbc 生物模型信息<br>CreatureSoundData.dbc 生物语音路径<br>CreatureSpellData.dbc 生物的法术信息<br>CreatureType.dbc 生物类型[人型、亡灵、野兽、龙类……这种分类]<br>CurrencyCategory.dbc 货币的大分类<br>SCurrencyTypes.dbc 货币细类<br>SEmotes.dbc 表情动作的名字<br>EmotesText.dbc 表情动作的命令[/dance、/cry……]<br>EmotesTextData.dbc 表情动作的提示文字[一般分这几种：你看到的，A对B做了什么，A对自己做了什么，某人对你做了什么，你对某人做了什么，你对自己做了什么]<br>EmotesTextSound.dbc 做表情时发出什么样的声音<br>Exhaustion.dbc 玩家的休息状态及处于这种状态下的收益减益设定[精力充沛、正常、疲倦1、疲倦2、精疲力竭、战友招募]<br>Faction.dbc 记录了WOW里所有的阵营[名字，阵营ID等]<br>FactionGroup.dbc 阵营分类[玩家、联盟、部落、怪物]<br>FileData.dbc 开场动画的名字<br>GameObjectArtKit.dbc 旗杆[战场里，被联盟占下的旗，部落占下的旗，还有争夺中的旗，还有火焰节的那个旗……等等]<br>GameObjectDisplayInfo.dbc 游戏中的对象外观[对象就是WOW里的摆设啦等，比如一本魔法宝典，等]<br>GameTables.dbc 游戏公式表[比如，抗性的设定、升一级需要的经验、NPC魔法消耗倍数等。这个与游戏中各种各样的公式计算有关]<br>GameTips.dbc 角色登录的时候，Loading条上面的“小窍门” GMSurveyAnswers.dbc 、GMSurveyQuestions.dbc GM评价问卷的答案、题目 !<br>GMTicketCategory.dbc 联系GM时的问题分类<br>GroundEffectDoodad.dbc 地表模型<br>GroundEffectTexture.dbc 地表模型的材质贴图<br>gtBarberShopCostBase.dbc 理发店的价钱<br>HolidayDescriptions.dbc 节日描述<br>HolidayNames.dbc 节日名字、ID<br>Holidays.dbc 节日设定<br>Item.dbc 物品总汇<br>ItemBagFamily.dbc 物品可放入包裹[按包裹的属性，箭矢、灵魂碎片、附魔材料、矿物……]<br>ItemClass.dbc 物品种类[武器、护甲、配方、消耗品……在AH浏览时的那个分类就用的这个]<br>ItemCondExtCosts.dbc、ItemExtendedCost.dbc物品的售出与购回价<br>ItemDisplayInfo.dbc 物品外观<br>ItemGroupSounds.dbc 各类物品的声音<br>ItemPetFood.dbc 宠物食物总类别<br>ItemRandomProperties.dbc 物品的随机属性[灵猴之、孤狼之、雄鹰之……]<br>ItemRandomSuffix.dbc 随机属性的加成方法<br>ItemSet.dbc 套装总汇<br>ItemSubClass.dbc 物品子类[容器、灵魂袋、法杖、红色、多彩……AH的子类搜索就是用的这个分类]<br>ItemVisualEffects.dbc 视觉特效<br>Languages.dbc WOW中的语言[达纳苏斯语、侏儒二进制语等]<br>LanguageWords.dbc 不同语言的字符映射<br>LFGDungeons.dbc 组队功能中的地下城、地下城的等级范围、ID<br>LightSkybox.dbc 天空模型<br>LiquidMaterial.dbc 流体的材质[猜测是岩浆、普通水、烫水……这种分类]<br>LiquidType.dbc 不同类型的流体的贴图<br>LoadingScreens.dbc 切换场景时的Loading画面路径<br>LoadingScreenTaxiSplines.dbc 乘坐飞艇和船时的航线图<br>Lock.dbc 锁的位置<br>LockType.dbc 箱子的类型 MailTemplate.dbc 邮件模板[NPC经常会寄信给你，这个dbc就管的这个信的内容]<br>Map.dbc 大地图区域<br>Movie.dbc 开场电影怎么放[先来个BLZ的LOGO，再来一段正式CG]<br>NameGen.dbc 名字不能包含的字符（提示为已注册？）<br>NamesProfanity.dbc 名字禁止包含的字符<br>NamesReserved.dbc 名字已存在<br>NPCSounds.dbc NPC声音文件<br>PageTextMaterial.dbc<br>PaperDollItemFrame.dbc 装备栏贴图<br>ParticleColor.dbc 粒子颜色（可能是各个场合的粒子外观）<br>PetitionType.dbc 签名表[包括公会、战队]<br>QuestInfo.dbc 任务难度[地下城、组队、团队、PVP、团队-10、团队-20，这个在任务名的后面有一个括号会说明]<br>QuestSort.dbc 任务归类[季节性、法师、猎人、制皮……等]<br>Resistances.dbc 抗性分类<br>ServerMessages.dbc 服务器提示消息[还有多少时间关机啦、多少时间重启什么的]<br>SkillCostsData.dbc 法术的消耗需求<br>SkillLine.dbc 技能面板技能总类别[快键 K]<br>SkillLineAbility.dbc 技能面板上的技能熟练度<br>SkillLineCategory.dbc 技能大类<br>SoundEntries.dbc 声音文件的入口[详细定义了每一个”引用”]<br>SoundProviderPreferences.dbc 同类场景的引用[比如,冬泉谷和丹莫罗的音乐都是MOUNTAINS]<br>SoundWaterType.dbc 各类”水”的声音<br>SpamMessages.dbc “乱码”的转换方法<br>Spell.dbc 技能定义[最大的dbc文档！！！]<br>SpellCastTimes.dbc 施法时间分类<br>SpellDispelType.dbc 法术类型[诅咒、魔法、疾病……]<br>SpellFocusObject.dbc 技能施放对象[object，一般是指游戏内的对象]<br>SpellIcon.dbc 技能-图标对应<br>SpellItemEnchantment.dbc “使用”类物品提供的效果<br>SpellMechanic.dbc 技能命中的效果[被魅惑、被缴械、被变形、流血、瘫痪……]<br>SpellMissileMotion.dbc 技能算法<br>SpellRange.dbc 技能距离、范围<br>SpellShapeshiftForm.dbc 各种形态……<br>SpellVisualEffectName.dbc 技能外观模型<br>Startup_Strings.dbc WOW.exe的提示字符串<br>Talent.dbc 天赋总汇<br>TalentTab.dbc 天赋系别<br>TaxiNodes.dbc 出租车节点<br>TaxiPath.dbc 节点对应的行走路径<br>TaxiPathNode.dbc 节点坐标<br>TerrainType.dbc 地区类型[比如 山、平原、干地等]<br>TerrainTypeSounds.dbc 各种地区类型对应的音乐<br>TotemCategory.dbc 工具分类[指”需要XX物品”的情况下，被需求的物品<br>WeaponImpactSounds.dbc 武器攻击声效<br>WeaponSwingSounds2.dbc 武器挥舞声效<br>Weather.dbc 天气配置<br>WMOAreaTable.dbc “小地区”表<br>WorldMapArea.dbc 地图区域划分<br>WorldStateUI.dbc 区域内战斗提示[麦迪文的剩余护盾：X%；部落控制了内城区！]<br>WowError_Strings.dbc WOW出错界面及错误报告界面字符<br>ZoneIntroMusicTable.dbc 地区介绍音乐[这个音乐作为IntroMusic一般是主题性质的音乐]<br>ZoneMusic.dbc 地区音乐</p>
+</details>
+
+<p>&emsp;&emsp;有必要说明，这些内容即使缺失服务端仍能运行起来，但结果可想而知。这也就是为什么网络上能找到的很多野生端bug奇多，因为很多野生端都没有包含vmaps、mmaps等文件。vmaps、mmaps等文件的获取难点在于它们和服务端及客户端版本是严格对应的，若做不到版本的严格对应则无法使用其文件。一般来说它们可以从对应的客户端进行手动提取，这里需要用到地图数据提取工具，这些工具一般都是直接从服务端源码里直接编译出来的，因本文不涉及源码编译工作，所以需要从其他途径获取，它们通常如下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">mapextractor</span><span class="selector-class">.exe</span></span><br><span class="line"><span class="selector-tag">mmaps_generator</span><span class="selector-class">.exe</span></span><br><span class="line"><span class="selector-tag">vmap4assembler</span><span class="selector-class">.exe</span></span><br><span class="line"><span class="selector-tag">vmap4extractor</span><span class="selector-class">.exe</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将这几个文件放置在客户端根目录（和wow.exe一个目录）运行即可生成出对应的文件夹，然后将这些文件夹置于服务器目录即可。经测试不同的版本的extractor无法互通。老实说这部分问题贼多，通常我认为，自己手动提取的文件（前提是有效）是最好的，但不能保证自己提取的文件就和服务端完全适配，因为网上下载的那些客户端也是有可能出这样那样的问题的。实在不行的话还是考虑在服务端提供方那里弄到对应的文件，一般也都会有的。</p>
+<p>&emsp;&emsp;再下来是启动器和配置文件，Authserver主要控制和账户、登录、服务器相关的功能，而worldserver主要控制和游戏具体内容相关的功能，如常用的经验倍率、掉落倍率等等，其实.conf里已经写的很明白了，读一遍就能解决很多问题。这里我们最关心的是端口、IP地址、数据库名和数据库密码。首先是端口，Trinity的端通常会使用这些端口，确保这些端口不被占用：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">80 </span>//Apache服务的端口，运行Apache注册页面网站所需</span><br><span class="line"><span class="symbol">3306 </span>// MySQL的端口，必需，否则无法连接数据库</span><br><span class="line"><span class="symbol">3343 </span>// 远程连接的端口，必需</span><br><span class="line"><span class="symbol">7878 </span>// 简单对象访问协议的默认端口</span><br><span class="line"><span class="symbol">3724 </span>// wow服务器列表中默认服务器（realm）的端口，必需。我们默认这里只有一个realm</span><br><span class="line"><span class="symbol">8085 </span>// 世界服务器端口，必需</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这里简述一下如何查看哪个服务占用了哪个端口：CMD&gt;键入netstat -ano&gt;回车&gt;看到本地地址列中地址的最后一个数即是端口名，找到其对应的PID，然后在任务管理器中的服务中找到该PID对应的服务即可。</p>
+<p>&emsp;&emsp;Trinity下，IP地址、数据库名和数据库密码通常不需要修改，即使是架设在远程服务器上，也只需用Navicat8修改数据库中auth下realmlist中的两个ip地址（address和localaddress）为服务器公网IP地址即可，服务端配置文件中均使用127.0.0.1。不过如果你的端是自行组装的话，这些内容有可能是需要自定义的。</p>
+<p>&emsp;&emsp;接下来是三个.dll文件，这些dll文件控制启动器程序和数据库的连接，因为版本和运行环境的原因很容易出问题，上面说到，服务端安装包中一般都带有服务端运行环境（vcredist_x86和OpenSSL），确保运行环境已经被正确安装后，启动服务端（authserver或worldserver）若报错（无法启动程序等错误）或显示缺少 libeay32.dll、ssleay32.dll，，考虑手动提取，在C:\OpenSSL-Win32\bin 中复制 libeay32.dll 和 ssleay32.dll，到服务端文件夹中（即authserver和worldserver所在的文件夹），通常即可解决问题。</p>
+<p>&emsp;&emsp;若出现缺少msvcr.dll（及形如此类的.dll）的情况，显示错误为：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">无法启动此程序,因为计算机中丢失<span class="module-access"><span class="module"><span class="identifier">MSVCR100</span>.</span></span>dll。尝试重新安装该程序以解决问题</span><br><span class="line">无法启动此程序,因为计算机中丢失<span class="module-access"><span class="module"><span class="identifier">MSVCP100</span>.</span></span>dll。尝试重新安装该程序以解决问题</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;若安装包中没有提供，建议从网上下载或直接从别的机器复制对应的.dll到服务器/本机，对windows系统进行补全。若是32位系统，dll放在：WindowsSystem32；若是64位系统需要放两个dll文件，一个32位，一个64位（下面两个一定要看仔细，反的）：32位dll放在：WindowsSysWOW64, 64位dll放在：WindowsSystem32</p>
+<p>&emsp;&emsp;若设备缺少zlib1.dll和bzip2.dll，采取和上述同样的方式对设备进行补全。</p>
+<p>有关TrinityCore的文件结构差不多就到这里了。</p>
+<h2 id="Trinity端的启动"><a href="#Trinity端的启动" class="headerlink" title="Trinity端的启动"></a><p align="left">Trinity端的启动</p></h2><p>&emsp;&emsp;通常来说我们首先需要启动数据库，也就是MySQL服务，确保数据库相关的服务上线运行后才能进行数据库管理，以及开启authserver和worldserver。因为Trinity的MySQL程序是自带的，启动前应确保设备上没有其他相关的MySQL服务运行，否则有可能因为这些数据库服务都使用3306端口而引发端口冲突。在之前的测试中发现，冲突后旧的localhost_3306会连不上，报出denied错误，这时通常右键断线数据库再连接即可解决。</p>
+<p>&emsp;&emsp;一般情况下不建议将Trinity自带的MySQL端口改成3307或其他值，因为需要修改的地方实在太多，各种配置文件里也都需要修改，难免出现问题，除非需要运行多个WOW数据库内容。一般来说将数据库都集成到3306即可。在之前的测试中合并了一个Maplestory079的数据库，二者都能正常运行。</p>
+<p>&emsp;&emsp;如果需要使用注册信息的页面则需要启动Apache服务，本机的话从127.0.0.1即可进入注册页面。如果服务端在服务器上的话，将地址改为公网IP地址即可，或者如果拥有服务器域名的话也是可以通过域名进入的。</p>
+<p>&emsp;&emsp;启动数据库后依次启动authserver和worldserver，注意其是否报错。worldserver启动完毕通常需要30s左右的时间。</p>
+<p>&emsp;&emsp;数据库、authserver和worldserver都启动完毕后即可运行客户端，客户端运行中也留意一下Worldserver是不是会继续报错，通常worldserver多多少少都会报出一点问题，出现非致命问题一般来说是可以忽略的，只要不闪退或出现严重刷屏的错误就行。</p>
+<h2 id="关于修改角色的名称、种族、职业、性别、外观等固有数据"><a href="#关于修改角色的名称、种族、职业、性别、外观等固有数据" class="headerlink" title="关于修改角色的名称、种族、职业、性别、外观等固有数据"></a><p align="left">关于修改角色的名称、种族、职业、性别、外观等固有数据</p></h2><p>&emsp;&emsp;相信玩过一段时间GM权限账号后，我们应该都知道如何通过GM命令给自己角色加钱加装备等常规操作。其实理论上讲任何角色都是可以直接在数据库中修改的，难点在于数据库内的数据记录方式可能不太好懂，某些数据可能是以二进制或者是某种算法结果的形式存在，造成了修改的困难性。</p>
+<p>&emsp;&emsp;这里将角色的名称、种族、职业、性别、外观等数据称为角色的“固有数据”，因为这些内容在正常游戏中通常是不会改动的。如果我们这里的服务端是老版本的话，要想修改这些数据只能从数据库里改。这里说点题外话，从WOW发展历史来看，随着版本更新，玩家对这些“固有数据”的修改权限也是在一步步扩大的。从没有理发店的60版本到80版本开设理发店可以修改发型，再到更晚的版本里可以更改脸型，听说现在9.0当下的理发店已经能变性了…花一点金币就能从白色精灵男秒变黑色精灵妹，可以说Blizzard的这些动作也算是这几年老美在种族、LGBT等问题上的一个很直观的反映。以前不能改这些东西的时候，这些通常是一项收费项目，无论是国服还是外服基本要花大概10-15$。</p>
+<p>这里列一下我掌握的修改方法。</p>
+<p>&emsp;&emsp;这些角色固有数据均存在于Char的character表中，name为名称，修改name可直接改名，但注意不要使用服务端不支持的字符。gender栏目为性别ID，gender=0则为男性，gender=1为女性，修改这个项目可以直接变性。</p>
+<p>race为种族ID，修改这项将改变种族。不同种族对应的ID为（不包含后续版本的同盟种族等）：</p>
+<style>
+table th:first-of-type {
+    width: 20%;
+}
+table th:nth-of-type(2) {
+    width: 30%;
+}
+table th:nth-of-type(3) {
+    width: 30%;
+}
+</style>
+
+<table>
+<thead>
+<tr>
+<th align="center">ID</th>
+<th align="center">Value</th>
+<th align="center">Name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">Human</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">Orc</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">Drawf</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">8</td>
+<td align="center">Night Elf</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">16</td>
+<td align="center">Undead</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">32</td>
+<td align="center">Tauren</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">64</td>
+<td align="center">Gnome</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">128</td>
+<td align="center">Troll</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">256</td>
+<td align="center">Goblin (4.x)</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">512</td>
+<td align="center">Blood Elf</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">1024</td>
+<td align="center">Draenei</td>
+</tr>
+<tr>
+<td align="center">12</td>
+<td align="center">2048</td>
+<td align="center">Fel Orc</td>
+</tr>
+<tr>
+<td align="center">13</td>
+<td align="center">4096</td>
+<td align="center">Naga</td>
+</tr>
+<tr>
+<td align="center">14</td>
+<td align="center">8192</td>
+<td align="center">Broken</td>
+</tr>
+<tr>
+<td align="center">15</td>
+<td align="center">16384</td>
+<td align="center">Skeleton</td>
+</tr>
+<tr>
+<td align="center">16</td>
+<td align="center">32768</td>
+<td align="center">Vrykul</td>
+</tr>
+<tr>
+<td align="center">17</td>
+<td align="center">65536</td>
+<td align="center">Tuskarr</td>
+</tr>
+<tr>
+<td align="center">18</td>
+<td align="center">131072</td>
+<td align="center">Forest Troll</td>
+</tr>
+<tr>
+<td align="center">19</td>
+<td align="center">262144</td>
+<td align="center">Taunka</td>
+</tr>
+<tr>
+<td align="center">20</td>
+<td align="center">524288</td>
+<td align="center">Northrend Skeleton</td>
+</tr>
+<tr>
+<td align="center">21</td>
+<td align="center">1048576</td>
+<td align="center">Ice Troll</td>
+</tr>
+<tr>
+<td align="center">22</td>
+<td align="center">2097152</td>
+<td align="center">Worgen (4.x)</td>
+</tr>
+<tr>
+<td align="center">24</td>
+<td align="center">8388608</td>
+<td align="center">Pandaren Neutral (5.x)</td>
+</tr>
+<tr>
+<td align="center">25</td>
+<td align="center">16777216</td>
+<td align="center">Pandaren Alliance (5.x)</td>
+</tr>
+<tr>
+<td align="center">26</td>
+<td align="center">33554432</td>
+<td align="center">Pandaren Horde (5.x)</td>
+</tr>
+</tbody></table>
+<p>（注：本表由Trinitycore官方页面提供，如果是旧版本的话只用前面的内容即可，为什么ID没有23号？我也不清楚..）</p>
+<hr>
+<p>class栏目为职业的ID，修改这项将改变职业。不同职业对应的ID为：</p>
+<table>
+<thead>
+<tr>
+<th align="center">ID</th>
+<th align="center">class</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">Warrior</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">Paladin</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Hunter</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">Rogue</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">Priest</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">Death Knight</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">Shaman</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">Mage</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">Warlock</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">Monk</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">Druid</td>
+</tr>
+<tr>
+<td align="center">12</td>
+<td align="center">Demon Hunter</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp;外观选项由playerBytes和playerBytes2控制。playerBytes控制肤色、脸型、发型、发色，playerBytes2则是角色的“特征”，也就是老版本中我们在建立角色时能修改的第五项内容，这项具体是什么根据种族和性别有所变化：如男性人类是改变胡须，女性人类则是改变耳环，女性暗夜精灵是改变面纹，等。</p>
+<p>&emsp;&emsp;playerBytes和playerBytes2似乎使用取余数的算法来记录数据，总之我很难看懂，而且我们也不清楚到底哪个脸型和特征对应了哪个数值，所以靠谱的办法是直接以修改目标新建一个模板角色，再从character中找到该新角色，复制它的playerBytes和playerBytes2数值覆盖到我们想要修改的旧角色即可，实现人脸“克隆”，然后再在游戏中将模板角色删除。</p>
+<h2 id="（4-3-4）问题解决-“无法传输所需的压缩数据”"><a href="#（4-3-4）问题解决-“无法传输所需的压缩数据”" class="headerlink" title="（4.3.4）问题解决 - “无法传输所需的压缩数据”"></a><p align="left">（4.3.4）问题解决 - “无法传输所需的压缩数据”</p></h2><p>&emsp;&emsp;Trinity 4.3.4版本中，若打开wow.exe出现：无法传输所需的压缩数据，请检查网络连接。（英文为 cannot stream required archive data. please check the network connection.）的框，一般是客户端根目录的WoW.mfil出了问题，这个文件只有1kB，和能正常工作的文件只有内容上的区别。其内容为：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version</span>=<span class="number">2</span></span><br><span class="line"><span class="attr">server</span>=limelight</span><br><span class="line"><span class="attr">location</span>=http://cdn.twinstar-wow.com/<span class="number">15050</span>.direct/</span><br><span class="line"><span class="attr">manifest_partial</span>=wow-<span class="number">15595</span>-<span class="number">0</span>C3502F50D17376754B9E9CB0109F4C5.mfil</span><br></pre></td></tr></table></figure>
+
+<p>所以我们可以将其编辑为:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">version</span>=2</span><br><span class="line"><span class="attribute">server</span>=limelight</span><br><span class="line">	<span class="attribute">location</span>=http://blizzard.vo.llnwd.net/o16/content/wow-pod-retail/EU/15050.direct/</span><br><span class="line"><span class="attribute">server</span>=akamai</span><br><span class="line">	<span class="attribute">location</span>=http://ak.worldofwarcraft.com.edgesuite.net/wow-pod-retail/EU/15050.direct/</span><br><span class="line"><span class="attribute">manifest_partial</span>=wow-15595-0C3502F50D17376754B9E9CB0109F4C5.mfil</span><br></pre></td></tr></table></figure>
+
+<p>并关掉网络代理程序，则可以解决问题。或手头有能正常工作的客户端的话，直接复制过来也行。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            通识污染——某搜索引擎离谱的医学词条
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/10/28/记录一个梦境/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">记录一个梦境</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

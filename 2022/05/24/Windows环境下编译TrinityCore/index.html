@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Windows环境下编译TrinityCore |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Windows环境下编译TrinityCore"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Windows环境下编译TrinityCore
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/05/24/Windows环境下编译TrinityCore/" class="article-date">
+  <time datetime="2022-05-24T10:55:26.000Z" itemprop="datePublished">2022-05-24</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">6.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">25 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>在Windows环境下通过基于TrinityCore的项目源码编译4.3.4-15595版本的服务端，以及服务端、客户端的配置工作，服务端的启动等及过程中的解释说明等。<a id="more"></a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p align="left">前言</p></h2><p>在之前的工作（见<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>）中，在不涉及源码编译的情况下，对Trinity服务端进行了简单的介绍，介绍了一些Trinity服务端的基本常识内容，并用别人编译好的服务端实现了3.3.5的WLK版本的服务端搭建。但由于服务端仍是使用现成的构建，略过了编译环节，也就导致一些功能无法实现，如自行提取对应版本的地图资源文件等，因为很多工具只有通过TrinityCore的源码编译才能生成。为了最大程度避免这些问题，从源码开始自行编译构建服务端无疑是最彻底的方案，故本次就从基于TrinityCore的项目进行源码编译。选择了一个基于TrinityCore的非官方分支项目即The-Cataclysm-Preservation-Project，也就是4.3.4版本的端，项目位于：<a href="https://github.com/The-Cataclysm-Preservation-Project" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project</a></p>
+<p>本次说明中的资源都可以在这里找到，该分支项目也给出了TrinityCore的官方编译指南，即：<a href="https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation</a> 。可以说，这次写的这个文章基本可以算是我对这篇TrinityCore官方文档的具体尝试，因为我也是初学者，认识浅薄，有能力的同学可以结合这个官方给出的文档共同参考，我这里重点是写出我自己在编译过程中遇到的具体问题，因为官方文档并不能够面面俱到。并且，这更多是出于我的“本地完备”的技术原则，这只是个占位符名称，因为目前我还没有想到（或学到、找到）一个词汇能够描述这个概念：<strong>即保证个人能够在彻底脱离国际互联网之后还能够以一定的资源开展一定形式的工作</strong>，这不是说我敌视互联网，而是为了应对最极端的情况，是类似于个人化的“防核地堡”的概念。</p>
+<h3 id="什么是编译"><a href="#什么是编译" class="headerlink" title="什么是编译"></a><p align="left">什么是编译</p></h3><p>我觉得有必要以通俗的语言简单重复一下这个概念。<strong>编译实际上可以理解为一种计算机语言之间的“翻译”过程</strong>，即将程序开发者（人）书写的源代码“翻译”——源代码通常是以人可以识别的“高级语言”书写的（如C++、Java等等），翻译成由计算机（机器）才能识别的汇编语言或二进制机器语言等“低级语言”。并且最终由计算机输出生成在某个平台环境下运行的可执行程序，也就是我们平常看到的程序本身，相对于把译文打印装订成书。这个过程就叫编译。</p>
+<p>（事实一再证明，很多基本问题从来不受重视，从来没有哪个老师真正能够告诉我（或试图告诉我）三极管、互联网、宪法以及文学艺术对个人和人类社会到底有什么意义，因为考试永远不会考你自己的理解，他们要的只是工具和程序）</p>
+<h3 id="为什么选择4-3-4（CTM）"><a href="#为什么选择4-3-4（CTM）" class="headerlink" title="为什么选择4.3.4（CTM）"></a><p align="left">为什么选择4.3.4（CTM）</p></h3><p>回到正题，首先说一下为什么选择4.3.4的端。不仅是因为之前已经实现过3.3.5的搭建，更多的是出于游戏性的考虑。熟悉这个游戏的人都知道，CTM版本实际上对这个游戏系统做出了相当大的改动，这在曾经是有争议的（即使是放在今天来说可能也如此）。不过，对于私人搭建的服务端来说，CTM版本的改动无疑是再适合不过的——它将WOW的单机玩法提升到了前所未有的水平，无论是难度曲线还是改版后艾泽拉斯的地图任务的故事情节，要比老版本出色太多了。<strong>单从这一点来讲，我个人就对CTM版本有着非常高的评价</strong>。况且这个版本还新加入了大量优秀动听的音乐，并重新设计了艾泽拉斯的美景，所以说只作为单机游戏看待的话，CTM无疑比之前的老版本更好玩，也更具收藏价值。</p>
+<p>接下来说一下4.3.4端普遍存在的问题。美中不足的事总是有的，因为现在CTM的端大多基于TrinityCore衍生而来，并非是Trinity官方的项目，故这方面的工作仍然不够充分。上面提到的CTM版本设计精良的任务需要复杂的脚本代码机制来实现，比起老版本简单枯燥的任务来说是好玩了不少，但也导致其修复难度较大。种种原因导致现在市面上的4.3.4版本的服务端源代码普遍没有3.3.5那么完善，这点也是不得不接受的事实。不过从这次我亲自测试的结果来看，即使有着很多bug问题，对于单机模式的游戏性来说，我仍更倾向于选择4.3.4版本。</p>
+<h3 id="客户端准备"><a href="#客户端准备" class="headerlink" title="客户端准备"></a><p align="left">客户端准备</p></h3><p>在编译工作开始之前，我建议先下载好这个服务端对应的4.3.4-15595的客户端文件，即通过下面的工具：<br>通过运行wowregeneration下载客户端Data文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/wowregeneration" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/wowregeneration</a><br>通过运行ClientDownloader下载客户端其他文件（如wow.exe等）：<a href="https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader</a><br>这里不用clone代码，直接Download ZIP，解压后就可以运行下载器。全部下完后，将Data文件夹和其他文件放在一个目录下，拼合成完整客户端。这里的完整的4.3.4-15595客户端总大小约15.6GB。</p>
+<p>以及TDB_full_434数据库信息文件（.sql文件）：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z</a></p>
+<p>本次测试不使用远程服务器，即在本地（127.0.0.1）进行测试。</p>
+<p>好了，编译工作现在开始。</p>
+<h2 id="1-Windows上的环境配置"><a href="#1-Windows上的环境配置" class="headerlink" title="1. Windows上的环境配置"></a><p align="left">1. Windows上的环境配置</p></h2><p>对于Windows系统，为了进行编译，我们需要以下工具和环境：</p>
+<blockquote>
+<p>Git-2.23<br>gitExtensions-3.4.3.9999<br>cmake 3.22.1 （版本≥ 3.18.4）<br>boost 1.73.0（版本≥ 1.73.0）<br>Win64OpenSSL 1.1.1o<br>mysql community 8.0.29 (版本≥ mysql5)<br>Navicat8 或 Navicat premium<br>当然还必须要有Visual Studio，这里选择Visual Studio Community 2019，在配置时勾选上C++开发模块即可（此模块需要数个G的空间）。</p>
+</blockquote>
+<p>简单说一下每个东西的用途：</p>
+<blockquote>
+<p>git和gitExtension用来拉取GitHub项目端的源代码到本地，这里我们用clone的方式；<br>cmake用来把源代码编译成提供给Visual Studio的工程文件；<br>Visual Studio就是所谓的“宇宙第一IDE”，集成了各种开发工具和环境。这里我们主要用它来生成构建。<br>boost是为C++标准库提供扩展的扩展库；<br>OpenSSL是一个加密工具，通过SSL协议实现传输的加密对接；<br>mysql提供服务器系统；Navicat则提供数据库的图形化管理功能。</p>
+</blockquote>
+<p>安装每个工具的过程详见：<a href="https://www.trinitycore.info/en/install/requirements/windows" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/requirements/windows</a></p>
+<p>别的基本都没什么变数，这里主要说一下MySQL 8.0的安装。这里选择mysql community 8.0.29，安装包下载地址为：<a href="https://dev.mysql.com/downloads/windows/installer/8.0.html" target="_blank" rel="noopener">https://dev.mysql.com/downloads/windows/installer/8.0.html</a> ，选择432mb大小的那个msi进行下载。安装时首先选择Custom模式，因为若不选择Custom，MySQL是默认安装到C盘的，只有选Custom才能在之后的选项中改变安装路径，产品（product）中只需要选择安装MySQL Server 8.0.24-x64即可，别的是关于数据库的开发组件，不选。然后建议点击Advanced Options，自定义一个安装目录。将Install Directory（主程序目录）和Data Directory（数据库目录）定位到不同的两个文件夹里。如果之前装过MySQL的话可能会有个叹号提示，无视即可。这里我直接使用网络上找到教程的图片：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/1.png" title="a">
+<p>然后是填入默认数据库端口。端口一般默认是3306就行，直接next。但我因为之前还装过一个老版本的MySQL为3.3.5的端提供服务（同时还集成了V079冒险岛的数据库），我就改了一个3307，最后在服务端的配置文件（.conf）中将所有数据库的端口都改成3307即可。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/2.png" title="b">
+<p>最后是输入默认数据库名、数据库密码，这里建议都填root。若自定义的话这两个一定不能忘，否则会很麻烦。MySQL的服务名是无所谓的，建议就默认的MySQL80。</p>
+<p>所以说，一个设备上安装两个MySQL版本是可行的，我这里就成功安装了两个版本的MySQL，算上冒险岛的话，已经在一台设备上集成了三个服务端。不过不推荐这样的做法，因为这样没法同时运行，两个MySQL的服务窗口和进程都是冲突的。若想运行旧版本的MySQL，则需在任务管理器&gt;服务中手动停止相关的进程（一般是mysqld），并停用相关的服务（MySQL80）。以后会想办法把旧的数据库都集成到MySQL8中。</p>
+<p>MySQL安装完成后，建议直接用Navicat尝试连接localhost_3306的数据库，能连进去就说明数据库服务在正常运行。</p>
+<h2 id="2-拉取源代码"><a href="#2-拉取源代码" class="headerlink" title="2. 拉取源代码"></a><p align="left">2. 拉取源代码</p></h2><p>用Git Extensions从<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore</a> 拉取源代码。安装Git Extensions后，右键菜单栏会多出一些栏目，我这里在C盘新建一个TRINITY 4.3.4的文件夹，在其中右键选择GitExt Clone…，可将源代码克隆到本地：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/3.png" title="c">
+<p>分支（Branch）选择需要注意，这里的branch建议选HEAD或master，因为只有4.3.4相关的内容。我这里对源代码克隆经常显示失败，通常错误是没有Github端的响应，可能是因为我的全局魔法不够厉害导致的，不过多试几次后还是成功了。</p>
+<h2 id="3-CMake生成C-方案和工程"><a href="#3-CMake生成C-方案和工程" class="headerlink" title="3. CMake生成C++方案和工程"></a><p align="left">3. CMake生成C++方案和工程</p></h2><p>先简单说一下这个CMake是干什么的，它可以从源代码生成不同平台或不同编译器需要的makefile（优化的编译方案）以及构建的工程文件。首先我们先建立一个名为Build的文件夹，如C:\Build。然后打开CMake工具（cmake-gui.exe），指定Browse Source（源码路径）和Browse Build（Build的路径，即这里的C:\Build）。然后点左下的Configure配置目标的工程平台，这里当然就选择Visual Studio 2019。下面两个不填，最后点击finish：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/4.png" title="d">
+<p>finish后，将会生成一些配置的缓存。首先检查Configuring是否成功完毕，即下方的框中是否存在Could not Found…之类的错误（如Could not Found OpenSSL、Could not Found MySQL等），如果有这类错误，说明对应的环境没有配置好，或是OpenSSL没有配置环境变量；如果黑字全部显示Found…，一般就能够成功Configuring done。在上方的红色区域，我们需要重点检查的是Tools选项是否被打勾，这个关系到是否编译出工具文件，这里必须打勾。确认Configuring和Tools都无误后，再点击一遍Configure，确认所有的目标（所有红色会消失），然后点击Generate生成构建方案：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/5.png" title="e">
+
+<h2 id="4-编译源代码"><a href="#4-编译源代码" class="headerlink" title="4. 编译源代码"></a><p align="left">4. 编译源代码</p></h2><p>Generate完成后，会有一个Open Project的按钮，点击即可从VS2019打开这个项目。也可以从C:/Trinity/Build/TrinityCore.sln的.sln文件利用VS打开这个项目（可能需要等待一小会让代码加载完毕）。从顶部的【生成】&gt;【配置管理器】中，将“活动解决方案配置”由默认的Debug模式改为RelwithDebinfo，这是一种介于Debug（调试模式）和Release（发布模式）之间的模式。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/6.png" title="f">
+<p>最后，我们在右边的 “解决方案资源管理器” 中右键ALL_BUILD（一定要点在All_build上），点击“清理”。清理完成后，再次右键，点击“生成”。这是最终的编译步骤，可能需要一小段时间（依机器配置不同），这一步我大概消耗了十几二十分钟。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/7.png" title="g">
+<p>编译完成后，先检查一下VS中输出的编译结果，即形如<code>Build: 22 succeeded, 0 failed, 0 up-to-date, 1 skipped</code>的最后一行，这里的数字不是定死的，我们只要确定没有failed的项目就行了。这样就可以在C:\build\bin\RelWithDebInfo中看到生成的文件。</p>
+<p>检查一下生成的文件，这里面.pdb文件是编译时生成的数据库文件，可以不用管。我们首先将编译出的工具移动到一个独立的位置。并保存好。这里的工具有两种，第一个是connection_patcher.exe，用来patch客户端程序；第二种则是地图数据提取工具，即mapextractor.exe、mmaps_generator.exe、vmap4assembler.exe、vmap4extractor.exe四个.exe。</p>
+<p>虽然编译已经完成，但编译结果不要删掉了，先留着，后面可能有用。</p>
+<h2 id="5-拼合完整的服务端文件"><a href="#5-拼合完整的服务端文件" class="headerlink" title="5. 拼合完整的服务端文件"></a><p align="left">5. 拼合完整的服务端文件</p></h2><p>接下来的任务就是要用这里剩下的文件拼凑出一个完整的服务端。关于Trinity服务端的文件结构，之前在《<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>》进行过描述。首先将这里的两个配置文件（worldserver.conf.dist、authserver.conf.dist / bnetserver.conf.dist或形如此类的文件）删去后缀.dist，使其变成worldserver.conf和authserver.conf / bnetserver.conf。然后将worldserver.exe、authserver/bnetserver.exe以及两个配置文件worldserver.conf、authserver/bnetserver.conf四个文件都移动到一个独立文件夹内，这个文件夹将成为服务端文件夹，文件夹名不能含汉字或特殊字符。authserver.conf和bnetserver.conf实际上作用相同，是一个东西，只是看这个源码版本里叫什么罢了。</p>
+<p>然后，在这里复制放入三个.dll文件，这些dll文件通过OpenSSL控制服务端和数据库的对接，它们是：libmysql.dll、libeay32.dll、ssleay32.dll。这三个.dll都可以从环境程序中手动复制提取：</p>
+<p>libmysql.dll位于MySQL主程序的lib目录下，如C:\Program Files\MySQL\MySQL Server 5.x\lib，复制其放入服务端文件夹；</p>
+<p>libeay32.dll和ssleay32.dll位于OpenSSL主程序根目录中，如C:\OpenSSL-Win64\或C:\OpenSSL-Win32\（取决于你安装的是32位还是64位）；这里要说的是，新版本的32位OpenSSL中这两个.dll已经被改名为libssl-1_1.dll和libcrypto-1_1.dll；在64位新版本OpenSSL中叫libssl-1_1-x64.dll、libcrypto-1_1-x64.dll。如我们之前安装的是64位的OpenSSL，这里就复制libssl-1_1-x64.dll和libcrypto-1_1-x64.dll到服务端文件夹中即可。</p>
+<h3 id="提取地图资源文件"><a href="#提取地图资源文件" class="headerlink" title="提取地图资源文件"></a><p align="left">提取地图资源文件</p></h3><p><strong>注意！这一步相当耗时，可能需要数个小时（依机器配置不同），建议留有充足的时间。</strong></p>
+<p>我们先编写一个简单的.bat，将其命名为【提取Vmaps文件.bat】：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>                    Welcome to the vmaps extractor and assembler</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> 解压时您的磁盘剩余空必须要大于<span class="number">2</span>GB, 按CTRL+C 退出</span><br><span class="line"><span class="built_in">echo</span> 按回车键开始解压 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">EXIST</span> buildings\<span class="built_in">dir</span> (<span class="built_in">ECHO</span> The buildings folder already <span class="keyword">exist</span> <span class="keyword">do</span> you want to delete it?</span><br><span class="line"><span class="built_in">echo</span> <span class="keyword">If</span> YES hit Enter to continue <span class="keyword">if</span> no CLOSE the program now! . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">DEL</span> /S /Q buildings)</span><br><span class="line">vmap4extractor.exe</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap extract tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Vmaps extracted check log.txt <span class="keyword">for</span> errors, now it's <span class="built_in">time</span> to assemble the vmaps press any key to continue . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">md</span> vmaps</span><br><span class="line">vmap4assembler.exe buildings vmaps</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap assembler tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续. . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Process done! <span class="built_in">copy</span> vmaps folder to the MaNGOS main directory</span><br><span class="line"><span class="built_in">echo</span> 按任意按钮退出 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br></pre></td></tr></table></figure>
+
+<p>然后准备提取地图资源：</p>
+<blockquote>
+<ol>
+<li>将【4. 编译源代码】中获取的工具文件即mapextractor.exe、vmap4assembler.exe、vmap4extractor.exe、mmaps_generator.exe四个.exe文件，以及【提取Vmaps文件.bat】，全部复制到下载好的纯净版wow客户端根目录下，必须全部复制，缺一不可。</li>
+<li>执行【mapextractor.exe】，解出maps、dbc、Cameras文件夹，解包完毕后退出；</li>
+<li>上一步运行完毕后，执行【提取Vmaps文件.bat】。等待运行完毕，这一步约需要30-60分钟。跑完后解出vmaps文件夹；</li>
+<li>上一步运行完毕后，执行【mmaps_generator.exe】。如果是带扩展包的wow版本，这一步将会非常非常慢，需要约一个多小时时间。最终解出mmaps文件夹；</li>
+<li>全部执行完毕后，将maps、dbc、Cameras、vmaps、mmaps文件夹全部放到我们的服务端文件夹内。在客户端通常还会生成一个叫building的文件夹，是没有用的，可以删掉。</li>
+</ol>
+</blockquote>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/8.png" title="h">
+
+<p>至此，我们已经拥有了所有服务端的文件，即在服务端文件夹下应包含：</p>
+<blockquote>
+<p>Cameras<br>dbc<br>maps<br>mmaps<br>vmaps<br>bnetserver.conf（或称作authserver）<br>bnetserver.exe（或称作authserver）<br>worldserver.conf<br>worldserver.exe<br>libmysql.dll<br>libeay32.dll（或不同的名称）<br>ssleay32.dll（或不同的名称）</p>
+</blockquote>
+<p>至少的12个项目。如图：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/9.png" title="i">
+
+<p>关于服务端最后我们需要配置的是：两个配置文件中所有需要填入数据库名、数据库端口和数据库密码的位置，否则服务端找不到MySQL数据库。如图（图中只是一部分，端口这里设为3306）：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/10.png" title="j">
+
+<p>服务端到此配置完毕。</p>
+<h2 id="6-填充TrinityCore的数据库"><a href="#6-填充TrinityCore的数据库" class="headerlink" title="6. 填充TrinityCore的数据库"></a><p align="left">6. 填充TrinityCore的数据库</p></h2><p>服务端已经配置好了，但我们现在打开Navicat连接数据库可以发现，localhost_3306下是没有什么东西的（顶多只有几个默认的数据库如information_schema等）。我们需要导入TrinityCore的数据库。TrinityCore的数据库由以下几个数据库构成：</p>
+<blockquote>
+<p>auth - 帐户数据 - 用户名、密码、GM权限、服务器域等的信息；<br>characters - 角色数据 - 创建的角色及其公会、银行、背包、任务状态等信息；<br>world - 游戏内容 - 如NPC，任务，物品等；<br>hotfixes（仅master版本使用） - 保留尚未添加到核心或其他官方数据库的修补程序。</p>
+</blockquote>
+<p>如果是3.3.5a的Trinity，是没有hotfixes数据库的。我们这里是4.3.4版本，则需要这个数据库。</p>
+<p>我们解压之前下载好的TDB_full_434数据库文件（.sql），这里是两个.sql文件：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">TDB_full_world_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br><span class="line"><span class="selector-tag">TDB_full_hotfixes_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br></pre></td></tr></table></figure>
+
+<p>分别对应world数据库和hotfixes数据库。这里我们不要从Navicat手动导入这个.sql（会慢到你怀疑人生）。先在<a href="https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql" target="_blank" rel="noopener">https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql</a> 上下载sql，在localhost中运行它，即可创建这几个空的数据库。实际上，我认为在Navicat中手动建立这四个数据库也是可以的，即使其包含有auth、characters、world、hotfixes这四个空的数据库就可以了。然后我们将TDB_full_434中解压出的两个.sql文件复制进服务端文件夹内，然后启动一次worldserver.exe，worldserver会自动发现没有内容的数据库，并填入对应的数据。不需要多长时间就可以完成。</p>
+<p>数据库中环节的最后一步，我们必须进入数据库auth下realmlist表中，将两个ip地址（address和localaddress）改为本地的127.0.0.1（如果是远程服务器的话就是服务器的公网IP地址），并确认世界服务器端口（这里通常是8085）、gamebuild（必须是15595）。有兴趣的话也可以将服务器名改为你喜欢的名字，这样在游戏中就会显示出这个自定义的服务器域（realm）名。</p>
+<h2 id="7-Patch客户端程序"><a href="#7-Patch客户端程序" class="headerlink" title="7. Patch客户端程序"></a><p align="left">7. Patch客户端程序</p></h2><p>新版本的wow由于对接了战网（Battle.net），Patch起来较为复杂。首先我们配置auth。需要获取AuthModules，即两个.auth文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/AuthModules" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/AuthModules</a> ，下载这里Windows下的x64和x86的两个.auth，然后将x64和x86两个文件分别放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache下的文件夹内，路径规则为：<strong>以.auth文件的前4个字符为参考，放入对应的路径。</strong></p>
+<blockquote>
+<p>如x64.auth文件的前4个字符为0a3a，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\0a\3a 之下；<br>x86的前4个为8f52，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\8f\52 之下。</p>
+</blockquote>
+<p>然后将【4. 编译源代码】中获得的connection_patcher.exe放入wow客户端根目录下。首先将wow.exe拖到connection_patcher.exe上，对它进行patch：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/11.png" title="k">
+<p>这里一定要注意这个黑框是否输出successully的结果，如果命令框在某一步直接闪退，则patch失败，需要重新patch。之前的auth模块如果没有配置正确的话，很可能在Patching module这一步闪退，并在客户端目录生成一个Crash文件夹。这一步我失败了很多次，后来在Discord上询问了服务端开发者本人后，发现先配置好auth后再进行patch就成功了。但他们有人表示，auth模块可以在patch过程中自行生成，但在我这里就不成功（还有另一个人也不成功）。故如果遇到类似的问题的话，首先配置好auth再进行patch，则可解决。</p>
+<p>wow.exe的patch完成后，我们再对wow-64.exe进行patch，这样一共会生成出Wow_patched.exe、Battle.net_patched.dll以及Wow-64_patched.exe、Battle-64.net_patched.dll共四个文件（两个exe、两个dll）。接下来，将原始的wow.exe、wow-64.exe、Battle.net.dll、Battle-64.net.dll四个文件以及launcher.exe都移走到其他独立目录中（或直接删除，只要你有备份的话）。移走它们后，将剩下的带_patched的四个文件改名回原来的样子（即删掉名称中的_patched，如将Battle.net_patched.dll改为Battle.net.dll），完成“狸猫换太子”的步骤。</p>
+<p>这一步仍有问题的可参考项目端给出的troubleshooting：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting</a></p>
+<p>其他启动客户端时的奇怪问题（如“无法传输所需的压缩数据”等）可能与WoW.mfil文件有关，这点可参考之前的文章。</p>
+<h2 id="8-启动"><a href="#8-启动" class="headerlink" title="8. 启动"></a><p align="left">8. 启动</p></h2><p>这样，一切都配置完成了。我们先运行bnetserver.exe和worldserver.exe，正常运行后，启动客户端的wow.exe或wow-64.exe，看看是否能正常进入登陆页面。万事俱备只欠东风，我们似乎还没有注册账号。我们自己编译的服务端由于没有单独制作注册页面，需要手动从worldserver控制台中用服务端命令注册账号，也就是我们打开的worldserver.exe的框。这里简述一下worldserver中与创建账号相关的基础命令：</p>
+<blockquote>
+<p><strong>Trinitycore worldserver控制台基础命令（账户相关）:</strong><br>创建普通账号：account create <user> <password><br>例如：account create admin admin。这样就创建了一个用户名为admin，密码为admin的普通账号<br>注意：普通账号只适用于Trinity 3.3.5（WLK）及其之前版本的Trinitycore中，之后的版本（即master，如4.3.4）必须使用<strong>战网邮箱账号</strong>登录，普通账号几乎已经不起作用。<br>创建战网邮箱账号： bnet create &lt;user@xxxx&gt; <password><br>例如：bnet create admin<span></span>@qq.com admin。这样就创建了一个用户名为admin<span></span>@qq.com，密码为admin的战网邮箱账号。<br>该账号适用于需要战网邮箱账号登录的Trinitycore版本。在创建成功后，数据库auth下的account中将会生成该账号的username，通常形如2#1、3#1。<br>给予账号GM权限：从数据库查看账号的username（形如2#1、3#1的）。如这里要将ID为3#1的账号调整为GM最高权限：<br>account set gmlevel 3#1 3 -1<br>这里的3是指GM的权限等级，3是最高权限，拥有删除普通账号、以及关闭服务器的权力。-1则是指将该账号下的全部服务器都给予该权限。</password></password></user></p>
+</blockquote>
+<p>我们这里<strong>只需要注册战网邮箱账号</strong>。注册好后，输入邮箱和密码即可连接了。若显示“无法连接至服务器”大概率是由于patch失败导致的。然后要想玩的顺利的话，强烈建议认真阅读一下worldserver.conf中的每条内容，尝试理解它们是在控制哪些因素。比如很多人都遇到的一个问题，即GM命令中的.kill不起作用，且.die命令无法拾取战利品，怎么办？这是因为TrinityCore和Mangos不同，需要在worldserver.conf中搜索条目.die，找到<code>Die.Command.Mode = 1</code>，将其值改成0，即可在.die命令时获取战利品。另外如果发现vmaps不生效，通常也是由于worldserver.conf中没有启用vmaps、mmaps（其值为0），将其启用即可。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/12.png" title="l">
+<img src="/2022/05/24/Windows环境下编译TrinityCore/13.png" title="m">
+<p><strong><center>“我重回战场！”</center></strong></p>
+<hr>
+<h2 id="有趣的故事"><a href="#有趣的故事" class="headerlink" title="有趣的故事"></a><p align="left">有趣的故事</p></h2><p>还得感谢这位叫funjoker的服务端开发者耐心地为我和另一个法国老哥（遇到了同样的问题）解决有关客户端patch的问题，最后，我们都成功解决了，给那个法国哥们开心的说了一大串法语（真地看不懂），funjoker和另一个开发者还打趣地说guess why i am bald，xDDD</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/14.png" title="n">
+<p>最后的最后是一个有意思的东西，因为在之前的《魔兽世界日记》中了解到了“程序员岛（ProgrammerIsle）”的存在，我尝试传送“程序员岛”，这个GM命令是<code>.go xyz 16304 16318 69 451</code>，即约翰·斯塔茨在书中所说的坐标16000,16000（之后我也许会单独开一个文章讲Trinity端的GM命令）。结果…账号直接崩溃了，因为服务端无法加载“程序员岛”对应的地图资源：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/15.png" title="o">
+<p>这导致这个角色再也无法正常登录，因为角色已经传送，一登陆就要立即加载“程序员岛”，则又会导致崩溃，进入死循环。所以不得不从Navicat中修改了角色的坐标位置到正常地带，这才将角色救回来…</p>
+<p>451这个地图（即Development Land，台版似乎译为“開發之地”），应该是早已不存在于现有的服务端了，故无法加载。所以这次我也更深入地了解了一下wow的地图结构，每个编号都是一个空间，可以理解为一个位面下。0是东部王国，1是卡利姆多，故有大量的地图带有0和1。而外域的位面号为530，任何TBC版本的地图都位于这个位面下。通过GM的飞行权限以及一些其他手段，我们可以实现从外域直接“飞到”奎尔丹纳斯岛或者秘蓝岛，而不经过黑暗之门，这是因为它们都处在同一位面下。奎岛究竟在外域的哪个方向呢？答案是大约在东北方向，远在地图界面的可视范围之外（约6000个坐标单位）；而秘蓝岛则在更加遥远的东方，大概在外域地狱火半岛的10000个坐标单位之外。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/16.jpg" title="p">
+<img src="/2022/05/24/Windows环境下编译TrinityCore/17.jpg" title="q">
+<center>GM岛的真正位置，其位于卡利姆多（即位面1）的最西北角</center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            MySQL命令行连接指定端口、以及修改数据库密码
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/05/17/hexo中插入本地pdf文档/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">hexo中插入本地pdf文档</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

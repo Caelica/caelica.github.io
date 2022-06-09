@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>简单的手动批量下载网页图片的方法 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-简单的手动批量下载网页图片的方法"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  简单的手动批量下载网页图片的方法
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/04/09/简单的手动批量下载网页图片的方法/" class="article-date">
+  <time datetime="2021-04-09T13:13:40.000Z" itemprop="datePublished">2021-04-09</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">5 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
+</blockquote>
+<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville 1777），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
+<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔1777（Charleville 1777）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
+<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
+<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
+<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
+<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
+<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
+<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
+<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
+<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
+<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
+<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
+<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
+
+<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            Flash被各大浏览器彻底停用后的处理办法
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/02/28/配置了SSH后仍然需要输密码的情况/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">配置了SSH后仍然需要输密码的情况</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

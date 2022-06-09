@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>云服务器搭建游戏服务端实战 |  Videre☆Invisibilia</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="Videre☆Invisibilia" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-云服务器搭建游戏服务器实战"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  云服务器搭建游戏服务端实战
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/09/01/云服务器搭建游戏服务器实战/" class="article-date">
+  <time datetime="2021-09-01T03:40:45.000Z" itemprop="datePublished">2021-09-01</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">6.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">23 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>在云服务器上实现了冒险岛V079和魔兽世界1.12的公网开服，并和朋友成功进行联机游玩。<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;最近和朋友商讨中提出了将网游单机版（其实本质上是将服务端架设在本地以服务本机）的服务端架设到云服务器上，以实现不同地区联机游戏的设想，相当于公网开服。虽然我和朋友都没有类似的经验，但以前买过Vultur的VPS做过一点V2Ray也算是初步了解了一点类似的东西，经过近一周的尝试后在冒险岛V079和魔兽世界1.12都成功开服，虽然服务端都是取自别人现成做好的，但搭建期间各种数据库、源码、环境问题也是搞的我们这群小白头疼不已，不过好在最终还是将问题一一攻克，看着我和小伙伴们在自己的世界里聊天做任务修bug，还是挺开心的。</p>
+<p>&emsp;&emsp;本文就解释一下开服需要做哪些工作，我力求让本文具有实战操作性，目的是即使读者是像我一样从来没有接触过类似的东西的小白也能够搭建起自己喜爱游戏的私人服务器，和朋友联机玩，不过不同游戏的不同服务器搭建过程中的细节实在是太多，没法每条都写那么细，所以我认为关键还是掌握原理，因为有了冒险岛开服的经验，魔兽世界1.12的开服我基本是在没有教程的情况下自己就摸索出来了。另外还是得说，这种私服只能用来学习研究，切不可商用哦。</p>
+<hr>
+<p>&emsp;&emsp;提前先说一下，要想和朋友开服联机除了租服务器以外还有一个似乎更简单一点的办法，就是把你自己的电脑当成服务端运行，这大概率需要用到“内网穿透”功能，不过把自己的电脑当服务器的弊端也很明显，就是你的电脑必须要像商业服务器一样24/7连续运行，关机就相当于关服，这是很不方便的，而且还可能涉及到端口映射等操作，故本文只讨论租商业服务器+配置服务端的标准玩法，简单模拟商业级实战价值。</p>
+<p>&emsp;&emsp;其次另一个重要的问题就是选好你想做的游戏，一定要是你非常熟悉且了解的游戏，这样在后续调试和游玩中才有内容可言，而且不同游戏的私服也不太一样。一般来说，私人服务器比较普遍的应该是我的世界（Minecraft）、饥荒（Don’t Starve Together）、泰拉瑞亚（Terraria）等等独立游戏，这种独立游戏的为了让玩家们实现联机功能，一般都是官方直接给出服务端，故相对来说比较容易，网上的教程也很多。而如魔兽、冒险岛、传奇私服这些MMORPG类型的游戏则只能用非官方渠道的服务端，很多都经过不知几手的修改，相对来说更不稳定，不过可DIY的性能也大大加强，并且MMORPG本身体量远大于独立游戏，数据结构极其复杂，实属一个大坑，所以这次上来就弄MMO还是有点挑战性的，冒险岛V079和魔兽世界1.12均属于历史经典版本，我们在网上能找到很多基于这些版本的私服。这次主要以冒险岛（Maplestory）的V079版本为例。</p>
+<p>&emsp;&emsp;首先我建议先找服务端，找到一个开源能用的服务端不是很容易的事，但仍然能从网上找到一些可用的端。如魔兽世界（World of Warcraft）的私人服务端基本都是基于一个叫MaNGOS（或称芒果）的开源项目发展而来，冒险岛的中文服务端基本都是野生的，用一些网盘搜索工具就能够找到一些简单能用的端，带教程的最好。不同服务端的配置方式一般都很不一样，但原理上都大同小异，这里建议找适合Windows系统的端。如果你下载好了，基本这些端里面都带着一些好用的环境组件安装包如数据库、源码编译等。客户端当然也是必须得有，这个一般不难弄，只要找到一个纯净原版的客户端基本都是能用的。如果找到了客户端建议直接安装到本地机器上，因为我们后面还要提取一些客户端的文件。</p>
+<p>总的来说，搭建MMO类网游服务端绕不开以下几个关键内容：</p>
+<h4 id="一-拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。"><a href="#一-拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。" class="headerlink" title="一. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。"></a><p align="left">一. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。</p></h4><p>&emsp;&emsp;本次使用阿里云作为云服务器，新用户可获得一个月的免费试用期。并且还要实现与服务器之间快速交换大型资源。</p>
+<h4 id="二-服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。"><a href="#二-服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。" class="headerlink" title="二. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。"></a><p align="left">二. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。</p></h4><p>&emsp;&emsp;很多服务端（不止游戏）直接是基于linux（Ubuntu、CentOS等）系统运作的，需要很特殊的条件。我这次搭建的服务端均选用Windows环境（系统为Windows Server 2019，和Win10很相似），上手比较容易，但就算是Windows下也需要配置一些环境，如目前在市面上能找到的冒险岛服务端基本都是Java写的，则需要安装Java对应的环境。数据库的话也是当然要有的了，游戏里的一切数据都保存在一个数据库里，这里一般情况下都使用MySQL数据库。数据库管理软件使用Navicat 8.2 for MySQL，简称Navicat。也有使用SQLyog、phpMyAdmin等的，大同小异，建议就用Navicat，用起来还是挺方便的。</p>
+<h4 id="三-服务端配置具体文件和信息，以实现和数据库的对接。"><a href="#三-服务端配置具体文件和信息，以实现和数据库的对接。" class="headerlink" title="三. 服务端配置具体文件和信息，以实现和数据库的对接。"></a><p align="left">三. 服务端配置具体文件和信息，以实现和数据库的对接。</p></h4><p>&emsp;&emsp;MMO其实有一部分游戏内容是保存在服务端里的，具体原因下面会提到，需要将这些文件解进服务端内。而和数据库对接则需要在服务端设置好数据库的名称、密码、端口以及公网IP地址等信息。</p>
+<h4 id="四-调整客户端，开服游玩。"><a href="#四-调整客户端，开服游玩。" class="headerlink" title="四. 调整客户端，开服游玩。"></a><p align="left">四. 调整客户端，开服游玩。</p></h4><p>本文就基于以上四点具体展开解释：</p>
+<hr>
+<h3 id="一-服务器选择和配置"><a href="#一-服务器选择和配置" class="headerlink" title="一.服务器选择和配置"></a>一.服务器选择和配置</h3><p>&emsp;&emsp;本次使用的阿里云服务器属于ECS(Elastic Compute Service)，直译过来叫弹性计算服务，一般通称云服务器或云主机，它比VPS（Virtual Private Server）的操作空间更多。国内基本只有阿里云和腾讯云这两家比较合适，阿里云使用支付宝就能注册，阿里云的1核2G内存的ECS目前得要大概70块左右一个月（跟魔兽月卡也差不多嘛…），腾讯云也差不多是这个价钱，好像还贵一点。不过新注册用户可以有机会获得一个月的免费试用期，我们就用这个试用期来白嫖练手，当然免费试用的都是些感觉快要报废的垃圾机子，不过跑一个十几年前的网游负载十来个用户肯定是没啥问题的，除非你打算拉几十上百个人进来一块玩。腾讯云可以选择据说也有15天的免费期。阿里云目前的免费服务器需要每天早上10点抢资格，我试了一下不是很难抢，应该只是个噱头，这里我们就选一款免费1个月的ECS的试用，阿里云的政策可能会随着时间变化，总之这次的配置是1核2G内存40G硬盘，如下图所示：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/1.png" title="a">
+<p>创建时建议直接把系统选成Windows Server 2019 x64，服务器地址无所谓，创建好实例以后在ECS界面中是这样：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/2.png" title="b">
+<p>图上需要配置的有4点：</p>
+<ol>
+<li><p>修改实例名，这个必须改，默认的实例名太长会导致不能远程桌面连接。</p>
+</li>
+<li><p>更换操作系统，如果创建时选了别的，这里就把操作系统换成Windows Server 2019 x64，换系统得先点右上方的停止先关掉实例才能点这个按钮。</p>
+</li>
+<li><p>公网IP，这个就是服务器的地址，十分重要，建议复制下来抄到本地。这里顺便解释一下公网IP是什么东西，这里所称的公网指的是广域网（Wide Area Network，WAN），通常又称公网、外网，这个外网和魔法上网那个外网不是一回事，它是和局域网（Local Area Network，LAN）相对的概念，这个问题归根结底是因为IPv4不够用导致的，IPv4形如255.255.255.255理论上最多只有255^4个地址，这个数目大概是42亿，为了解决不够用的问题，很多网络运营商采用NAT（Network Address Translation，网络地址转换）方式，将一个公网IP映射给多个用户，而这些用户均使用局域网IP，这样就节约了IP资源。但我们要建服务器的话，就必须要有一个公网IP地址，不然别人是找不到你的地址的。很形象的例子就是局域网IP相当于酒店的305房间号，公网IP相当于酒店的地址，要想让其他地区的用户联系到你则必须告诉他酒店地址，而不是305房间号，因为每个酒店可能都有一个305房间。</p>
+<p> 想直接获得公网IP可以尝试打电话给运营商要，不过现在如果你是移动或者广电的用户基本是搞不到的，电信的话好像听说可以。不走运营商的话也有办法，就是上面说到的那个内网穿透就是干这个事的，不过我们这里直接拥有了阿里云的云服务器，自带了公网IP地址，也就解决了这个问题。</p>
+</li>
+<li><p>远程连接。上面的都做完了就可以尝试点一下远程连接，大概率能进到服务器的Windows桌面上去。现在考虑怎么把本机的东西上传到服务器上。</p>
+<p> 有一种方法是可以通过Win10自带的远程桌面连接云服务器，这种办法的好处就是不用再登录网页端的阿里云账号了，管理起来比较便捷，然后再通过共享文件就能直接把本地的文件复制进去。但是经过我操作发现不是很容易，因为MMO类型的网游的很多运算工作是直接在服务端完成的，服务端自身就会拥有相当一部分的游戏内容，一般都是地图、模组、怪物AI、音乐等，服务端运算可以有效防止用户自行修改客户端造成的问题，所以网游的服务端都不会太小，其中必然拥有一些大型文件，通过文件共享来向这个服务器传输超过100MB的文件属实困难，基本必定出现内存不足而卡死，可能是由于免费服务器自身质量问题导致的。</p>
+<p> 而且还有一个很麻烦的问题是，Win10虽然自带了远程桌面功能，但并不是所有Win10的版本都开启了这个功能，家庭版直接封锁了它。解除封锁的具体操作也有点麻烦，可参考本blog之前的文章：<a href="https://caelica.github.io/2021/09/01/Win10%E5%AE%B6%E5%BA%AD%E7%89%88%E5%90%AF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2and%E5%90%AF%E7%94%A8%E7%BB%84%E7%AD%96%E7%95%A5/"><font color="blue">Win10家庭版启用远程桌面&amp;启用组策略</font></a>。</p>
+</li>
+</ol>
+<p>&emsp;&emsp;所以经过尝试我发现百度网盘还是比较方便，因为服务器的下载功能没啥大毛病，只要能够下载到一个百度网盘客户端，基本就可以用百度网盘来进行文件中转了，阿里云服务器本身的IE下载权限管理的比较死，下载东西需要开一些权限，在服务器管理界面（仪表板）&gt;左边窗格切换至【本地服务器】，在右边【内容】中，选择【IE增强的安全配置】-&gt;配置界面上的2个选项都设置为禁用-&gt;确定</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/3.png" title="c">
+<p>&emsp;&emsp;喜欢远程桌面的也可以去捣鼓一下远程桌面，进去了都一个样，服务器的远程桌面开关也在上面这个控制页面里。</p>
+<p>&emsp;&emsp;基本到这里这个服务器就locked and loaded了，我们可以开始向其中添加自己的东西，服务器可以不关机，反正是免费的东西不要怕放开整。以下提到的组件安装包等均默认是在互联网上下载的，若上面下载的服务端自己带了这些组件的安装包也可以直接复制到服务器使用。</p>
+<hr>
+<h3 id="二-运行环境以及数据库"><a href="#二-运行环境以及数据库" class="headerlink" title="二.运行环境以及数据库"></a>二.运行环境以及数据库</h3><p>&emsp;&emsp;冒险岛作为一个老游戏其服务端模拟器写成的时间也相对来说比较早，这里我们给服务器安装64位Java1.7（Java1.7叫Java7，类似的如Java8实际上是Java1.8），也就是jdk-7u80-windows-x64这个文件，网上也是能下到这种老版本的，我这里其实直接使用了安装包里自带的文件，因为我发现Java1.8就已经开始不能读取一些服务端的JavaScript了，会报错。Java默认安装到了C盘的C:\Program Files\Java 中（服务器也只有一个C盘），在这个目录可以看到两个文件夹，jdk1.7.0_80 和 jre7，是Java开发工具包和运行环境。安装完成后运行&gt;cmd输入<code>java -version</code>，如果出现了版本号则说明安装成功。</p>
+<p>&emsp;&emsp;接下来安装数据库，这里安装MySQL数据库，建议安装5.5版本的，又稳定又简单。安装中选Custum模式，端口默认的3306并勾选Add firewall exception for this port，关键的是下一步的数据库编码必须选择gb2312，不然中文会乱码:</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/4.png" title="d">
+<p>&emsp;&emsp;服务名选MySQL5，数据库root用户名和密码均写成root，当然密码也可以自定义，不过密码忘了很难办而且后面还得改服务端配置文件里的密码，这里就建议root。最后点Execute安装。</p>
+<p>&emsp;&emsp;MySQL安装完毕后进 任务管理器&gt;服务 检查一下服务名为MySQL5的服务是不是正在运行，再到进程里看是不是有一个Mysqld.exe的进程在运行，都有则说明完成。</p>
+<p>&emsp;&emsp;接下来安装数据库管理工具Navicat8，安装完成后点连接，直接连接默认的localhost_3306，密码填刚才设定好的root：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/5.png" title="e">
+<p>&emsp;&emsp;可以看到localhost_3306里已经有了几个固定的数据库，这里我们需要再新建一个或多个，右键连接&gt;创建新的数据库 可新建一个，当然也可以删掉，不过系统自带的那几个数据库不要删了就行。</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/6.png" title="f">
+
+<p>&emsp;&emsp;最关键的来了，导入初始数据库数据。说白了要的就是这个东西，它一般都在下载的服务端里自己配套的有的，不过数据库文件的保存形式有很多种，最常见的是.sql脚本文件，还有.db甚至是.xml等，也有可能是一个别人做好的后缀为.psc的数据库备份。冒险岛的服务端一般只有一个数据库，我们新建一个，数据库名可以自定义，这里示例为thisisadatabase，字符集也可以不管因为可以改。如果是.sql文件的话，右键自己建的数据库&gt;运行SQL文件 则可导入.sql文件的内容，然后在表上右键刷新即可看到导入后的内容。如果是.psc数据库备份文件的话，先选中数据库中的【备份】，再点击上方的恢复备份，给定路径导入一个.psc备份，导入完成后刷新即可看到数据库，这些数据表都是可以修改的，我们在之后的游戏中即可修改对应的栏目（如用户、角色数据等），以自定义我们的游戏数据。这里演示了如何使用.psc导入数据库信息：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/7.png" title="g">
+<p>&emsp;&emsp;同理数据能导入也一定能作导出。创建新备份则直接点【创建备份】即可创建当前的数据库备份，创建的备份被默认保存在了我的文档里，即C:\Users\设备用户名\Documents\Navicat\MySQL\servers\localhost_3306\ 下，为.psc格式，可将其复制到别的地方作保存。也可以保存为.sql格式，右键&gt;转储SQL文件即可将数据库保存为.sql文件。</p>
+<hr>
+<h3 id="三-配置服务端文件"><a href="#三-配置服务端文件" class="headerlink" title="三.配置服务端文件"></a>三.配置服务端文件</h3><p>&emsp;&emsp;以冒险岛为例，诸如地图、模组、怪物AI、音乐等文件均是以.wz的格式保存的（如Character.wz, Mob.wz等等），我们需要一个叫 HaRepacker.exe 的wz文件修改工具，选择【导出为私服所需XML】，目标选择客户端的所有.wz文件，导出后将这些文件保存在一个名为wz的文件夹中，并将这个文件夹放到服务端的根目录里。</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/8.png" title="h">
+<p>&emsp;&emsp;服务端配置一般都会有一个.ini或.info文件，在里面的对应地方填入数据库名（就是上面自定义的数据库名）、确认数据库用户（user）和密码（password）是否正确，如果没有自定义的话应该都是root。最关键的是配置文件中的IP地址，这个IP在没修改前往往是127.0.0.1，即本机回环地址，等于就是自己。如果这个服务端本身在本地运行，而地址设为127.0.0.1的话，再把客户端的目标IP改为127.0.0.1，你会发现客户端是能连进去玩的，这实际上构成了一个单机版网游，所以就像一开始说的，单机版网游结构的本质其实就是服务端架设在本机上并指向本机。但我们想要这个服务端能够给不同地区的小伙伴都提供服务，则需要将服务端放在服务器上，并将这个IP改为这个云服务器的公网IP，公网IP我们已经获得了，直接填进去就行。</p>
+<p>&emsp;&emsp;冒险岛的服务端要想正常运行一般还得替换服务器C盘的Java环境，以及编译一个源码凭据至于服务端文件夹内，这点上来源不同的端操作也不同，在下载的服务端里一般都会有具体指示。</p>
+<p>&emsp;&emsp;如果一切都配置完成，则开启服务端，如果报错了首先记录下报错信息，看看哪一步出问题的可能性比较大，有针对性地检查并解决问题。</p>
+<p>&emsp;&emsp;如果弄好了则记录下服务端所使用的端口，它们一般类似于：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">数据库端口：	<span class="number">3306</span></span><br><span class="line">登录端口：	<span class="number">9595</span></span><br><span class="line">频道端口：	<span class="number">7575</span><span class="number">-7578</span>  	<span class="comment">//五六七八共四个频道（Channel），对应游戏中的1234线</span></span><br><span class="line">商城端口：	<span class="number">8600</span>		<span class="comment">//冒险岛商城使用一个独立的端口</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;同样也需要关注一下我们的服务器实例的安全策略是否允许这些端口的上下行，以及服务器的Windows系统是否开启了防火墙，这些都有可能导致登陆失败。</p>
+<hr>
+<h3 id="四-调整客户端"><a href="#四-调整客户端" class="headerlink" title="四.调整客户端"></a>四.调整客户端</h3><p>&emsp;&emsp;服务器弄好了就可以说是万事具备，对于冒险岛的话，首先得让客户端绕过一个叫HackShield（以下简称HS）的反外挂程序，冒险岛当年的外挂也是挺出名的，故这个HS的作用就是联网比对客户端和服务端的一些信息是否一致，以防止用户通过第三方程序私自修改客户端。我们现在的客户端早就过期十几年了，HS自然会卡住不动。所以这里需要一个叫“Win10强力过HS补丁”的经过某大神修改过的HS对冒险岛原本的HS进行替换，HS位于客户端根目录的“HShield”文件夹中，将整个文件夹替换即可，并且还需要手动修改一下路径才能生效：打开HShield文件夹，找到ehsvc.ini配置文件，打开后修改里面的文件存放路径，把maplestory.exe这个文件的存放路径改成你自己的后保存即可。这个“强力过HS补丁”在网上并不难找，而且一般下载的服务端内也都自带的有。</p>
+<p>&emsp;&emsp;第二步是给客户端定位我们的服务器地址，方法是在客户端根目录新建一个.bat，内容为<code>MapleStory.exe 000.000.000.000 9595</code>，四个000换成你的公网IP地址，9595是一般的冒险岛服务端的登录端口，若服务端给出的登陆端口不是9595则需要改成对应的。修改好保存这个bat，可以将该bat重命名为【登陆器】。以后都不要点客户端里的MapleStory.exe或者Patcher.exe这些了，有可能触发自动更新或者别的问题。</p>
+<p>&emsp;&emsp;别着急，还需修改MapleStory.exe的兼容性，否则会在启动时弹一个error的错误框。兼容性设为WinXP SP3，管理员权限打勾：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/9.png" title="i">
+<p>&emsp;&emsp;运行【登陆器.bat】进入游戏，若进入大区界面则说明过HS成功，此时点击“风之大陆”，若弹出“系统错误，无法连接”则说明服务端没有配置好，检查一下服务端文件的IP是否已经配置为公网IP。第一次弄估计大概率是进不去…总之这玩意还是挺费事的，不过弄好了也是真的开心。</p>
+<p>&emsp;&emsp;如果进入了输入账号密码的页面，基本就算是成功了。不同的服务端都有自行注册账号密码的方法，自己搞一个账号进去测试一下。保持服务端程序的运行就可以关掉远程连接的窗口了，让服务端自己跑去。这下可以体验一把服务器管理员的感觉，只要有需要打开远程连接看一下服务端程序正不正常就行了。</p>
+<hr>
+<h3 id="还没完（玩）呢！"><a href="#还没完（玩）呢！" class="headerlink" title="还没完（玩）呢！"></a>还没完（玩）呢！</h3><p>&emsp;&emsp;现在我们玩的内容就不局限于打怪升级了，可以尝试在服务器上修改数据库（某些东西不能热修，建议先关掉服务端），以实现自定义我们的角色。冒险岛这个游戏属实是音乐画面一流而游戏性拉跨的典型，玩了几年才六十多级，小时候为了刷冒险岛不知道挨了家人多少“教育”，通过自定义角色我总算是实现了小时候的“龙骑梦”，而且既然我们是公网开服当然要叫小伙伴来玩了，最后也和朋友一起成功四转（四转的技能任务也真的变态，是人做的么…）。想要更加深入地DIY这种MMORPG游戏并不是一件简单的事，尤其是像魔兽世界这样一个当年的世界第一，数据库极其庞大且复杂，深入研究魔兽世界的数据库那估计又得是另一个故事了…不过这些端也多多少少有些BUG，冒险岛的问题尤其多，动不动就掉线卡号，不过话说当年盛大开的官服也是动不动掉线卡号，可能是跟游戏本身有关系。</p>
+<p>&emsp;&emsp;开个玩笑，因为最近刚好出了个事，新闻版署发布了《关于进一步严格管理切实防止未成年人沉迷网络游戏的通知》，要求网络游戏供应商只能让未成年人在周末每天晚上玩一个小时游戏，中小学生们都哭了，那我可建议小朋友们都来学学怎么弄ECS开私服，只要搞得到服务器，你自己就是麻花疼了！要问小学生怎么供得起云服务器？不是有免费一个月嘛，凑齐一个班不就能白嫖几年了吗哇哈哈哈…</p>
+<p>&emsp;&emsp;最后感谢PercySu、仓鼠以及各路沙雕网友提供相关的技术帮助，以及八尾旅人同学参与服务器测试（其实就是陪我玩！）</p>
+<p>放两个玩的时候截的图：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/10.png" title="j">
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/11.png" title="k">
+
+<hr>
+<p>经过调整将魔兽世界1.12和冒险岛V079的数据库整合到了一块，这样可以同时在服务器上开启两个游戏的服务端。</p>
+<p>同时因为终于没有点卡问题拦路，尝试了一下五开，用世界同步器实现“五火球神教”。使用风铃世界同步器V2.1共享版，但目前还不知道怎么做到同步交接任务，五个角色之间的配合也不是很理想，可能是同步器太垃圾，或者没找到付费版的原因。</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/12.jpg" title="l">
+
+<p>调整过程中发现一个MySQL的问题：有时候localhost_3306会连不上，报出以下错误：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/13.png" title="m">
+<p>可能是由于数据库服务（Mysql或Mysqld）冲突导致的，有可能是因为运行了多个MySQL程序，通常右键断线数据库再连接即可解决这个问题。</p>
+<p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/09/14/解决Xshell6强制更新的问题/" class="article-nav-link">
+        <strong class="article-nav-caption">PrevText</strong>
+        <div class="article-nav-title">
+          
+            解决Xshell6强制更新的问题
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/09/01/Win10家庭版启用远程桌面and启用组策略/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">Win10家庭版启用远程桌面&amp;启用组策略</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="Videre☆Invisibilia"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="300" height="52"
+        src="//music.163.com/outchain/player?type=3&id=2063076946&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 30px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>
