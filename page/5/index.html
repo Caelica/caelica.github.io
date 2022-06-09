@@ -11,8 +11,9 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title> Videre☆Invisibilia</title>
+      <title>Vede✨Invi</title>
   <meta name="generator" content="hexo-theme-ayer">
+
       
       <link rel="shortcut icon" href="/images/favicon.ico" />
        <link rel="stylesheet" href="/dist/main.css">
@@ -52,13 +53,13 @@
     
   <div class="cover-frame">
     <div class="bg-box">
-      <img src="/images/cover2.jpg" alt="image frame" />
+      <img src="/images/cover1.png" alt="image frame" />
     </div>
     <div class="cover-inner text-center text-white">
       <h1><a href="/">Videre☆Invisibilia</a></h1>
       <div id="subtitle-box">
         
-          <span id="subtitle">Land where flowers grow.</span>
+        <span id="subtitle"></span>
         
       </div>
       <div>
@@ -73,9 +74,26 @@
 
 
 
+<script src="https://cdn.staticfile.org/typed.js/2.0.12/typed.min.js"></script>
+
 
 <!-- Subtitle -->
 
+  <script>
+    try {
+      var typed = new Typed("#subtitle", {
+        strings: ['Once upon a time there was light.', '', ''],
+        startDelay: 0,
+        typeSpeed: 80,
+        loop: true,
+        backSpeed: 80,
+        showCursor: true
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  </script>
+  
 <div id="main">
   <section class="outer">
   
@@ -272,11 +290,11 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/">分类</a>
+      <a class="nav-item-link" href="/tags">标签</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/links">链接</a>
+      <a class="nav-item-link" href="/friends">链接</a>
     </li>
     
     <li class="nav-item">
@@ -288,6 +306,10 @@
 <nav class="navbar navbar-bottom">
   <ul class="nav">
     <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
       
       
       <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">

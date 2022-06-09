@@ -187,7 +187,7 @@ body, html {
 
 body {
     position: relative;
-    background-color: #EBEBEB;
+    background-color: #f2f2f2;
     font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,微软雅黑,Arial,sans-serif;
     font-size: 1.4rem;
     line-height: 1.7;
@@ -671,7 +671,7 @@ button {
             margin-right: .5rem;
             display: inline-block;
             vertical-align: middle;
-            color: #5d5a5a
+            color: #614444
         }
 
         .tag-list > .tag-list-item .tag-list-link {
@@ -683,7 +683,7 @@ button {
             padding: 0 15px;
             font-size: 1.5rem;
             border-radius: 15px;
-            background-color: #5d5a5a;
+            background-color: #614444;
             color: #fff;
             box-shadow: 0 3px 5px rgba(0,0,0,.12);
             transition: .2s
@@ -960,7 +960,7 @@ button {
     }
 
         .article .sea-center:after {
-            border-bottom: 2px dashed #cc3333;
+            border-bottom: 2px dashed #914444;
             content: "";
             width: 100px;
             display: block;
@@ -1115,7 +1115,7 @@ button {
 }
 
     .article-tag-list:before {
-        color: #5d5a5a;
+        color: #614444;
         content: "\eec3";
         font-family: remixicon;
         margin-right: .5rem
@@ -1137,7 +1137,7 @@ button {
         padding: 0 8px;
         position: relative;
         border-radius: 9px;
-        background-color: #5d5a5a
+        background-color: #614444
     }
 
 .article-comment-link {
@@ -2507,11 +2507,11 @@ pre .css ~ * .id, pre .id {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-size: 17px;
+        font-size: 20px;
         text-decoration: none;
-        background-color: rgba(6,129,208,.1);
+        background-color: rgba(45,0,0,.2);
         color: #000;
-        border-radius: 6px;
+        border-radius: 50px;
         margin-right: 20px;
         margin-bottom: 20px
     }
@@ -2520,7 +2520,7 @@ pre .css ~ * .id, pre .id {
             display: inline-block;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: none;
             margin-right: 10px
         }
 
@@ -2531,7 +2531,7 @@ pre .css ~ * .id, pre .id {
         }
 
         #friends_link .friends_li a:hover {
-            background-color: rgba(6,129,208,.15)
+            background-color: rgba(45,0,0,.5)
         }
 
 .ads {
@@ -2574,14 +2574,14 @@ pre .css ~ * .id, pre .id {
         .navbar .nav .nav-item-link {
             display: block;
             padding: 1rem;
-            color: #cfcfcf;
+            color: #eeeeee;
             text-decoration: none;
             cursor: pointer
         }
 
             .navbar .nav .nav-item-link:hover {
                 opacity: .8;
-                background-color: #473737
+                background-color: #332929
             }
 
         .navbar .nav.nav-main {
