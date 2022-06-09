@@ -716,7 +716,7 @@ button {
 
 .cover-inner {
     position: absolute;
-    top: 70%;
+    top: 75%;
     left: 50%;
     transform: translate(-50%,-100%)
 }
@@ -742,7 +742,7 @@ button {
     }
 
     .cover-inner, .cover-inner a {
-        color: #fff;
+        color: #fdf8ff;
         text-decoration: none
     }
 

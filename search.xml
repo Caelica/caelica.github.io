@@ -44,44 +44,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Flash被各大浏览器彻底停用后的处理办法</title>
-    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
-</blockquote>
-<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
-<center>按钮彻底消失了</center>
-
-<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
-<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
-<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
-<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
-<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
-<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
-<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
-<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
-<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
-<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
-<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
-<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
-<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
-<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
-<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
-<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
-<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
-<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
     <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -125,15 +87,6 @@
       </tags>
   </entry>
   <entry>
-    <title>This is for the Record</title>
-    <url>/2022/04/17/This-is-for-the-Record/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
-</blockquote>
-<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
-]]></content>
-  </entry>
-  <entry>
     <title>Steam社区里利用高仿网站钓鱼的骗术</title>
     <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -161,6 +114,53 @@
       <tags>
         <tag>游戏</tag>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>This is for the Record</title>
+    <url>/2022/04/17/This-is-for-the-Record/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
+</blockquote>
+<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Flash被各大浏览器彻底停用后的处理办法</title>
+    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
+</blockquote>
+<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
+<center>按钮彻底消失了</center>
+
+<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
+<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
+<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
+<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
+<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
+<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
+<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
+<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
+<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
+<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
+<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
+<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
+<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
+<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
+<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
+<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
+<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
+<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -214,44 +214,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Y7000P更换散热模组</title>
-    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
-<p>话不多说了，开搞。</p>
-<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
-<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
-<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
-<p>首先是一些说明：</p>
-<ol>
-<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
-<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
-<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
-</ol>
-<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
-<p>然后观察一下新买的散热的样子：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
-<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
-<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
-<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
-<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
-<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
-<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
-<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
-<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
-<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>硬件</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>hexo中插入本地pdf文档</title>
     <url>/2022/05/17/hexo%E4%B8%AD%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0pdf%E6%96%87%E6%A1%A3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -297,6 +259,44 @@
       <tags>
         <tag>网页</tag>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Y7000P更换散热模组</title>
+    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
+<p>话不多说了，开搞。</p>
+<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
+<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
+<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
+<p>首先是一些说明：</p>
+<ol>
+<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
+<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
+<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
+</ol>
+<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
+<p>然后观察一下新买的散热的样子：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
+<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
+<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
+<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
+<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
+<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
+<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
+<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
+<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
+<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>硬件</tag>
       </tags>
   </entry>
   <entry>
@@ -361,6 +361,23 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>绘画</tag>
       </tags>
   </entry>
   <entry>
@@ -464,20 +481,20 @@
       </tags>
   </entry>
   <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
 </blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>绘画</tag>
+        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -529,40 +546,6 @@
       </tags>
   </entry>
   <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
-</blockquote>
-<a id="more"></a>
-
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>测试一种新的画风</title>
-    <url>/2019/10/18/%E6%B5%8B%E8%AF%95%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84%E7%94%BB%E9%A3%8E/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>十月初画的一张图，目的是为了测试一下新画风和自己新整理的一些工具预设，感觉距离自己想要的效果还是差了一些</p>
-</blockquote>
-<a id="more"></a>
-
-<p>上图，因为是测试向作品，一开始参考了一些身边的人物形象，构型都很简易，背景也是后来画完了加上去的。</p>
-<img src="/2019/10/18/测试一种新的画风/1.jpg" title="ol_in_coat">
-<p>大概在前几个月我在制作一些表情包的时候发现自己的CS6版本出现了字体乱码问题，一直无法解决，于是换了CC2018，感觉还是比CS6要好用一些，同时也大致接触了一下Sai2，不得不说Sai这个软件真的还是很实用的，尤其是对付这种动漫画风。但是我PS实在是用习惯了，就尝试着在PS里模拟Sai里面的一些工具比如水彩笔、喷枪之类的效果，但除了喷枪做好了其他的都效果一般，于是用喷枪的渐变效果加上赛璐珞上色做了这么一张图，感觉还是很难实现Sai里面那种长距离渐变。</p>
-<p>虽然画人体时发现基础还是很垃圾，不过总体来说还是比我之前的动漫画风要满意一些了，以前我在处理阴影的时候总是喜欢像实体画那样涂很多层，而且还滥用高光，造成整个形象看上去就像一个塑料小人，总是形不成动漫画特有的那种平面感。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>欧洲最好听的语言和最难听的语言</title>
     <url>/2019/10/25/%E6%AC%A7%E6%B4%B2%E6%9C%80%E5%A5%BD%E5%90%AC%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E6%9C%80%E9%9A%BE%E5%90%AC%E7%9A%84%E8%AF%AD%E8%A8%80/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -590,6 +573,44 @@
       <tags>
         <tag>翻译</tag>
         <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>测试一种新的画风</title>
+    <url>/2019/10/18/%E6%B5%8B%E8%AF%95%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84%E7%94%BB%E9%A3%8E/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>十月初画的一张图，目的是为了测试一下新画风和自己新整理的一些工具预设，感觉距离自己想要的效果还是差了一些</p>
+</blockquote>
+<a id="more"></a>
+
+<p>上图，因为是测试向作品，一开始参考了一些身边的人物形象，构型都很简易，背景也是后来画完了加上去的。</p>
+<img src="/2019/10/18/测试一种新的画风/1.jpg" title="ol_in_coat">
+<p>大概在前几个月我在制作一些表情包的时候发现自己的CS6版本出现了字体乱码问题，一直无法解决，于是换了CC2018，感觉还是比CS6要好用一些，同时也大致接触了一下Sai2，不得不说Sai这个软件真的还是很实用的，尤其是对付这种动漫画风。但是我PS实在是用习惯了，就尝试着在PS里模拟Sai里面的一些工具比如水彩笔、喷枪之类的效果，但除了喷枪做好了其他的都效果一般，于是用喷枪的渐变效果加上赛璐珞上色做了这么一张图，感觉还是很难实现Sai里面那种长距离渐变。</p>
+<p>虽然画人体时发现基础还是很垃圾，不过总体来说还是比我之前的动漫画风要满意一些了，以前我在处理阴影的时候总是喜欢像实体画那样涂很多层，而且还滥用高光，造成整个形象看上去就像一个塑料小人，总是形不成动漫画特有的那种平面感。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个Q版二头身</title>
+    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>并制作成亚克力挂件~！<a id="more"></a></p>
+</blockquote>
+<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
+<p>下面是制成亚克力挂件后的效果：</p>
+<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
+<hr>
+<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
+<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
+<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
+<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
+<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -628,27 +649,6 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个Q版二头身</title>
-    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>并制作成亚克力挂件~！<a id="more"></a></p>
-</blockquote>
-<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
-<p>下面是制成亚克力挂件后的效果：</p>
-<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
-<hr>
-<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
-<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
-<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
-<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
-<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>画一个尖耳朵小姐姐</title>
     <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -677,6 +677,89 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个库拉</title>
+    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
+</blockquote>
+<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
+<hr>
+<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
+<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
+<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
+<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
+<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个罗斯贵族骑兵</title>
+    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
+</blockquote>
+<a id="more"></a>
+<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
+<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
+<p>大概描述一下几个部件的设计思路。</p>
+<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
+<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
+<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
+<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
+<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
+<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
+<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
+<hr>
+<p>接下来说一下画的过程中的想法。</p>
+<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
+<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
+<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
+<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
+<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>简单的手动批量下载网页图片的方法</title>
+    <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
+</blockquote>
+<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville 1777），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
+<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔1777（Charleville 1777）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
+<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
+<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
+<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
+<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
+<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
+<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
+<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
+<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
+<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
+<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
+<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
+
+<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>系统</tag>
       </tags>
   </entry>
   <entry>
@@ -939,24 +1022,6 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个库拉</title>
-    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
-</blockquote>
-<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
-<hr>
-<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
-<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
-<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
-<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
-<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>考古一个小众老游戏出色的音乐</title>
     <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -979,68 +1044,25 @@
       </tags>
   </entry>
   <entry>
-    <title>简单的手动批量下载网页图片的方法</title>
-    <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <title>解决Xshell6强制更新的问题</title>
+    <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
+<p>绕过Xshell6的强制更新。<a id="more"></a></p>
 </blockquote>
-<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville 1777），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
-<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔1777（Charleville 1777）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
-<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
-<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
-<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
-<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
-<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
-<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
-<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
-<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
-<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
-<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
-<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
-
-<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
+<p>最近弄服务器的时候把以前用来管理别的服务器的Xshell6拿出来看了看，结果提示“要继续使用此程序,您必须应用最新的更新或使用新版本”，不更新就不给用。但离谱的是这个更新压根无法进行，挂魔法都没用，所以就找了个办法绕过这个更新：</p>
+<p>在简书上看到一个好用的解决办法：</p>
+<ol>
+<li><p>Xshell6的根目录里有一个名为 nslicense.dll 的dll文件，使用十六进制编辑器打开该文件；</p>
+</li>
+<li><p>搜索（或Ctrl+F）字节序列，输入7F0C81F98033E1010F8681，从头搜索，点确定。如图所示：</p>
+<img src="/2021/09/14/解决Xshell6强制更新的问题/1.png" title="a"></li>
+<li><p>将倒数第三位的6改成3，也就是将“86”字符段改为“83”。改完后保存退出十六进制编辑器。</p>
+</li>
+</ol>
+<p>重启Xshell6即可绕过更新。</p>
 ]]></content>
       <tags>
         <tag>软件</tag>
-        <tag>系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个罗斯贵族骑兵</title>
-    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
-</blockquote>
-<a id="more"></a>
-<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
-<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
-<p>大概描述一下几个部件的设计思路。</p>
-<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
-<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
-<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
-<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
-<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
-<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
-<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
-<hr>
-<p>接下来说一下画的过程中的想法。</p>
-<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
-<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
-<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
-<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
-<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -1075,28 +1097,6 @@
       <tags>
         <tag>软件</tag>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决Xshell6强制更新的问题</title>
-    <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>绕过Xshell6的强制更新。<a id="more"></a></p>
-</blockquote>
-<p>最近弄服务器的时候把以前用来管理别的服务器的Xshell6拿出来看了看，结果提示“要继续使用此程序,您必须应用最新的更新或使用新版本”，不更新就不给用。但离谱的是这个更新压根无法进行，挂魔法都没用，所以就找了个办法绕过这个更新：</p>
-<p>在简书上看到一个好用的解决办法：</p>
-<ol>
-<li><p>Xshell6的根目录里有一个名为 nslicense.dll 的dll文件，使用十六进制编辑器打开该文件；</p>
-</li>
-<li><p>搜索（或Ctrl+F）字节序列，输入7F0C81F98033E1010F8681，从头搜索，点确定。如图所示：</p>
-<img src="/2021/09/14/解决Xshell6强制更新的问题/1.png" title="a"></li>
-<li><p>将倒数第三位的6改成3，也就是将“86”字符段改为“83”。改完后保存退出十六进制编辑器。</p>
-</li>
-</ol>
-<p>重启Xshell6即可绕过更新。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -1164,6 +1164,41 @@
         <tag>游戏</tag>
         <tag>设计</tag>
         <tag>翻译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《黑暗之魂3》背后的艺术理念和风格</title>
+    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
+</blockquote>
+<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
+<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
+<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
+<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
+<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
+<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
+<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
+<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
+<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
+<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
+<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
+<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
+<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
+<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
+<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
+<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
+<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
+<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
+<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
+<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
+<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
+<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1256,9 +1291,9 @@
 <p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
         <tag>游戏</tag>
+        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -1316,41 +1351,6 @@
       <tags>
         <tag>游戏</tag>
         <tag>生活</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《黑暗之魂3》背后的艺术理念和风格</title>
-    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
-</blockquote>
-<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
-<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
-<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
-<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
-<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
-<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
-<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
-<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
-<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
-<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
-<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
-<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
-<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
-<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
-<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
-<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
-<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
-<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
-<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
-<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
-<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
-<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
         <tag>文化</tag>
       </tags>
   </entry>
@@ -1766,9 +1766,9 @@ table th:nth-of-type(3) {
 
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
         <tag>游戏</tag>
+        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -1865,9 +1865,37 @@ table th:nth-of-type(3) {
 <p>byb： be right back 马上回来，比如我要去喝口水上个厕所，可以说brb 1min<br>omw： on my way 我在路上了，告诉对方我正在跑路<br>mb: mana break，回蓝，打完一波怪后要休息回蓝可以用mb提醒队友</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>游戏</tag>
+        <tag>软件</tag>
         <tag>攻略</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>记录一个梦境</title>
+    <url>/2021/10/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%AA%E6%A2%A6%E5%A2%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>据说人在一晚上会做多个梦，而能记起的梦通常是将醒的那一个，所以它应该发生于2021年10月28日6点左右。<a id="more"></a></p>
+</blockquote>
+<p>我预计这个文章会比较杂乱，就和梦境本身一样。</p>
+<h2 id="27日做了什么："><a href="#27日做了什么：" class="headerlink" title="27日做了什么："></a>27日做了什么：</h2><p>我已经想不起来27日的早上和中午都干了啥，但可以确定的是几乎整个白天都泡在互联网上游荡，近些年我似乎变得越来越“Cyber”。在下午玩了玩Discord，看到一个哥们在Diablo服务器群组下的一个空无一人的频道里玩，他似乎已经在那里呆了有几天了，出于好奇我进入频道和他聊了一阵子，是一个33岁的加拿大老哥，老哥贴心地把他的Diablo2重制版的电脑屏幕开了直播投给我看，我们从Diablo这个游戏聊到魔兽、暴雪，童年、文化等，他似乎是一个很好打交道的家伙，虽然我口语很烂，但对方很耐心，又或许刷装备本来就是很无聊的事情，他说他看到了中国限制未成年人周末每天玩一小时网络游戏的新闻，觉得很扯淡，直言这是dictatorship，临走时他还不忘向我炫耀他的台湾女朋友教了他几句中文，可惜我一句也没听懂，在对方再三解释下我终于明白那是一个“啤酒”，然而听上去更像是“必救”。这似乎算是我第一次和一个native speaker交流这么长的时间，并且谈论的东西也比较广泛，我确实是想把英语练好的，Discord似乎是一个不可多得的工具，前提是我得有足够的时间先去享受一些游戏才行，不然连话都没得说。</p>
+<p>晚上在家吃完饭父亲邀请我一同观看了索科洛夫于1998年拍摄的纪录片《对话索尔仁尼琴》，他想了解这个人，而我在大学期间读过不少索尔仁尼琴的书，从他的《古拉格群岛》、《癌症楼》到《牛犊顶橡树》等的一些小短篇，我当时就得知索尔仁尼琴已于2008年去世，享年89岁，也就是说，1998年拍摄这部影像时他已经几乎80岁了，虽然我读过他的书，但我还真没看过关于他的影像作品，我惊讶于一个80岁的老人仍能有敏捷的思维和判断力，而且明显能够看出他的观念不像很多老人那样顽固守旧，他是能够理解新世界的人，简直就像一个年轻人一般。期间和之后的时间里又和父亲聊了很多东西，传统音乐、俄罗斯和东正教、公共教育的落后、三十年战争，再到信息不灭和宇宙模拟论。父亲似乎在这些年变成了一个很好学的人，其实我认为他一贯如此，他确实是个普通人，但我后来才发现那是很不寻常的特点：一种对知识及探索未知的单纯的向往，而并非完全是由生存恐惧导致寻求物质利益的自保行为，抑或是寻求社会地位、名望所驱动的。它如同柴米油盐、刀俎鱼肉间的一股灵光，哪怕人的思想和灵魂里只有那么一点点也好，但从许多平凡的普通的劳动者到自命为知识分子的学术阶层里，我几乎从没见到多少人有过。</p>
+<p>这样晚上剩下的时间也不多了，我在电脑上又看了一遍<br>那个很专业的、由Tod’s Workshop于19年8月主导的“长弓穿甲”测试，以及一个日本漫画家的铅笔作画过程记录，看完几乎已经快凌晨1点了，我决定这一天就这么结束。</p>
+<h2 id="梦境的开始"><a href="#梦境的开始" class="headerlink" title="梦境的开始"></a>梦境的开始</h2><p>人确实是很奇特的生物，睡梦如同是得了精神分裂症一般，当你决定如同关闭一场游戏一般结束一天时，人的另一部分灵魂却又偷偷在一个虚拟世界以更加奇特的形式开始活动，就像一个独裁的官员政客正在向人民许诺自由和幸福，而同时他的一部分又回到了那个只有少数同僚的“烟雾缭绕的小房间（Smoke-filled room）”。几乎可以说梦中的东西都是真实的组合，比如很难在梦中见到陌生人，因为人的大脑难以生成一个完整的的陌生人的面孔的全部信息。所以说最常见的还是亲人熟人，不然只能是面部信息混乱不全的人，或干脆就是“无脸人”。我们经常听说有作家能在梦中构思、写作，音乐家在梦中作曲等，我不怀疑它的真实性，事实上我自己在狂热投入某些活动再加上没睡好的情况下也有着类似的经历。</p>
+<p>它开始于一个繁忙的街道，这是这个小城里的一个商业街，向来都是一个人流量很大的地方，它已经有些老旧了，拥有很多又黑又窄的未知小巷，我很少前去那里，只有父母去逛市场的时候才会带我钻进去。前段时间我还去那里转了一圈，人流量早已没有我小时候记忆中那么多了，可能人们都不爱上街了吧，所以那些当年开食物店摆摊、临街叫卖的，甚至是耍骗术的骗子也都消失不见了（我在那条街见识过好几回杂技型的骗术）。而楼上的超市和室内商场也显得有些衰败：一家在2000年曾经是城里最大的大型商场的运营方据说已经濒临破产，里面的店铺几乎倒闭了一半，在里面走了一圈，只有少数仍然开着的店铺还有那么一两个服务员在，她们仍要以一个较高的音量对顾客展示欢迎语，这个声音在这样一个人流稀少的商场里显得更加冷清。</p>
+<p>而梦境又向我呈现出二十年前的景象，内容似乎映射了一段我当服务员的日子。于是就在某一个人流熙攘、外面摆满了临街小吃店摊位的小巷口里，我在一个明显是由一层仓库改成的廉价服装商铺里工作。像那时很多的服装批发市场一样，这间仓库里在白天几乎不开灯，地上也扔满了包装拆下来的废旧硬纸板，衣架间穿行的服务员和想要试鞋子的顾客时不时互相交流，店里人们的声音都比较大，因为店面离巷口不远，街道上的嘈杂声很容易就能盖过这里的正常音量。我以前只做过餐饮服务员，的确没有当过服装店的服务员，我对自己的“工作”的想象也只能基于自己见到的场景：将一包包衣服从包装箱里拆出来，一件件整理好，再一件件将他们挂到墙上或衣架上去。和如今我能够睡个懒觉相比，当服务员只是看起来轻松，实际却是很累很耗时间的工作。我在梦里的全部时间似乎都要彻底消耗在这些重复体力劳动上了，但梦境并没有给我更多关于这项工作的具体内容，我似乎又变成了一个经理一般的角色，还是那家商铺，只不过我变成了管理者，像我以前的老板那样训斥员工们——他们的衣服叠的实在太乱了。</p>
+<p>我在服装商店老旧的的卷帘门前遇到了熟人，一个中学时代关系还算好的女同学，她似乎并不是某一个特定的我认识的人，而是由多个女孩的元素拼成的，但我很确定的是我在中学时代就喜欢过她，是很老套的情节。但她看起来不像中学时代那么富有魅力了，她标志性的黑色长头发被剪到很短很短，几乎和男生的头发差不多了。我这时应该是扔下了服装店的工作，跑出去和她聊天。她的头发几乎算是我见过的所有女生里发质最好、最密的那个，我问到她长头发为什么剪掉了，她不肯说话，我开玩笑说你的头发也太短了，比我在网上看到的乌克兰女兵都短（其实我想说“你像俄罗斯最凶狠的光头党女混混”，当然这太过分了，不会真这么干的xD）。和她分开后又遇到了熟人同学，他告诉我那个女孩其实把头发卖掉了，卖了500万，这个数字当然很离谱，但我的第一反应居然是嫉妒，就像人听说周围哪个朋友中了百万大奖一样产生嫉妒情绪，并且因为刚刚才嘲笑人家头发短，我不得不接受一位“富婆”很可能已经把我“拉黑”了的事实。醒来后我还很好奇地专门查了一下女生的头发到底能卖多少钱，大概得出结论后我觉得，假设那个现实中的女孩真的就把头发给卖了，卖到上千块钱是绝对没问题的，她的头发太好了，确实少见。而且我还查到了莫文蔚为头发投保1000万人民币，詹妮弗·洛佩兹为屁股投保2700万美元等信息，看来现实远比梦境离谱。</p>
+<p>于是我又得回到那个昏暗的库房里当我的服务员，似乎又不再是经理了，场景也变到了另一个同样拥有很多小商铺的邻近街道上，我找了好几家店却都不是我在的那个，我意识到我似乎并不想回去工作，这并不是因为那500万的铂铑钯铱神奇头发刺激到了我，我在梦中也压根没有工资的概念，单纯是因为我认为服装店服务员的工作实在太无聊、太辛苦，就像一个小学生不愿意进学校的门那样。梦境也随着我的失落变得模糊，也就无法找到后面的记忆了。</p>
+<h2 id="梦境的原像"><a href="#梦境的原像" class="headerlink" title="梦境的原像"></a>梦境的原像</h2><p>回想我真正做餐饮服务员的经历，以及和身边其他做过餐饮服务业的人交流得出的结论，它确实是很累的，比高三都累的多，因为在学校你起码可以选择“不学”，只要保证自己能考进大学门就行了。通过摆烂和不求上进，等到老师或家长眼睁睁看着你这个明晃晃的“业绩”蜕变成一个不仅不会再升值，反而还在慢慢掉价的“垃圾股”的时候，他们脑子里就只有尽快“抛售”，于是自由便降临了。这样即使是面临高考你也能轻松地过下去，事实上我在高中就是这么做的。从这个角度讲，所谓的“摸鱼哲学”、“躺平摆烂”等消极抵抗行为天然有其作用优势，因为业绩教师和鸡娃家长们其实就像是一个个股市投机者，他们凭借自己的能力参赌，却无法随意处置发生的后果，对于手中的“垃圾股”的处理手段十分有限，一旦学生/子女变成了摆烂咸鱼，他们就陷入了套牢散户的处境。这时的主场其实已经变成“股票”了。我着实要感谢高中时的两个不仅不鸡娃，甚至连自己上班上课都在摸鱼的语文老师，他们称得上是世外高人。感谢他们让我用他们所有的语文课，拿一个简易电子设备读完了E. B. Potter的《世界海军史（Sea Power: A Naval History）》、梭罗的《瓦尔登湖》，托尔斯泰的《复活》等对我影响深远的作品，当然也有《最后的莫西干人》、《麦田里的守望者》等经典小说，并在语文课本和练习册上画出我想象中“汉普顿锚地海战”里Monitor号和Merrimack号的正面对决，以及比克卡战役（Battle of Bicocca）中佩斯卡拉侯爵（Fernando d’Ávalos）的西班牙火枪队。我觉得我当时的同桌完全可以证实这些。</p>
+<p>但工作却往往不同，如果老板不愁招不到工人的话，他拥有随时踢出不合格者的权力，这里完全是老板的世界，他可以无视劳动法而把每周的高强度劳动时间提高到令人瞠目结舌的水平，50、60小时已是家常便饭，“高强度劳动”这个词是我自创的，目的是区别于一般的低强度劳动时间，例如学生上课睡觉、公务员闲时玩手机、管理人员带薪出差旅游等等，虽然也都算作一般意义上的劳动时间之内，但其对人精力的消耗明显没有全天加班的码农、一单接一单的外卖小哥或是体力活工人明显。反正韭菜割倒一批又一批，哪怕就是把你当成燃料消耗掉，黑心企业家们连眉头都不会皱一下的。</p>
+<p>如果一个社会的劳动福利够好、法制完善的话，即使丢了工作通常也是吃喝不愁的，也就不会对被解雇怀着那么明显的生存恐惧，这样往往还是有机会把握一些基本权利的，企业家们也不敢那么肆意妄为；但现实让我们看到，许多“社畜”连摆烂的机会都没有，完全就是脖子上上了套一般任人驱使，和封建时代的奴仆没有多少区别。</p>
+<p>很多年前我见过一家餐馆的一个服务员，那家餐馆菜价并不贵，厨师也挺有水平，所以每天人都特别多，当然一到饭点服务员也都忙飞了。其中一个服务员女孩看起来确实比较好看，身材又好个子也不矮，年龄看起来比我大不了几岁，总之是一个很好看的姐姐。要是碰巧是她来给我收拾餐桌的话，我一定会提前把饭菜吃干净（虽然我一直吃的都很干净），尽量减少桌子上的垃圾，好让她收拾起来方便。我时不时观察她，她从头到尾也没有表现出一点笑容，甚至就是在收拾一个脏乱不堪、黏糊糊的啤酒瓶跌的到处都是的大桌的时候也没有露出一点厌恶之情，只是在像执行程序一样不停地端盘擦桌，偶尔用本地方言和别的服务员沟通，她的声音也和普通的本地女孩一样没什么特别的，可能是因为成长环境或是长期劳动的原因，她的皮肤不像那些不用从事体力劳动的女性那样柔顺，衣服上也总是沾着好些油渍。类似的还有我在工厂里见到的一个年轻工人，他的年纪明显比别的工人小得多，和我差不多。那里的工人平均估计都在四五十岁了，长期的重体力劳动再加上年龄的因素，再换上一身脏兮兮的工作服，如果他们就这样走在街上，你是一定不愿意靠近的。而那个年轻工人的长相和皮肤确实比一般的年轻人都好得多，戴着一副金属边框的眼镜，文质彬彬的。而当工人下班后脱下工作服，我才发现他们一下子好看了许多，平常让人觉得最不想接近的老工人都变得像是一个可爱的邻家大叔一般，而我有幸在这时又见到了那个年轻工人，说实话有点“惊为天人”，他给人的感觉就是普朗克年轻时那个照片的翻版，要不是在工厂里，你一定会想到在哪个大学的数学/物理系的楼道里，那个手里抱着书，学习最好、教授最喜欢的优秀学生。这样的学生要是往图书馆一坐，该是要吸引多少女孩的目光了；同样的，那个餐厅里见到的姐姐要是坐在教室里上课，也一定会成为大家追捧的对象。</p>
+<p>我的审美似乎对人的外形有着一种执着的追求，有人可能会说我颜控了，而我个人却认为这是一种很自然、甚至可以说很古典的审美感，就和今天的人同样欣赏《米洛斯的阿芙洛蒂特》、《大卫》等作品一样，这种美不是吹出来的，而是实打实存在着的感觉。然而我和这些人的确没有什么交集，我不知道他们的名字，连一句话也没有说过，更让人觉得残酷的现实是：漂亮姐姐在餐馆做了起码三年以上的工，之后便不知去向了，她大概率还留在这个城市，我想她可能已经嫁给了某个男人，又或是换了一份服务工作；而那个年轻人，在我离开工厂的时候，那天早上领导刚训完话，我看到他仍在这个厂里最累最热、环境最差的岗位上——那是一个连车间里一个干了二十年农活的农村大爷都不愿意碰的苦差。他面无表情、慢慢地推着一个运载车朝车间的另一端走去。他很可能没有上过大学，我不知道他是什么时候、从哪里来这个工厂的，也不清楚现在他还在不在那。上帝啊，我真希望他赶快离开那个反人类的工作岗位，让那些领导们自个上；对于那个曾在餐馆里工作的姐姐，我也只能祝愿她生活幸福、工作顺利，少遇那些烂人破事。</p>
+<h2 id="现实的指引"><a href="#现实的指引" class="headerlink" title="现实的指引"></a>现实的指引</h2><p>梦境有它真实的一面，而我们的生活还有多少真实的东西呢，我们现在可真算是谎言遍地了：媒体不说真话、官员不说真话、就连一个个普通人也因为害怕说真话而给自己带来麻烦选择沉默：老师家长不说真话，领导员工不说真话，甚至有些夫妻之间都不肯掏心掏肺了，年轻人也一个个学会了尔虞我诈之本事，也难怪汉娜·阿伦特（Hannah Arendt）认为现代极权主义建立在谎言之上。这往往和很多人想的不一样，这架庞大的机器的运作核心并非是暴力，暴力只是一个成效低下、早已过时的、且在捉襟见肘时才被统治者们使用的下策，而这一代人所面对力量的却更为可怕：古老的奴隶主们在高科技手段和现代经济理论所加持下，用两百年以上的社会实践经验以及两次世界大战的所有残酷流血共同锻造了一副前所未有的武器装甲，其名为谎言与蒙昧。今年的离谱之事真可谓是铺天盖地，如7月的河南水灾，7月20日当晚我就看到了郑州地铁里传出的信息，从后续的结果看，河南那次的死伤人数绝对是一个不小的数字，我当时每天都在关注这个新闻，但官媒在那几天的时间里几乎天天报平安。最离谱的要属被全淹的京广北路隧道，可以说是这次事件最神秘的地方，这条全长1.8公里、挤满了车辆的隧道被彻底淹没，仅拖出来的泡水车就有上千辆之多，隧道随后被军管。而官方26日的通报显示隧道只有6人死亡。再加上更加传不出消息的郑州周边被淹没的广大农村地区，真相至今成谜。我想，任何一个有良心且不是傻子的人都不得不承认，我们的官方媒体已经彻底失去作用，这是一个危险的信号，你再也无法得知那些人的脑子里到底在盘算些什么了，“闷声发大财”这套已被他们玩到炉火纯青，而这种建立在谎言之上的阴谋与权术，却为街头巷尾在暗地里所推崇，被世人冠以“能人”之名号——人人皆以当镰刀为荣，对真理和智慧的信仰早已毁灭，自由之神不再眷顾我们——或许也根本不曾存在过。似乎这就是索尔仁尼琴言晚年所描述的——“21世纪的真面目”，一个世界问题，但对我们来说尤为严重。</p>
+<p>所以我经常对周围的人强调，我们被逼无奈可以考虑躺平摆烂，但躺平摆烂的要义是人要有一个强大的灵魂，要相信自己的判断，而不是镰刀们的贬损和诋毁。相信狼们镰刀们和你一样都是一个脑袋四条腿，无论是探索未知的悟性和效率，又或是战斗的意志与技巧，都不见得比你高明到哪里去。实在不行的话，只是活下去便是，不仅要健康地活着，而且是带着精神和思想健康地活着，思想和灵魂的成毁要远比物质的得失重要得多，将火种传给更多的年轻人，真理和智慧终将破除一切谎言与蒙昧，成功不必在我。</p>
+<p>以斯诺登（Edward Snowden）的一句话作为结尾吧，8月份斯诺登本人关注到了中国目前年轻人的状态，他写下了这么一句话，甚至同时使用了中英双语：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">“系统的目的不是帮助你，而是控制你。 无论您感到多么孤立，请永远不要忘记您并不孤单：对新兴世代的剥削是一场全球斗争。”(对不起，我可怜的中文。'-.-)。</span><br><span class="line"></span><br><span class="line">"The system was not designed to <span class="keyword">help</span> you, but <span class="keyword">to</span> control you. <span class="keyword">No</span> matter how isolated you feel, <span class="keyword">never</span> forget that you <span class="keyword">are</span> <span class="keyword">not</span> alone: the exploitation <span class="keyword">of</span> rising generations <span class="keyword">is</span> a <span class="keyword">global</span> issue.<span class="string">"</span></span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1929,34 +1957,6 @@ table th:nth-of-type(3) {
       <tags>
         <tag>生活</tag>
         <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>记录一个梦境</title>
-    <url>/2021/10/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%AA%E6%A2%A6%E5%A2%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>据说人在一晚上会做多个梦，而能记起的梦通常是将醒的那一个，所以它应该发生于2021年10月28日6点左右。<a id="more"></a></p>
-</blockquote>
-<p>我预计这个文章会比较杂乱，就和梦境本身一样。</p>
-<h2 id="27日做了什么："><a href="#27日做了什么：" class="headerlink" title="27日做了什么："></a>27日做了什么：</h2><p>我已经想不起来27日的早上和中午都干了啥，但可以确定的是几乎整个白天都泡在互联网上游荡，近些年我似乎变得越来越“Cyber”。在下午玩了玩Discord，看到一个哥们在Diablo服务器群组下的一个空无一人的频道里玩，他似乎已经在那里呆了有几天了，出于好奇我进入频道和他聊了一阵子，是一个33岁的加拿大老哥，老哥贴心地把他的Diablo2重制版的电脑屏幕开了直播投给我看，我们从Diablo这个游戏聊到魔兽、暴雪，童年、文化等，他似乎是一个很好打交道的家伙，虽然我口语很烂，但对方很耐心，又或许刷装备本来就是很无聊的事情，他说他看到了中国限制未成年人周末每天玩一小时网络游戏的新闻，觉得很扯淡，直言这是dictatorship，临走时他还不忘向我炫耀他的台湾女朋友教了他几句中文，可惜我一句也没听懂，在对方再三解释下我终于明白那是一个“啤酒”，然而听上去更像是“必救”。这似乎算是我第一次和一个native speaker交流这么长的时间，并且谈论的东西也比较广泛，我确实是想把英语练好的，Discord似乎是一个不可多得的工具，前提是我得有足够的时间先去享受一些游戏才行，不然连话都没得说。</p>
-<p>晚上在家吃完饭父亲邀请我一同观看了索科洛夫于1998年拍摄的纪录片《对话索尔仁尼琴》，他想了解这个人，而我在大学期间读过不少索尔仁尼琴的书，从他的《古拉格群岛》、《癌症楼》到《牛犊顶橡树》等的一些小短篇，我当时就得知索尔仁尼琴已于2008年去世，享年89岁，也就是说，1998年拍摄这部影像时他已经几乎80岁了，虽然我读过他的书，但我还真没看过关于他的影像作品，我惊讶于一个80岁的老人仍能有敏捷的思维和判断力，而且明显能够看出他的观念不像很多老人那样顽固守旧，他是能够理解新世界的人，简直就像一个年轻人一般。期间和之后的时间里又和父亲聊了很多东西，传统音乐、俄罗斯和东正教、公共教育的落后、三十年战争，再到信息不灭和宇宙模拟论。父亲似乎在这些年变成了一个很好学的人，其实我认为他一贯如此，他确实是个普通人，但我后来才发现那是很不寻常的特点：一种对知识及探索未知的单纯的向往，而并非完全是由生存恐惧导致寻求物质利益的自保行为，抑或是寻求社会地位、名望所驱动的。它如同柴米油盐、刀俎鱼肉间的一股灵光，哪怕人的思想和灵魂里只有那么一点点也好，但从许多平凡的普通的劳动者到自命为知识分子的学术阶层里，我几乎从没见到多少人有过。</p>
-<p>这样晚上剩下的时间也不多了，我在电脑上又看了一遍<br>那个很专业的、由Tod’s Workshop于19年8月主导的“长弓穿甲”测试，以及一个日本漫画家的铅笔作画过程记录，看完几乎已经快凌晨1点了，我决定这一天就这么结束。</p>
-<h2 id="梦境的开始"><a href="#梦境的开始" class="headerlink" title="梦境的开始"></a>梦境的开始</h2><p>人确实是很奇特的生物，睡梦如同是得了精神分裂症一般，当你决定如同关闭一场游戏一般结束一天时，人的另一部分灵魂却又偷偷在一个虚拟世界以更加奇特的形式开始活动，就像一个独裁的官员政客正在向人民许诺自由和幸福，而同时他的一部分又回到了那个只有少数同僚的“烟雾缭绕的小房间（Smoke-filled room）”。几乎可以说梦中的东西都是真实的组合，比如很难在梦中见到陌生人，因为人的大脑难以生成一个完整的的陌生人的面孔的全部信息。所以说最常见的还是亲人熟人，不然只能是面部信息混乱不全的人，或干脆就是“无脸人”。我们经常听说有作家能在梦中构思、写作，音乐家在梦中作曲等，我不怀疑它的真实性，事实上我自己在狂热投入某些活动再加上没睡好的情况下也有着类似的经历。</p>
-<p>它开始于一个繁忙的街道，这是这个小城里的一个商业街，向来都是一个人流量很大的地方，它已经有些老旧了，拥有很多又黑又窄的未知小巷，我很少前去那里，只有父母去逛市场的时候才会带我钻进去。前段时间我还去那里转了一圈，人流量早已没有我小时候记忆中那么多了，可能人们都不爱上街了吧，所以那些当年开食物店摆摊、临街叫卖的，甚至是耍骗术的骗子也都消失不见了（我在那条街见识过好几回杂技型的骗术）。而楼上的超市和室内商场也显得有些衰败：一家在2000年曾经是城里最大的大型商场的运营方据说已经濒临破产，里面的店铺几乎倒闭了一半，在里面走了一圈，只有少数仍然开着的店铺还有那么一两个服务员在，她们仍要以一个较高的音量对顾客展示欢迎语，这个声音在这样一个人流稀少的商场里显得更加冷清。</p>
-<p>而梦境又向我呈现出二十年前的景象，内容似乎映射了一段我当服务员的日子。于是就在某一个人流熙攘、外面摆满了临街小吃店摊位的小巷口里，我在一个明显是由一层仓库改成的廉价服装商铺里工作。像那时很多的服装批发市场一样，这间仓库里在白天几乎不开灯，地上也扔满了包装拆下来的废旧硬纸板，衣架间穿行的服务员和想要试鞋子的顾客时不时互相交流，店里人们的声音都比较大，因为店面离巷口不远，街道上的嘈杂声很容易就能盖过这里的正常音量。我以前只做过餐饮服务员，的确没有当过服装店的服务员，我对自己的“工作”的想象也只能基于自己见到的场景：将一包包衣服从包装箱里拆出来，一件件整理好，再一件件将他们挂到墙上或衣架上去。和如今我能够睡个懒觉相比，当服务员只是看起来轻松，实际却是很累很耗时间的工作。我在梦里的全部时间似乎都要彻底消耗在这些重复体力劳动上了，但梦境并没有给我更多关于这项工作的具体内容，我似乎又变成了一个经理一般的角色，还是那家商铺，只不过我变成了管理者，像我以前的老板那样训斥员工们——他们的衣服叠的实在太乱了。</p>
-<p>我在服装商店老旧的的卷帘门前遇到了熟人，一个中学时代关系还算好的女同学，她似乎并不是某一个特定的我认识的人，而是由多个女孩的元素拼成的，但我很确定的是我在中学时代就喜欢过她，是很老套的情节。但她看起来不像中学时代那么富有魅力了，她标志性的黑色长头发被剪到很短很短，几乎和男生的头发差不多了。我这时应该是扔下了服装店的工作，跑出去和她聊天。她的头发几乎算是我见过的所有女生里发质最好、最密的那个，我问到她长头发为什么剪掉了，她不肯说话，我开玩笑说你的头发也太短了，比我在网上看到的乌克兰女兵都短（其实我想说“你像俄罗斯最凶狠的光头党女混混”，当然这太过分了，不会真这么干的xD）。和她分开后又遇到了熟人同学，他告诉我那个女孩其实把头发卖掉了，卖了500万，这个数字当然很离谱，但我的第一反应居然是嫉妒，就像人听说周围哪个朋友中了百万大奖一样产生嫉妒情绪，并且因为刚刚才嘲笑人家头发短，我不得不接受一位“富婆”很可能已经把我“拉黑”了的事实。醒来后我还很好奇地专门查了一下女生的头发到底能卖多少钱，大概得出结论后我觉得，假设那个现实中的女孩真的就把头发给卖了，卖到上千块钱是绝对没问题的，她的头发太好了，确实少见。而且我还查到了莫文蔚为头发投保1000万人民币，詹妮弗·洛佩兹为屁股投保2700万美元等信息，看来现实远比梦境离谱。</p>
-<p>于是我又得回到那个昏暗的库房里当我的服务员，似乎又不再是经理了，场景也变到了另一个同样拥有很多小商铺的邻近街道上，我找了好几家店却都不是我在的那个，我意识到我似乎并不想回去工作，这并不是因为那500万的铂铑钯铱神奇头发刺激到了我，我在梦中也压根没有工资的概念，单纯是因为我认为服装店服务员的工作实在太无聊、太辛苦，就像一个小学生不愿意进学校的门那样。梦境也随着我的失落变得模糊，也就无法找到后面的记忆了。</p>
-<h2 id="梦境的原像"><a href="#梦境的原像" class="headerlink" title="梦境的原像"></a>梦境的原像</h2><p>回想我真正做餐饮服务员的经历，以及和身边其他做过餐饮服务业的人交流得出的结论，它确实是很累的，比高三都累的多，因为在学校你起码可以选择“不学”，只要保证自己能考进大学门就行了。通过摆烂和不求上进，等到老师或家长眼睁睁看着你这个明晃晃的“业绩”蜕变成一个不仅不会再升值，反而还在慢慢掉价的“垃圾股”的时候，他们脑子里就只有尽快“抛售”，于是自由便降临了。这样即使是面临高考你也能轻松地过下去，事实上我在高中就是这么做的。从这个角度讲，所谓的“摸鱼哲学”、“躺平摆烂”等消极抵抗行为天然有其作用优势，因为业绩教师和鸡娃家长们其实就像是一个个股市投机者，他们凭借自己的能力参赌，却无法随意处置发生的后果，对于手中的“垃圾股”的处理手段十分有限，一旦学生/子女变成了摆烂咸鱼，他们就陷入了套牢散户的处境。这时的主场其实已经变成“股票”了。我着实要感谢高中时的两个不仅不鸡娃，甚至连自己上班上课都在摸鱼的语文老师，他们称得上是世外高人。感谢他们让我用他们所有的语文课，拿一个简易电子设备读完了E. B. Potter的《世界海军史（Sea Power: A Naval History）》、梭罗的《瓦尔登湖》，托尔斯泰的《复活》等对我影响深远的作品，当然也有《最后的莫西干人》、《麦田里的守望者》等经典小说，并在语文课本和练习册上画出我想象中“汉普顿锚地海战”里Monitor号和Merrimack号的正面对决，以及比克卡战役（Battle of Bicocca）中佩斯卡拉侯爵（Fernando d’Ávalos）的西班牙火枪队。我觉得我当时的同桌完全可以证实这些。</p>
-<p>但工作却往往不同，如果老板不愁招不到工人的话，他拥有随时踢出不合格者的权力，这里完全是老板的世界，他可以无视劳动法而把每周的高强度劳动时间提高到令人瞠目结舌的水平，50、60小时已是家常便饭，“高强度劳动”这个词是我自创的，目的是区别于一般的低强度劳动时间，例如学生上课睡觉、公务员闲时玩手机、管理人员带薪出差旅游等等，虽然也都算作一般意义上的劳动时间之内，但其对人精力的消耗明显没有全天加班的码农、一单接一单的外卖小哥或是体力活工人明显。反正韭菜割倒一批又一批，哪怕就是把你当成燃料消耗掉，黑心企业家们连眉头都不会皱一下的。</p>
-<p>如果一个社会的劳动福利够好、法制完善的话，即使丢了工作通常也是吃喝不愁的，也就不会对被解雇怀着那么明显的生存恐惧，这样往往还是有机会把握一些基本权利的，企业家们也不敢那么肆意妄为；但现实让我们看到，许多“社畜”连摆烂的机会都没有，完全就是脖子上上了套一般任人驱使，和封建时代的奴仆没有多少区别。</p>
-<p>很多年前我见过一家餐馆的一个服务员，那家餐馆菜价并不贵，厨师也挺有水平，所以每天人都特别多，当然一到饭点服务员也都忙飞了。其中一个服务员女孩看起来确实比较好看，身材又好个子也不矮，年龄看起来比我大不了几岁，总之是一个很好看的姐姐。要是碰巧是她来给我收拾餐桌的话，我一定会提前把饭菜吃干净（虽然我一直吃的都很干净），尽量减少桌子上的垃圾，好让她收拾起来方便。我时不时观察她，她从头到尾也没有表现出一点笑容，甚至就是在收拾一个脏乱不堪、黏糊糊的啤酒瓶跌的到处都是的大桌的时候也没有露出一点厌恶之情，只是在像执行程序一样不停地端盘擦桌，偶尔用本地方言和别的服务员沟通，她的声音也和普通的本地女孩一样没什么特别的，可能是因为成长环境或是长期劳动的原因，她的皮肤不像那些不用从事体力劳动的女性那样柔顺，衣服上也总是沾着好些油渍。类似的还有我在工厂里见到的一个年轻工人，他的年纪明显比别的工人小得多，和我差不多。那里的工人平均估计都在四五十岁了，长期的重体力劳动再加上年龄的因素，再换上一身脏兮兮的工作服，如果他们就这样走在街上，你是一定不愿意靠近的。而那个年轻工人的长相和皮肤确实比一般的年轻人都好得多，戴着一副金属边框的眼镜，文质彬彬的。而当工人下班后脱下工作服，我才发现他们一下子好看了许多，平常让人觉得最不想接近的老工人都变得像是一个可爱的邻家大叔一般，而我有幸在这时又见到了那个年轻工人，说实话有点“惊为天人”，他给人的感觉就是普朗克年轻时那个照片的翻版，要不是在工厂里，你一定会想到在哪个大学的数学/物理系的楼道里，那个手里抱着书，学习最好、教授最喜欢的优秀学生。这样的学生要是往图书馆一坐，该是要吸引多少女孩的目光了；同样的，那个餐厅里见到的姐姐要是坐在教室里上课，也一定会成为大家追捧的对象。</p>
-<p>我的审美似乎对人的外形有着一种执着的追求，有人可能会说我颜控了，而我个人却认为这是一种很自然、甚至可以说很古典的审美感，就和今天的人同样欣赏《米洛斯的阿芙洛蒂特》、《大卫》等作品一样，这种美不是吹出来的，而是实打实存在着的感觉。然而我和这些人的确没有什么交集，我不知道他们的名字，连一句话也没有说过，更让人觉得残酷的现实是：漂亮姐姐在餐馆做了起码三年以上的工，之后便不知去向了，她大概率还留在这个城市，我想她可能已经嫁给了某个男人，又或是换了一份服务工作；而那个年轻人，在我离开工厂的时候，那天早上领导刚训完话，我看到他仍在这个厂里最累最热、环境最差的岗位上——那是一个连车间里一个干了二十年农活的农村大爷都不愿意碰的苦差。他面无表情、慢慢地推着一个运载车朝车间的另一端走去。他很可能没有上过大学，我不知道他是什么时候、从哪里来这个工厂的，也不清楚现在他还在不在那。上帝啊，我真希望他赶快离开那个反人类的工作岗位，让那些领导们自个上；对于那个曾在餐馆里工作的姐姐，我也只能祝愿她生活幸福、工作顺利，少遇那些烂人破事。</p>
-<h2 id="现实的指引"><a href="#现实的指引" class="headerlink" title="现实的指引"></a>现实的指引</h2><p>梦境有它真实的一面，而我们的生活还有多少真实的东西呢，我们现在可真算是谎言遍地了：媒体不说真话、官员不说真话、就连一个个普通人也因为害怕说真话而给自己带来麻烦选择沉默：老师家长不说真话，领导员工不说真话，甚至有些夫妻之间都不肯掏心掏肺了，年轻人也一个个学会了尔虞我诈之本事，也难怪汉娜·阿伦特（Hannah Arendt）认为现代极权主义建立在谎言之上。这往往和很多人想的不一样，这架庞大的机器的运作核心并非是暴力，暴力只是一个成效低下、早已过时的、且在捉襟见肘时才被统治者们使用的下策，而这一代人所面对力量的却更为可怕：古老的奴隶主们在高科技手段和现代经济理论所加持下，用两百年以上的社会实践经验以及两次世界大战的所有残酷流血共同锻造了一副前所未有的武器装甲，其名为谎言与蒙昧。今年的离谱之事真可谓是铺天盖地，如7月的河南水灾，7月20日当晚我就看到了郑州地铁里传出的信息，从后续的结果看，河南那次的死伤人数绝对是一个不小的数字，我当时每天都在关注这个新闻，但官媒在那几天的时间里几乎天天报平安。最离谱的要属被全淹的京广北路隧道，可以说是这次事件最神秘的地方，这条全长1.8公里、挤满了车辆的隧道被彻底淹没，仅拖出来的泡水车就有上千辆之多，隧道随后被军管。而官方26日的通报显示隧道只有6人死亡。再加上更加传不出消息的郑州周边被淹没的广大农村地区，真相至今成谜。我想，任何一个有良心且不是傻子的人都不得不承认，我们的官方媒体已经彻底失去作用，这是一个危险的信号，你再也无法得知那些人的脑子里到底在盘算些什么了，“闷声发大财”这套已被他们玩到炉火纯青，而这种建立在谎言之上的阴谋与权术，却为街头巷尾在暗地里所推崇，被世人冠以“能人”之名号——人人皆以当镰刀为荣，对真理和智慧的信仰早已毁灭，自由之神不再眷顾我们——或许也根本不曾存在过。似乎这就是索尔仁尼琴言晚年所描述的——“21世纪的真面目”，一个世界问题，但对我们来说尤为严重。</p>
-<p>所以我经常对周围的人强调，我们被逼无奈可以考虑躺平摆烂，但躺平摆烂的要义是人要有一个强大的灵魂，要相信自己的判断，而不是镰刀们的贬损和诋毁。相信狼们镰刀们和你一样都是一个脑袋四条腿，无论是探索未知的悟性和效率，又或是战斗的意志与技巧，都不见得比你高明到哪里去。实在不行的话，只是活下去便是，不仅要健康地活着，而且是带着精神和思想健康地活着，思想和灵魂的成毁要远比物质的得失重要得多，将火种传给更多的年轻人，真理和智慧终将破除一切谎言与蒙昧，成功不必在我。</p>
-<p>以斯诺登（Edward Snowden）的一句话作为结尾吧，8月份斯诺登本人关注到了中国目前年轻人的状态，他写下了这么一句话，甚至同时使用了中英双语：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">“系统的目的不是帮助你，而是控制你。 无论您感到多么孤立，请永远不要忘记您并不孤单：对新兴世代的剥削是一场全球斗争。”(对不起，我可怜的中文。'-.-)。</span><br><span class="line"></span><br><span class="line">"The system was not designed to <span class="keyword">help</span> you, but <span class="keyword">to</span> control you. <span class="keyword">No</span> matter how isolated you feel, <span class="keyword">never</span> forget that you <span class="keyword">are</span> <span class="keyword">not</span> alone: the exploitation <span class="keyword">of</span> rising generations <span class="keyword">is</span> a <span class="keyword">global</span> issue.<span class="string">"</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
