@@ -78,7 +78,8 @@ sup {
 }
 
 img {
-    border-style: none
+    border-style: none;
+    
 }
 
 button, input, optgroup, select, textarea {
@@ -367,10 +368,11 @@ button {
 }
 
 .article-entry img, .article-entry video {
-    max-width: 100%;
+    max-width: 80%;
     height: auto;
     display: block;
-    margin: auto
+    margin: auto;
+    padding: 1rem
 }
 
 .article-entry iframe {
