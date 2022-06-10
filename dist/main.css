@@ -200,11 +200,11 @@ body {
 }
 
     body.darkmode {
-        background: rgba(0,0,0,.6)
+        background: rgba(14,7,7,.65)
     }
 
         body.darkmode * {
-            color: #f2f2f2
+            color: #e5e5e5
         }
 
         body.darkmode .article-entry code {
@@ -477,7 +477,7 @@ button {
     bottom: 0;
     width: 8rem;
     height: 100%;
-    background-color: rgba(25,0,0,.7)
+    background-color: rgba(40,5,5,.6)
 }
 
     .sidebar.on {
@@ -492,7 +492,7 @@ button {
     height: 5rem;
     width: 5rem;
     border-radius: 50%;
-    background-color: rgba(25,0,0,.5);
+    background-color: rgba(50,5,5,.5);
     color: #fff;
     transition: all .2s ease-in-out;
     opacity: .4
@@ -722,7 +722,7 @@ button {
 }
 
     .cover-inner h1 {
-        font-size: 6rem;
+        font-size: 5.8rem;
         font-weight: normal;
         letter-spacing: 3px;
         margin: 0;
@@ -1352,7 +1352,7 @@ a.toc-link {
     position: fixed !important;
     top: 0;
     right: 5rem;
-    background-color: #3f2a2a;
+    background-color: #503838;
     z-index: 996
 }
 
@@ -2572,6 +2572,8 @@ pre .css ~ * .id, pre .id {
     }
 
         .navbar .nav .nav-item-link {
+            font-family: 幼圆,微软雅黑,sans-serif;
+            font-weight: bold;
             display: block;
             padding: 1rem;
             color: #eeeeee;
@@ -2580,8 +2582,8 @@ pre .css ~ * .id, pre .id {
         }
 
             .navbar .nav .nav-item-link:hover {
-                opacity: .8;
-                background-color: #332929
+                opacity: .7;
+                background-color: #573a3a
             }
 
         .navbar .nav.nav-main {
@@ -2628,7 +2630,7 @@ pre .css ~ * .id, pre .id {
     height: 3.2rem;
     border-radius: 3.2rem;
     color: #fff;
-    background-color: rgba(25,0,0,.5);
+    background-color: rgba(50,5,5,.5);
     line-height: 3rem;
     opacity: .6;
     transition: opacity .5s ease
