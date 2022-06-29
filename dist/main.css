@@ -363,8 +363,12 @@ button {
     margin: 1.5rem 0 1.5rem 2rem
 }
 
-.article-entry blockquote, .article-entry p, .article-entry table {
-    margin: .5rem 0
+.article-entry blockquote, .article-entry table {
+    margin: 1rem 1rem .5rem
+}
+
+.article-entry p {
+    margin: 1.5rem 0
 }
 
 .article-entry img, .article-entry video {
@@ -372,7 +376,7 @@ button {
     height: auto;
     display: block;
     margin: auto;
-    padding: 1rem
+    padding: 1.5rem
 }
 
 .article-entry iframe {
@@ -409,7 +413,7 @@ button {
     font-size: 1.5rem;
     display: block;
     padding: 0 1.5rem;
-    width: 100%;
+    width: 98%;
     overflow: auto;
     border-left: .3rem solid #bf2c40;
     color: rgba(25,0,0,.7)
@@ -1100,6 +1104,7 @@ button {
 .declare {
     margin: 0 0 1rem;
     padding-bottom: 1rem;
+    padding-top: 1rem;
     color: #999;
     border-bottom: 1px solid #f6f6f6
 }
@@ -1165,8 +1170,8 @@ button {
 .article-nav {
     position: relative;
     padding-top: 1.5rem;
-    margin: 1rem 0 2rem;
-    border-top: .1rem solid #eee
+    margin: 1rem 0 1rem;
+    border-top: .1rem solid #9999997d
 }
 
     .article-nav:after, .article-nav:before {
@@ -1847,12 +1852,12 @@ a.toc-link {
 .article-entry .highlight, .article-entry pre {
     font-family: monospace;
     background: #282828;
-    margin: 10px 0;
-    padding: 10px;
+    margin: 14px 0;
+    padding: 12px;
     overflow: hidden;
     overflow-x: auto;
     color: #dedede;
-    font-size: .9em;
+    font-size: 14px;
     line-height: 1.5;
 }
 
