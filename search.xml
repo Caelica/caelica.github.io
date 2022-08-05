@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
+    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
+</blockquote>
+<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
+<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
+<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
+<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
+<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
+<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
+<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
+<hr>
+<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
+<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+        <tag>服务器</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Flash被各大浏览器彻底停用后的处理办法</title>
     <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -37,6 +80,45 @@
       <tags>
         <tag>软件</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Steam社区里利用高仿网站钓鱼的骗术</title>
+    <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>又是话题老毒瘤PUBG，虽然这个游戏我卸了很久了，但是不久前本人的一个朋友已经中招导致Steam账号被盗，早就听说过PUBG猖獗的盗号现象，比如网吧Steam客户端被动手脚之类的。不过这次居然是利用高仿网站进行的，花样确实层出不穷。<a id="more"></a></p>
+</blockquote>
+<p>Steam用户都明白，账号被盗后果还是比较严重的，不仅PUBG号难逃一劫，或是导致vac封禁，更严重的是如果账户上的财产比较多，那就危险了。该朋友的Steam账号财产较多，被盗后我也是第一时间在好友列表里监控该账号的动向，幸运的是，盗号似乎是由机器完成的，盗号者并没有在短时间内登录该账号，也没有机会亲自查看该账号拥有的库存，好在Steam的申诉够快，该账号在几个小时内就得以找回。</p>
+<p>中招过程和找回手段</p>
+<p>首先如果Steam用户浏览社区页面（特别是PUBG社区页面），就会发现一个由“PUBG社区管理”发布的页面，该页面往往是维护补偿等等赠送行为，勾引玩家前去查看。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/1.png" title="a">
+<p>细心的玩家也许已经看出，该网址并不正常，打开后是一个高仿的中文版PUBG网站页面。盗号者伪造了很多这种类似的网址，几天就换一次。点击领取后，又出来一个Steam账号的登录页面，和Steam的官网长得一模一样。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/2.png" title="b"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/3.png" title="c">
+<p>当Steam用户输入自己的账户密码后，又会要求用户输入令牌密码和手机验证码，据网上的信息反映，密码对错与否都会进入下一步，盗号者最想要的正是这两个关键的凭据，它使得盗号者拥有取得账户控制权限的能力。</p>
+<p>如果用户给出了这两个凭据，则账户邮箱立刻被替换，手机、令牌瞬间解绑，用户失去所有权限，密码也不攻自破了。这一切应该都是机器自动完成的。</p>
+<p>用户的应对手段只有申诉和锁定账户。Steam账户在更换邮箱后，会自动向旧邮箱发送邮箱被更换的信息，被盗的用户可以在其中找到锁定账户的按钮。也就是说，Steam账户是不能随便锁定的，只有通过被更改邮箱的那个按钮才能进入锁定页面。</p>
+<p>而账户申诉则要求提供正常的初始邮箱和一些交易记录凭证，因为很多用户的邮箱都是QQ邮箱，交易记录是盗号者基本无法得到的，QQ号的所有权也最终握在用户手里，也就是说，只要用户铁了心想找回Steam账号，是比较容易找回的。所以盗号者的战术就是实现短期占有并尽可能拖延找回时间，以完成账号交易和财产交易，最终给用户留下一个烂摊子。其中最重要的就是攻破用户的邮箱，这也是最严重的情况，一旦盗号者能够短时间登录邮箱，第一操作就是彻底删除用户的那些邮箱更改提醒信件，使得账户无法被锁定，也给申诉造成了困难。</p>
+<p>在众多案例中我一直很好奇邮箱是怎么被爆破的，我猜测有两种可能：第一种是撞库，也就是利用很多人将QQ密码和Steam密码相同的缺陷，对用户的qq号进行撞库，一旦正确就可以短时间占据qq邮箱；第二种可能就是利用网吧环境，让用户登录做过手脚的qq账户以获得qq密码。关于如何得到qq号其实很简单，因为Steam页面的个人账户里直接可以看到绑定邮箱的全文，自然也就暴露了qq号。我认为这是Steam个人账户的一个缺陷，给盗号者提供了有用的信息。</p>
+<p>可见，如果连邮箱的控制权都没了，危险就真的大了。这位朋友也是因为邮箱未被攻破，申诉才得以快速进行。所以建议Steam的用户不要使用qq邮箱作为绑定邮箱，qq邮箱其实并不安全。</p>
+<p>小号成群</p>
+<p>还有个问题，盗号的是如何做到将自己的假链接至于Steam社区顶端的？从下图可以看出，盗号者拥有海量Steam账号，估计Steam社区的热度计算方式很简单，并没有怎么考虑机器人的威胁。盗号者使用成千上万的小号对假链接页面进行“顶帖”，强行让它出现在PUBG社区首页，甚至是整个steam社区的首页（的确有这种现象）。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/4.png" title="d"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/5.png" title="e">
+<p>而作为发帖人的这个“PUBG社区管理”，也是利用了Steam账号本身改名毫无限制的特点，只要盗号者需要，他手下的任何一个小号都能立刻变成“XXX社区管理”。Steam社区凭空冒出的中文管理，现在想想感觉挺智障的，不过一开始我和朋友都没有意识到这一点，确实能骗到人呢。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/6.png" title="f">
+<p>查看某个“PUBG社区管理”的曾用名，该账号已经有红字，最原始的id是韩文，意思似乎是“深海”。推测该账号曾经是有过正常主人的PUBG账号，从改名“2sa”开始，已经变成了盗号者手中的“肉鸡号”。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>This is for the Record</title>
+    <url>/2022/04/17/This-is-for-the-Record/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
+</blockquote>
+<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
+]]></content>
   </entry>
   <entry>
     <title>CSS中引入自定义字体</title>
@@ -88,79 +170,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
-    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
-</blockquote>
-<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
-<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
-<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
-<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
-<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
-<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
-<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
-<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
-<hr>
-<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
-<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-        <tag>服务器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Steam社区里利用高仿网站钓鱼的骗术</title>
-    <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>又是话题老毒瘤PUBG，虽然这个游戏我卸了很久了，但是不久前本人的一个朋友已经中招导致Steam账号被盗，早就听说过PUBG猖獗的盗号现象，比如网吧Steam客户端被动手脚之类的。不过这次居然是利用高仿网站进行的，花样确实层出不穷。<a id="more"></a></p>
-</blockquote>
-<p>Steam用户都明白，账号被盗后果还是比较严重的，不仅PUBG号难逃一劫，或是导致vac封禁，更严重的是如果账户上的财产比较多，那就危险了。该朋友的Steam账号财产较多，被盗后我也是第一时间在好友列表里监控该账号的动向，幸运的是，盗号似乎是由机器完成的，盗号者并没有在短时间内登录该账号，也没有机会亲自查看该账号拥有的库存，好在Steam的申诉够快，该账号在几个小时内就得以找回。</p>
-<p>中招过程和找回手段</p>
-<p>首先如果Steam用户浏览社区页面（特别是PUBG社区页面），就会发现一个由“PUBG社区管理”发布的页面，该页面往往是维护补偿等等赠送行为，勾引玩家前去查看。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/1.png" title="a">
-<p>细心的玩家也许已经看出，该网址并不正常，打开后是一个高仿的中文版PUBG网站页面。盗号者伪造了很多这种类似的网址，几天就换一次。点击领取后，又出来一个Steam账号的登录页面，和Steam的官网长得一模一样。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/2.png" title="b"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/3.png" title="c">
-<p>当Steam用户输入自己的账户密码后，又会要求用户输入令牌密码和手机验证码，据网上的信息反映，密码对错与否都会进入下一步，盗号者最想要的正是这两个关键的凭据，它使得盗号者拥有取得账户控制权限的能力。</p>
-<p>如果用户给出了这两个凭据，则账户邮箱立刻被替换，手机、令牌瞬间解绑，用户失去所有权限，密码也不攻自破了。这一切应该都是机器自动完成的。</p>
-<p>用户的应对手段只有申诉和锁定账户。Steam账户在更换邮箱后，会自动向旧邮箱发送邮箱被更换的信息，被盗的用户可以在其中找到锁定账户的按钮。也就是说，Steam账户是不能随便锁定的，只有通过被更改邮箱的那个按钮才能进入锁定页面。</p>
-<p>而账户申诉则要求提供正常的初始邮箱和一些交易记录凭证，因为很多用户的邮箱都是QQ邮箱，交易记录是盗号者基本无法得到的，QQ号的所有权也最终握在用户手里，也就是说，只要用户铁了心想找回Steam账号，是比较容易找回的。所以盗号者的战术就是实现短期占有并尽可能拖延找回时间，以完成账号交易和财产交易，最终给用户留下一个烂摊子。其中最重要的就是攻破用户的邮箱，这也是最严重的情况，一旦盗号者能够短时间登录邮箱，第一操作就是彻底删除用户的那些邮箱更改提醒信件，使得账户无法被锁定，也给申诉造成了困难。</p>
-<p>在众多案例中我一直很好奇邮箱是怎么被爆破的，我猜测有两种可能：第一种是撞库，也就是利用很多人将QQ密码和Steam密码相同的缺陷，对用户的qq号进行撞库，一旦正确就可以短时间占据qq邮箱；第二种可能就是利用网吧环境，让用户登录做过手脚的qq账户以获得qq密码。关于如何得到qq号其实很简单，因为Steam页面的个人账户里直接可以看到绑定邮箱的全文，自然也就暴露了qq号。我认为这是Steam个人账户的一个缺陷，给盗号者提供了有用的信息。</p>
-<p>可见，如果连邮箱的控制权都没了，危险就真的大了。这位朋友也是因为邮箱未被攻破，申诉才得以快速进行。所以建议Steam的用户不要使用qq邮箱作为绑定邮箱，qq邮箱其实并不安全。</p>
-<p>小号成群</p>
-<p>还有个问题，盗号的是如何做到将自己的假链接至于Steam社区顶端的？从下图可以看出，盗号者拥有海量Steam账号，估计Steam社区的热度计算方式很简单，并没有怎么考虑机器人的威胁。盗号者使用成千上万的小号对假链接页面进行“顶帖”，强行让它出现在PUBG社区首页，甚至是整个steam社区的首页（的确有这种现象）。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/4.png" title="d"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/5.png" title="e">
-<p>而作为发帖人的这个“PUBG社区管理”，也是利用了Steam账号本身改名毫无限制的特点，只要盗号者需要，他手下的任何一个小号都能立刻变成“XXX社区管理”。Steam社区凭空冒出的中文管理，现在想想感觉挺智障的，不过一开始我和朋友都没有意识到这一点，确实能骗到人呢。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/6.png" title="f">
-<p>查看某个“PUBG社区管理”的曾用名，该账号已经有红字，最原始的id是韩文，意思似乎是“深海”。推测该账号曾经是有过正常主人的PUBG账号，从改名“2sa”开始，已经变成了盗号者手中的“肉鸡号”。</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Win10家庭版启用远程桌面&amp;启用组策略</title>
     <url>/2021/09/01/Win10%E5%AE%B6%E5%BA%AD%E7%89%88%E5%90%AF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2and%E5%90%AF%E7%94%A8%E7%BB%84%E7%AD%96%E7%95%A5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -209,15 +218,6 @@
       <tags>
         <tag>系统</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>This is for the Record</title>
-    <url>/2022/04/17/This-is-for-the-Record/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
-</blockquote>
-<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
-]]></content>
   </entry>
   <entry>
     <title>Y7000P更换散热模组</title>
@@ -370,23 +370,6 @@
       </tags>
   </entry>
   <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>做一个普鲁斯特问卷</title>
     <url>/2019/09/07/%E5%81%9A%E4%B8%80%E4%B8%AA%E6%99%AE%E9%B2%81%E6%96%AF%E7%89%B9%E9%97%AE%E5%8D%B7/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -484,6 +467,23 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>绘画</tag>
       </tags>
   </entry>
   <entry>
@@ -625,6 +625,37 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个尖耳朵小姐姐</title>
+    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
+</blockquote>
+<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
+<hr>
+<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
+<p>接下来说一下设计思路：</p>
+<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
+<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
+<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
+<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
+<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
+<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
+<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
+<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
+<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
+<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
+<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
+<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
+<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
+<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
+<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个库拉</title>
     <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -641,6 +672,22 @@
       <tags>
         <tag>绘画</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>画一个燧发枪小姐姐</title>
+    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>似乎是有进步的对吧？ <a id="more"></a></p>
+</blockquote>
+<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
+<hr>
+<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
+<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
+<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
+<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
+<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
+<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
+]]></content>
   </entry>
   <entry>
     <title>画一个罗斯贵族骑兵</title>
@@ -673,44 +720,13 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个尖耳朵小姐姐</title>
-    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
-</blockquote>
-<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
-<hr>
-<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
-<p>接下来说一下设计思路：</p>
-<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
-<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
-<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
-<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
-<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
-<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
-<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
-<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
-<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
-<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
-<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
-<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
-<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
-<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
-<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>简单的手动批量下载网页图片的方法</title>
     <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
 <p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
 </blockquote>
-<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville 1777），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
-<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔1777（Charleville 1777）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
+<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville步枪），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
+<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔（Charleville）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
 <img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
 <p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
 <p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
@@ -783,6 +799,22 @@
       </tags>
   </entry>
   <entry>
+    <title>那些追求真正价值的上传者</title>
+    <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>写给那些不知名的上传者们，以及在那个短暂而又珍贵的年代的探索。 <a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;不知道为什么突然想到了AFK PL@YERS，和那个我能和同学坐在屏幕前面看一下午魔兽搞笑视频的日子。</p>
+<p>&emsp;&emsp;大概是2010年前后，记忆中有《星际争霸2》上线时的消息，那会视频都在优酷网看（应该也有土豆网），虽然每点一个视频都要等大概30-60秒的烂广告，却还是让人看的很入迷，那会魔兽还很火，看的最多的就是AFK PL@YERS、性感玉米这些，当然还有《我叫mt》。巫妖电视王，晚安部落，性感玉米的《网瘾战争》这些更是看了一遍又一遍。这些创作者们直接调用魔兽世界的游戏框架和地图、人物模型，制作出机械木偶般的游戏动画，比起传统的动画来说虽然看起来十分简陋粗糙，却仍讲出了活灵活现的故事。可贵的是，这些往往是由几个朋友们拼凑而成的同好小队，靠着对游戏的热爱和热情，靠着对真相和事实的坚持，胜过了影视、动画行业的很多所谓的专业人士和团队。现在去B站等视频网站搜索AFK PL@YERS也找不到多少视频了，可能是现在对外网搬运有一定的打压，以前我记得可是有好几个人在系统地在搬运他们的作品，数量都是一整页一整页，能让人在炎热的夏天拿着冰镇饮料快乐一下午。</p>
+<p>&emsp;&emsp;现在想想，那会优酷、土豆其实一定程度上充当了Youtube的本地化版本，因为那时管的不严，有大量不知名的上传者搬运Youtube上优质的作品（其实通过他们也筛选掉了Youtube上的低劣内容），经常能找到哪个独立音乐人的新作品，哪个黑死金乐队的现场录像，魔兽星际的游戏原声，从来没能在盗版游戏中看到的结局动画，还有那些我从来没有接触过的电影和动漫。我记得我还看过一些枪械火药制造过程的录像，Youtube上最早的一批冷兵器和盔甲锻造视频，甚至还有几首后来被汇入Botho Lukas Chor的宝藏专辑《Wenn die Landsknecht singen》里的音乐（确实很让人吃惊，连这都有！而且比这张14年的汇总专辑还早，但十多年前我对德语和Landsknecht的历史一无所知，只是觉得很好听），以及某些打擦边球的玩意（质量也确实很高就是了）。当然那些太敏感直接的话题肯定是没有的。那会确实是没有什么自媒体圈子、营销号的，网友们ID都是一串IP地址。虽然这样的搬运或者盗版视频侵犯了原作者的版权也是事实，但还是能让我们接触到这么多优秀的作品。我后来在Youtube上也一个一个找回了那些原作者，虽然很多都在数年前就已经停更了，但也总归是找到了他们。</p>
+<p>&emsp;&emsp;不过现在打开视频网站都是一群什么玩意？说实话没人会喜欢现在这样的东西，除了一些官方牵头搞得诸如后浪二舅之类的假大空，大部分自媒体作者也不是在做什么有价值的原创内容，而是天天在那造人设、以打造泛社会化的meme为目标，批量生产没有什么技术含量的低成本视频，试图以这些东西来吸引全网无头苍蝇一般的受众，当年玉米就曾在作品和现实中狠狠吐槽过这些正在互联网上越来越泛滥的虚假：为什么我们生产的大部分电影、电视剧、小品相声，都那么无聊？还不是因为假的东西太多。虚假的作者和没有价值的作品在一个正常的互联网上是没有任何生存空间的，拒绝虚假和错误是人和动物的天性，他们在被强迫的时候接受了大量的虚假和错误，但当他们接触到自由的互联网的时候，又为什么要去主动收看毫无价值的东西呢？相反，如果谁在那时的视频站发布“假大空”，干什么都散发着一股铜臭味的时候，一定会被那些顶着一串IP地址的网友们亲切招呼。</p>
+<p>&emsp;&emsp;但是在一个不正常或者说环境很恶劣的互联网体系和社会环境中，一切都翻了过来，人们比的不再是谁的作品更有价值更有意义，而是只认让流量和金钱，看你搞这个视频能不能变现，做这个爱好能不能养家糊口。结果就是，那些说起话来神采奕奕个个都有一股推销员的感觉的家伙们，虽然他们十句话九句假，却占据了网络媒体主流。甚至我觉得现在这个环境下，这些都可以拿来当成一条鉴定标准：那些说话表情像推销员一样一惊一乍的，封面放个张个大嘴巴脸，再配上一堆像香港广告牌风格一样的标语，特效还满天飞，标题也不是正常句子的，大概率都是垃圾。一般来说即使是在市场环境下，这些东西有那么一点也就够了，最后还是得靠质量和实力说话。但现在的视频却把它们当成主要目标在经营，最应该下功夫的视频内容却毫无价值。俗话说的好，丑人多作怪，现在Youtube上也有越来越多的垃圾作者，这个傻掉的网站也学起Tiktok开始搞无聊的短视频业务了，我认为它们一样统统适用于这个标准。</p>
+<p>&emsp;&emsp;就看视频这点上，我宁愿回到那个我只有一个小手机，在上课、在被折磨人的各种试卷困住的时候偷偷看的状态，因为我知道那个社区是有活力有价值的，上传者是目光敏锐的，它就像一座宝库一样等着我去探索，而不是现在这种同质化严重，只需看一眼就知道这视频该是有多无聊的内容。</p>
+<p>&emsp;&emsp;我也是最近才知道AFK PL@YERS成员之一的“战锁锁不住”就是后来开发游戏《返校》的导演，这中间也隔了很多年了，一些台湾的网友似乎也对这个感到惊讶。不过我想，某种程度上它加深了我的一个猜想的可能性：“能人”比“专业人”要更可贵，因为“专业人”是可以在简单模型下训练出来的，而“能人”往往是复杂条件下自我培养出来的，“能人”的高明之处并非某个专业水平的高低，而在于其文明程度上的整体先进（甚至我认为社区、社会也同理）。正因为如此，能人也始终是能人，这些人从事任何事业都不会落到后面去，而“专业人”一旦离开专业岗位往往难以适应，这被称为“专家陷阱（Expert trap）”。我相信，像战锁和玉米这样的人，他们的才能是显而易见的，即使他们被这个社会压制了，哪怕是五年、十年甚至一辈子，他们也会把文明的火种传递到下一代身上。再不济，哪怕就像是那些早期从Youtube上搬运来视频的上传者们一样，比起什么马云马化腾，这些无名无姓的人可能才是国内互联网被忽略的先驱者们，他们连个像样的头像也没有，估计从没想过要靠这些视频火一把或者赚到什么利益，就像那些给开源社区默默贡献着的人，仅仅是出于他们对价值判断的敏锐程度和对事物的热情，就足以使他们把这些有价值的东西带到高墙之内来。虽然这些作品随着服务器的关停，以及原作者的停更等等因素湮灭在了网络中，我再登上那个收藏夹的时候，所有的视频都已经404。但那些深受他们作品影响的人会成为他们精神上的后人，这些人感受过充满价值与自由秩序的互联网，也就永远不会再掉头返回到曾经的虚假和错误中。终有一天，这些火种将重新燃起，那些先驱者们曾经培养出的才能与远见，也都会以另一种方式重见天日。</p>
+<p>&emsp;&emsp;而我呢，我也想成为那样的人。不，不光是想，我一定要这样做。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>配置了SSH后仍然需要输密码的情况</title>
     <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -823,7 +855,7 @@
 <p>这里汇总了近八年来的Steam全球流量的统计图（卫星视图），以及一些分析。 <a id="more"></a></p>
 </blockquote>
 <p>Steam全球流量统计可以直接从这里看到：<a href="https://store.steampowered.com/stats/content/" target="_blank" rel="noopener">https://store.steampowered.com/stats/content/</a></p>
-<p>选择卫星视图，每个点代表最近 24 小时内来自至少一名 Steam 用户的 Steam 下载活动情况。也就是说，绿点越密集代表执行下载动作的用户越多。该数据能够直观地说明地球上的哪些地方拥有互联网络娱乐活动，其密度一定程度上反映了该地区的现代化水平程度。如果将历年来的数据整合到一起，则还可以得出更多的信息。有必要说明的是，这项工作是具有实验性的，因普通用户只能从Steam官方页面得到当天的数据报告，而无法调查历史数据，这造成了数据的稀缺性。所以直到目前为止，我还没有看到有人在互联网上发布过对Steam全球流量统计历史的系统性分析。</p>
+<p>选择卫星视图，每个点代表最近 24 小时内来自至少一名 Steam 用户的 Steam 下载活动情况。也就是说，绿点越密集代表执行下载动作的用户越多。该数据能够直观地说明地球上的哪些地方拥有互联网络娱乐活动，其密度一定程度上反映了该地区的现代化水平程度，其结果有点类似于“夜间卫星照片”中的灯光密集程度，所不同的是它是“网络版的”。如果将历年来的数据整合到一起，则还可以得出更多的信息。有必要说明的是，这项工作是具有实验性的，因普通用户只能从Steam官方页面得到当天的数据报告，而无法调查历史数据，这造成了数据的稀缺性。所以直到目前为止，我还没有看到有人在互联网上发布过对Steam全球流量统计历史的系统性分析。</p>
 <p>需要注意的是：</p>
 <ol>
 <li><p>本次收集的绝大部分数据来自互联网（各种论坛、Twitter等），它们的时间戳都经过我的仔细比对，但我仍无法保证所有数据的时间戳的准确性。</p>
@@ -918,8 +950,8 @@
 </ol>
 ]]></content>
       <tags>
-        <tag>网页</tag>
         <tag>游戏</tag>
+        <tag>网页</tag>
       </tags>
   </entry>
   <entry>
@@ -1254,11 +1286,19 @@
 <p>&emsp;&emsp;其次另一个重要的问题就是选好你想做的游戏，一定要是你非常熟悉且了解的游戏，这样在后续调试和游玩中才有内容可言，而且不同游戏的私服也不太一样。一般来说，私人服务器比较普遍的应该是我的世界（Minecraft）、饥荒（Don’t Starve Together）、泰拉瑞亚（Terraria）等等独立游戏，这种独立游戏的为了让玩家们实现联机功能，一般都是官方直接给出服务端，故相对来说比较容易，网上的教程也很多。而如魔兽、冒险岛、传奇私服这些MMORPG类型的游戏则只能用非官方渠道的服务端，很多都经过不知几手的修改，相对来说更不稳定，不过可DIY的性能也大大加强，并且MMORPG本身体量远大于独立游戏，数据结构极其复杂，实属一个大坑，所以这次上来就弄MMO还是有点挑战性的，冒险岛V079和魔兽世界1.12均属于历史经典版本，我们在网上能找到很多基于这些版本的私服。这次主要以冒险岛（Maplestory）的V079版本为例。</p>
 <p>&emsp;&emsp;首先我建议先找服务端，找到一个开源能用的服务端不是很容易的事，但仍然能从网上找到一些可用的端。如魔兽世界（World of Warcraft）的私人服务端基本都是基于一个叫MaNGOS（或称芒果）的开源项目发展而来，冒险岛的中文服务端基本都是野生的，用一些网盘搜索工具就能够找到一些简单能用的端，带教程的最好。不同服务端的配置方式一般都很不一样，但原理上都大同小异，这里建议找适合Windows系统的端。如果你下载好了，基本这些端里面都带着一些好用的环境组件安装包如数据库、源码编译等。客户端当然也是必须得有，这个一般不难弄，只要找到一个纯净原版的客户端基本都是能用的。如果找到了客户端建议直接安装到本地机器上，因为我们后面还要提取一些客户端的文件。</p>
 <p>总的来说，搭建MMO类网游服务端绕不开以下几个关键内容：</p>
-<h4 id="一-拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。"><a href="#一-拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。" class="headerlink" title="一. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。"></a><p align="left">一. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。</p></h4><p>&emsp;&emsp;本次使用阿里云作为云服务器，新用户可获得一个月的免费试用期。并且还要实现与服务器之间快速交换大型资源。</p>
-<h4 id="二-服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。"><a href="#二-服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。" class="headerlink" title="二. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。"></a><p align="left">二. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。</p></h4><p>&emsp;&emsp;很多服务端（不止游戏）直接是基于linux（Ubuntu、CentOS等）系统运作的，需要很特殊的条件。我这次搭建的服务端均选用Windows环境（系统为Windows Server 2019，和Win10很相似），上手比较容易，但就算是Windows下也需要配置一些环境，如目前在市面上能找到的冒险岛服务端基本都是Java写的，则需要安装Java对应的环境。数据库的话也是当然要有的了，游戏里的一切数据都保存在一个数据库里，这里一般情况下都使用MySQL数据库。数据库管理软件使用Navicat 8.2 for MySQL，简称Navicat。也有使用SQLyog、phpMyAdmin等的，大同小异，建议就用Navicat，用起来还是挺方便的。</p>
-<h4 id="三-服务端配置具体文件和信息，以实现和数据库的对接。"><a href="#三-服务端配置具体文件和信息，以实现和数据库的对接。" class="headerlink" title="三. 服务端配置具体文件和信息，以实现和数据库的对接。"></a><p align="left">三. 服务端配置具体文件和信息，以实现和数据库的对接。</p></h4><p>&emsp;&emsp;MMO其实有一部分游戏内容是保存在服务端里的，具体原因下面会提到，需要将这些文件解进服务端内。而和数据库对接则需要在服务端设置好数据库的名称、密码、端口以及公网IP地址等信息。</p>
-<h4 id="四-调整客户端，开服游玩。"><a href="#四-调整客户端，开服游玩。" class="headerlink" title="四. 调整客户端，开服游玩。"></a><p align="left">四. 调整客户端，开服游玩。</p></h4><p>本文就基于以上四点具体展开解释：</p>
-<hr>
+ <p align="left">1. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。
+
+</p><p>&emsp;&emsp;本次使用阿里云作为云服务器，新用户可获得一个月的免费试用期。并且还要实现与服务器之间快速交换大型资源。</p>
+ <p align="left">2. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。
+
+</p><p>&emsp;&emsp;很多服务端（不止游戏）直接是基于linux（Ubuntu、CentOS等）系统运作的，需要很特殊的条件。我这次搭建的服务端均选用Windows环境（系统为Windows Server 2019，和Win10很相似），上手比较容易，但就算是Windows下也需要配置一些环境，如目前在市面上能找到的冒险岛服务端基本都是Java写的，则需要安装Java对应的环境。数据库的话也是当然要有的了，游戏里的一切数据都保存在一个数据库里，这里一般情况下都使用MySQL数据库。数据库管理软件使用Navicat 8.2 for MySQL，简称Navicat。也有使用SQLyog、phpMyAdmin等的，大同小异，建议就用Navicat，用起来还是挺方便的。</p>
+ <p align="left">3. 服务端配置具体文件和信息，以实现和数据库的对接。
+
+</p><p>&emsp;&emsp;MMO其实有一部分游戏内容是保存在服务端里的，具体原因下面会提到，需要将这些文件解进服务端内。而和数据库对接则需要在服务端设置好数据库的名称、密码、端口以及公网IP地址等信息。</p>
+ <p align="left">4. 调整客户端，开服游玩。
+
+
+</p><p>本文就基于以上四点具体展开解释：</p>
 <h3 id="一-服务器选择和配置"><a href="#一-服务器选择和配置" class="headerlink" title="一.服务器选择和配置"></a>一.服务器选择和配置</h3><p>&emsp;&emsp;本次使用的阿里云服务器属于ECS(Elastic Compute Service)，直译过来叫弹性计算服务，一般通称云服务器或云主机，它比VPS（Virtual Private Server）的操作空间更多。国内基本只有阿里云和腾讯云这两家比较合适，阿里云使用支付宝就能注册，阿里云的1核2G内存的ECS目前得要大概70块左右一个月（跟魔兽月卡也差不多嘛…），腾讯云也差不多是这个价钱，好像还贵一点。不过新注册用户可以有机会获得一个月的免费试用期，我们就用这个试用期来白嫖练手，当然免费试用的都是些感觉快要报废的垃圾机子，不过跑一个十几年前的网游负载十来个用户肯定是没啥问题的，除非你打算拉几十上百个人进来一块玩。腾讯云可以选择据说也有15天的免费期。阿里云目前的免费服务器需要每天早上10点抢资格，我试了一下不是很难抢，应该只是个噱头，这里我们就选一款免费1个月的ECS的试用，阿里云的政策可能会随着时间变化，总之这次的配置是1核2G内存40G硬盘，如下图所示：</p>
 <img src="/2021/09/01/云服务器搭建游戏服务器实战/1.png" title="a">
 <p>创建时建议直接把系统选成Windows Server 2019 x64，服务器地址无所谓，创建好实例以后在ECS界面中是这样：</p>
@@ -1281,7 +1321,6 @@
 <img src="/2021/09/01/云服务器搭建游戏服务器实战/3.png" title="c">
 <p>&emsp;&emsp;喜欢远程桌面的也可以去捣鼓一下远程桌面，进去了都一个样，服务器的远程桌面开关也在上面这个控制页面里。</p>
 <p>&emsp;&emsp;基本到这里这个服务器就locked and loaded了，我们可以开始向其中添加自己的东西，服务器可以不关机，反正是免费的东西不要怕放开整。以下提到的组件安装包等均默认是在互联网上下载的，若上面下载的服务端自己带了这些组件的安装包也可以直接复制到服务器使用。</p>
-<hr>
 <h3 id="二-运行环境以及数据库"><a href="#二-运行环境以及数据库" class="headerlink" title="二.运行环境以及数据库"></a>二.运行环境以及数据库</h3><p>&emsp;&emsp;冒险岛作为一个老游戏其服务端模拟器写成的时间也相对来说比较早，这里我们给服务器安装64位Java1.7（Java1.7叫Java7，类似的如Java8实际上是Java1.8），也就是jdk-7u80-windows-x64这个文件，网上也是能下到这种老版本的，我这里其实直接使用了安装包里自带的文件，因为我发现Java1.8就已经开始不能读取一些服务端的JavaScript了，会报错。Java默认安装到了C盘的C:\Program Files\Java 中（服务器也只有一个C盘），在这个目录可以看到两个文件夹，jdk1.7.0_80 和 jre7，是Java开发工具包和运行环境。安装完成后运行&gt;cmd输入<code>java -version</code>，如果出现了版本号则说明安装成功。</p>
 <p>&emsp;&emsp;接下来安装数据库，这里安装MySQL数据库，建议安装5.5版本的，又稳定又简单。安装中选Custum模式，端口默认的3306并勾选Add firewall exception for this port，关键的是下一步的数据库编码必须选择gb2312，不然中文会乱码:</p>
 <img src="/2021/09/01/云服务器搭建游戏服务器实战/4.png" title="d">
@@ -1295,7 +1334,6 @@
 <p>&emsp;&emsp;最关键的来了，导入初始数据库数据。说白了要的就是这个东西，它一般都在下载的服务端里自己配套的有的，不过数据库文件的保存形式有很多种，最常见的是.sql脚本文件，还有.db甚至是.xml等，也有可能是一个别人做好的后缀为.psc的数据库备份。冒险岛的服务端一般只有一个数据库，我们新建一个，数据库名可以自定义，这里示例为thisisadatabase，字符集也可以不管因为可以改。如果是.sql文件的话，右键自己建的数据库&gt;运行SQL文件 则可导入.sql文件的内容，然后在表上右键刷新即可看到导入后的内容。如果是.psc数据库备份文件的话，先选中数据库中的【备份】，再点击上方的恢复备份，给定路径导入一个.psc备份，导入完成后刷新即可看到数据库，这些数据表都是可以修改的，我们在之后的游戏中即可修改对应的栏目（如用户、角色数据等），以自定义我们的游戏数据。这里演示了如何使用.psc导入数据库信息：</p>
 <img src="/2021/09/01/云服务器搭建游戏服务器实战/7.png" title="g">
 <p>&emsp;&emsp;同理数据能导入也一定能作导出。创建新备份则直接点【创建备份】即可创建当前的数据库备份，创建的备份被默认保存在了我的文档里，即C:\Users\设备用户名\Documents\Navicat\MySQL\servers\localhost_3306\ 下，为.psc格式，可将其复制到别的地方作保存。也可以保存为.sql格式，右键&gt;转储SQL文件即可将数据库保存为.sql文件。</p>
-<hr>
 <h3 id="三-配置服务端文件"><a href="#三-配置服务端文件" class="headerlink" title="三.配置服务端文件"></a>三.配置服务端文件</h3><p>&emsp;&emsp;以冒险岛为例，诸如地图、模组、怪物AI、音乐等文件均是以.wz的格式保存的（如Character.wz, Mob.wz等等），我们需要一个叫 HaRepacker.exe 的wz文件修改工具，选择【导出为私服所需XML】，目标选择客户端的所有.wz文件，导出后将这些文件保存在一个名为wz的文件夹中，并将这个文件夹放到服务端的根目录里。</p>
 <img src="/2021/09/01/云服务器搭建游戏服务器实战/8.png" title="h">
 <p>&emsp;&emsp;服务端配置一般都会有一个.ini或.info文件，在里面的对应地方填入数据库名（就是上面自定义的数据库名）、确认数据库用户（user）和密码（password）是否正确，如果没有自定义的话应该都是root。最关键的是配置文件中的IP地址，这个IP在没修改前往往是127.0.0.1，即本机回环地址，等于就是自己。如果这个服务端本身在本地运行，而地址设为127.0.0.1的话，再把客户端的目标IP改为127.0.0.1，你会发现客户端是能连进去玩的，这实际上构成了一个单机版网游，所以就像一开始说的，单机版网游结构的本质其实就是服务端架设在本机上并指向本机。但我们想要这个服务端能够给不同地区的小伙伴都提供服务，则需要将服务端放在服务器上，并将这个IP改为这个云服务器的公网IP，公网IP我们已经获得了，直接填进去就行。</p>
@@ -1305,14 +1343,12 @@
 <figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">数据库端口：	<span class="number">3306</span></span><br><span class="line">登录端口：	<span class="number">9595</span></span><br><span class="line">频道端口：	<span class="number">7575</span><span class="number">-7578</span>  	<span class="comment">//五六七八共四个频道（Channel），对应游戏中的1234线</span></span><br><span class="line">商城端口：	<span class="number">8600</span>		<span class="comment">//冒险岛商城使用一个独立的端口</span></span><br></pre></td></tr></table></figure>
 
 <p>&emsp;&emsp;同样也需要关注一下我们的服务器实例的安全策略是否允许这些端口的上下行，以及服务器的Windows系统是否开启了防火墙，这些都有可能导致登陆失败。</p>
-<hr>
 <h3 id="四-调整客户端"><a href="#四-调整客户端" class="headerlink" title="四.调整客户端"></a>四.调整客户端</h3><p>&emsp;&emsp;服务器弄好了就可以说是万事具备，对于冒险岛的话，首先得让客户端绕过一个叫HackShield（以下简称HS）的反外挂程序，冒险岛当年的外挂也是挺出名的，故这个HS的作用就是联网比对客户端和服务端的一些信息是否一致，以防止用户通过第三方程序私自修改客户端。我们现在的客户端早就过期十几年了，HS自然会卡住不动。所以这里需要一个叫“Win10强力过HS补丁”的经过某大神修改过的HS对冒险岛原本的HS进行替换，HS位于客户端根目录的“HShield”文件夹中，将整个文件夹替换即可，并且还需要手动修改一下路径才能生效：打开HShield文件夹，找到ehsvc.ini配置文件，打开后修改里面的文件存放路径，把maplestory.exe这个文件的存放路径改成你自己的后保存即可。这个“强力过HS补丁”在网上并不难找，而且一般下载的服务端内也都自带的有。</p>
 <p>&emsp;&emsp;第二步是给客户端定位我们的服务器地址，方法是在客户端根目录新建一个.bat，内容为<code>MapleStory.exe 000.000.000.000 9595</code>，四个000换成你的公网IP地址，9595是一般的冒险岛服务端的登录端口，若服务端给出的登陆端口不是9595则需要改成对应的。修改好保存这个bat，可以将该bat重命名为【登陆器】。以后都不要点客户端里的MapleStory.exe或者Patcher.exe这些了，有可能触发自动更新或者别的问题。</p>
 <p>&emsp;&emsp;别着急，还需修改MapleStory.exe的兼容性，否则会在启动时弹一个error的错误框。兼容性设为WinXP SP3，管理员权限打勾：</p>
 <img src="/2021/09/01/云服务器搭建游戏服务器实战/9.png" title="i">
 <p>&emsp;&emsp;运行【登陆器.bat】进入游戏，若进入大区界面则说明过HS成功，此时点击“风之大陆”，若弹出“系统错误，无法连接”则说明服务端没有配置好，检查一下服务端文件的IP是否已经配置为公网IP。第一次弄估计大概率是进不去…总之这玩意还是挺费事的，不过弄好了也是真的开心。</p>
 <p>&emsp;&emsp;如果进入了输入账号密码的页面，基本就算是成功了。不同的服务端都有自行注册账号密码的方法，自己搞一个账号进去测试一下。保持服务端程序的运行就可以关掉远程连接的窗口了，让服务端自己跑去。这下可以体验一把服务器管理员的感觉，只要有需要打开远程连接看一下服务端程序正不正常就行了。</p>
-<hr>
 <h3 id="还没完（玩）呢！"><a href="#还没完（玩）呢！" class="headerlink" title="还没完（玩）呢！"></a>还没完（玩）呢！</h3><p>&emsp;&emsp;现在我们玩的内容就不局限于打怪升级了，可以尝试在服务器上修改数据库（某些东西不能热修，建议先关掉服务端），以实现自定义我们的角色。冒险岛这个游戏属实是音乐画面一流而游戏性拉跨的典型，玩了几年才六十多级，小时候为了刷冒险岛不知道挨了家人多少“教育”，通过自定义角色我总算是实现了小时候的“龙骑梦”，而且既然我们是公网开服当然要叫小伙伴来玩了，最后也和朋友一起成功四转（四转的技能任务也真的变态，是人做的么…）。想要更加深入地DIY这种MMORPG游戏并不是一件简单的事，尤其是像魔兽世界这样一个当年的世界第一，数据库极其庞大且复杂，深入研究魔兽世界的数据库那估计又得是另一个故事了…不过这些端也多多少少有些BUG，冒险岛的问题尤其多，动不动就掉线卡号，不过话说当年盛大开的官服也是动不动掉线卡号，可能是跟游戏本身有关系。</p>
 <p>&emsp;&emsp;开个玩笑，因为最近刚好出了个事，新闻版署发布了《关于进一步严格管理切实防止未成年人沉迷网络游戏的通知》，要求网络游戏供应商只能让未成年人在周末每天晚上玩一个小时游戏，中小学生们都哭了，那我可建议小朋友们都来学学怎么弄ECS开私服，只要搞得到服务器，你自己就是麻花疼了！要问小学生怎么供得起云服务器？不是有免费一个月嘛，凑齐一个班不就能白嫖几年了吗哇哈哈哈…</p>
 <p>&emsp;&emsp;最后感谢PercySu、仓鼠以及各路沙雕网友提供相关的技术帮助，以及八尾旅人同学参与服务器测试（其实就是陪我玩！）</p>
@@ -1331,8 +1367,8 @@
 <p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
         <tag>游戏</tag>
       </tags>
   </entry>
@@ -1837,8 +1873,8 @@ table th:nth-of-type(3) {
 
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
         <tag>游戏</tag>
       </tags>
   </entry>
