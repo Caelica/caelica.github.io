@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
-    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
-</blockquote>
-<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
-<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
-<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
-<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
-<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
-<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
-<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
-<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
-<hr>
-<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
-<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-        <tag>服务器</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CSS中引入自定义字体</title>
     <url>/2022/04/18/CSS%E4%B8%AD%E5%BC%95%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -100,6 +57,49 @@
 </blockquote>
 <p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
+    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
+</blockquote>
+<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
+<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
+<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
+<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
+<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
+<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
+<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
+<hr>
+<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
+<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+        <tag>服务器</tag>
+      </tags>
   </entry>
   <entry>
     <title>Flash被各大浏览器彻底停用后的处理办法</title>
@@ -170,44 +170,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Y7000P更换散热模组</title>
-    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
-<p>话不多说了，开搞。</p>
-<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
-<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
-<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
-<p>首先是一些说明：</p>
-<ol>
-<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
-<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
-<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
-</ol>
-<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
-<p>然后观察一下新买的散热的样子：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
-<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
-<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
-<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
-<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
-<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
-<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
-<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
-<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
-<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>硬件</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Win10家庭版启用远程桌面&amp;启用组策略</title>
     <url>/2021/09/01/Win10%E5%AE%B6%E5%BA%AD%E7%89%88%E5%90%AF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2and%E5%90%AF%E7%94%A8%E7%BB%84%E7%AD%96%E7%95%A5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -255,6 +217,44 @@
 ]]></content>
       <tags>
         <tag>系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Y7000P更换散热模组</title>
+    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
+<p>话不多说了，开搞。</p>
+<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
+<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
+<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
+<p>首先是一些说明：</p>
+<ol>
+<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
+<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
+<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
+</ol>
+<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
+<p>然后观察一下新买的散热的样子：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
+<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
+<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
+<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
+<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
+<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
+<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
+<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
+<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
+<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>硬件</tag>
       </tags>
   </entry>
   <entry>
@@ -424,23 +424,6 @@
       </tags>
   </entry>
   <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用PS的液化工具绘制弯刀的曲线</title>
     <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -470,20 +453,20 @@
       </tags>
   </entry>
   <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
 </blockquote>
-<a id="more"></a>
-
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
 ]]></content>
       <tags>
+        <tag>软件</tag>
         <tag>绘画</tag>
-        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -506,6 +489,23 @@
 <p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
 <p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
   </entry>
   <entry>
     <title>大型翻译计划：魔兽世界日记</title>
@@ -656,6 +656,24 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个库拉</title>
+    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
+</blockquote>
+<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
+<hr>
+<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
+<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
+<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
+<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
+<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个燧发枪小姐姐</title>
     <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -674,24 +692,6 @@
         <tag>绘画</tag>
         <tag>设计</tag>
         <tag>历史</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个库拉</title>
-    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
-</blockquote>
-<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
-<hr>
-<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
-<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
-<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
-<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
-<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
       </tags>
   </entry>
   <entry>
@@ -722,28 +722,6 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考古一个小众老游戏出色的音乐</title>
-    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
-</blockquote>
-<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
-<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
-<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
-<hr>
-<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
-<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
-<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
-<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>音乐</tag>
       </tags>
   </entry>
   <entry>
@@ -782,6 +760,28 @@
       </tags>
   </entry>
   <entry>
+    <title>考古一个小众老游戏出色的音乐</title>
+    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
+</blockquote>
+<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
+<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
+<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
+<hr>
+<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
+<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
+<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
+<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>音乐</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>解决Xshell6强制更新的问题</title>
     <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -804,10 +804,44 @@
       </tags>
   </entry>
   <entry>
+    <title>配置了SSH后仍然需要输密码的情况</title>
+    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
+</blockquote>
+<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
+<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
+<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
+<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
+<ol>
+<li>删除<code>.deploy_git</code>文件夹;</li>
+<li>输入<code>git config --global core.autocrlf false</code></li>
+<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
+</ol>
+<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
+<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
+<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>（注意要改的地方还有.com后面那个冒号）</p>
+<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
+<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
+<hr>
+<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>那些追求真正价值的上传者</title>
     <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>写给那些不知名的上传者们，以及在那个短暂而又珍贵的年代的探索。 <a id="more"></a></p>
+<p>写给那些不知名的上传者们。 <a id="more"></a></p>
 </blockquote>
 <p>&emsp;&emsp;不知道为什么突然想到了AFK PL@YERS，和那个我能和同学坐在屏幕前面看一下午魔兽搞笑视频的日子。</p>
 <p>&emsp;&emsp;大概是2010年前后，记忆中有《星际争霸2》上线时的消息，那会视频都在优酷网看（应该也有土豆网），虽然每点一个视频都要等大概30-60秒的烂广告，却还是让人看的很入迷，那会魔兽还很火，看的最多的就是AFK PL@YERS、性感玉米这些，当然还有《我叫mt》。巫妖电视王，晚安部落，性感玉米的《网瘾战争》这些更是看了一遍又一遍。这些创作者们直接调用魔兽世界的游戏框架和地图、人物模型，制作出机械木偶般的游戏动画，比起传统的动画来说虽然看起来十分简陋粗糙，却仍讲出了活灵活现的故事。可贵的是，这些往往是由几个朋友们拼凑而成的同好小队，靠着对游戏的热爱和热情，靠着对真相和事实的坚持，胜过了影视、动画行业的很多所谓的专业人士和团队。现在去B站等视频网站搜索AFK PL@YERS也找不到多少视频了，可能是现在对外网搬运有一定的打压，以前我记得可是有好几个人在系统地在搬运他们的作品，数量都是一整页一整页，能让人在炎热的夏天拿着冰镇饮料快乐一下午。</p>
@@ -930,55 +964,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一些拉丁语谚语的含义考据与派生用法</title>
-    <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>列举了一些我见过的意义较为晦涩的拉丁语谚语及其背后的故事<a id="more"></a></p>
-</blockquote>
-<p>拉丁语作为古罗马及基督教会的官方语言，曾经是欧洲主流文化的载体。可以说拉丁语直接反映了西方文明在文化内核上具有同一性的一面。虽时至今日已不再作为一门日常使用的语言，却早已深扎在了各种西方语言之中。我认为拉丁语之于西方文明，就相当于汉字之于东方文明。举例如越南、韩国、日本等国家虽然在今天已经与汉字分道扬镳，但对于语言、历史、文化研究者来说汉字仍是众多问题的答案之源。我们可以看到，对于很多想要了解东方文化的西方人来说，汉字是“一个令人费解的谜团”，而反过来，拉丁语在西方也拥有同样的地位，对于东方人来说也是如此。</p>
-<p>拉丁语在今天经常以谚语、格言的形式出现在我们面前，如哈佛校训“Veritas”、凯撒著名的“三V”：“Veni Vidi Vici”等，换句话说，有点类似我们文言文成语的地位，很多拉丁语谚语都带着它特有的历史寓意，从字面意义上很难看出它到底想说什么，而且这些谚语经过上千年的使用，有些已经派生出了第二层含义，也产生了新的用法，这可能是才是除开语言因素之外的最难掌握的东西。</p>
-<p>据我所知拉丁语在今天的西方仍是一门很常见的课程，换句话说，受过教育的西方人多多少少都学过它。但是对于这样一种复杂的古代语言，其实大多数西方人自己也没法熟练使用，就如同也没多少中国人能拿之乎者也作文一样。所以我们不必学成语言专家，但我觉得起码得做到一个粗浅的认识。</p>
-<h2 id="1-Ultima-Ratio-Regis"><a href="#1-Ultima-Ratio-Regis" class="headerlink" title="1. Ultima Ratio Regis."></a>1. Ultima Ratio Regis.</h2><p>从字面意义直译应为“国王最后的论据”，英语一般作“The king’s final argument”。这句话另有写法写作Ultima Ratio Regum，Regum和Regis都是Rex（国王）的属格形式，前者为复数，后者为单数，故从语法角度讲两者都是说得通的。</p>
-<p>Ultima Ratio Regis被认为起源于三十年战争（1618-1648）时期，有说法认为是法国红衣主教黎塞留（Cardinal Richelieu）所言。Ultima Ratio Regis作为铭文被刻在了一些法国大炮上。而在一百多年后的腓特烈二世（Friedrich II）时期也作为铭文被刻在普鲁士的火炮上。Ultima Ratio Regis的含义不言而喻，所谓“国王最后的论据”正是大炮，在当时火炮越发成为陆战中的决定性武器，因此从这个铭文也能看出各国对火炮的重视程度。</p>
-<p>这个谚语的含义在后世得到了扩展，即指代当权者所诉诸的一切武力手段。例如在1775年美国独立战争前夕，帕特里克·亨利（Patrick Henry）发表了一篇演讲，也就是著名的《不自由，毋宁死（Give me liberty or give me death）》，其中将英国政府压迫殖民地的军事行动描述为：“…These are the implements of war and subjugation; the last arguments to which kings resort.”很明显，帕特里克化用了Ultima Ratio Regis所表达的含义。</p>
-<h2 id="2-Nulla-Crux-Nulla-Corona"><a href="#2-Nulla-Crux-Nulla-Corona" class="headerlink" title="2. Nulla Crux, Nulla Corona."></a>2. Nulla Crux, Nulla Corona.</h2><p>字面意思是“没有十字架，没有王冠”。这句话传说是德国农民起义（1524）时期，一位名为弗罗里安·盖叶（Florian Geyer）的起义领导者的剑上所刻的铭文。弗罗里安·盖叶是一名贵族和骑士，率领了一群下级贵族、骑士及武装农民组成了“黑色连队”（Black Company），与另一名著名的起义领导人闵采尔（Thomas Münzer）并肩作战。因为封建制度下的欧洲总体来说农民起义的规模都比较小，质量普遍难成气候，故盖叶领导的这群“专业农民军”相当特殊，这些反叛的骑士和职业军人可能是欧洲历史上极少数属于农民阵营的重装武力。</p>
-<p>因为当时正值宗教改革运动如火如荼，教会和封建领主的双重压迫是当时农民起义的直接原因，所以Nulla Crux, Nulla Corona的具体解释应与当时农民起义军所打的其他一些旗号所表达的含义类似，即号召农民军摧毁教堂和城堡，推翻教会（十字架）和封建领主（王冠）。依据这个解释，也可译为“不要十字架也不要王冠”。</p>
-<p>奥地利作家茨威格（Stefan Zweig）于1928年写过一篇名为《世间最美丽的坟墓》（Das schönste Grab der Welt）的文章，来描述托尔斯泰（Л.Н.Толстой）朴实无华的坟墓。在文章里直接使用了这句话。毕竟托尔斯泰晚年在作品中公开批判教会和沙俄政府，主张信仰和博爱的重要性，甚至可以说，他形成了一种属于自己的宗教观念——后人称为“托尔斯泰主义”。但他的作品在当时触怒了主导俄国的沙皇与东正教会，导致东正教会将其开除教籍。托尔斯泰于1910年去世，而十八年后，茨威格在文章中使用这段十六世纪宗教改革时期农民起义军中的谚语，无疑是在将历史人物的境遇投射到托尔斯泰身上，将托尔斯泰比作又一代的宗教改革继任者，以及俄国农民的解放者。肯定了他与官方格格不入，抛弃名利而追寻真理与良心的反叛精神。</p>
-<p>顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章从九十年代进入高中课本时却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，造成了一段错误的翻译被中学课本一直用到了今天的现象。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
-
-<p>茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
-<h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">..<span class="selector-class">.et</span> dominabitur <span class="selector-tag">a</span> mari usque ad mare et <span class="selector-tag">a</span> flumine usque ad terminos orbis terrarum. </span><br><span class="line"></span><br><span class="line">“...他将统治大地，从这海到那海，由大河的流域，至地极的边界。”</span><br></pre></td></tr></table></figure>
-
-<p>此处描述的是圣经中非常常见的说法：即上帝与圣君治下的理想的人间王国。</p>
-<p>A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在圣经中更是直接成了上帝和基督的外号。诗篇 72:8中正是有这一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
-<p>而在更一般的意义上，A mari usque ad mare早已经被引申为描述一个强大而繁荣的国家或统治的用法。例如波兰在17世纪的波兰立陶宛联邦时代是其最强盛的时期，也有着“从海到海”的称号（从黑海到波罗的海）。这么说的话，丘吉尔1946年的“铁幕演说”里所说的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”也算是某种意义上的A mari usque ad mare了。</p>
-<h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
-<p>这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说，一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后产生骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
-<p>Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。而生命易逝的概念也可以作另解，即“及时行乐”，如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
-<p>必死性的影响是如此之深，以至于我们能看到历史上有许多艺术作品都反映出这样的信息，尤其是文艺复兴时期，这些作品经常被称为“死亡之舞（Dance of Death/La Danse Macabre）”。典型的有老勃鲁盖尔（Pieter Bruegel）于1562年的油画《死神的胜利（The Triumph of Death）》，描绘了死神的骷髅大军横行人间的景象。在这些作品中，骷髅是最常出现的元素，它们经常做出跳舞、演奏等动作；此外还有拿镰刀的死神（Grim Reaper）、圣经启示录中的四骑士（他们的形象通常和死神融合）等也是常见的形象。</p>
-<p>“死亡之舞”的另一个特点是反映出死亡的平等性（equality）。在小汉斯·荷尔拜因（Hans Holbein）于1523至1525年间创作的一系列以“死亡之舞”为主题的木版画里，每一张都展示了不同社会阶级的人被一个骷髅模样的死神带走的场面。如一个骑士不愿被死神带走，与死神展开战斗却被死神用长枪杀死；守财的富人在沉迷数钱，没想到死神已经坐在了桌边和他一起数钱；农民在辛苦耕种，死神甚至来帮他驱赶牛羊；死神把公爵夫人从豪华的床上拽下来；无论是虔诚的修女还是贪腐的法官也统统都不放过。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/2.png" title="b">
-<p>&nbsp;<br>我们可以在同时代的众多“死亡之舞”艺术作品看到同样的设计思路，即描述各种属于不同的社会阶层人物被拖向他们死亡的命运，借以表达死亡对一切人都是平等的主题，无论人出身贫富贵贱，生前追寻什么样的价值观（财富、权力、美丽、智慧等），死神都最终会让一切趋于一致。贾科莫·德布希斯 (Giacomo Borlone de Buschis)于1484年至1485年间在贝加莫省克吕松（Clusone）的礼拜堂外制作了一系列“死亡之舞”壁画，其中的文字提到：</p>
-<blockquote>
-<p>“Tu che sei timorato di Dio/non avere paura di partecipare a questo ballo/vieni allegramente e non temere/poiché è destino di chi nasce morire”<br>—（注：此为现代意大利语，原文为中古意大利语）<br>&nbsp;<br>“敬畏上帝的你们/不要害怕参加这个舞蹈/不要害怕，欢快地来吧/因为这是人生而必死的命运” </p>
-</blockquote>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/3.jpg" title="c">
-<p><strong><center>克吕松的“死亡之舞”</center></strong></p>
-<p>从这个角度讲，并不能用一般意义上的悲剧来解释Memento mori、Danse Macabre等艺术，它们虽披着令人毛骨悚然的外衣，其所表达的思想内核却并不是严格意义上的悲剧，而是“虚无”，甚至可以说是一种“死亡崇拜（Death Worship）”，它借着强调物质与肉身的不可持续性，实在暗中阐述精神、灵魂的永恒。</p>
-<h2 id="5-Sic-transit-gloria-mundi"><a href="#5-Sic-transit-gloria-mundi" class="headerlink" title="5. Sic transit gloria mundi"></a>5. Sic transit gloria mundi</h2><p>这是一个与Memento mori有着类似含义的句子。它的字面意思为“世间的荣耀就这样（成为）过去了”，有时会被缩写为S.T.G.M.。英文通常作”Thus passes worldly glory”。它的起源也没有准确的考据，不过它于1409年7月7日在教皇亚历山大五世的加冕典礼上首次使用。并一直沿用到了1963年。新加冕的教皇会在圣彼得大教堂前祭祀，游行队伍会停下三次，每停一次教皇的司仪都会在教皇面前跪下，他手里拿着一根银制或铜制的细棒，上面挂着一条正在闷烧的亚麻布。每停下一次他都会大声而悲痛地说道：“Pater Sancte, sic transit gloria mundi!”（“圣父，世间的荣耀就此过去！”），亚麻布块就在这个过程中慢慢燃烧掉。</p>
-<p>这个仪式和上文提到的凯旋式的传说具有类似的功能，旨在提醒教皇尘世荣耀的短暂和不可持续的本质。在今天，这句话在今天通常用来描述一种时过境迁、往日不在的主题，如一个文明的消亡或是一个强大权力者的退位等。</p>
-<p>1959年由小沃尔特·M.·米勒（Walter M. Miller Jr.）所著的科幻小说《莱博维兹的赞歌（A Canticle for Leibowitz）》，讲述了经历全球核战争后的地球退回了中世纪水平，但一位电气工程莱博维兹师将人类的知识保存在了一个修道院里。而后的数百年间，教士们借由被保存的知识复原了人类文明，但核战争的危机再临，爆发之际幸存的人们乘坐飞船离开地球寻找新的家园。在小说中，最后一个登上飞船的教士看着新核战的蘑菇云念出了“Sic transit gloria mundi”，昭示着地球的再一次毁灭。</p>
-<p>目前先到这里，后面再遇到类似的再接着补充。</p>
-]]></content>
-      <tags>
-        <tag>翻译</tag>
-        <tag>历史</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>《魔兽世界日记》译文与译后感想</title>
     <url>/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1037,6 +1022,55 @@
       </tags>
   </entry>
   <entry>
+    <title>一些拉丁语谚语的含义考据与派生用法</title>
+    <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>列举了一些我见过的意义较为晦涩的拉丁语谚语及其背后的故事<a id="more"></a></p>
+</blockquote>
+<p>拉丁语作为古罗马及基督教会的官方语言，曾经是欧洲主流文化的载体。可以说拉丁语直接反映了西方文明在文化内核上具有同一性的一面。虽时至今日已不再作为一门日常使用的语言，却早已深扎在了各种西方语言之中。我认为拉丁语之于西方文明，就相当于汉字之于东方文明。举例如越南、韩国、日本等国家虽然在今天已经与汉字分道扬镳，但对于语言、历史、文化研究者来说汉字仍是众多问题的答案之源。我们可以看到，对于很多想要了解东方文化的西方人来说，汉字是“一个令人费解的谜团”，而反过来，拉丁语在西方也拥有同样的地位，对于东方人来说也是如此。</p>
+<p>拉丁语在今天经常以谚语、格言的形式出现在我们面前，如哈佛校训“Veritas”、凯撒著名的“三V”：“Veni Vidi Vici”等，换句话说，有点类似我们文言文成语的地位，很多拉丁语谚语都带着它特有的历史寓意，从字面意义上很难看出它到底想说什么，而且这些谚语经过上千年的使用，有些已经派生出了第二层含义，也产生了新的用法，这可能是才是除开语言因素之外的最难掌握的东西。</p>
+<p>据我所知拉丁语在今天的西方仍是一门很常见的课程，换句话说，受过教育的西方人多多少少都学过它。但是对于这样一种复杂的古代语言，其实大多数西方人自己也没法熟练使用，就如同也没多少中国人能拿之乎者也作文一样。所以我们不必学成语言专家，但我觉得起码得做到一个粗浅的认识。</p>
+<h2 id="1-Ultima-Ratio-Regis"><a href="#1-Ultima-Ratio-Regis" class="headerlink" title="1. Ultima Ratio Regis."></a>1. Ultima Ratio Regis.</h2><p>从字面意义直译应为“国王最后的论据”，英语一般作“The king’s final argument”。这句话另有写法写作Ultima Ratio Regum，Regum和Regis都是Rex（国王）的属格形式，前者为复数，后者为单数，故从语法角度讲两者都是说得通的。</p>
+<p>Ultima Ratio Regis被认为起源于三十年战争（1618-1648）时期，有说法认为是法国红衣主教黎塞留（Cardinal Richelieu）所言。Ultima Ratio Regis作为铭文被刻在了一些法国大炮上。而在一百多年后的腓特烈二世（Friedrich II）时期也作为铭文被刻在普鲁士的火炮上。Ultima Ratio Regis的含义不言而喻，所谓“国王最后的论据”正是大炮，在当时火炮越发成为陆战中的决定性武器，因此从这个铭文也能看出各国对火炮的重视程度。</p>
+<p>这个谚语的含义在后世得到了扩展，即指代当权者所诉诸的一切武力手段。例如在1775年美国独立战争前夕，帕特里克·亨利（Patrick Henry）发表了一篇演讲，也就是著名的《不自由，毋宁死（Give me liberty or give me death）》，其中将英国政府压迫殖民地的军事行动描述为：“…These are the implements of war and subjugation; the last arguments to which kings resort.”很明显，帕特里克化用了Ultima Ratio Regis所表达的含义。</p>
+<h2 id="2-Nulla-Crux-Nulla-Corona"><a href="#2-Nulla-Crux-Nulla-Corona" class="headerlink" title="2. Nulla Crux, Nulla Corona."></a>2. Nulla Crux, Nulla Corona.</h2><p>字面意思是“没有十字架，没有王冠”。这句话传说是德国农民起义（1524）时期，一位名为弗罗里安·盖叶（Florian Geyer）的起义领导者的剑上所刻的铭文。弗罗里安·盖叶是一名贵族和骑士，率领了一群下级贵族、骑士及武装农民组成了“黑色连队”（Black Company），与另一名著名的起义领导人闵采尔（Thomas Münzer）并肩作战。因为封建制度下的欧洲总体来说农民起义的规模都比较小，质量普遍难成气候，故盖叶领导的这群“专业农民军”相当特殊，这些反叛的骑士和职业军人可能是欧洲历史上极少数属于农民阵营的重装武力。</p>
+<p>因为当时正值宗教改革运动如火如荼，教会和封建领主的双重压迫是当时农民起义的直接原因，所以Nulla Crux, Nulla Corona的具体解释应与当时农民起义军所打的其他一些旗号所表达的含义类似，即号召农民军摧毁教堂和城堡，推翻教会（十字架）和封建领主（王冠）。依据这个解释，也可译为“不要十字架也不要王冠”。</p>
+<p>奥地利作家茨威格（Stefan Zweig）于1928年写过一篇名为《世间最美丽的坟墓》（Das schönste Grab der Welt）的文章，来描述托尔斯泰（Л.Н.Толстой）朴实无华的坟墓。在文章里直接使用了这句话。毕竟托尔斯泰晚年在作品中公开批判教会和沙俄政府，主张信仰和博爱的重要性，甚至可以说，他形成了一种属于自己的宗教观念——后人称为“托尔斯泰主义”。但他的作品在当时触怒了主导俄国的沙皇与东正教会，导致东正教会将其开除教籍。托尔斯泰于1910年去世，而十八年后，茨威格在文章中使用这段十六世纪宗教改革时期农民起义军中的谚语，无疑是在将历史人物的境遇投射到托尔斯泰身上，将托尔斯泰比作又一代的宗教改革继任者，以及俄国农民的解放者。肯定了他与官方格格不入，抛弃名利而追寻真理与良心的反叛精神。</p>
+<p>顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章从九十年代进入高中课本时却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，造成了一段错误的翻译被中学课本一直用到了今天的现象。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
+
+<p>茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
+<h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">..<span class="selector-class">.et</span> dominabitur <span class="selector-tag">a</span> mari usque ad mare et <span class="selector-tag">a</span> flumine usque ad terminos orbis terrarum. </span><br><span class="line"></span><br><span class="line">“...他将统治大地，从这海到那海，由大河的流域，至地极的边界。”</span><br></pre></td></tr></table></figure>
+
+<p>此处描述的是圣经中非常常见的说法：即上帝与圣君治下的理想的人间王国。</p>
+<p>A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在圣经中更是直接成了上帝和基督的外号。诗篇 72:8中正是有这一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
+<p>而在更一般的意义上，A mari usque ad mare早已经被引申为描述一个强大而繁荣的国家或统治的用法。例如波兰在17世纪的波兰立陶宛联邦时代是其最强盛的时期，也有着“从海到海”的称号（从黑海到波罗的海）。这么说的话，丘吉尔1946年的“铁幕演说”里所说的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”也算是某种意义上的A mari usque ad mare了。</p>
+<h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
+<p>这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说，一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后产生骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
+<p>Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。而生命易逝的概念也可以作另解，即“及时行乐”，如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
+<p>必死性的影响是如此之深，以至于我们能看到历史上有许多艺术作品都反映出这样的信息，尤其是文艺复兴时期，这些作品经常被称为“死亡之舞（Dance of Death/La Danse Macabre）”。典型的有老勃鲁盖尔（Pieter Bruegel）于1562年的油画《死神的胜利（The Triumph of Death）》，描绘了死神的骷髅大军横行人间的景象。在这些作品中，骷髅是最常出现的元素，它们经常做出跳舞、演奏等动作；此外还有拿镰刀的死神（Grim Reaper）、圣经启示录中的四骑士（他们的形象通常和死神融合）等也是常见的形象。</p>
+<p>“死亡之舞”的另一个特点是反映出死亡的平等性（equality）。在小汉斯·荷尔拜因（Hans Holbein）于1523至1525年间创作的一系列以“死亡之舞”为主题的木版画里，每一张都展示了不同社会阶级的人被一个骷髅模样的死神带走的场面。如一个骑士不愿被死神带走，与死神展开战斗却被死神用长枪杀死；守财的富人在沉迷数钱，没想到死神已经坐在了桌边和他一起数钱；农民在辛苦耕种，死神甚至来帮他驱赶牛羊；死神把公爵夫人从豪华的床上拽下来；无论是虔诚的修女还是贪腐的法官也统统都不放过。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/2.png" title="b">
+<p>&nbsp;<br>我们可以在同时代的众多“死亡之舞”艺术作品看到同样的设计思路，即描述各种属于不同的社会阶层人物被拖向他们死亡的命运，借以表达死亡对一切人都是平等的主题，无论人出身贫富贵贱，生前追寻什么样的价值观（财富、权力、美丽、智慧等），死神都最终会让一切趋于一致。贾科莫·德布希斯 (Giacomo Borlone de Buschis)于1484年至1485年间在贝加莫省克吕松（Clusone）的礼拜堂外制作了一系列“死亡之舞”壁画，其中的文字提到：</p>
+<blockquote>
+<p>“Tu che sei timorato di Dio/non avere paura di partecipare a questo ballo/vieni allegramente e non temere/poiché è destino di chi nasce morire”<br>—（注：此为现代意大利语，原文为中古意大利语）<br>&nbsp;<br>“敬畏上帝的你们/不要害怕参加这个舞蹈/不要害怕，欢快地来吧/因为这是人生而必死的命运” </p>
+</blockquote>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/3.jpg" title="c">
+<p><strong><center>克吕松的“死亡之舞”</center></strong></p>
+<p>从这个角度讲，并不能用一般意义上的悲剧来解释Memento mori、Danse Macabre等艺术，它们虽披着令人毛骨悚然的外衣，其所表达的思想内核却并不是严格意义上的悲剧，而是“虚无”，甚至可以说是一种“死亡崇拜（Death Worship）”，它借着强调物质与肉身的不可持续性，实在暗中阐述精神、灵魂的永恒。</p>
+<h2 id="5-Sic-transit-gloria-mundi"><a href="#5-Sic-transit-gloria-mundi" class="headerlink" title="5. Sic transit gloria mundi"></a>5. Sic transit gloria mundi</h2><p>这是一个与Memento mori有着类似含义的句子。它的字面意思为“世间的荣耀就这样（成为）过去了”，有时会被缩写为S.T.G.M.。英文通常作”Thus passes worldly glory”。它的起源也没有准确的考据，不过它于1409年7月7日在教皇亚历山大五世的加冕典礼上首次使用。并一直沿用到了1963年。新加冕的教皇会在圣彼得大教堂前祭祀，游行队伍会停下三次，每停一次教皇的司仪都会在教皇面前跪下，他手里拿着一根银制或铜制的细棒，上面挂着一条正在闷烧的亚麻布。每停下一次他都会大声而悲痛地说道：“Pater Sancte, sic transit gloria mundi!”（“圣父，世间的荣耀就此过去！”），亚麻布块就在这个过程中慢慢燃烧掉。</p>
+<p>这个仪式和上文提到的凯旋式的传说具有类似的功能，旨在提醒教皇尘世荣耀的短暂和不可持续的本质。在今天，这句话在今天通常用来描述一种时过境迁、往日不在的主题，如一个文明的消亡或是一个强大权力者的退位等。</p>
+<p>1959年由小沃尔特·M.·米勒（Walter M. Miller Jr.）所著的科幻小说《莱博维兹的赞歌（A Canticle for Leibowitz）》，讲述了经历全球核战争后的地球退回了中世纪水平，但一位电气工程莱博维兹师将人类的知识保存在了一个修道院里。而后的数百年间，教士们借由被保存的知识复原了人类文明，但核战争的危机再临，爆发之际幸存的人们乘坐飞船离开地球寻找新的家园。在小说中，最后一个登上飞船的教士看着新核战的蘑菇云念出了“Sic transit gloria mundi”，昭示着地球的再一次毁灭。</p>
+<p>目前先到这里，后面再遇到类似的再接着补充。</p>
+]]></content>
+      <tags>
+        <tag>翻译</tag>
+        <tag>历史</tag>
+        <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>当年那些经典的Windows迷你小游戏</title>
     <url>/2021/09/22/%E5%BD%93%E5%B9%B4%E9%82%A3%E4%BA%9B%E7%BB%8F%E5%85%B8%E7%9A%84Windows%E8%BF%B7%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1089,37 +1123,33 @@
       </tags>
   </entry>
   <entry>
-    <title>配置了SSH后仍然需要输密码的情况</title>
-    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
+    <title>读胡适的《请大家来照照镜子》</title>
+    <url>/2022/08/27/%E8%AF%BB%E8%83%A1%E9%80%82%E7%9A%84%E3%80%8A%E8%AF%B7%E5%A4%A7%E5%AE%B6%E6%9D%A5%E7%85%A7%E7%85%A7%E9%95%9C%E5%AD%90%E3%80%8B/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
+<p>一九二八年的文章。 <a id="more"></a></p>
 </blockquote>
-<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
-<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
-<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
-<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
-<ol>
-<li>删除<code>.deploy_git</code>文件夹;</li>
-<li>输入<code>git config --global core.autocrlf false</code></li>
-<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
-</ol>
-<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
-<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
-<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>修改为：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>（注意要改的地方还有.com后面那个冒号）</p>
-<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
-<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
-<hr>
-<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
+<p>《请大家来照照镜子》，可以在wiki页面直接查看原文：<a href="https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90" target="_blank" rel="noopener">https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90</a></p>
+<p>&emsp;&emsp;偶然看到这篇胡适先生在1928年写的文章，其文笔可谓锐利无比，在今天看来也很通俗易懂。我并没有读过太多胡适和鲁迅的文章，因为我个人来说其实向来都和鲁迅先生的那句话保持一致：“我以为要少——或者竟不——看中国书，多看外国书”。这不代表中国没有好书，只是实在少到可怜，与其在垃圾堆里找食，不如老老实实坐到餐桌前吃一顿好的。不过可以肯定的是，像鲁迅胡适这些人的作品在20世纪初无疑是具有启蒙性质和指导意义的，但对于今天的人来说，最让人感触颇深的却是意识到这是一百年前的文字，面对的居然是一百年都没有解决的难题。</p>
+<p>&emsp;&emsp;在今天看来，一百年前安诺德先生提出的“三个大问题”：即全国的铁路和交通问题、教育和工业化问题、个人的责任心问题，似乎是被解决了，但我们也都明白，问题只是在表面上解决了，实际上并没有解决得很好很彻底。而胡适本人在文章中给出的两个解决方案：肯认错，和死心塌地的去学，则是决绝从来都没有做到过的。为什么我们永远都在落后，即使是眼看就要有那么一点追上的机会，却还是被一股怪力给无情地拉了回去？我想答案也很明白，就是我们从来都没有真正低头认错，而正是因为没有低头认错、承认自己不如人，才做不到“死心塌地的去学”，学不到“死心塌地”的核心内容。</p>
+<blockquote>
+<p>这种急需的新觉悟就是我们自己要认错。我们必须承认我们自己百事不如人，不但物质上不如人，不但机械上不如人，并且政治社会道德都不如人…</p>
+</blockquote>
+<blockquote>
+<p>因为我们从不曾悔祸，从不曾彻底痛责自己，从不曾彻底认错。二三十年前，居然有点悔悟了，所以有许多遣责小说出来，暴扬我们自己官场的黑暗，社会的卑污，家庭的冷酷。十余年来，也还有一些人肯攻击中国的旧文学，旧思想，旧道德宗教，——肯承认西洋的精神文明远胜于我们自己。但现在这一点点悔悟的风气都消灭了。现在中国全部弥漫着一股夸大狂的空气：义和团都成了应该崇拜的英雄志士，而西洋文明只须“帝国主义”四个字便可轻轻抹煞！政府下令提倡旧礼教，而新少年高呼“打倒文化侵略！”。</p>
+</blockquote>
+<p>&emsp;&emsp;不论是鲁迅也好，胡适也好，还是文中的这位安诺德先生，不知这些老先生如果活到今天会是如何感想，不，他们都是没有“资格”活在这个社会的，这些人如果活到今天，都会被全网fs，重则那啥，虽然我们知道人家老爷子活着的时候早就远走高飞，62年就去世了。但我猜，就是强如他，智慧如他，他写这篇文章的时候恐怕也无法预料到一件事：</p>
+<p>&emsp;&emsp;那就是低头认错、承认自己不如人，承认西洋的精神文明远胜于自己，居然是如此之难！简直难于上青天——难过了洋枪洋炮，难过了全民普及教育，难过了全国铁路交通网，难过了大学里的量子力学，难过了全国电气化、核电站和载人航天，难到了一百年都做不到的水平上。</p>
+<p>&emsp;&emsp;古时候洋人送来咕咕钟，我们曰“淫技奇巧”；洋人送来洋枪洋炮，我们认为没比自家的好到哪去；终有一天洋人把步枪顶在头上了，才真正下决心去学点什么先进的东西，好来打败洋人。19世纪的人只看到了咕咕钟和洋枪洋炮背后的近代化工厂和生产线设备，却没有意识到工厂和设备的背后，是一套工业体系和适应工业化的社会结构；接下来的事情，我们这几十年的教科书的口径也都是这样完全一致的：从学西方人的技术到学西方人的思想和制度，似乎就是走上了正道。但后面这一百年的经历告诉我们，事情似乎远远不止这么简单。首先我们学来的所谓“思想”、所谓“制度”，其实更大程度上说是偏向政治和经济方面的思想和制度，这些所谓的制度和思想本质上来说是偏功利性的，是为了建设工业化社会的制度和思想。虽然功利性本不是坏事，但它们从来都没有在合理的框架下运行，各路先进的制度和思想到了这里就如同掉进了一个“大染缸”，产生出千奇百怪的“本地化版本”，连发达国家的人看了都要目瞪口呆。</p>
+<p>&emsp;&emsp;而工业化的社会、制度、经济、政治等思想理论体系的背后是什么？这一层的概念因为脱离了直接利益，就很少有人去思考了。按照胡适那个年代的观点，可能会说是教育体系，是培养现代化人才的教育体系，只要有了列强们的教育体系，就有了可以比肩列强的人才，就能诞生后面的一切。就像胡适和安诺德提出的兴办教育的方案，“用教育来打倒愚昧，用实业来打倒贫穷，用机械来征服自然”，固然没错，但最关键的问题来了，教育体系和老师出了问题的教育还算不算教育？这样的教育还能不能打倒愚昧，成为后续一切内容的First Cause？</p>
+<p>&emsp;&emsp;显然，不行。这也正是那个年代的人难以考虑到的问题，也是站在现代这个时间点才能得出的一个推想，这并不容易，放到发达国家，也起码得是第二次世界大战后才逐渐认识到这个问题：</p>
+<p>&emsp;&emsp;教育体系的背后站着的是一个个大大小小的老师，而老师也是人，也是需要被培养被教育的。而这并不是一个鸡生蛋蛋生鸡的问题——因为人并不一定要有老师才能成为老师。这个概念最终推向的是什么才能真正培养人——即一个社会（注意，是社会，不是教育机构）如何培养出现代意义上的人的问题，再次强调是在排除了教育体系的情况下——一个没有老师、上不起学、没有文凭，甚至从来就没有踏官方进教育机构一天的人，能否在这个环境中成长为现代意义上的人的问题。最后我们发现，可能是一个社会的整体状态和精神风貌在影响着这个问题的结果，是它们决定了这个人在成长过程中能接触到什么东西，从而产生什么样的思考和判断。而老师们和教育机构只是这个大框架中的小小一环。</p>
+<p>&emsp;&emsp;而这背后又是什么呢？很明显到了这一层，就相当的抽象了，它可能是一个社会中潜意识里对一些基本概念的认识理解程度，如对是非善恶、法治精神、信仰等的理解水平，对科学精神、人文精神的认同程度或持有状态，对自由和奴役、生存和死亡等终极问题的态度和思考，等等。<strong>这些东西甚至难以用语言表达，它们是人类精神活动的底层逻辑，是比白纸黑字的规章制度、思想理论更加虚无缥缈，更加看不见摸不着的东西</strong>。而教育机构从不能解决这些问题，我甚至认为，教育机构也不应负全责去处理这些问题，因为无论是官方的还是私人的教育机构，它们通常都是逐利的，或是带有某种目的的。即使是在发达国家，我们也能够看到传统教育机构在处理这些问题上的种种弊病。那些好的教育更多的也只是起到辅助作用，而一个坏的教育则是愚昧和谎言的制造工厂，而这是比核战争还可怕的东西，毒害了一代又一代的人，</p>
+<p>&emsp;&emsp;答案到这里已经很明显，我们的落后是精神上、灵魂上的落后。甚至可以说如果不从这一层级上得到彻底解决，就没有资格成为真正意义上的现代人和现代社会，无论是学再多的先进技术、思想理论都没有用，也就永远追不上发达国家的步伐。就从这一层级上来说，即使是今天，我们中间认识到的人可谓是凤毛麟角，沧海一粟，否则这个问题也绝不会一百年都解决不了。即使是手里有了遍布全国的铁路，甚至有了航空母舰，精神上、灵魂上却仍是几千年前“忠孝礼义”那套。有人可能会不服，说古典希腊、罗马也有讲究什么“四主德（Cardinal Virtues）”，也有希波克拉底的传统医术，从而论证传统那套东西仍然可以全方位指导今天的事物。这是完全错误的，其区别就在于，西方的这些思想在两千年中经过了数不清的“版本更新迭代”，尤其是像宗教改革、启蒙运动这样革命性的进步，早已不可同日而语了，没有现代人会觉得靠希腊罗马的那套古典法律和精神就能直接对接现代社会，更别说用什么“四液学说”来行医治病；而在我们这里，什么“驭民五术”，什么“阴气阳气”、“精气血津液神”可是每天都在这个社会实打实地运行着，男人就是“忠孝礼义”，女人就是“三从四德”，几千年过去了却压根没怎么更新进化过！现在的人虽然嘴上不明说，但骨子里没变，并且一有机会就想把它们全捡回来，好好摆到庙堂上供一番。</p>
+<p>&emsp;&emsp;这下算是说清楚了为什么一百年都没做到的原因，是人出了大问题：他目光太短浅，太急功近利，没有意识到那些不能直接给他带来物质利益的、看不见摸不着的东西的重要和伟大之所在；就算是有幸意识到了，却放不下那个架子，不肯改变自身的形象；他害怕新东西，不适应事情的变化，怕新事物超出了他的控制范围，最终却要去主动抵制这些新事物带来的变革。甚至我敢说，只要再有人认识不到、或是不承认这样的落后，这个国家就还要继续在这个荒唐的迷宫中兜兜转转下去，一百年都不止。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
-        <tag>hexo</tag>
+        <tag>随想</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1187,99 +1217,6 @@
         <tag>游戏</tag>
         <tag>设计</tag>
         <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《黑暗之魂3》背后的艺术理念和风格</title>
-    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
-</blockquote>
-<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
-<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
-<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
-<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
-<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
-<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
-<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
-<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
-<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
-<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
-<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
-<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
-<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
-<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
-<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
-<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
-<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
-<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
-<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
-<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
-<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
-<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>你的英勇长存人心——Diablo2与往事</title>
-    <url>/2021/02/22/%E4%BD%A0%E7%9A%84%E8%8B%B1%E5%8B%87%E9%95%BF%E5%AD%98%E4%BA%BA%E5%BF%83%E2%80%94%E2%80%94Diablo2%E4%B8%8E%E5%BE%80%E4%BA%8B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>昨天在21年的BlizzCon上，《暗黑破坏神2》（Diablo 2，或简称暗黑2）出重制版的事已经是板上钉钉了，突然想起来很多关于暗黑2的往事，至于暗黑2给游戏界带来了的影响就不多说了，虽然它不是我玩的最多的游戏，它却像一个影子一般跟在我的游戏历程中，从未离开过。<a id="more"></a></p>
-</blockquote>
-<p>我认为对于一个学习历史的人来说，其实有两部历史。第一部是这个世界的历史，它客观存在且“不以人的意志转移”；而第二部，则是“个人”的历史，虽不敢说这部历史是否就真的以个人的意志书写，但至少对于这部历史，以及两部历史的重叠状态即“我们这代人的历史”来说，每个人都是它的亲历者，都拥有真正的第一手资料。</p>
-<p>今天我就借着我和Diablo2之间的故事来回忆一下二十年的往事。</p>
-<h2 id="一-混沌初开"><a href="#一-混沌初开" class="headerlink" title="一. 混沌初开"></a><p align="left">一. 混沌初开</p></h2><p>小学一年级，就像漫画里的那样，一位神秘的大叔出现在小孩原本平静的生活里，手里拿着一本古代魔法书，向他展示了一个远古时期的景象：那是在人类文明和庇护之地诞生前，至高天堂和燃烧地狱之间的一场永无休止的终极决战……</p>
-<p>咳咳，扯多了。同学他爸拿着硬盘来到我家，带来了一系列当时国内最流行的单机大作，从此Windows 98那标准的800×600分辨率的绿屏桌面上多了一连串的快捷方式，其中有一个名字叫“毁灭之王”，图标是一个蓝色鬼头。当时的我就把这款游戏称作毁灭之王。</p>
-<p>2000年前后那会我年纪实在太小，不算真正经历过那时的生活，只是后来出于“考古”的目的才有所了解。互联网和计算机其实才刚刚在国内起步，一台个人PC的价格就能卡住很多人了，那会流行组装机，根据2000年前后热门杂志《电脑报》上的参考价格，凑合能用的电脑得5000元，而能跑得动热门大型游戏的至少也得七八千，一张正版游戏盘基本就是一两百块的样子，不过当时很少有什么正版观念，盗版游戏盘还是很便宜的；PS2首发价格3100元水平，能在那会玩上GBA或者后来的NDS的都是有点条件的大佬，甚至我感觉只要有一台90年代的小霸王“学习机”那你就是整个社区的小朋友里最靓的仔了。主机玩家更是少得可怜，因为主机只能玩游戏，所以很少有人会去投资这个，并且当时的电脑已经开始出现主机模拟器。根据信息，2000年城镇职工平均工资为每月780元，总的来说要攒出一台跑得动Diablo2的电脑实在是非常不容易的事。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/a.png" title="a">
-<center>老旧的《电脑报》合订本，差不多可以当历史书看了</center>
-
-<p>说到这就不得不提一下国内游戏的曲折历程，2000年5月光明日报发布了那篇著名的文章《电脑游戏是瞄准孩子的“电子海洛因”》，“电子海洛因论”此后在社会上引起广泛反响，不仅是电脑游戏变成了人人喊打的过街老鼠，国内一切跟电子娱乐有关的产业都遭到了打击，也直接促成了长达13年的“游戏机禁令”，06年央视的《战网魔》及之后的一系列相关事件更是该风波的延续，在此不必多述。这些东西虽说是老调重弹，但怎么也是我们这代人的历史烙印，国家每年还要纪念九一八呢，我相信“电子海洛因”就如同“计生办”、“下岗潮”一样，都是“我们这代人的历史”，也具有同样的分量。</p>
-<p>回到正题，暗黑2在国内流行的版本是台湾松岗公司进行汉化的，也就是我们后来看到的繁体中文版本。这造成一年级的我有近乎一大半的汉字文本看不懂，比如第一幕新手村的萝格营地（Rogue Encampment），屏幕上显示的是“踏入蘿格營地”几个大红字，我一直不认识那个“蘿”字。不过话说当时就算能认字，小学生的智商也不足以理解这个游戏里诸多西方传统宗教、奇幻、悲剧等内容元素，这也是导致我后来没有继续玩下去的原因。</p>
-<p>而且单从游戏性上来说，Diablo系列的一大特色就是每个角色都会生成自己的随机地图，我的智商哪认得到路啊，只记得不同角色的新手村大门一会向左开一会向右开，有时候还跑到上面去了，彻底懵逼，爱我的只有全部点亮的传送小站和回城卷轴，让我在各种风景各异的地图间不断穿行。因为不会打字输入角色名，我有段时间甚至不能创建角色，但是创建角色的那个画面在今天看来也做得也非常出色：七位勇士围在一个篝火前各显神通，我印象最深的就是中间野蛮人的那一声战吼，还有圣骑士的剑盾跪姿、浑身燃烧着蓝色火焰的死灵法师；最后还有亚马逊姐姐的白大腿，嗯，小学生的我毫无感觉。从这次重制版放出的视频看，这个经典场景也得到了重制。</p>
-<p>所幸的是，盗版游戏自带了一个强力角色：作弊的99级法师！而且是冰火电三系全满，属性点也全满，导致技能栏多得吓人，经过一个一个尝试后我发现冰环是最具效率的清怪手段。但角色没有装备，我就去第四幕的群魔堡垒（Pandemonium Fortress，混沌界要塞其实是最正确的翻译，就是3代里的混沌要塞），买了一套寒光闪闪的全身板甲和德式双手巨剑，因为属性全满，成功装备。这归功于Diablo2出色的装备造型设计，让我那时就迷上了盔甲冷兵器这样的元素。就这样我弄出了一个左键普攻右键冰环的“魔法骑士”，因为穿的过于厚实，导致我根本不知道这个角色是法师，连她是个女人都不知道。我一直以为我是一个头盔之下长发飘逸，既能挥舞大剑又能施放法术的魔法骑士。</p>
-<p>当时的玩那真是纯粹的玩，因为什么都看不懂，唯一的乐趣就是在不同的地图间旅游、打怪，那些场景过于黑暗、怪物长相太恐怖的地方我是不敢去的，比如皇宫地牢、神罚之城等，我甚至连群魔堡垒前面的那条长楼梯都不敢下；曾经有个同学告诉我第一幕大教堂底下有恐怖至极的怪物，导致我再也不敢踏进大教堂一步，完全不知道自己的“骑士”已经可以在普通难度秒天秒地，可见胆子是有多小。我最喜欢的地方是神秘避难所（Arcane Sanctuary），感觉那里神圣而又宁静，第一次去的时候，背景缓缓飘过的星空、以及脚下凭空出现的白色石板路让我惊艳不已，其实这张图还利用2D画面的特性做出了一些“三维不可能图形（Impossible figure）”的效果，可惜我那时理解不能；其次是火焰之河（River of Flame），我四处屠杀那种爆浆的虫子，也从未找到过大菠萝…<br>过了一段时间，家里来了个比我大几岁的哥哥，他发现桌面上的“毁灭之王”后非常激动，立刻开始玩。他管这个游戏叫“呆波（他也不会读）”，不叫毁灭之王，并且印象中他似乎还用一瓶可乐还是什么饮料贿赂我，让我允许他多玩一会，我当然也就答应了。我在一旁看，他好像也是跑跑刷刷乐在其中，我抓住机会问他，那个“踏入蘿格營地”的“蘿”字怎么读？他直接回答我读“霍”，我顿觉醍醐灌顶，原来是霍格营地啊，长久以来的谜团终于得到了解决，我当时很佩服那位哥哥，高年级的学生就是厉害多了，个个都是文化人。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/b.png" title="b">
-<center>传言说这个“召唤者”正是1代里的法师</center>
-
-<h2 id="二-转变之时"><a href="#二-转变之时" class="headerlink" title="二. 转变之时"></a><p align="left">二. 转变之时</p></h2><p>这样简单而又快乐的时光过了半年到一年吧，我四处旅游打怪，只为收集那些看起来帅气逼人的盔甲部件，直到有一天一个大学生来到家里，他打开了电脑上的“毁灭之王”，并向我展示了Diablo2中著名的“奶牛关（Cow Level）”：只记得他通过赫拉迪姆方块——那是我当做箱子的东西，和一个回城卷轴，点了一下转变按钮，就召唤出一个红色的传送门！之后在奶牛关中他又展示了一系列复杂的操作，说出了一串又一串我根本无法理解的专业游戏术语。我当时最大的感觉是，我跟他玩的完全不是一个游戏，我完全无法理解他在玩什么，我可能根本就不会玩。</p>
-<p>过了几天我决定亲自复制他的操作：我认为那传送门的配方应该是一个回城卷轴和红色药水，我把它们放进赫拉迪姆方块中点击转变，然而无论我放进去几瓶药水都没有任何回应，取出来的回城卷轴也只能开出蓝色的普通传送门。那时的电脑很多都没有互联网，想要解决问题只能靠自己。我绞尽脑汁的尝试，却还是只能开出蓝色传送门，努力尝试终得失败，这给当时的我很大的打击，我突然意识到这个游戏世界是多么的难以理解，比起这里的困境，一个能端起机关枪随便突突的CS1.5显得是那么的简单友善，后来的我渐渐离开这里开始去玩CS，再后来因为家人的工作原因，那台电脑也一块走了。等到那台电脑又回到家里时，我第一次看到XP系统的蓝天白云绿草地，老旧的那批游戏早已消失不见，更好玩的游戏也接踵而至。暗黑破坏神2，连同那些昏暗的地牢和胆小的魔法骑士，换成了另一个个更加光鲜亮丽的世界。他们被尘封在记忆深处很多年。</p>
-<h2 id="三-巡礼之路"><a href="#三-巡礼之路" class="headerlink" title="三. 巡礼之路"></a><p align="left">三. 巡礼之路</p></h2><p>中学时代在艾泽拉斯的多年经历让我对暴雪这个游戏公司敬佩有加，一个游戏中居然能构建起如此强大而又完善的世界体系，那些虚构的民族和王国居然也能有活灵活现的历史。我开始仔细研究暴雪公司的作品。了解到暗黑破坏神也是早期暴雪公司的作品后，我还是有点惊讶的，读了一些Diablo的背景故事，我又想起了十年前在那里的身影。那时我已经上高二，我决定认认真真的玩一遍Diablo2。我记得当时正是期末考试，因为教务安排，我们每天早上10点考到12点，要连续考一周。而父母基本7点多就出门上班了，我凭空多出了十几个小时的游戏时间。</p>
-<p>这回我是一名真正的圣骑士了，走的是白热路线，一路上战锤连敲带打。当我去寻找召唤者赫拉森，再一次穿越传送门来到神秘避难所，看到那片虚无缥缈的星空时，一种似曾相识又恍如隔世的感觉，我放下战锤和大盾，看了很久…</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/g.jpg" title="g">
-<center>高中时用Java手机拍的屏幕，这位堕落天使血量高得惊人</center>
-
-<p>后来我把存档文件带到了学校的计算机课上，和同学联机玩。下课后有个同学找我，他说看到有人在玩暗黑2他很激动，那是他小时候唯一在电脑上玩过的游戏。我有点小吃惊，因为他应该是我们整个学校里面成绩最好的几个学生之一。</p>
-<p>火焰之河的岩浆海倒是比我记忆中更加明亮刺眼（可能跟显示器有关系），在大菠萝的烈火前我倒了几次，最后还是在一天早上车翻了BOSS，到了哈洛加斯，不知当时是时间不够还是什么原因，我没有继续打下去。高三时更是什么都玩不了，不过我把存档文件带进了大学。大学期间我的圣骑士才打通了第五幕的简单难度，终于完成一周目剧情，同时也实现了“奶牛关”的开启。说来也是好笑，我用了十几年时间通关了一款暗黑2，而噩梦和地狱难度则基本没怎么玩过，这在暗黑玩家里应该算是不折不扣的菜鸟级选手（笑）。</p>
-<h2 id="四-后续"><a href="#四-后续" class="headerlink" title="四. 后续"></a><p align="left">四. 后续</p></h2><p>大学那会刚好暗黑3发布，无数老玩家们都十分期待，不过很多人却失望而归，不管是游戏设计还是艺术风格问题，还是人们早已对Diablolike这类游戏失去兴趣，这款游戏并没有造成暗黑2那样的轰动，我也是草草打完了单人剧情内容，就再也没玩过。</p>
-<p>后来我还考古了1996年的暗黑破坏神1代，1代里还没有2代那样复杂的装备系统、符文之语以及成熟的互联网联机功能（战网），这个几乎可以叫做“是男人就下十五层”的简单粗暴的游戏内容给我最大的感觉是：2代继承了1代的风格，而3代却扔掉了这些。2代的第一幕几乎就是一代大部分内容的复刻致敬，那些灰暗的教堂和墓地、阴暗狭窄的地牢角落、小的可怜的照明范围、纯黑的探索迷雾、简单的黑白红色调形成强烈对比、甚至是一些近乎猎奇的邪典场景，其实是北暴时期Diablo的核心艺术基调：哥特式悲剧/恐怖。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/c.jpg" title="c">
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/d.jpg" title="d">
-<center>考古暗黑1时截的图</center>
-
-<p>举个例子，Diablo2没有天堂场景，但我认为如果Diablo2里面出现天堂场景，应该看起来类似于神秘避难所或者混沌要塞的样子，白色大理石地板、石柱配上白色的天空和光芒、黑色的阴影，构成一座黑白相间的宫殿。给人的感觉应该是安静和严肃，就像今天走进那些古老的教堂里一般，大气不敢出一个，其实某种意义上这也是一种阴森恐怖的感觉。而3代里却是以金色为主色调，至高天之上金碧辉煌圣光普照。这也是为什么Diablo2里圣骑士发出的是纯白色的光芒，截然不同于暴雪其他游戏里的圣光系职业，因为它们完全不是一个主题思路，如果是魔兽里的正派骑士们，那就必须是主旋律式的伟光正，也应该做成这样才对。</p>
-<p>但暗黑系列不同，它的故事基调从来都是悲剧，在此类框架下的文学作品里，正义的实现几乎只能是残酷的、不通人情的、并且往往要付出得不偿失的代价，以至于主人公自我毁灭的。一切正义的形象也因此蒙上了残酷的阴影。所以Diablo世界观下对抗邪恶的结局只能是失败的，甚至造成更加严重的后果，但这一切又是那么的必须必要且不可避免，最终导致主人公义无反顾地走向毁灭，葬送一切。正如一句古老的拉丁语：Fiat iustitia et pereat mundus. 即使毁灭世界也要实现正义。便是此类悲剧所要表现的必然性之所在。</p>
-<p>其实我们也知道，一个游戏好玩与否并不直接取决于艺术表现手法，游戏没有剧情音乐画面不代表游戏就不好玩，说到底笔者也只是一个对艺术略有感知，而对机制设计一窍不通的普通玩家，所以我也只能从这个角度提出观点。而抛弃小众硬核的暗黑艺术，题材越来越偏向大众化，也是暴雪公司在功成名就、不断做大以后不得不选择的道路。如同现在看到的哔哩哔哩（B站）也再不是以前那个二次元爱好者的小圈子。有人说是因为画质进步导致再也做不出以前那种效果，其实很不然，从其他游戏——比如作为Diablolike后辈的《恐怖黎明》（Grim Dawn）的表现来看，这明显不是做不到，而是刻意而为之。暗黑变得不够“暗黑”了，正是那些硬核老玩家们最常提到的话，严格地说，就是我们今天看到的这个暗黑2重制版的美术风格，光从已经发布的实机演示上来看也多多少少有点向现代游戏市场妥协的意味。不过重制怀旧游戏本来就是为了怀旧，或者就说是单纯补票吧，甚至即使这次暴雪再重蹈War3重制版的覆辙，像我一样的情怀玩家也会义无反顾的买这个单。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/e.jpg" title="e">
-<center>太真实了</center>
-
-<h2 id="五-遗产"><a href="#五-遗产" class="headerlink" title="五. 遗产"></a><p align="left">五. 遗产</p></h2><p>合上那本厚厚的魔法书，神秘大叔站起身来，说道：“就这样，故事结束了”。<br>“嗯，谢谢你的故事…”<br>“我还有最后一个问题要问你…你觉得，如果英雄知道这一切都是一场悲剧，一切的反抗都是徒劳，庇护之地的一切都终将归于虚无，什么都留不下来。那么，他还会走上这条路吗？”<br>“会的。虚无或许是真的，但过程本身却是有意义的。”<br>“当我退缩到四下无人的虚拟世界的角落里，我会放上一首轻轻的吉他曲，它似乎描述了一个村庄的悲惨命运。我会给那些已经不存在的热心肠村民们讲故事…我讲到Diablo是西班牙语里‘魔鬼’的含义，在美国有很多以西班牙语命名的地名——那是西班牙征服者们的杰作。有一天西班牙士兵们将一群印第安人包围在了一座山上，当他们决定围歼印第安人时，印第安人却从一条无人知晓的小道脱逃了。西班牙人发现印第安人集体消失后，惊呼山中定有魔鬼相助，此山便得名魔鬼山（Mount Diablo）。”<br>“后来有一个经常去山底下玩的美国高中生，当他在高中课本里学到西班牙语的Diablo时，他顿时豁然开朗。后来他觉得这个名字实在是的太酷了，许多年后他做了一款游戏，里面那个最强大的魔鬼，就叫做Diablo。”<br>“这个英雄和他的世界，曾为人所敬仰，也曾为人所唾弃，它被贬斥为0和1的数字玩笑，被讥笑为痴人说梦的疯癫呓语…”<br>“但是，我看到了他的所作所为，我为他的命运所悲哀，为他的勇敢而热血沸腾，他的爱恨情仇，我都感同身受。我清楚的记录下他是如何从一个弱者变成扛起大盾战锤的骑士；如何从一个大字不识、没有智商可言的憨憨一步步通晓那些纷繁复杂的魔法奥秘；从众说纷纭的混沌里计算出自己的结果；在怀疑与恐惧的废墟中，建起一座属于自己的神密圣殿。”<br>“你不会被忘记…”<br>“因为…你的英勇长存人心。（<font color="#EA0000">YOUR DEEDS OF VALOR WILL BE REMEMBERED</font>）”<br>“这部历史就是我们的遗产。”</p>
-<pre><code>睁开眼睛，神秘大叔消失不见，一切似乎只是往日的幻影。</code></pre><hr>
-<p>最后附上一些关于本文的链接和扩展资料：</p>
-<p>暗黑2重制版实机演示：<br><a href="https://www.bilibili.com/video/BV1L5411N7Pd" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1L5411N7Pd</a></p>
-<p>暗黑系列经典音乐崔斯特瑞姆（Tristram）：<br><a href="https://music.163.com/#/song?id=1718051" target="_blank" rel="noopener">https://music.163.com/#/song?id=1718051</a></p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/f.png" title="f">
-<center>暗黑2所有场景的名称</center>
-
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
-        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1379,6 +1316,99 @@
         <tag>服务器</tag>
         <tag>软件</tag>
         <tag>游戏</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《黑暗之魂3》背后的艺术理念和风格</title>
+    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
+</blockquote>
+<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
+<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
+<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
+<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
+<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
+<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
+<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
+<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
+<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
+<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
+<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
+<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
+<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
+<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
+<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
+<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
+<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
+<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
+<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
+<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
+<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
+<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>你的英勇长存人心——Diablo2与往事</title>
+    <url>/2021/02/22/%E4%BD%A0%E7%9A%84%E8%8B%B1%E5%8B%87%E9%95%BF%E5%AD%98%E4%BA%BA%E5%BF%83%E2%80%94%E2%80%94Diablo2%E4%B8%8E%E5%BE%80%E4%BA%8B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>昨天在21年的BlizzCon上，《暗黑破坏神2》（Diablo 2，或简称暗黑2）出重制版的事已经是板上钉钉了，突然想起来很多关于暗黑2的往事，至于暗黑2给游戏界带来了的影响就不多说了，虽然它不是我玩的最多的游戏，它却像一个影子一般跟在我的游戏历程中，从未离开过。<a id="more"></a></p>
+</blockquote>
+<p>我认为对于一个学习历史的人来说，其实有两部历史。第一部是这个世界的历史，它客观存在且“不以人的意志转移”；而第二部，则是“个人”的历史，虽不敢说这部历史是否就真的以个人的意志书写，但至少对于这部历史，以及两部历史的重叠状态即“我们这代人的历史”来说，每个人都是它的亲历者，都拥有真正的第一手资料。</p>
+<p>今天我就借着我和Diablo2之间的故事来回忆一下二十年的往事。</p>
+<h2 id="一-混沌初开"><a href="#一-混沌初开" class="headerlink" title="一. 混沌初开"></a><p align="left">一. 混沌初开</p></h2><p>小学一年级，就像漫画里的那样，一位神秘的大叔出现在小孩原本平静的生活里，手里拿着一本古代魔法书，向他展示了一个远古时期的景象：那是在人类文明和庇护之地诞生前，至高天堂和燃烧地狱之间的一场永无休止的终极决战……</p>
+<p>咳咳，扯多了。同学他爸拿着硬盘来到我家，带来了一系列当时国内最流行的单机大作，从此Windows 98那标准的800×600分辨率的绿屏桌面上多了一连串的快捷方式，其中有一个名字叫“毁灭之王”，图标是一个蓝色鬼头。当时的我就把这款游戏称作毁灭之王。</p>
+<p>2000年前后那会我年纪实在太小，不算真正经历过那时的生活，只是后来出于“考古”的目的才有所了解。互联网和计算机其实才刚刚在国内起步，一台个人PC的价格就能卡住很多人了，那会流行组装机，根据2000年前后热门杂志《电脑报》上的参考价格，凑合能用的电脑得5000元，而能跑得动热门大型游戏的至少也得七八千，一张正版游戏盘基本就是一两百块的样子，不过当时很少有什么正版观念，盗版游戏盘还是很便宜的；PS2首发价格3100元水平，能在那会玩上GBA或者后来的NDS的都是有点条件的大佬，甚至我感觉只要有一台90年代的小霸王“学习机”那你就是整个社区的小朋友里最靓的仔了。主机玩家更是少得可怜，因为主机只能玩游戏，所以很少有人会去投资这个，并且当时的电脑已经开始出现主机模拟器。根据信息，2000年城镇职工平均工资为每月780元，总的来说要攒出一台跑得动Diablo2的电脑实在是非常不容易的事。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/a.png" title="a">
+<center>老旧的《电脑报》合订本，差不多可以当历史书看了</center>
+
+<p>说到这就不得不提一下国内游戏的曲折历程，2000年5月光明日报发布了那篇著名的文章《电脑游戏是瞄准孩子的“电子海洛因”》，“电子海洛因论”此后在社会上引起广泛反响，不仅是电脑游戏变成了人人喊打的过街老鼠，国内一切跟电子娱乐有关的产业都遭到了打击，也直接促成了长达13年的“游戏机禁令”，06年央视的《战网魔》及之后的一系列相关事件更是该风波的延续，在此不必多述。这些东西虽说是老调重弹，但怎么也是我们这代人的历史烙印，国家每年还要纪念九一八呢，我相信“电子海洛因”就如同“计生办”、“下岗潮”一样，都是“我们这代人的历史”，也具有同样的分量。</p>
+<p>回到正题，暗黑2在国内流行的版本是台湾松岗公司进行汉化的，也就是我们后来看到的繁体中文版本。这造成一年级的我有近乎一大半的汉字文本看不懂，比如第一幕新手村的萝格营地（Rogue Encampment），屏幕上显示的是“踏入蘿格營地”几个大红字，我一直不认识那个“蘿”字。不过话说当时就算能认字，小学生的智商也不足以理解这个游戏里诸多西方传统宗教、奇幻、悲剧等内容元素，这也是导致我后来没有继续玩下去的原因。</p>
+<p>而且单从游戏性上来说，Diablo系列的一大特色就是每个角色都会生成自己的随机地图，我的智商哪认得到路啊，只记得不同角色的新手村大门一会向左开一会向右开，有时候还跑到上面去了，彻底懵逼，爱我的只有全部点亮的传送小站和回城卷轴，让我在各种风景各异的地图间不断穿行。因为不会打字输入角色名，我有段时间甚至不能创建角色，但是创建角色的那个画面在今天看来也做得也非常出色：七位勇士围在一个篝火前各显神通，我印象最深的就是中间野蛮人的那一声战吼，还有圣骑士的剑盾跪姿、浑身燃烧着蓝色火焰的死灵法师；最后还有亚马逊姐姐的白大腿，嗯，小学生的我毫无感觉。从这次重制版放出的视频看，这个经典场景也得到了重制。</p>
+<p>所幸的是，盗版游戏自带了一个强力角色：作弊的99级法师！而且是冰火电三系全满，属性点也全满，导致技能栏多得吓人，经过一个一个尝试后我发现冰环是最具效率的清怪手段。但角色没有装备，我就去第四幕的群魔堡垒（Pandemonium Fortress，混沌界要塞其实是最正确的翻译，就是3代里的混沌要塞），买了一套寒光闪闪的全身板甲和德式双手巨剑，因为属性全满，成功装备。这归功于Diablo2出色的装备造型设计，让我那时就迷上了盔甲冷兵器这样的元素。就这样我弄出了一个左键普攻右键冰环的“魔法骑士”，因为穿的过于厚实，导致我根本不知道这个角色是法师，连她是个女人都不知道。我一直以为我是一个头盔之下长发飘逸，既能挥舞大剑又能施放法术的魔法骑士。</p>
+<p>当时的玩那真是纯粹的玩，因为什么都看不懂，唯一的乐趣就是在不同的地图间旅游、打怪，那些场景过于黑暗、怪物长相太恐怖的地方我是不敢去的，比如皇宫地牢、神罚之城等，我甚至连群魔堡垒前面的那条长楼梯都不敢下；曾经有个同学告诉我第一幕大教堂底下有恐怖至极的怪物，导致我再也不敢踏进大教堂一步，完全不知道自己的“骑士”已经可以在普通难度秒天秒地，可见胆子是有多小。我最喜欢的地方是神秘避难所（Arcane Sanctuary），感觉那里神圣而又宁静，第一次去的时候，背景缓缓飘过的星空、以及脚下凭空出现的白色石板路让我惊艳不已，其实这张图还利用2D画面的特性做出了一些“三维不可能图形（Impossible figure）”的效果，可惜我那时理解不能；其次是火焰之河（River of Flame），我四处屠杀那种爆浆的虫子，也从未找到过大菠萝…<br>过了一段时间，家里来了个比我大几岁的哥哥，他发现桌面上的“毁灭之王”后非常激动，立刻开始玩。他管这个游戏叫“呆波（他也不会读）”，不叫毁灭之王，并且印象中他似乎还用一瓶可乐还是什么饮料贿赂我，让我允许他多玩一会，我当然也就答应了。我在一旁看，他好像也是跑跑刷刷乐在其中，我抓住机会问他，那个“踏入蘿格營地”的“蘿”字怎么读？他直接回答我读“霍”，我顿觉醍醐灌顶，原来是霍格营地啊，长久以来的谜团终于得到了解决，我当时很佩服那位哥哥，高年级的学生就是厉害多了，个个都是文化人。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/b.png" title="b">
+<center>传言说这个“召唤者”正是1代里的法师</center>
+
+<h2 id="二-转变之时"><a href="#二-转变之时" class="headerlink" title="二. 转变之时"></a><p align="left">二. 转变之时</p></h2><p>这样简单而又快乐的时光过了半年到一年吧，我四处旅游打怪，只为收集那些看起来帅气逼人的盔甲部件，直到有一天一个大学生来到家里，他打开了电脑上的“毁灭之王”，并向我展示了Diablo2中著名的“奶牛关（Cow Level）”：只记得他通过赫拉迪姆方块——那是我当做箱子的东西，和一个回城卷轴，点了一下转变按钮，就召唤出一个红色的传送门！之后在奶牛关中他又展示了一系列复杂的操作，说出了一串又一串我根本无法理解的专业游戏术语。我当时最大的感觉是，我跟他玩的完全不是一个游戏，我完全无法理解他在玩什么，我可能根本就不会玩。</p>
+<p>过了几天我决定亲自复制他的操作：我认为那传送门的配方应该是一个回城卷轴和红色药水，我把它们放进赫拉迪姆方块中点击转变，然而无论我放进去几瓶药水都没有任何回应，取出来的回城卷轴也只能开出蓝色的普通传送门。那时的电脑很多都没有互联网，想要解决问题只能靠自己。我绞尽脑汁的尝试，却还是只能开出蓝色传送门，努力尝试终得失败，这给当时的我很大的打击，我突然意识到这个游戏世界是多么的难以理解，比起这里的困境，一个能端起机关枪随便突突的CS1.5显得是那么的简单友善，后来的我渐渐离开这里开始去玩CS，再后来因为家人的工作原因，那台电脑也一块走了。等到那台电脑又回到家里时，我第一次看到XP系统的蓝天白云绿草地，老旧的那批游戏早已消失不见，更好玩的游戏也接踵而至。暗黑破坏神2，连同那些昏暗的地牢和胆小的魔法骑士，换成了另一个个更加光鲜亮丽的世界。他们被尘封在记忆深处很多年。</p>
+<h2 id="三-巡礼之路"><a href="#三-巡礼之路" class="headerlink" title="三. 巡礼之路"></a><p align="left">三. 巡礼之路</p></h2><p>中学时代在艾泽拉斯的多年经历让我对暴雪这个游戏公司敬佩有加，一个游戏中居然能构建起如此强大而又完善的世界体系，那些虚构的民族和王国居然也能有活灵活现的历史。我开始仔细研究暴雪公司的作品。了解到暗黑破坏神也是早期暴雪公司的作品后，我还是有点惊讶的，读了一些Diablo的背景故事，我又想起了十年前在那里的身影。那时我已经上高二，我决定认认真真的玩一遍Diablo2。我记得当时正是期末考试，因为教务安排，我们每天早上10点考到12点，要连续考一周。而父母基本7点多就出门上班了，我凭空多出了十几个小时的游戏时间。</p>
+<p>这回我是一名真正的圣骑士了，走的是白热路线，一路上战锤连敲带打。当我去寻找召唤者赫拉森，再一次穿越传送门来到神秘避难所，看到那片虚无缥缈的星空时，一种似曾相识又恍如隔世的感觉，我放下战锤和大盾，看了很久…</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/g.jpg" title="g">
+<center>高中时用Java手机拍的屏幕，这位堕落天使血量高得惊人</center>
+
+<p>后来我把存档文件带到了学校的计算机课上，和同学联机玩。下课后有个同学找我，他说看到有人在玩暗黑2他很激动，那是他小时候唯一在电脑上玩过的游戏。我有点小吃惊，因为他应该是我们整个学校里面成绩最好的几个学生之一。</p>
+<p>火焰之河的岩浆海倒是比我记忆中更加明亮刺眼（可能跟显示器有关系），在大菠萝的烈火前我倒了几次，最后还是在一天早上车翻了BOSS，到了哈洛加斯，不知当时是时间不够还是什么原因，我没有继续打下去。高三时更是什么都玩不了，不过我把存档文件带进了大学。大学期间我的圣骑士才打通了第五幕的简单难度，终于完成一周目剧情，同时也实现了“奶牛关”的开启。说来也是好笑，我用了十几年时间通关了一款暗黑2，而噩梦和地狱难度则基本没怎么玩过，这在暗黑玩家里应该算是不折不扣的菜鸟级选手（笑）。</p>
+<h2 id="四-后续"><a href="#四-后续" class="headerlink" title="四. 后续"></a><p align="left">四. 后续</p></h2><p>大学那会刚好暗黑3发布，无数老玩家们都十分期待，不过很多人却失望而归，不管是游戏设计还是艺术风格问题，还是人们早已对Diablolike这类游戏失去兴趣，这款游戏并没有造成暗黑2那样的轰动，我也是草草打完了单人剧情内容，就再也没玩过。</p>
+<p>后来我还考古了1996年的暗黑破坏神1代，1代里还没有2代那样复杂的装备系统、符文之语以及成熟的互联网联机功能（战网），这个几乎可以叫做“是男人就下十五层”的简单粗暴的游戏内容给我最大的感觉是：2代继承了1代的风格，而3代却扔掉了这些。2代的第一幕几乎就是一代大部分内容的复刻致敬，那些灰暗的教堂和墓地、阴暗狭窄的地牢角落、小的可怜的照明范围、纯黑的探索迷雾、简单的黑白红色调形成强烈对比、甚至是一些近乎猎奇的邪典场景，其实是北暴时期Diablo的核心艺术基调：哥特式悲剧/恐怖。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/c.jpg" title="c">
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/d.jpg" title="d">
+<center>考古暗黑1时截的图</center>
+
+<p>举个例子，Diablo2没有天堂场景，但我认为如果Diablo2里面出现天堂场景，应该看起来类似于神秘避难所或者混沌要塞的样子，白色大理石地板、石柱配上白色的天空和光芒、黑色的阴影，构成一座黑白相间的宫殿。给人的感觉应该是安静和严肃，就像今天走进那些古老的教堂里一般，大气不敢出一个，其实某种意义上这也是一种阴森恐怖的感觉。而3代里却是以金色为主色调，至高天之上金碧辉煌圣光普照。这也是为什么Diablo2里圣骑士发出的是纯白色的光芒，截然不同于暴雪其他游戏里的圣光系职业，因为它们完全不是一个主题思路，如果是魔兽里的正派骑士们，那就必须是主旋律式的伟光正，也应该做成这样才对。</p>
+<p>但暗黑系列不同，它的故事基调从来都是悲剧，在此类框架下的文学作品里，正义的实现几乎只能是残酷的、不通人情的、并且往往要付出得不偿失的代价，以至于主人公自我毁灭的。一切正义的形象也因此蒙上了残酷的阴影。所以Diablo世界观下对抗邪恶的结局只能是失败的，甚至造成更加严重的后果，但这一切又是那么的必须必要且不可避免，最终导致主人公义无反顾地走向毁灭，葬送一切。正如一句古老的拉丁语：Fiat iustitia et pereat mundus. 即使毁灭世界也要实现正义。便是此类悲剧所要表现的必然性之所在。</p>
+<p>其实我们也知道，一个游戏好玩与否并不直接取决于艺术表现手法，游戏没有剧情音乐画面不代表游戏就不好玩，说到底笔者也只是一个对艺术略有感知，而对机制设计一窍不通的普通玩家，所以我也只能从这个角度提出观点。而抛弃小众硬核的暗黑艺术，题材越来越偏向大众化，也是暴雪公司在功成名就、不断做大以后不得不选择的道路。如同现在看到的哔哩哔哩（B站）也再不是以前那个二次元爱好者的小圈子。有人说是因为画质进步导致再也做不出以前那种效果，其实很不然，从其他游戏——比如作为Diablolike后辈的《恐怖黎明》（Grim Dawn）的表现来看，这明显不是做不到，而是刻意而为之。暗黑变得不够“暗黑”了，正是那些硬核老玩家们最常提到的话，严格地说，就是我们今天看到的这个暗黑2重制版的美术风格，光从已经发布的实机演示上来看也多多少少有点向现代游戏市场妥协的意味。不过重制怀旧游戏本来就是为了怀旧，或者就说是单纯补票吧，甚至即使这次暴雪再重蹈War3重制版的覆辙，像我一样的情怀玩家也会义无反顾的买这个单。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/e.jpg" title="e">
+<center>太真实了</center>
+
+<h2 id="五-遗产"><a href="#五-遗产" class="headerlink" title="五. 遗产"></a><p align="left">五. 遗产</p></h2><p>合上那本厚厚的魔法书，神秘大叔站起身来，说道：“就这样，故事结束了”。<br>“嗯，谢谢你的故事…”<br>“我还有最后一个问题要问你…你觉得，如果英雄知道这一切都是一场悲剧，一切的反抗都是徒劳，庇护之地的一切都终将归于虚无，什么都留不下来。那么，他还会走上这条路吗？”<br>“会的。虚无或许是真的，但过程本身却是有意义的。”<br>“当我退缩到四下无人的虚拟世界的角落里，我会放上一首轻轻的吉他曲，它似乎描述了一个村庄的悲惨命运。我会给那些已经不存在的热心肠村民们讲故事…我讲到Diablo是西班牙语里‘魔鬼’的含义，在美国有很多以西班牙语命名的地名——那是西班牙征服者们的杰作。有一天西班牙士兵们将一群印第安人包围在了一座山上，当他们决定围歼印第安人时，印第安人却从一条无人知晓的小道脱逃了。西班牙人发现印第安人集体消失后，惊呼山中定有魔鬼相助，此山便得名魔鬼山（Mount Diablo）。”<br>“后来有一个经常去山底下玩的美国高中生，当他在高中课本里学到西班牙语的Diablo时，他顿时豁然开朗。后来他觉得这个名字实在是的太酷了，许多年后他做了一款游戏，里面那个最强大的魔鬼，就叫做Diablo。”<br>“这个英雄和他的世界，曾为人所敬仰，也曾为人所唾弃，它被贬斥为0和1的数字玩笑，被讥笑为痴人说梦的疯癫呓语…”<br>“但是，我看到了他的所作所为，我为他的命运所悲哀，为他的勇敢而热血沸腾，他的爱恨情仇，我都感同身受。我清楚的记录下他是如何从一个弱者变成扛起大盾战锤的骑士；如何从一个大字不识、没有智商可言的憨憨一步步通晓那些纷繁复杂的魔法奥秘；从众说纷纭的混沌里计算出自己的结果；在怀疑与恐惧的废墟中，建起一座属于自己的神密圣殿。”<br>“你不会被忘记…”<br>“因为…你的英勇长存人心。（<font color="#EA0000">YOUR DEEDS OF VALOR WILL BE REMEMBERED</font>）”<br>“这部历史就是我们的遗产。”</p>
+<pre><code>睁开眼睛，神秘大叔消失不见，一切似乎只是往日的幻影。</code></pre><hr>
+<p>最后附上一些关于本文的链接和扩展资料：</p>
+<p>暗黑2重制版实机演示：<br><a href="https://www.bilibili.com/video/BV1L5411N7Pd" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1L5411N7Pd</a></p>
+<p>暗黑系列经典音乐崔斯特瑞姆（Tristram）：<br><a href="https://music.163.com/#/song?id=1718051" target="_blank" rel="noopener">https://music.163.com/#/song?id=1718051</a></p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/f.png" title="f">
+<center>暗黑2所有场景的名称</center>
+
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
