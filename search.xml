@@ -170,6 +170,41 @@
 ]]></content>
   </entry>
   <entry>
+    <title>hexo添加网易云音乐播放器</title>
+    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
+</blockquote>
+<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
+<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
+
+<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
+<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
+<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
+<p>不再重叠了~</p>
+<hr>
+<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
+<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
+<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
+<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
+]]></content>
+      <tags>
+        <tag>网页</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Win10家庭版启用远程桌面&amp;启用组策略</title>
     <url>/2021/09/01/Win10%E5%AE%B6%E5%BA%AD%E7%89%88%E5%90%AF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2and%E5%90%AF%E7%94%A8%E7%BB%84%E7%AD%96%E7%95%A5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -217,6 +252,44 @@
 ]]></content>
       <tags>
         <tag>系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Y7000P更换散热模组</title>
+    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
+<p>话不多说了，开搞。</p>
+<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
+<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
+<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
+<p>首先是一些说明：</p>
+<ol>
+<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
+<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
+<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
+</ol>
+<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
+<p>然后观察一下新买的散热的样子：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
+<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
+<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
+<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
+<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
+<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
+<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
+<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
+<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
+<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>硬件</tag>
       </tags>
   </entry>
   <entry>
@@ -268,76 +341,32 @@
       </tags>
   </entry>
   <entry>
-    <title>Y7000P更换散热模组</title>
-    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
+    <title>使用PS的液化工具绘制弯刀的曲线</title>
+    <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
+<p>学生时代经常爱在课本上乱画各种武器，总是会发现弯刀的曲线很不好把握，怎么画怎么别扭。事实上虽然世界各地的曲刃刀剑五花八门，但其曲线其实都是很严谨的。这里用一种偷懒的方法可以快速制作弯刀形状，并且允许你随意胡整。<a id="more"></a></p>
 </blockquote>
-<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
-<p>话不多说了，开搞。</p>
-<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
-<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
-<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
-<p>首先是一些说明：</p>
-<ol>
-<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
-<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
-<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
-</ol>
-<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
-<p>然后观察一下新买的散热的样子：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
-<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
-<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
-<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
-<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
-<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
-<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
-<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
-<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
-<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
+<p>思路是利用一个PS修图经常用的叫液化工具的变形能力，将直刀挤压拉伸，从而变成弯刀的样式。<br>比如我们先画一个简单的直刃军刀，手柄可以先不画。把剑身单独放到一个图层里，将剑身略微拉宽一点。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/1.png" title="直刃看起来很low吧"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/2.png" title="直刃看起来很low吧">
+<p>然后使用PS滤镜——液化工具，即可对图层进行挤压。这里将半径调到一个很大的水平。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/3.png" title="液化半径">
+<p>仅仅只需要一下，就把直刀给挤成弯刀了…再把护手给接上去…</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/4.png" title="image"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/5.png" title="image">
+<p>一把造型中规中矩的欧洲军刀（Saber）就做好了。</p>
+<p>看到这里你可能会觉得我考这有啥用还不如直接上手画一个，别急，接下来换难一点的。<br>把直剑的两头拉长，注意将剑尖部位弧度拉大并让它更加尖锐；而靠近剑柄的地方只拉出切线，基本不要弧度。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/6.png" title="就问你清真不清真">
+<p>这样就形成了一把中东风格的“舍施尔”（Shamshir）弯刀，截然不同于欧洲军刀的曲线，它的弧度并不是均匀的，更靠前端。而且刀尖更为尖锐，有如新月。就问你清真不清真。<br>同理，如果想让之前的欧洲军刀更偏向刺击风格，也可以这样把剑身搞细，剑尖搞尖。</p>
+<p>再做一个更有特点的，这次要像捏橡皮泥一样来处理这些曲线。<br>还是之前的直剑模型，把它反向挤弯，然后把液化半径缩小，利用液化半径的边缘地带把两头的线段拉扯开，使剑身两端膨胀。<br>再把剑尖拉尖，调整好曲线和曲线的过渡区域。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/7.png" title="大号廓尔喀">
+<p>一把逆刃的“亚特坎”（Yataghans），宽大的头部有着重劈砍的风格，虽然我感觉我捏成了大号廓尔喀…</p>
+<p>最后添加一些细节，给三把刀剑合个影~</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/8.png" title="Kira!☆">
+
+<p>嗯，这样就好了，理论上日本刀也是可以捏的，甚至可以调整刀反的位置（虽然可能不大需要），但是就不能直接套用之前那种直刀的模板了，剑尖得修改一下。</p>
 ]]></content>
       <tags>
-        <tag>生活</tag>
-        <tag>硬件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo添加网易云音乐播放器</title>
-    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
-</blockquote>
-<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
-<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
-
-<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
-<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
-<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
-
-<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
-<p>不再重叠了~</p>
-<hr>
-<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
-<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
-<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
-<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
-]]></content>
-      <tags>
-        <tag>网页</tag>
-        <tag>hexo</tag>
+        <tag>绘画</tag>
+        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -424,32 +453,37 @@
       </tags>
   </entry>
   <entry>
-    <title>使用PS的液化工具绘制弯刀的曲线</title>
-    <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>学生时代经常爱在课本上乱画各种武器，总是会发现弯刀的曲线很不好把握，怎么画怎么别扭。事实上虽然世界各地的曲刃刀剑五花八门，但其曲线其实都是很严谨的。这里用一种偷懒的方法可以快速制作弯刀形状，并且允许你随意胡整。<a id="more"></a></p>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
 </blockquote>
-<p>思路是利用一个PS修图经常用的叫液化工具的变形能力，将直刀挤压拉伸，从而变成弯刀的样式。<br>比如我们先画一个简单的直刃军刀，手柄可以先不画。把剑身单独放到一个图层里，将剑身略微拉宽一点。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/1.png" title="直刃看起来很low吧"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/2.png" title="直刃看起来很low吧">
-<p>然后使用PS滤镜——液化工具，即可对图层进行挤压。这里将半径调到一个很大的水平。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/3.png" title="液化半径">
-<p>仅仅只需要一下，就把直刀给挤成弯刀了…再把护手给接上去…</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/4.png" title="image"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/5.png" title="image">
-<p>一把造型中规中矩的欧洲军刀（Saber）就做好了。</p>
-<p>看到这里你可能会觉得我考这有啥用还不如直接上手画一个，别急，接下来换难一点的。<br>把直剑的两头拉长，注意将剑尖部位弧度拉大并让它更加尖锐；而靠近剑柄的地方只拉出切线，基本不要弧度。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/6.png" title="就问你清真不清真">
-<p>这样就形成了一把中东风格的“舍施尔”（Shamshir）弯刀，截然不同于欧洲军刀的曲线，它的弧度并不是均匀的，更靠前端。而且刀尖更为尖锐，有如新月。就问你清真不清真。<br>同理，如果想让之前的欧洲军刀更偏向刺击风格，也可以这样把剑身搞细，剑尖搞尖。</p>
-<p>再做一个更有特点的，这次要像捏橡皮泥一样来处理这些曲线。<br>还是之前的直剑模型，把它反向挤弯，然后把液化半径缩小，利用液化半径的边缘地带把两头的线段拉扯开，使剑身两端膨胀。<br>再把剑尖拉尖，调整好曲线和曲线的过渡区域。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/7.png" title="大号廓尔喀">
-<p>一把逆刃的“亚特坎”（Yataghans），宽大的头部有着重劈砍的风格，虽然我感觉我捏成了大号廓尔喀…</p>
-<p>最后添加一些细节，给三把刀剑合个影~</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/8.png" title="Kira!☆">
-
-<p>嗯，这样就好了，理论上日本刀也是可以捏的，甚至可以调整刀反的位置（虽然可能不大需要），但是就不能直接套用之前那种直刀的模板了，剑尖得修改一下。</p>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
 ]]></content>
       <tags>
+        <tag>软件</tag>
         <tag>绘画</tag>
-        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>大型翻译计划：魔兽世界日记</title>
+    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
+</blockquote>
+<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
+<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
+<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
+<hr>
+<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>翻译</tag>
       </tags>
   </entry>
   <entry>
@@ -468,44 +502,6 @@
         <tag>绘画</tag>
         <tag>设计</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客建好了~</title>
-    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
-</blockquote>
-<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
-<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
-<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
-<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
-<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
-<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
-<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
-<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，包括我的父亲，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
-<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
-<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
-<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
-<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
-<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
-]]></content>
   </entry>
   <entry>
     <title>如何移植hexo到新的设备上</title>
@@ -535,21 +531,25 @@
       </tags>
   </entry>
   <entry>
-    <title>大型翻译计划：魔兽世界日记</title>
-    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
+    <title>博客建好了~</title>
+    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
+<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
 </blockquote>
-<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
-<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
-<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
-<hr>
-<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
+<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
+<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
+<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
+<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
+<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
+<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
+<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
+<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，包括我的父亲，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
+<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
+<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
+<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
+<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
+<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
 ]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>翻译</tag>
-      </tags>
   </entry>
   <entry>
     <title>小荷尔拜因-吕策尔伯格《死亡之舞》全套高清图</title>
@@ -653,24 +653,6 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个库拉</title>
-    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
-</blockquote>
-<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
-<hr>
-<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
-<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
-<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
-<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
-<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>画一个尖耳朵小姐姐</title>
     <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -702,6 +684,46 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个库拉</title>
+    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
+</blockquote>
+<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
+<hr>
+<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
+<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
+<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
+<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
+<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个燧发枪小姐姐</title>
+    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>似乎是有进步的对吧？ <a id="more"></a></p>
+</blockquote>
+<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
+
+<hr>
+<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
+<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
+<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
+<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
+<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
+<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+        <tag>历史</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个罗斯贵族骑兵</title>
     <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -729,28 +751,6 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个燧发枪小姐姐</title>
-    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>似乎是有进步的对吧？ <a id="more"></a></p>
-</blockquote>
-<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
-
-<hr>
-<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
-<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
-<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
-<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
-<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
-<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -786,104 +786,6 @@
       <tags>
         <tag>软件</tag>
         <tag>系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考古一个小众老游戏出色的音乐</title>
-    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
-</blockquote>
-<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
-<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
-<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
-<hr>
-<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
-<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
-<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
-<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决Xshell6强制更新的问题</title>
-    <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>绕过Xshell6的强制更新。<a id="more"></a></p>
-</blockquote>
-<p>最近弄服务器的时候把以前用来管理别的服务器的Xshell6拿出来看了看，结果提示“要继续使用此程序,您必须应用最新的更新或使用新版本”，不更新就不给用。但离谱的是这个更新压根无法进行，挂魔法都没用，所以就找了个办法绕过这个更新：</p>
-<p>在简书上看到一个好用的解决办法：</p>
-<ol>
-<li><p>Xshell6的根目录里有一个名为 nslicense.dll 的dll文件，使用十六进制编辑器打开该文件；</p>
-</li>
-<li><p>搜索（或Ctrl+F）字节序列，输入7F0C81F98033E1010F8681，从头搜索，点确定。如图所示：</p>
-<img src="/2021/09/14/解决Xshell6强制更新的问题/1.png" title="a"></li>
-<li><p>将倒数第三位的6改成3，也就是将“86”字符段改为“83”。改完后保存退出十六进制编辑器。</p>
-</li>
-</ol>
-<p>重启Xshell6即可绕过更新。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>配置了SSH后仍然需要输密码的情况</title>
-    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
-</blockquote>
-<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
-<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
-<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
-<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
-<ol>
-<li>删除<code>.deploy_git</code>文件夹;</li>
-<li>输入<code>git config --global core.autocrlf false</code></li>
-<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
-</ol>
-<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
-<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
-<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>修改为：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>（注意要改的地方还有.com后面那个冒号）</p>
-<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
-<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
-<hr>
-<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>那些追求真正价值的上传者</title>
-    <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>写给那些不知名的上传者们。 <a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;不知道为什么突然想到了AFK PL@YERS，和那个我能和同学坐在屏幕前面看一下午魔兽搞笑视频的日子。</p>
-<p>&emsp;&emsp;大概是2010年前后，记忆中有《星际争霸2》上线时的消息，那会视频都在优酷网看（应该也有土豆网），虽然每点一个视频都要等大概30-60秒的烂广告，却还是让人看的很入迷，那会魔兽还很火，看的最多的就是AFK PL@YERS、性感玉米这些，当然还有《我叫mt》。巫妖电视王，晚安部落，性感玉米的《网瘾战争》这些更是看了一遍又一遍。这些创作者们直接调用魔兽世界的游戏框架和地图、人物模型，制作出机械木偶般的游戏动画，比起传统的动画来说虽然看起来十分简陋粗糙，却仍讲出了活灵活现的故事。可贵的是，这些往往是由几个朋友们拼凑而成的同好小队，靠着对游戏的热爱和热情，靠着对真相和事实的坚持，胜过了影视、动画行业的很多所谓的专业人士和团队。现在去B站等视频网站搜索AFK PL@YERS也找不到多少视频了，可能是现在对外网搬运有一定的打压，以前我记得可是有好几个人在系统地在搬运他们的作品，数量都是一整页一整页，能让人在炎热的夏天拿着冰镇饮料快乐一下午。</p>
-<p>&emsp;&emsp;现在想想，那会优酷、土豆其实一定程度上充当了Youtube的本地化版本，因为那时管的不严，有大量不知名的上传者搬运Youtube上优质的作品（其实通过他们也筛选掉了Youtube上的低劣内容），经常能找到哪个独立音乐人的新作品，哪个黑死金乐队的现场录像，魔兽星际的游戏原声，从来没能在盗版游戏中看到的结局动画，还有那些我从来没有接触过的电影和动漫。我记得我还看过一些枪械火药制造过程的录像，Youtube上最早的一批冷兵器和盔甲锻造视频，甚至还有几首后来被汇入Botho Lukas Chor的宝藏专辑《Wenn die Landsknecht singen》里的音乐（确实很让人吃惊，连这都有！而且比这张14年的汇总专辑还早，但十多年前我对德语和Landsknecht的历史一无所知，只是觉得很好听），以及某些打擦边球的玩意（质量也确实很高就是了）。当然那些太敏感直接的话题肯定是没有的。那会确实是没有什么自媒体圈子、营销号的，网友们ID都是一串IP地址。虽然这样的搬运或者盗版视频侵犯了原作者的版权也是事实，但还是能让我们接触到这么多优秀的作品。我后来在Youtube上也一个一个找回了那些原作者，虽然很多都在数年前就已经停更了，但也总归是找到了他们。</p>
-<p>&emsp;&emsp;不过现在打开视频网站都是一群什么玩意？说实话没人会喜欢现在这样的东西，除了一些官方牵头搞得诸如后浪二舅之类的假大空，大部分自媒体作者也不是在做什么有价值的原创内容，而是天天在那造人设、以打造泛社会化的meme为目标，批量生产没有什么技术含量的低成本视频，试图以这些东西来吸引全网无头苍蝇一般的受众，当年玉米就曾在作品和现实中狠狠吐槽过这些正在互联网上越来越泛滥的虚假：为什么我们生产的大部分电影、电视剧、小品相声，都那么无聊？还不是因为假的东西太多。虚假的作者和没有价值的作品在一个正常的互联网上是没有任何生存空间的，拒绝虚假和错误是人和动物的天性，他们在被强迫的时候接受了大量的虚假和错误，但当他们接触到自由的互联网的时候，又为什么要去主动收看毫无价值的东西呢？相反，如果谁在那时的视频站发布“假大空”，干什么都散发着一股铜臭味的时候，一定会被那些顶着一串IP地址的网友们亲切招呼。</p>
-<p>&emsp;&emsp;但是在一个不正常或者说环境很恶劣的互联网体系和社会环境中，一切都翻了过来，人们比的不再是谁的作品更有价值更有意义，而是只认让流量和金钱，看你搞这个视频能不能变现，做这个爱好能不能养家糊口。结果就是，那些说起话来神采奕奕个个都有一股推销员的感觉的家伙们，虽然他们十句话九句假，却占据了网络媒体主流。甚至我觉得现在这个环境下，这些都可以拿来当成一条鉴定标准：那些说话表情像推销员一样一惊一乍的，封面放个张个大嘴巴脸，再配上一堆像香港广告牌风格一样的标语，特效还满天飞，标题也不是正常句子的，大概率都是垃圾。一般来说即使是在市场环境下，这些东西有那么一点也就够了，最后还是得靠质量和实力说话。但现在的视频却把它们当成主要目标在经营，最应该下功夫的视频内容却毫无价值。俗话说的好，丑人多作怪，现在Youtube上也有越来越多的垃圾作者，这个傻掉的网站也学起Tiktok开始搞无聊的短视频业务了，我认为它们一样统统适用于这个标准。</p>
-<p>&emsp;&emsp;就看视频这点上，我宁愿回到那个我只有一个小手机，在上课、在被折磨人的各种试卷困住的时候偷偷看的状态，因为我知道那个社区是有活力有价值的，上传者是目光敏锐的，它就像一座宝库一样等着我去探索，而不是现在这种同质化严重，只需看一眼就知道这视频该是有多无聊的内容。</p>
-<p>&emsp;&emsp;我也是最近才知道AFK PL@YERS成员之一的“战锁锁不住”就是后来开发游戏《返校》的导演，这中间也隔了很多年了，一些台湾的网友似乎也对这个感到惊讶。不过我想，某种程度上它加深了我的一个猜想的可能性：“能人”比“专业人”要更可贵，因为“专业人”是可以在简单模型下训练出来的，而“能人”往往是复杂条件下自我培养出来的，“能人”的高明之处并非某个专业水平的高低，而在于其文明程度上的整体先进（甚至我认为社区、社会也同理）。正因为如此，能人也始终是能人，这些人从事任何事业都不会落到后面去，而“专业人”一旦离开专业岗位往往难以适应，这被称为“专家陷阱（Expert trap）”。我相信，像战锁和玉米这样的人，他们的才能是显而易见的，即使他们被这个社会压制了，哪怕是五年、十年甚至一辈子，他们也会把文明的火种传递到下一代身上。再不济，哪怕就像是那些早期从Youtube上搬运来视频的上传者们一样，比起什么马云马化腾，这些无名无姓的人可能才是国内互联网被忽略的先驱者们，他们连个像样的头像也没有，估计从没想过要靠这些视频火一把或者赚到什么利益，就像那些给开源社区默默贡献着的人，仅仅是出于他们对价值判断的敏锐程度和对事物的热情，就足以使他们把这些有价值的东西带到高墙之内来。虽然这些作品随着服务器的关停，以及原作者的停更等等因素湮灭在了网络中，我再登上那个收藏夹的时候，所有的视频都已经404。但那些深受他们作品影响的人会成为他们精神上的后人，这些人感受过充满价值与自由秩序的互联网，也就永远不会再掉头返回到曾经的虚假和错误中。终有一天，这些火种将重新燃起，那些先驱者们曾经培养出的才能与远见，也都会以另一种方式重见天日。</p>
-<p>&emsp;&emsp;而我呢，我也想成为那样的人。不，不光是想，我一定要这样做。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>随想</tag>
       </tags>
   </entry>
   <entry>
@@ -1103,33 +1005,101 @@
       </tags>
   </entry>
   <entry>
-    <title>读胡适的《请大家来照照镜子》</title>
-    <url>/2022/08/27/%E8%AF%BB%E8%83%A1%E9%80%82%E7%9A%84%E3%80%8A%E8%AF%B7%E5%A4%A7%E5%AE%B6%E6%9D%A5%E7%85%A7%E7%85%A7%E9%95%9C%E5%AD%90%E3%80%8B/</url>
+    <title>考古一个小众老游戏出色的音乐</title>
+    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>一九二八年的文章。 <a id="more"></a></p>
+<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
 </blockquote>
-<p>《请大家来照照镜子》，可以在wiki页面直接查看原文：<a href="https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90" target="_blank" rel="noopener">https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90</a></p>
-<p>&emsp;&emsp;偶然看到这篇胡适先生在1928年写的文章，其文笔可谓锐利无比，在今天看来也很通俗易懂。我并没有读过太多胡适和鲁迅的文章，因为我个人来说其实向来都和鲁迅先生的那句话保持一致：“我以为要少——或者竟不——看中国书，多看外国书”。这不代表中国没有好书，只是实在少到可怜，与其在垃圾堆里找食，不如老老实实坐到餐桌前吃一顿好的。不过可以肯定的是，像鲁迅胡适这些人的作品在20世纪初无疑是具有启蒙性质和指导意义的，但对于今天的人来说，最让人感触颇深的却是意识到这是一百年前的文字，面对的居然是一百年都没有解决的难题。</p>
-<p>&emsp;&emsp;在今天看来，一百年前安诺德先生提出的“三个大问题”：即全国的铁路和交通问题、教育和工业化问题、个人的责任心问题，似乎是被解决了，但我们也都明白，问题只是在表面上解决了，实际上并没有解决得很好很彻底。而胡适本人在文章中给出的两个解决方案：肯认错，和死心塌地的去学，则是决绝从来都没有做到过的。为什么我们永远都在落后，即使是眼看就要有那么一点追上的机会，却还是被一股怪力给无情地拉了回去？我想答案也很明白，就是我们从来都没有真正低头认错，而正是因为没有低头认错、承认自己不如人，才做不到“死心塌地的去学”，学不到“死心塌地”的核心内容。</p>
-<blockquote>
-<p>这种急需的新觉悟就是我们自己要认错。我们必须承认我们自己百事不如人，不但物质上不如人，不但机械上不如人，并且政治社会道德都不如人…</p>
-</blockquote>
-<blockquote>
-<p>因为我们从不曾悔祸，从不曾彻底痛责自己，从不曾彻底认错。二三十年前，居然有点悔悟了，所以有许多遣责小说出来，暴扬我们自己官场的黑暗，社会的卑污，家庭的冷酷。十余年来，也还有一些人肯攻击中国的旧文学，旧思想，旧道德宗教，——肯承认西洋的精神文明远胜于我们自己。但现在这一点点悔悟的风气都消灭了。现在中国全部弥漫着一股夸大狂的空气：义和团都成了应该崇拜的英雄志士，而西洋文明只须“帝国主义”四个字便可轻轻抹煞！政府下令提倡旧礼教，而新少年高呼“打倒文化侵略！”。</p>
-</blockquote>
-<p>&emsp;&emsp;不论是鲁迅也好，胡适也好，还是文中的这位安诺德先生，不知这些老先生如果活到今天会是如何感想，不，他们都是没有“资格”活在这个社会的，这些人如果活到今天，都会被全网fs，重则那啥，虽然我们知道人家老爷子活着的时候早就远走高飞，62年就去世了。但我猜，就是强如他，智慧如他，他写这篇文章的时候恐怕也无法预料到一件事：</p>
-<p>&emsp;&emsp;那就是低头认错、承认自己不如人，承认西洋的精神文明远胜于自己，居然是如此之难！简直难于上青天——难过了洋枪洋炮，难过了全民普及教育，难过了全国铁路交通网，难过了大学里的量子力学，难过了全国电气化、核电站和载人航天，难到了一百年都做不到的水平上。</p>
-<p>&emsp;&emsp;古时候洋人送来咕咕钟，我们曰“淫技奇巧”；洋人送来洋枪洋炮，我们认为没比自家的好到哪去；终有一天洋人把步枪顶在头上了，才真正下决心去学点什么先进的东西，好来打败洋人。19世纪的人只看到了咕咕钟和洋枪洋炮背后的近代化工厂和生产线设备，却没有意识到工厂和设备的背后，是一套工业体系和适应工业化的社会结构；接下来的事情，我们这几十年的教科书的口径也都是这样完全一致的：从学西方人的技术到学西方人的思想和制度，似乎就是走上了正道。但后面这一百年的经历告诉我们，事情似乎远远不止这么简单。首先我们学来的所谓“思想”、所谓“制度”，其实更大程度上说是偏向政治和经济方面的思想和制度，这些所谓的制度和思想本质上来说是偏功利性的，是为了建设工业化社会的制度和思想。虽然功利性本不是坏事，但它们从来都没有在合理的框架下运行，各路先进的制度和思想到了这里就如同掉进了一个“大染缸”，产生出千奇百怪的“本地化版本”，连发达国家的人看了都要目瞪口呆。</p>
-<p>&emsp;&emsp;而工业化的社会、制度、经济、政治等思想理论体系的背后是什么？这一层的概念因为脱离了直接利益，就很少有人去思考了。按照胡适那个年代的观点，可能会说是教育体系，是培养现代化人才的教育体系，只要有了列强们的教育体系，就有了可以比肩列强的人才，就能诞生后面的一切。就像胡适和安诺德提出的兴办教育的方案，“用教育来打倒愚昧，用实业来打倒贫穷，用机械来征服自然”，固然没错，但最关键的问题来了，教育体系和老师出了问题的教育还算不算教育？这样的教育还能不能打倒愚昧，成为后续一切内容的First Cause？</p>
-<p>&emsp;&emsp;显然，不行。这也正是那个年代的人难以考虑到的问题，也是站在现代这个时间点才能得出的一个推想，这并不容易，放到发达国家，也起码得是第二次世界大战后才逐渐认识到这个问题：</p>
-<p>&emsp;&emsp;教育体系的背后站着的是一个个大大小小的老师，而老师也是人，也是需要被培养被教育的。而这并不是一个鸡生蛋蛋生鸡的问题——因为人并不一定要有老师才能成为老师。这个概念最终推向的是什么才能真正培养人——即一个社会（注意，是社会，不是教育机构）如何培养出现代意义上的人的问题，再次强调是在排除了教育体系的情况下——一个没有老师、上不起学、没有文凭，甚至从来就没有踏官方进教育机构一天的人，能否在这个环境中成长为现代意义上的人的问题。最后我们发现，可能是一个社会的整体状态和精神风貌在影响着这个问题的结果，是它们决定了这个人在成长过程中能接触到什么东西，从而产生什么样的思考和判断。而老师们和教育机构只是这个大框架中的小小一环。</p>
-<p>&emsp;&emsp;而这背后又是什么呢？很明显到了这一层，就相当的抽象了，它可能是一个社会中潜意识里对一些基本概念的认识理解程度，如对是非善恶、法治精神、信仰等的理解水平，对科学精神、人文精神的认同程度或持有状态，对自由和奴役、生存和死亡等终极问题的态度和思考，等等。<strong>这些东西甚至难以用语言表达，它们是人类精神活动的底层逻辑，是比白纸黑字的规章制度、思想理论更加虚无缥缈，更加看不见摸不着的东西</strong>。而教育机构从不能解决这些问题，我甚至认为，教育机构也不应负全责去处理这些问题，因为无论是官方的还是私人的教育机构，它们通常都是逐利的，或是带有某种目的的。即使是在发达国家，我们也能够看到传统教育机构在处理这些问题上的种种弊病。那些好的教育更多的也只是起到辅助作用，而一个坏的教育则是愚昧和谎言的制造工厂，是比核战争还可怕的东西，毒害了一代又一代的人。</p>
-<p>&emsp;&emsp;答案到这里已经很明显，我们的落后是精神上、灵魂上的落后。甚至可以说如果不从这一层级上得到彻底解决，就没有资格成为真正意义上的现代人和现代社会，无论是学再多的先进技术、思想理论都没有用，也就永远追不上发达国家的步伐。就从这一层级上来说，即使是今天，我们中间认识到的人可谓是凤毛麟角，沧海一粟，否则这个问题也绝不会一百年都解决不了。即使是手里有了遍布全国的铁路，甚至有了航空母舰，精神上、灵魂上却仍是几千年前“忠孝礼义”那套。有人可能会不服，说古典希腊、罗马也有讲究什么“四主德（Cardinal Virtues）”，也有希波克拉底的传统医术，从而论证传统那套东西仍然可以全方位指导今天的事物。这是完全错误的，其区别就在于，西方的这些思想在两千年中经过了数不清的“版本更新迭代”，尤其是像宗教改革、启蒙运动这样革命性的进步，早已不可同日而语了，没有现代人会觉得靠希腊罗马的那套古典法律和精神就能直接对接现代社会，更别说用什么“四液学说”来行医治病；而在我们这里，什么“驭民五术”，什么“阴气阳气”、“精气血津液神”可是每天都在这个社会实打实地运行着，男人就是“忠孝礼义”，女人就是“三从四德”，几千年过去了却压根没怎么更新进化过！现在的人虽然嘴上不明说，但骨子里没变，并且一有机会就想把它们全捡回来，好好摆到庙堂上供一番。</p>
-<p>&emsp;&emsp;这下算是说清楚了为什么一百年都没做到的原因，是人出了大问题：他目光太短浅，太急功近利，没有意识到那些不能直接给他带来物质利益的、看不见摸不着的东西的重要和伟大之所在；就算是有幸意识到了，却放不下那个架子，不肯改变自身的形象；他害怕新东西，不适应事情的变化，怕新事物超出了他的控制范围，最终却要去主动抵制这些新事物带来的变革。甚至我敢说，只要再有人认识不到、或是不承认这样的落后，这个国家就还要继续在这个荒唐的迷宫中兜兜转转下去，一百年都不止。</p>
+<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
+<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
+<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
+<hr>
+<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
+<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
+<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
+<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
 ]]></content>
       <tags>
-        <tag>文化</tag>
+        <tag>游戏</tag>
+        <tag>音乐</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决Xshell6强制更新的问题</title>
+    <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>绕过Xshell6的强制更新。<a id="more"></a></p>
+</blockquote>
+<p>最近弄服务器的时候把以前用来管理别的服务器的Xshell6拿出来看了看，结果提示“要继续使用此程序,您必须应用最新的更新或使用新版本”，不更新就不给用。但离谱的是这个更新压根无法进行，挂魔法都没用，所以就找了个办法绕过这个更新：</p>
+<p>在简书上看到一个好用的解决办法：</p>
+<ol>
+<li><p>Xshell6的根目录里有一个名为 nslicense.dll 的dll文件，使用十六进制编辑器打开该文件；</p>
+</li>
+<li><p>搜索（或Ctrl+F）字节序列，输入7F0C81F98033E1010F8681，从头搜索，点确定。如图所示：</p>
+<img src="/2021/09/14/解决Xshell6强制更新的问题/1.png" title="a"></li>
+<li><p>将倒数第三位的6改成3，也就是将“86”字符段改为“83”。改完后保存退出十六进制编辑器。</p>
+</li>
+</ol>
+<p>重启Xshell6即可绕过更新。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>那些追求真正价值的上传者</title>
+    <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>写给那些不知名的上传者们。 <a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;不知道为什么突然想到了AFK PL@YERS，和那个我能和同学坐在屏幕前面看一下午魔兽搞笑视频的日子。</p>
+<p>&emsp;&emsp;大概是2010年前后，记忆中有《星际争霸2》上线时的消息，那会视频都在优酷网看（应该也有土豆网），虽然每点一个视频都要等大概30-60秒的烂广告，却还是让人看的很入迷，那会魔兽还很火，看的最多的就是AFK PL@YERS、性感玉米这些，当然还有《我叫mt》。巫妖电视王，晚安部落，性感玉米的《网瘾战争》这些更是看了一遍又一遍。这些创作者们直接调用魔兽世界的游戏框架和地图、人物模型，制作出机械木偶般的游戏动画，比起传统的动画来说虽然看起来十分简陋粗糙，却仍讲出了活灵活现的故事。可贵的是，这些往往是由几个朋友们拼凑而成的同好小队，靠着对游戏的热爱和热情，靠着对真相和事实的坚持，胜过了影视、动画行业的很多所谓的专业人士和团队。现在去B站等视频网站搜索AFK PL@YERS也找不到多少视频了，可能是现在对外网搬运有一定的打压，以前我记得可是有好几个人在系统地在搬运他们的作品，数量都是一整页一整页，能让人在炎热的夏天拿着冰镇饮料快乐一下午。</p>
+<p>&emsp;&emsp;现在想想，那会优酷、土豆其实一定程度上充当了Youtube的本地化版本，因为那时管的不严，有大量不知名的上传者搬运Youtube上优质的作品（其实通过他们也筛选掉了Youtube上的低劣内容），经常能找到哪个独立音乐人的新作品，哪个黑死金乐队的现场录像，魔兽星际的游戏原声，从来没能在盗版游戏中看到的结局动画，还有那些我从来没有接触过的电影和动漫。我记得我还看过一些枪械火药制造过程的录像，Youtube上最早的一批冷兵器和盔甲锻造视频，甚至还有几首后来被汇入Botho Lukas Chor的宝藏专辑《Wenn die Landsknecht singen》里的音乐（确实很让人吃惊，连这都有！而且比这张14年的汇总专辑还早，但十多年前我对德语和Landsknecht的历史一无所知，只是觉得很好听），以及某些打擦边球的玩意（质量也确实很高就是了）。当然那些太敏感直接的话题肯定是没有的。那会确实是没有什么自媒体圈子、营销号的，网友们ID都是一串IP地址。虽然这样的搬运或者盗版视频侵犯了原作者的版权也是事实，但还是能让我们接触到这么多优秀的作品。我后来在Youtube上也一个一个找回了那些原作者，虽然很多都在数年前就已经停更了，但也总归是找到了他们。</p>
+<p>&emsp;&emsp;不过现在打开视频网站都是一群什么玩意？说实话没人会喜欢现在这样的东西，除了一些官方牵头搞得诸如后浪二舅之类的假大空，大部分自媒体作者也不是在做什么有价值的原创内容，而是天天在那造人设、以打造泛社会化的meme为目标，批量生产没有什么技术含量的低成本视频，试图以这些东西来吸引全网无头苍蝇一般的受众，当年玉米就曾在作品和现实中狠狠吐槽过这些正在互联网上越来越泛滥的虚假：为什么我们生产的大部分电影、电视剧、小品相声，都那么无聊？还不是因为假的东西太多。虚假的作者和没有价值的作品在一个正常的互联网上是没有任何生存空间的，拒绝虚假和错误是人和动物的天性，他们在被强迫的时候接受了大量的虚假和错误，但当他们接触到自由的互联网的时候，又为什么要去主动收看毫无价值的东西呢？相反，如果谁在那时的视频站发布“假大空”，干什么都散发着一股铜臭味的时候，一定会被那些顶着一串IP地址的网友们亲切招呼。</p>
+<p>&emsp;&emsp;但是在一个不正常或者说环境很恶劣的互联网体系和社会环境中，一切都翻了过来，人们比的不再是谁的作品更有价值更有意义，而是只认让流量和金钱，看你搞这个视频能不能变现，做这个爱好能不能养家糊口。结果就是，那些说起话来神采奕奕个个都有一股推销员的感觉的家伙们，虽然他们十句话九句假，却占据了网络媒体主流。甚至我觉得现在这个环境下，这些都可以拿来当成一条鉴定标准：那些说话表情像推销员一样一惊一乍的，封面放个张个大嘴巴脸，再配上一堆像香港广告牌风格一样的标语，特效还满天飞，标题也不是正常句子的，大概率都是垃圾。一般来说即使是在市场环境下，这些东西有那么一点也就够了，最后还是得靠质量和实力说话。但现在的视频却把它们当成主要目标在经营，最应该下功夫的视频内容却毫无价值。俗话说的好，丑人多作怪，现在Youtube上也有越来越多的垃圾作者，这个傻掉的网站也学起Tiktok开始搞无聊的短视频业务了，我认为它们一样统统适用于这个标准。</p>
+<p>&emsp;&emsp;就看视频这点上，我宁愿回到那个我只有一个小手机，在上课、在被折磨人的各种试卷困住的时候偷偷看的状态，因为我知道那个社区是有活力有价值的，上传者是目光敏锐的，它就像一座宝库一样等着我去探索，而不是现在这种同质化严重，只需看一眼就知道这视频该是有多无聊的内容。</p>
+<p>&emsp;&emsp;我也是最近才知道AFK PL@YERS成员之一的“战锁锁不住”就是后来开发游戏《返校》的导演，这中间也隔了很多年了，一些台湾的网友似乎也对这个感到惊讶。不过我想，某种程度上它加深了我的一个猜想的可能性：“能人”比“专业人”要更可贵，因为“专业人”是可以在简单模型下训练出来的，而“能人”往往是复杂条件下自我培养出来的，“能人”的高明之处并非某个专业水平的高低，而在于其文明程度上的整体先进（甚至我认为社区、社会也同理）。正因为如此，能人也始终是能人，这些人从事任何事业都不会落到后面去，而“专业人”一旦离开专业岗位往往难以适应，这被称为“专家陷阱（Expert trap）”。我相信，像战锁和玉米这样的人，他们的才能是显而易见的，即使他们被这个社会压制了，哪怕是五年、十年甚至一辈子，他们也会把文明的火种传递到下一代身上。再不济，哪怕就像是那些早期从Youtube上搬运来视频的上传者们一样，比起什么马云马化腾，这些无名无姓的人可能才是国内互联网被忽略的先驱者们，他们连个像样的头像也没有，估计从没想过要靠这些视频火一把或者赚到什么利益，就像那些给开源社区默默贡献着的人，仅仅是出于他们对价值判断的敏锐程度和对事物的热情，就足以使他们把这些有价值的东西带到高墙之内来。虽然这些作品随着服务器的关停，以及原作者的停更等等因素湮灭在了网络中，我再登上那个收藏夹的时候，所有的视频都已经404。但那些深受他们作品影响的人会成为他们精神上的后人，这些人感受过充满价值与自由秩序的互联网，也就永远不会再掉头返回到曾经的虚假和错误中。终有一天，这些火种将重新燃起，那些先驱者们曾经培养出的才能与远见，也都会以另一种方式重见天日。</p>
+<p>&emsp;&emsp;而我呢，我也想成为那样的人。不，不光是想，我一定要这样做。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
         <tag>随想</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置了SSH后仍然需要输密码的情况</title>
+    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
+</blockquote>
+<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
+<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
+<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
+<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
+<ol>
+<li>删除<code>.deploy_git</code>文件夹;</li>
+<li>输入<code>git config --global core.autocrlf false</code></li>
+<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
+</ol>
+<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
+<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
+<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>（注意要改的地方还有.com后面那个冒号）</p>
+<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
+<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
+<hr>
+<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1197,6 +1167,41 @@
         <tag>游戏</tag>
         <tag>设计</tag>
         <tag>翻译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《黑暗之魂3》背后的艺术理念和风格</title>
+    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
+</blockquote>
+<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
+<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
+<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
+<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
+<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
+<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
+<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
+<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
+<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
+<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
+<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
+<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
+<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
+<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
+<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
+<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
+<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
+<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
+<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
+<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
+<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
+<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,127 +1436,33 @@
       </tags>
   </entry>
   <entry>
-    <title>《黑暗之魂3》背后的艺术理念和风格</title>
-    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
+    <title>读胡适的《请大家来照照镜子》</title>
+    <url>/2022/08/27/%E8%AF%BB%E8%83%A1%E9%80%82%E7%9A%84%E3%80%8A%E8%AF%B7%E5%A4%A7%E5%AE%B6%E6%9D%A5%E7%85%A7%E7%85%A7%E9%95%9C%E5%AD%90%E3%80%8B/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
+<p>一九二八年的文章。 <a id="more"></a></p>
 </blockquote>
-<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
-<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
-<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
-<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
-<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
-<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
-<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
-<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
-<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
-<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
-<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
-<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
-<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
-<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
-<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
-<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
-<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
-<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
-<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
-<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
-<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
-<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
+<p>《请大家来照照镜子》，可以在wiki页面直接查看原文：<a href="https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90" target="_blank" rel="noopener">https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90</a></p>
+<p>&emsp;&emsp;偶然看到这篇胡适先生在1928年写的文章，其文笔可谓锐利无比，在今天看来也很通俗易懂。我并没有读过太多胡适和鲁迅的文章，因为我个人来说其实向来都和鲁迅先生的那句话保持一致：“我以为要少——或者竟不——看中国书，多看外国书”。这不代表中国没有好书，只是实在少到可怜，与其在垃圾堆里找食，不如老老实实坐到餐桌前吃一顿好的。不过可以肯定的是，像鲁迅胡适这些人的作品在20世纪初无疑是具有启蒙性质和指导意义的，但对于今天的人来说，最让人感触颇深的却是意识到这是一百年前的文字，面对的居然是一百年都没有解决的难题。</p>
+<p>&emsp;&emsp;在今天看来，一百年前安诺德先生提出的“三个大问题”：即全国的铁路和交通问题、教育和工业化问题、个人的责任心问题，似乎是被解决了，但我们也都明白，问题只是在表面上解决了，实际上并没有解决得很好很彻底。而胡适本人在文章中给出的两个解决方案：肯认错，和死心塌地的去学，则是决绝从来都没有做到过的。为什么我们永远都在落后，即使是眼看就要有那么一点追上的机会，却还是被一股怪力给无情地拉了回去？我想答案也很明白，就是我们从来都没有真正低头认错，而正是因为没有低头认错、承认自己不如人，才做不到“死心塌地的去学”，学不到“死心塌地”的核心内容。</p>
+<blockquote>
+<p>这种急需的新觉悟就是我们自己要认错。我们必须承认我们自己百事不如人，不但物质上不如人，不但机械上不如人，并且政治社会道德都不如人…</p>
+</blockquote>
+<blockquote>
+<p>因为我们从不曾悔祸，从不曾彻底痛责自己，从不曾彻底认错。二三十年前，居然有点悔悟了，所以有许多遣责小说出来，暴扬我们自己官场的黑暗，社会的卑污，家庭的冷酷。十余年来，也还有一些人肯攻击中国的旧文学，旧思想，旧道德宗教，——肯承认西洋的精神文明远胜于我们自己。但现在这一点点悔悟的风气都消灭了。现在中国全部弥漫着一股夸大狂的空气：义和团都成了应该崇拜的英雄志士，而西洋文明只须“帝国主义”四个字便可轻轻抹煞！政府下令提倡旧礼教，而新少年高呼“打倒文化侵略！”。</p>
+</blockquote>
+<p>&emsp;&emsp;不论是鲁迅也好，胡适也好，还是文中的这位安诺德先生，不知这些老先生如果活到今天会是如何感想，不，他们都是没有“资格”活在这个社会的，这些人如果活到今天，都会被全网fs，重则那啥，虽然我们知道人家老爷子活着的时候早就远走高飞，62年就去世了。但我猜，就是强如他，智慧如他，他写这篇文章的时候恐怕也无法预料到一件事：</p>
+<p>&emsp;&emsp;那就是低头认错、承认自己不如人，承认西洋的精神文明远胜于自己，居然是如此之难！简直难于上青天——难过了洋枪洋炮，难过了全民普及教育，难过了全国铁路交通网，难过了大学里的量子力学，难过了全国电气化、核电站和载人航天，难到了一百年都做不到的水平上。</p>
+<p>&emsp;&emsp;古时候洋人送来咕咕钟，我们曰“淫技奇巧”；洋人送来洋枪洋炮，我们认为没比自家的好到哪去；终有一天洋人把步枪顶在头上了，才真正下决心去学点什么先进的东西，好来打败洋人。19世纪的人只看到了咕咕钟和洋枪洋炮背后的近代化工厂和生产线设备，却没有意识到工厂和设备的背后，是一套工业体系和适应工业化的社会结构；接下来的事情，我们这几十年的教科书的口径也都是这样完全一致的：从学西方人的技术到学西方人的思想和制度，似乎就是走上了正道。但后面这一百年的经历告诉我们，事情似乎远远不止这么简单。首先我们学来的所谓“思想”、所谓“制度”，其实更大程度上说是偏向政治和经济方面的思想和制度，这些所谓的制度和思想本质上来说是偏功利性的，是为了建设工业化社会的制度和思想。虽然功利性本不是坏事，但它们从来都没有在合理的框架下运行，各路先进的制度和思想到了这里就如同掉进了一个“大染缸”，产生出千奇百怪的“本地化版本”，连发达国家的人看了都要目瞪口呆。</p>
+<p>&emsp;&emsp;而工业化的社会、制度、经济、政治等思想理论体系的背后是什么？这一层的概念因为脱离了直接利益，就很少有人去思考了。按照胡适那个年代的观点，可能会说是教育体系，是培养现代化人才的教育体系，只要有了列强们的教育体系，就有了可以比肩列强的人才，就能诞生后面的一切。就像胡适和安诺德提出的兴办教育的方案，“用教育来打倒愚昧，用实业来打倒贫穷，用机械来征服自然”，固然没错，但最关键的问题来了，教育体系和老师出了问题的教育还算不算教育？这样的教育还能不能打倒愚昧，成为后续一切内容的First Cause？</p>
+<p>&emsp;&emsp;显然，不行。这也正是那个年代的人难以考虑到的问题，也是站在现代这个时间点才能得出的一个推想，这并不容易，放到发达国家，也起码得是第二次世界大战后才逐渐认识到这个问题：</p>
+<p>&emsp;&emsp;教育体系的背后站着的是一个个大大小小的老师，而老师也是人，也是需要被培养被教育的。而这并不是一个鸡生蛋蛋生鸡的问题——因为人并不一定要有老师才能成为老师。这个概念最终推向的是什么才能真正培养人——即一个社会（注意，是社会，不是教育机构）如何培养出现代意义上的人的问题，再次强调是在排除了教育体系的情况下——一个没有老师、上不起学、没有文凭，甚至从来就没有踏官方进教育机构一天的人，能否在这个环境中成长为现代意义上的人的问题。最后我们发现，可能是一个社会的整体状态和精神风貌在影响着这个问题的结果，是它们决定了这个人在成长过程中能接触到什么东西，从而产生什么样的思考和判断。而老师们和教育机构只是这个大框架中的小小一环。</p>
+<p>&emsp;&emsp;而这背后又是什么呢？很明显到了这一层，就相当的抽象了，它可能是一个社会中潜意识里对一些基本概念的认识理解程度，如对是非善恶、法治精神、信仰等的理解水平，对科学精神、人文精神的认同程度或持有状态，对自由和奴役、生存和死亡等终极问题的态度和思考，等等。<strong>这些东西甚至难以用语言表达，它们是人类精神活动的底层逻辑，是比白纸黑字的规章制度、思想理论更加虚无缥缈，更加看不见摸不着的东西</strong>。而教育机构从不能解决这些问题，我甚至认为，教育机构也不应负全责去处理这些问题，因为无论是官方的还是私人的教育机构，它们通常都是逐利的，或是带有某种目的的。即使是在发达国家，我们也能够看到传统教育机构在处理这些问题上的种种弊病。那些好的教育更多的也只是起到辅助作用，而一个坏的教育则是愚昧和谎言的制造工厂，是比核战争还可怕的东西，毒害了一代又一代的人。</p>
+<p>&emsp;&emsp;答案到这里已经很明显，我们的落后是精神上、灵魂上的落后。甚至可以说如果不从这一层级上得到彻底解决，就没有资格成为真正意义上的现代人和现代社会，无论是学再多的先进技术、思想理论都没有用，也就永远追不上发达国家的步伐。就从这一层级上来说，即使是今天，我们中间认识到的人可谓是凤毛麟角，沧海一粟，否则这个问题也绝不会一百年都解决不了。即使是手里有了遍布全国的铁路，甚至有了航空母舰，精神上、灵魂上却仍是几千年前“忠孝礼义”那套。有人可能会不服，说古典希腊、罗马也有讲究什么“四主德（Cardinal Virtues）”，也有希波克拉底的传统医术，从而论证传统那套东西仍然可以全方位指导今天的事物。这是完全错误的，其区别就在于，西方的这些思想在两千年中经过了数不清的“版本更新迭代”，尤其是像宗教改革、启蒙运动这样革命性的进步，早已不可同日而语了，没有现代人会觉得靠希腊罗马的那套古典法律和精神就能直接对接现代社会，更别说用什么“四液学说”来行医治病；而在我们这里，什么“驭民五术”，什么“阴气阳气”、“精气血津液神”可是每天都在这个社会实打实地运行着，男人就是“忠孝礼义”，女人就是“三从四德”，几千年过去了却压根没怎么更新进化过！现在的人虽然嘴上不明说，但骨子里没变，并且一有机会就想把它们全捡回来，好好摆到庙堂上供一番。</p>
+<p>&emsp;&emsp;这下算是说清楚了为什么一百年都没做到的原因，是人出了大问题：他目光太短浅，太急功近利，没有意识到那些不能直接给他带来物质利益的、看不见摸不着的东西的重要和伟大之所在；就算是有幸意识到了，却放不下那个架子，不肯改变自身的形象；他害怕新东西，不适应事情的变化，怕新事物超出了他的控制范围，最终却要去主动抵制这些新事物带来的变革。甚至我敢说，只要再有人认识不到、或是不承认这样的落后，这个国家就还要继续在这个荒唐的迷宫中兜兜转转下去，一百年都不止。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>记录一个梦境</title>
-    <url>/2021/10/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%AA%E6%A2%A6%E5%A2%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>据说人在一晚上会做多个梦，而能记起的梦通常是将醒的那一个，所以它应该发生于2021年10月28日6点左右。<a id="more"></a></p>
-</blockquote>
-<p>我预计这个文章会比较杂乱，就和梦境本身一样。</p>
-<h2 id="27日做了什么："><a href="#27日做了什么：" class="headerlink" title="27日做了什么："></a>27日做了什么：</h2><p>我已经想不起来27日的早上和中午都干了啥，但可以确定的是几乎整个白天都泡在互联网上游荡，近些年我似乎变得越来越“Cyber”。在下午玩了玩Discord，看到一个哥们在Diablo服务器群组下的一个空无一人的频道里玩，他似乎已经在那里呆了有几天了，出于好奇我进入频道和他聊了一阵子，是一个33岁的加拿大老哥，老哥贴心地把他的Diablo2重制版的电脑屏幕开了直播投给我看，我们从Diablo这个游戏聊到魔兽、暴雪，童年、文化等，他似乎是一个很好打交道的家伙，虽然我口语很烂，但对方很耐心，又或许刷装备本来就是很无聊的事情，他说他看到了中国限制未成年人周末每天玩一小时网络游戏的新闻，觉得很扯淡，直言这是dictatorship，临走时他还不忘向我炫耀他的台湾女朋友教了他几句中文，可惜我一句也没听懂，在对方再三解释下我终于明白那是一个“啤酒”，然而听上去更像是“必救”。这似乎算是我第一次和一个native speaker交流这么长的时间，并且谈论的东西也比较广泛，我确实是想把英语练好的，Discord似乎是一个不可多得的工具，前提是我得有足够的时间先去享受一些游戏才行，不然连话都没得说。</p>
-<p>晚上在家吃完饭父亲邀请我一同观看了索科洛夫于1998年拍摄的纪录片《对话索尔仁尼琴》，他想了解这个人，而我在大学期间读过不少索尔仁尼琴的书，从他的《古拉格群岛》、《癌症楼》到《牛犊顶橡树》等的一些小短篇，我当时就得知索尔仁尼琴已于2008年去世，享年89岁，也就是说，1998年拍摄这部影像时他已经几乎80岁了，虽然我读过他的书，但我还真没看过关于他的影像作品，我惊讶于一个80岁的老人仍能有敏捷的思维和判断力，而且明显能够看出他的观念不像很多老人那样顽固守旧，他是能够理解新世界的人，简直就像一个年轻人一般。期间和之后的时间里又和父亲聊了很多东西，传统音乐、俄罗斯和东正教、公共教育的落后、三十年战争，再到信息不灭和宇宙模拟论。父亲似乎在这些年变成了一个很好学的人，其实我认为他一贯如此，他确实是个普通人，但我后来才发现那是很不寻常的特点：一种对知识及探索未知的单纯的向往，而并非完全是由生存恐惧导致寻求物质利益的自保行为，抑或是寻求社会地位、名望所驱动的。它如同柴米油盐、刀俎鱼肉间的一股灵光，哪怕人的思想和灵魂里只有那么一点点也好，但从许多平凡的普通的劳动者到自命为知识分子的学术阶层里，我几乎从没见到多少人有过。</p>
-<p>这样晚上剩下的时间也不多了，我在电脑上又看了一遍<br>那个很专业的、由Tod’s Workshop于19年8月主导的“长弓穿甲”测试，以及一个日本漫画家的铅笔作画过程记录，看完几乎已经快凌晨1点了，我决定这一天就这么结束。</p>
-<h2 id="梦境的开始"><a href="#梦境的开始" class="headerlink" title="梦境的开始"></a>梦境的开始</h2><p>人确实是很奇特的生物，睡梦如同是得了精神分裂症一般，当你决定如同关闭一场游戏一般结束一天时，人的另一部分灵魂却又偷偷在一个虚拟世界以更加奇特的形式开始活动，就像一个独裁的官员政客正在向人民许诺自由和幸福，而同时他的一部分又回到了那个只有少数同僚的“烟雾缭绕的小房间（Smoke-filled room）”。几乎可以说梦中的东西都是真实的组合，比如很难在梦中见到陌生人，因为人的大脑难以生成一个完整的的陌生人的面孔的全部信息。所以说最常见的还是亲人熟人，不然只能是面部信息混乱不全的人，或干脆就是“无脸人”。我们经常听说有作家能在梦中构思、写作，音乐家在梦中作曲等，我不怀疑它的真实性，事实上我自己在狂热投入某些活动再加上没睡好的情况下也有着类似的经历。</p>
-<p>它开始于一个繁忙的街道，这是这个小城里的一个商业街，向来都是一个人流量很大的地方，它已经有些老旧了，拥有很多又黑又窄的未知小巷，我很少前去那里，只有父母去逛市场的时候才会带我钻进去。前段时间我还去那里转了一圈，人流量早已没有我小时候记忆中那么多了，可能人们都不爱上街了吧，所以那些当年开食物店摆摊、临街叫卖的，甚至是耍骗术的骗子也都消失不见了（我在那条街见识过好几回杂技型的骗术）。而楼上的超市和室内商场也显得有些衰败：一家在2000年曾经是城里最大的大型商场的运营方据说已经濒临破产，里面的店铺几乎倒闭了一半，在里面走了一圈，只有少数仍然开着的店铺还有那么一两个服务员在，她们仍要以一个较高的音量对顾客展示欢迎语，这个声音在这样一个人流稀少的商场里显得更加冷清。</p>
-<p>而梦境又向我呈现出二十年前的景象，内容似乎映射了一段我当服务员的日子。于是就在某一个人流熙攘、外面摆满了临街小吃店摊位的小巷口里，我在一个明显是由一层仓库改成的廉价服装商铺里工作。像那时很多的服装批发市场一样，这间仓库里在白天几乎不开灯，地上也扔满了包装拆下来的废旧硬纸板，衣架间穿行的服务员和想要试鞋子的顾客时不时互相交流，店里人们的声音都比较大，因为店面离巷口不远，街道上的嘈杂声很容易就能盖过这里的正常音量。我以前只做过餐饮服务员，的确没有当过服装店的服务员，我对自己的“工作”的想象也只能基于自己见到的场景：将一包包衣服从包装箱里拆出来，一件件整理好，再一件件将他们挂到墙上或衣架上去。和如今我能够睡个懒觉相比，当服务员只是看起来轻松，实际却是很累很耗时间的工作。我在梦里的全部时间似乎都要彻底消耗在这些重复体力劳动上了，但梦境并没有给我更多关于这项工作的具体内容，我似乎又变成了一个经理一般的角色，还是那家商铺，只不过我变成了管理者，像我以前的老板那样训斥员工们——他们的衣服叠的实在太乱了。</p>
-<p>我在服装商店老旧的的卷帘门前遇到了熟人，一个中学时代关系还算好的女同学，她似乎并不是某一个特定的我认识的人，而是由多个女孩的元素拼成的，但我很确定的是我在中学时代就喜欢过她，是很老套的情节。但她看起来不像中学时代那么富有魅力了，她标志性的黑色长头发被剪到很短很短，几乎和男生的头发差不多了。我这时应该是扔下了服装店的工作，跑出去和她聊天。她的头发几乎算是我见过的所有女生里发质最好、最密的那个，我问到她长头发为什么剪掉了，她不肯说话，我开玩笑说你的头发也太短了，比我在网上看到的乌克兰女兵都短（其实我想说“你像俄罗斯最凶狠的光头党女混混”，当然这太过分了，不会真这么干的xD）。和她分开后又遇到了熟人同学，他告诉我那个女孩其实把头发卖掉了，卖了500万，这个数字当然很离谱，但我的第一反应居然是嫉妒，就像人听说周围哪个朋友中了百万大奖一样产生嫉妒情绪，并且因为刚刚才嘲笑人家头发短，我不得不接受一位“富婆”很可能已经把我“拉黑”了的事实。醒来后我还很好奇地专门查了一下女生的头发到底能卖多少钱，大概得出结论后我觉得，假设那个现实中的女孩真的就把头发给卖了，卖到上千块钱是绝对没问题的，她的头发太好了，确实少见。而且我还查到了莫文蔚为头发投保1000万人民币，詹妮弗·洛佩兹为屁股投保2700万美元等信息，看来现实远比梦境离谱。</p>
-<p>于是我又得回到那个昏暗的库房里当我的服务员，似乎又不再是经理了，场景也变到了另一个同样拥有很多小商铺的邻近街道上，我找了好几家店却都不是我在的那个，我意识到我似乎并不想回去工作，这并不是因为那500万的铂铑钯铱神奇头发刺激到了我，我在梦中也压根没有工资的概念，单纯是因为我认为服装店服务员的工作实在太无聊、太辛苦，就像一个小学生不愿意进学校的门那样。梦境也随着我的失落变得模糊，也就无法找到后面的记忆了。</p>
-<h2 id="梦境的原像"><a href="#梦境的原像" class="headerlink" title="梦境的原像"></a>梦境的原像</h2><p>回想我真正做餐饮服务员的经历，以及和身边其他做过餐饮服务业的人交流得出的结论，它确实是很累的，比高三都累的多，因为在学校你起码可以选择“不学”，只要保证自己能考进大学门就行了。通过摆烂和不求上进，等到老师或家长眼睁睁看着你这个明晃晃的“业绩”蜕变成一个不仅不会再升值，反而还在慢慢掉价的“垃圾股”的时候，他们脑子里就只有尽快“抛售”，于是自由便降临了。这样即使是面临高考你也能轻松地过下去，事实上我在高中就是这么做的。从这个角度讲，所谓的“摸鱼哲学”、“躺平摆烂”等消极抵抗行为天然有其作用优势，因为业绩教师和鸡娃家长们其实就像是一个个股市投机者，他们凭借自己的能力参赌，却无法随意处置发生的后果，对于手中的“垃圾股”的处理手段十分有限，一旦学生/子女变成了摆烂咸鱼，他们就陷入了套牢散户的处境。这时的主场其实已经变成“股票”了。我着实要感谢高中时的两个不仅不鸡娃，甚至连自己上班上课都在摸鱼的语文老师，他们称得上是世外高人。感谢他们让我用他们所有的语文课，拿一个简易电子设备读完了E. B. Potter的《世界海军史（Sea Power: A Naval History）》、梭罗的《瓦尔登湖》，托尔斯泰的《复活》等对我影响深远的作品，当然也有《最后的莫西干人》、《麦田里的守望者》等经典小说，并在语文课本和练习册上画出我想象中“汉普顿锚地海战”里Monitor号和Merrimack号的正面对决，以及比克卡战役（Battle of Bicocca）中佩斯卡拉侯爵（Fernando d’Ávalos）的西班牙火枪队。我觉得我当时的同桌完全可以证实这些。</p>
-<p>但工作却往往不同，如果老板不愁招不到工人的话，他拥有随时踢出不合格者的权力，这里完全是老板的世界，他可以无视劳动法而把每周的高强度劳动时间提高到令人瞠目结舌的水平，50、60小时已是家常便饭，“高强度劳动”这个词是我自创的，目的是区别于一般的低强度劳动时间，例如学生上课睡觉、公务员闲时玩手机、管理人员带薪出差旅游等等，虽然也都算作一般意义上的劳动时间之内，但其对人精力的消耗明显没有全天加班的码农、一单接一单的外卖小哥或是体力活工人明显。反正韭菜割倒一批又一批，哪怕就是把你当成燃料消耗掉，黑心企业家们连眉头都不会皱一下的。</p>
-<p>如果一个社会的劳动福利够好、法制完善的话，即使丢了工作通常也是吃喝不愁的，也就不会对被解雇怀着那么明显的生存恐惧，这样往往还是有机会把握一些基本权利的，企业家们也不敢那么肆意妄为；但现实让我们看到，许多“社畜”连摆烂的机会都没有，完全就是脖子上上了套一般任人驱使，和封建时代的奴仆没有多少区别。</p>
-<p>很多年前我见过一家餐馆的一个服务员，那家餐馆菜价并不贵，厨师也挺有水平，所以每天人都特别多，当然一到饭点服务员也都忙飞了。其中一个服务员女孩看起来确实比较好看，身材又好个子也不矮，年龄看起来比我大不了几岁，总之是一个很好看的姐姐。要是碰巧是她来给我收拾餐桌的话，我一定会提前把饭菜吃干净（虽然我一直吃的都很干净），尽量减少桌子上的垃圾，好让她收拾起来方便。我时不时观察她，她从头到尾也没有表现出一点笑容，甚至就是在收拾一个脏乱不堪、黏糊糊的啤酒瓶跌的到处都是的大桌的时候也没有露出一点厌恶之情，只是在像执行程序一样不停地端盘擦桌，偶尔用本地方言和别的服务员沟通，她的声音也和普通的本地女孩一样没什么特别的，可能是因为成长环境或是长期劳动的原因，她的皮肤不像那些不用从事体力劳动的女性那样柔顺，衣服上也总是沾着好些油渍。类似的还有我在工厂里见到的一个年轻工人，他的年纪明显比别的工人小得多，和我差不多。那里的工人平均估计都在四五十岁了，长期的重体力劳动再加上年龄的因素，再换上一身脏兮兮的工作服，如果他们就这样走在街上，你是一定不愿意靠近的。而那个年轻工人的长相和皮肤确实比一般的年轻人都好得多，戴着一副金属边框的眼镜，文质彬彬的。而当工人下班后脱下工作服，我才发现他们一下子好看了许多，平常让人觉得最不想接近的老工人都变得像是一个可爱的邻家大叔一般，而我有幸在这时又见到了那个年轻工人，说实话有点“惊为天人”，他给人的感觉就是普朗克年轻时那个照片的翻版，要不是在工厂里，你一定会想到在哪个大学的数学/物理系的楼道里，那个手里抱着书，学习最好、教授最喜欢的优秀学生。这样的学生要是往图书馆一坐，该是要吸引多少女孩的目光了；同样的，那个餐厅里见到的姐姐要是坐在教室里上课，也一定会成为大家追捧的对象。</p>
-<p>我的审美似乎对人的外形有着一种执着的追求，有人可能会说我颜控了，而我个人却认为这是一种很自然、甚至可以说很古典的审美感，就和今天的人同样欣赏《米洛斯的阿芙洛蒂特》、《大卫》等作品一样，这种美不是吹出来的，而是实打实存在着的感觉。然而我和这些人的确没有什么交集，我不知道他们的名字，连一句话也没有说过，更让人觉得残酷的现实是：漂亮姐姐在餐馆做了起码三年以上的工，之后便不知去向了，她大概率还留在这个城市，我想她可能已经嫁给了某个男人，又或是换了一份服务工作；而那个年轻人，在我离开工厂的时候，那天早上领导刚训完话，我看到他仍在这个厂里最累最热、环境最差的岗位上——那是一个连车间里一个干了二十年农活的农村大爷都不愿意碰的苦差。他面无表情、慢慢地推着一个运载车朝车间的另一端走去。他很可能没有上过大学，我不知道他是什么时候、从哪里来这个工厂的，也不清楚现在他还在不在那。上帝啊，我真希望他赶快离开那个反人类的工作岗位，让那些领导们自个上；对于那个曾在餐馆里工作的姐姐，我也只能祝愿她生活幸福、工作顺利，少遇那些烂人破事。</p>
-<h2 id="现实的指引"><a href="#现实的指引" class="headerlink" title="现实的指引"></a>现实的指引</h2><p>梦境有它真实的一面，而我们的生活还有多少真实的东西呢，我们现在可真算是谎言遍地了：媒体不说真话、官员不说真话、就连一个个普通人也因为害怕说真话而给自己带来麻烦选择沉默：老师家长不说真话，领导员工不说真话，甚至有些夫妻之间都不肯掏心掏肺了，年轻人也一个个学会了尔虞我诈之本事，也难怪汉娜·阿伦特（Hannah Arendt）认为现代极权主义建立在谎言之上。这往往和很多人想的不一样，这架庞大的机器的运作核心并非是暴力，暴力只是一个成效低下、早已过时的、且在捉襟见肘时才被统治者们使用的下策，而这一代人所面对力量的却更为可怕：古老的奴隶主们在高科技手段和现代经济理论所加持下，用两百年以上的社会实践经验以及两次世界大战的所有残酷流血共同锻造了一副前所未有的武器装甲，其名为谎言与蒙昧。今年的离谱之事真可谓是铺天盖地，如7月的河南水灾，7月20日当晚我就看到了郑州地铁里传出的信息，从后续的结果看，河南那次的死伤人数绝对是一个不小的数字，我当时每天都在关注这个新闻，但官媒在那几天的时间里几乎天天报平安。最离谱的要属被全淹的京广北路隧道，可以说是这次事件最神秘的地方，这条全长1.8公里、挤满了车辆的隧道被彻底淹没，仅拖出来的泡水车就有上千辆之多，隧道随后被军管。而官方26日的通报显示隧道只有6人死亡。再加上更加传不出消息的郑州周边被淹没的广大农村地区，真相至今成谜。我想，任何一个有良心且不是傻子的人都不得不承认，我们的官方媒体已经彻底失去作用，这是一个危险的信号，你再也无法得知那些人的脑子里到底在盘算些什么了，“闷声发大财”这套已被他们玩到炉火纯青，而这种建立在谎言之上的阴谋与权术，却为街头巷尾在暗地里所推崇，被世人冠以“能人”之名号——人人皆以当镰刀为荣，对真理和智慧的信仰早已毁灭，自由之神不再眷顾我们——或许也根本不曾存在过。似乎这就是索尔仁尼琴言晚年所描述的——“21世纪的真面目”，一个世界问题，但对我们来说尤为严重。</p>
-<p>所以我经常对周围的人强调，我们被逼无奈可以考虑躺平摆烂，但躺平摆烂的要义是人要有一个强大的灵魂，要相信自己的判断，而不是镰刀们的贬损和诋毁。相信狼们镰刀们和你一样都是一个脑袋四条腿，无论是探索未知的悟性和效率，又或是战斗的意志与技巧，都不见得比你高明到哪里去。实在不行的话，只是活下去便是，不仅要健康地活着，而且是带着精神和思想健康地活着，思想和灵魂的成毁要远比物质的得失重要得多，将火种传给更多的年轻人，真理和智慧终将破除一切谎言与蒙昧，成功不必在我。</p>
-<p>以斯诺登（Edward Snowden）的一句话作为结尾吧，8月份斯诺登本人关注到了中国目前年轻人的状态，他写下了这么一句话，甚至同时使用了中英双语：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">“系统的目的不是帮助你，而是控制你。 无论您感到多么孤立，请永远不要忘记您并不孤单：对新兴世代的剥削是一场全球斗争。”(对不起，我可怜的中文。'-.-)。</span><br><span class="line"></span><br><span class="line">"The system was not designed to <span class="keyword">help</span> you, but <span class="keyword">to</span> control you. <span class="keyword">No</span> matter how isolated you feel, <span class="keyword">never</span> forget that you <span class="keyword">are</span> <span class="keyword">not</span> alone: the exploitation <span class="keyword">of</span> rising generations <span class="keyword">is</span> a <span class="keyword">global</span> issue.<span class="string">"</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>通识污染——某搜索引擎离谱的医学词条</title>
-    <url>/2022/01/15/%E9%80%9A%E8%AF%86%E6%B1%A1%E6%9F%93%E2%80%94%E2%80%94%E6%9F%90%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E7%A6%BB%E8%B0%B1%E7%9A%84%E5%8C%BB%E5%AD%A6%E8%AF%8D%E6%9D%A1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>真给我整蒙了.jpg <a id="more"></a><br>百度百科痢疾词条：<a href="https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047" target="_blank" rel="noopener">https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047</a><br>维基百科Dysentery词条：<a href="https://en.wikipedia.org/wiki/Dysentery" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Dysentery</a><br>当然这些词条都可能在今后发生变化，所以这里将作截图解释。</p>
-</blockquote>
-<p>&emsp;&emsp;我这人本不打算和中医打任何交道，没想到就是没得病也给我整蒙了。起因是睡觉前读了一会Philip Parker的《维京人的世界（The Northmen’s Fury: A History of the Viking World）》，非常专业的全方位讲维京人历史的一本书，里面提到845年围攻巴黎的维京人战团中爆发了痢疾，导致其进攻受挫，连维京人的首领拉格纳也死于此病，有意思的是，这被法国人看作是因维京人掠夺了附近的修道院而受到的上帝的“神罚”。于是我随手就百度了一下痢疾是什么病，没想到这一搜真给我长见识了：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/1.png" title="a">
-<p>&emsp;&emsp;好家伙，居然是文言文的中医词条，我看了半天也就认得“脓血”、“腹痛”、“饮食不洁”、“病位在肠”，“与脾胃有密切关系”。至于“外感时邪疫毒”，到底感了什么毒，是病毒还是细菌还是化学毒剂？“湿热、疫毒、寒湿，气血壅滞”这又是啥，谁会念这个字？后面的更让我摸不着头脑：什么“宜清”、“宜温”、“实证”、“虚证”、“通涩兼施”、“虚实夹杂”着实搞的人云里雾里。更好笑的是，简表里写的传染性是“无”，正文里又写明了“是夏秋季节常见的传染病”，“应重在预防，控制传染”，所以说这病到底传不传染？文章自己都矛盾。而且，也没有痢疾的英文学名，一个单词都不让你学。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/2.png" title="b">
-<p>&emsp;&emsp;然后是贴了一堆只讲大空话的古文，并且“进一步阐明痢疾具有流行性、传染性”。有意思的是，出现了一段“本节讨论的内容以西医学中的细菌性痢疾、阿米巴痢疾为主”，意思等于是说，我和你们西医讲的是一个玩意，但我不按照你们那套规则来描述事物，不过“溃疡性结肠炎、放射性结肠炎、细菌性食物中毒”这涵盖的范围也太广了吧，这也“均可参照本节辨证论治”？这真让人很好奇下面是不是有什么包治百病的神药。至于发病机理，又是上面见过的什么“湿热疫毒”、“邪蕴肠腑”，到底是什么毒什么菌、通过什么途径什么原理把肠道损害了，只字不提。</p>
-<p>于是我们看看中医是怎么治痢疾的：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/3.jpg" title="c">
-<p>&emsp;&emsp;我不觉得一个没学过中医的正常中国人能一字不落地读完这些内容，互联网百科说到底应该是一种通识教育（General Education），是给老百姓看的，不是光给中医医生看的，更何况谁家科班出身的医生照着网上搜来的的百科词条给人看病啊？这写一堆这玩意，是要叫身患痢疾的老百姓进深山老林学神农，尝百草么？</p>
-<p>再看一下维基百科对于Dysentery的解释：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/4.png" title="d">
-<p>翻译一下：</p>
-<blockquote>
-<p>痢疾（Dysentery）是一种导致血性腹泻的肠胃炎。其他症状可能包括发烧、腹痛和不能完全排便的感觉，并发症可能包括脱水症。<br>痢疾的原因通常是志贺氏属（Genus Shigella）的细菌，在此情况下，它被称为志贺氏菌病（shigellosis）或溶组织内阿米巴（Entamoeba histolytica）原虫；并被称为阿米巴病（amoebiasis）。其他的某些化学物质、细菌、其他原生动物或寄生虫也可能导致此病。它可在人与人之间传播。风险因素包括由于卫生条件差而导致的粪便污染食物和水。潜在机制涉及肠道炎症，尤其是结肠炎症。<br>预防痢疾的有效措施包括在高风险地区旅行时洗手，以及食品安全措施。虽然这种情况通常会在一周内自行消退，但喝足够的液体（例如口服电解质补水液）很重要。阿奇霉素等抗生素可用于治疗与发展中国家旅行相关的病例。洛哌丁胺等用于减少腹泻的药物不建议单独使用，它们应当与抗生素一起使用。<br>志贺氏菌每年导致约1.65亿例腹泻病例和110万人死亡，几乎所有病例都发生在发展中国家。在卫生条件差的地区，近一半的腹泻病例是由溶组织内阿米巴引起的。溶组织内阿米巴每年导致超过55000人死亡，影响了数百万人。它通常发生在中美洲和南美洲、非洲和亚洲的欠发达地区。至少自希波克拉底时代以来，就已经描述了痢疾。</p>
-</blockquote>
-<p>&emsp;&emsp;维基词条在概述中其实也没有说得太清楚，志贺氏菌（也就是我们说的细菌性痢疾）和阿米巴原虫（阿米巴痢疾）是两种病因，不过这里我们也可以看出，痢疾（Dysentery）是一个比较笼统的传统叫法，因为致病病原体不是唯一的，但大多数情况下为志贺氏菌和阿米巴原虫，下文中得到了详述。而且我觉得feeling of incomplete defecation不比什么“里急后重”明白多了？过多的中医术语也是让此类文章失去可读性的重要原因。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/5.png" title="e">
-
-<blockquote>
-<p>体征与症状：最常见的痢疾是细菌性痢疾，通常是一种轻度疾病，引起的症状通常包括轻度肠痛和频繁排便或腹泻。症状通常在1-3天后出现，通常一周后不再持续。排便冲动的频率、排出大量液体便以及血液、粘液或脓液的存在取决于引起疾病的病原体。也可能发生暂时的乳糖不耐症。在某些严重情况下，可能会出现严重的腹部绞痛、发烧、休克以及谵妄。<br>在极端情况下，病人每小时可能会排出超过一升的生殖器和肛门液。更常见的是，病人会抱怨伴有极度腹痛、直肠疼痛和低烧的带血腹泻。有时痢疾伴随快速的体重减轻和肌肉疼痛，而恶心和呕吐很少见。在许多情况下，可能会出现影响整个上肠周围肌肉的级联痉挛；有时严重到足以导致肠膜与肠壁分离，导致全身感染。<br>在极少数情况下，阿米巴寄生虫会通过阴道血流侵入人体并扩散到肠道之外。在这种情况下，它可能会更严重地感染其他器官，例如大脑、肺，最常见的是肝脏。</p>
-</blockquote>
-<p>&emsp;&emsp;照中医词条的说法你根本不知道这个疾病能严重到什么程度，如果没有施以有效的治疗，确实足以要命，看来不是维京人不能打，而是疾病太狠。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/6.png" title="f">
-
-<blockquote>
-<p>病因：痢疾是由细菌，或寄生虫感染引起的。病毒通常不会引起这种疾病。这些病原体通常通过摄入受污染的食物或水、或口腔接触受污染的物体或手等途径，从口腔进入后到达大肠。每种特定的病原体都有其自身的机制或发病机制，但总的来说其结果是对肠壁的损伤，导致炎症的免疫反应。这会导致体温升高、肠道肌肉疼痛性痉挛，因液体从肠道毛细血管渗漏而导致肿胀（水肿），以及身体免疫细胞和称为细胞因子（cytokines）的化学物质进一步对组织造成损害，因人体会释放这些化学物质以对抗感染。结果可能是营养吸收功能受损，肠道组织通常从粪便中除去水分的控制机制的破坏导致的水分和矿物质的流失，以及严重的情况下，病原微生物会进入血液循环。贫血也可能由于腹泻失血而引起。<br>导致血性腹泻的细菌感染通常被归类为侵入性（invasive）或产毒性（toxogenic）。侵入性物种通过侵入肠道黏膜直接造成损害，而产毒性物种不会侵入，但会通过分泌毒素造成细胞损伤，导致血性腹泻。这也与导致水样腹泻的毒素形成对比，后者通常不会造成细胞损伤，而是在细胞的一部分生命中接管细胞机制。<br>一些微生物——例如志贺氏菌属的细菌——分泌被称为细胞毒素（cytotoxins）的物质，在接触时会杀死和破坏肠道组织。而与其毒性相比，志贺氏菌被认为其侵入性更强从而引起出血，因为即使是非产毒菌株也会引发痢疾，但带有志贺样毒素的大肠杆菌无法入侵肠粘膜，因此，是毒素机制具有依赖性，不能独立存在。<br>痢疾的定义可能因地区和医学专业而异。美国疾病控制和预防中心 (CDC) 将其定义限制为“可见血液的腹泻”。其他人更广泛地定义了这个术语。在定义机制时必须考虑到这些定义上的差异。例如，使用CDC 的定义要求肠道组织受到严重损伤，以至于血管破裂，排便时会流失可见量的血液。其他定义可能需要的具体损害相对较少。</p>
-</blockquote>
-<blockquote>
-<p>阿米巴痢疾（Amoebic dysentery） 主条目：阿米巴病（Amoebiasis）<br>阿米巴病，也称为阿米巴痢疾，是由溶组织内阿米巴变形虫感染引起的，多见于热带地区。正确治疗阿米巴痢疾的潜在感染很重要；未得到充分治疗的阿米巴病可能会潜伏多年，随后导致严重且可能致命的并发症。<br>当感染者肠道内的变形虫（amoebae）准备离开身体时，它们会聚集在一起形成一个外壳包围并保护它们。这组变形虫被称为囊肿（cyst），然后通过粪便排出人体，并可以在体外存活。如果卫生标准很差——例如，如果人们不卫生地处理粪便——那么它可能会污染周围的环境，例如附近的食物和水。如果另一个人随后食用或饮用被含有此囊肿的粪便污染的食物或水，该人也会感染阿米巴虫。阿米巴痢疾在世界上将人类粪便用作肥料的部分地区尤为常见。通过口腔进入人体后，囊肿向下进入胃部。囊肿内的变形虫可避免胃酸的腐蚀。囊肿从胃进入肠道，在那里它破裂并释放变形虫，从而导致感染。变形虫可以钻入病人的肠壁并导致形成小脓肿和溃疡。然后循环将再次开始。</p>
-</blockquote>
-<blockquote>
-<p>细菌性痢疾（Bacillary dysentery） 主条目：细菌性痢疾<br>痢疾也可能由志贺氏菌病引起，志贺氏菌属细菌感染，然后被称为细菌性痢疾（或马洛综合征）。细菌性痢疾一词在词源学上似乎是指由任何杆菌状细菌引起的任何痢疾，但其含义仅限于志贺氏痢疾。<br>其他细菌：一些大肠杆菌菌株会引起血性腹泻。典型的罪魁祸首是肠出血性大肠杆菌，其中O157:H7最为人所知。</p>
-</blockquote>
-<p>&emsp;&emsp;这条就讲的非常清楚了，相比中医条目那看不懂的古文甚至可以用精彩来形容。志贺氏菌和阿米巴寄生虫都会导致此类疾病，志贺氏菌通过直接侵入肠粘膜+分泌细胞毒素的方式引起肠炎，而阿米巴虫则是一种典型的寄生虫病，拥有一套完善的寄生-繁殖机制，可抵御人体的各种免疫措施，且可在人类社区中依靠排泄物传染他人。并且说明了狭义上的“细菌性痢疾”仅指志贺氏菌痢疾，但广义上的细菌性痢疾可以包含其他细菌病原体。从致病机理可以看出，痢疾均从大肠发病，和脾、肾确实没有什么关系，和胃的关系也很小，不知道为什么中医理论老是把什么病都扯上脾肾。</p>
-<p>再来看看治疗手段：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/7.png" title="g">
-<blockquote>
-<p>痢疾可通过使用口服电解质补液的疗法维持液体得到控制。但这种治疗方法如果由于呕吐或大量腹泻而无法维持，则可能需要住院以进行静脉输液。在理想情况下，在通过显微镜微生物和培养研究确定所涉及的感染种类之前，不应进行抗细菌治疗。当这种实验室服务条件不可用时，可能需要联合使用药物，包括能杀死阿米巴寄生虫的药物和治疗任何相关细菌感染的抗生素。<br>如果怀疑是志贺氏菌病并且不太严重，让它自然发展可能是合理的——通常不到一周。如果情况严重，可以使用环丙沙星或TMP-SMX等抗生素。然而，许多志贺氏菌菌株对普通抗生素产生抗药性，而有效药物在发展中国家往往供不应求。如有必要，医生可能必须为死亡风险最高的人保留抗生素，包括幼儿、50岁以上的人以及任何患有脱水或营养不良的人。<br>阿米巴痢疾通常用两种抗菌药物治疗，例如甲硝唑和巴龙霉素或碘喹啉。<br>医疗预后：通过正确的治疗，大多数阿米巴痢疾和细菌性痢疾会在10天内消退，大多数人在开始适当治疗后的两到四个星期内即可完全康复。如果疾病不治疗，预后会随着个体患者的免疫状态和疾病的严重程度而变化。极度脱水会延迟恢复并显着增加严重并发症的风险。</p>
-</blockquote>
-<p>&emsp;&emsp;这也是医疗上的一个基本道理，先确定病原体再对症下药，且也存在口服电解质补液的自愈疗法和轻度疗法，并非某些人认为的“西医只有打针输液”。甚至还考虑到了资源匮乏的非理想情况，毕竟地球上不是哪里都发达，很多穷困地区没有医学条件，病人还特别多，在没有实验室无法确定病原体的情况下，杀寄生虫和杀细菌应当双管齐下二者并用，这也是不得已而为之。而且说了这么多，这也只是百科词条，是属于世界人民的“通识教育”。</p>
-<p>&emsp;&emsp;然后我还找到一篇1991年的《睢县腹泻患者中志贺氏菌和溶组织阿米巴原虫的调查分析》：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/8.png" title="h">
-<p>&emsp;&emsp;文献也写的很清楚，河南睢县出现的阿米巴痢疾和志贺氏菌痢疾病例上基本五五开，很多阿米巴痢疾被误诊为细菌性痢疾导致久治不愈。检测手段也当然是粪便常规，并非靠什么听起来就不靠谱的“伤气伤血、虚实主次”。</p>
-<p>最后再对比一下参考文献：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/9.png" title="i">
-<p>&emsp;&emsp;这么写文章也是明摆着糊弄人了，仔细看了看，本词条居然还有北京中医药大学第三附属医院的刘金民主任医师作专家认证，还是教授、博士生导师，不知道这导师的博士生是不是论文都是这么写参考文献的，哦还有“国家中医药管理局百度百科科普词条项目审核专家组”认证，且本词条是“国家中医药管理局中医药名词术语成果转化与规范推广项目”的提供内容，至于这项目是啥咱不知道，只知道这还是个锁定词条，一般人还别想编辑。</p>
-<p>&emsp;&emsp;就这条目本身提供的古代文献来看，也只有非常少数的内容提到了“大小肠”，而更多的内容都是“胃气败”、“腹痛”、“血虚”、“气湿”，压根无法指出病因所在。我们可以推断，这个满篇文言文的古怪词条一定是现代人写的，古人哪有这本事，用文言文写出的“假古文”也引证不出文献来源，只能骗骗不懂的人以为古代文献有多高深。</p>
-<p>&emsp;&emsp;也许有人会想当然的说，鬼才看百度词条。或者重复我上面说的，医生也不靠百度词条治病。其实我上面写了这么多，关键就在这一点，这种想法大大忽视了通识教育的必要性，也大大低估了此类行为的危害性。全国上下十几亿老百姓，不是人人都能读英语，更不是人人都能上维基的。说到底，这个词条的目的就是让普通老百姓们上网搜一大圈也搞不懂什么是痢疾，读不懂“医学”内容然后产生自我否定，也不知道该用什么药，得病了只能病急乱投医，然后再被这些老中医们用一记十几块钱的便常规，再附带一堆上百元的乱七八糟的中药，宰得盆满钵满。毫不怀疑的说，已经不知道有多少人受了这样的骗，但几十年前确实信息通讯不发达，你得病了可能还真得求助于村里那个没什么证的赤脚医生。但现在都什么年代了，不由的让我想到互联网上的“DNS污染”的概念：你求取一个内容，系统识别后给你发送一个错误内容，把你引到沟里去，你永远也获得不到正确的内容。</p>
-<p>&emsp;&emsp;我们的医学正在遭受这样一种污染，其实在历史、哲学等学科上我们早已见识过，我认为不应当将这种污染称为学术污染，学术污染这个词汇应该指的是在某些特定学术领域制造的学术功利或虚假，比如学者靠一些骗人的垃圾项目套取资源、发垃圾论文谋晋升等常见套路，但这些学术内容的腐败是让那些专家教授得了利，和普通老百姓的生活的关系不是非常直接。</p>
-<p>&emsp;&emsp;但此类污染不同，它直接影响、误导了一个普通人对一些基本生活常识的获取能力、思维方式和价值判断，危害远远不可估量。我思来想去之后自创了一个词汇（我不确定是否有人已经提出过），这应当被称为“通识污染（General knowledge pollution）”，这里有必要阐述一下为什么我认为“通识教育”是真正的教育，且从来没有在我们国家进行过，通识教育早在19世纪就已经提出，如今已经可以算是现代大学教育思想的基本内核，但经过这样的通识污染后，普通人即使走上学术道路，也只能最后异化为某个狭窄领域上的技术性人才，学建筑的不懂医学，学医的不懂机械原理，学机械的不懂人文艺术，等等，这里的不懂不是指无法成为某个领域的专业人士，而是不具备很多基本常识。结果是只要出了这一行就是小学生，就要受骗受欺负，这样的人才被牢牢捆绑在自己的狭窄岗位上，难以有所自由选择，其目的显而易见，即将其固定为一个为某个特定领域服务终生的“工具人”，最终满足某些上层阶级的目的。到底来讲，他们压根不希望真正的通识教育得以普及，也不想让人民中诞生出不只为某些利益团体服务的、自由的通识性人才。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>翻译</tag>
+        <tag>随想</tag>
       </tags>
   </entry>
   <entry>
@@ -2068,6 +1979,95 @@ table th:nth-of-type(3) {
         <tag>软件</tag>
         <tag>游戏</tag>
         <tag>攻略</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>记录一个梦境</title>
+    <url>/2021/10/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%AA%E6%A2%A6%E5%A2%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>据说人在一晚上会做多个梦，而能记起的梦通常是将醒的那一个，所以它应该发生于2021年10月28日6点左右。<a id="more"></a></p>
+</blockquote>
+<p>我预计这个文章会比较杂乱，就和梦境本身一样。</p>
+<h2 id="27日做了什么："><a href="#27日做了什么：" class="headerlink" title="27日做了什么："></a>27日做了什么：</h2><p>我已经想不起来27日的早上和中午都干了啥，但可以确定的是几乎整个白天都泡在互联网上游荡，近些年我似乎变得越来越“Cyber”。在下午玩了玩Discord，看到一个哥们在Diablo服务器群组下的一个空无一人的频道里玩，他似乎已经在那里呆了有几天了，出于好奇我进入频道和他聊了一阵子，是一个33岁的加拿大老哥，老哥贴心地把他的Diablo2重制版的电脑屏幕开了直播投给我看，我们从Diablo这个游戏聊到魔兽、暴雪，童年、文化等，他似乎是一个很好打交道的家伙，虽然我口语很烂，但对方很耐心，又或许刷装备本来就是很无聊的事情，他说他看到了中国限制未成年人周末每天玩一小时网络游戏的新闻，觉得很扯淡，直言这是dictatorship，临走时他还不忘向我炫耀他的台湾女朋友教了他几句中文，可惜我一句也没听懂，在对方再三解释下我终于明白那是一个“啤酒”，然而听上去更像是“必救”。这似乎算是我第一次和一个native speaker交流这么长的时间，并且谈论的东西也比较广泛，我确实是想把英语练好的，Discord似乎是一个不可多得的工具，前提是我得有足够的时间先去享受一些游戏才行，不然连话都没得说。</p>
+<p>晚上在家吃完饭父亲邀请我一同观看了索科洛夫于1998年拍摄的纪录片《对话索尔仁尼琴》，他想了解这个人，而我在大学期间读过不少索尔仁尼琴的书，从他的《古拉格群岛》、《癌症楼》到《牛犊顶橡树》等的一些小短篇，我当时就得知索尔仁尼琴已于2008年去世，享年89岁，也就是说，1998年拍摄这部影像时他已经几乎80岁了，虽然我读过他的书，但我还真没看过关于他的影像作品，我惊讶于一个80岁的老人仍能有敏捷的思维和判断力，而且明显能够看出他的观念不像很多老人那样顽固守旧，他是能够理解新世界的人，简直就像一个年轻人一般。期间和之后的时间里又和父亲聊了很多东西，传统音乐、俄罗斯和东正教、公共教育的落后、三十年战争，再到信息不灭和宇宙模拟论。父亲似乎在这些年变成了一个很好学的人，其实我认为他一贯如此，他确实是个普通人，但我后来才发现那是很不寻常的特点：一种对知识及探索未知的单纯的向往，而并非完全是由生存恐惧导致寻求物质利益的自保行为，抑或是寻求社会地位、名望所驱动的。它如同柴米油盐、刀俎鱼肉间的一股灵光，哪怕人的思想和灵魂里只有那么一点点也好，但从许多平凡的普通的劳动者到自命为知识分子的学术阶层里，我几乎从没见到多少人有过。</p>
+<p>这样晚上剩下的时间也不多了，我在电脑上又看了一遍<br>那个很专业的、由Tod’s Workshop于19年8月主导的“长弓穿甲”测试，以及一个日本漫画家的铅笔作画过程记录，看完几乎已经快凌晨1点了，我决定这一天就这么结束。</p>
+<h2 id="梦境的开始"><a href="#梦境的开始" class="headerlink" title="梦境的开始"></a>梦境的开始</h2><p>人确实是很奇特的生物，睡梦如同是得了精神分裂症一般，当你决定如同关闭一场游戏一般结束一天时，人的另一部分灵魂却又偷偷在一个虚拟世界以更加奇特的形式开始活动，就像一个独裁的官员政客正在向人民许诺自由和幸福，而同时他的一部分又回到了那个只有少数同僚的“烟雾缭绕的小房间（Smoke-filled room）”。几乎可以说梦中的东西都是真实的组合，比如很难在梦中见到陌生人，因为人的大脑难以生成一个完整的的陌生人的面孔的全部信息。所以说最常见的还是亲人熟人，不然只能是面部信息混乱不全的人，或干脆就是“无脸人”。我们经常听说有作家能在梦中构思、写作，音乐家在梦中作曲等，我不怀疑它的真实性，事实上我自己在狂热投入某些活动再加上没睡好的情况下也有着类似的经历。</p>
+<p>它开始于一个繁忙的街道，这是这个小城里的一个商业街，向来都是一个人流量很大的地方，它已经有些老旧了，拥有很多又黑又窄的未知小巷，我很少前去那里，只有父母去逛市场的时候才会带我钻进去。前段时间我还去那里转了一圈，人流量早已没有我小时候记忆中那么多了，可能人们都不爱上街了吧，所以那些当年开食物店摆摊、临街叫卖的，甚至是耍骗术的骗子也都消失不见了（我在那条街见识过好几回杂技型的骗术）。而楼上的超市和室内商场也显得有些衰败：一家在2000年曾经是城里最大的大型商场的运营方据说已经濒临破产，里面的店铺几乎倒闭了一半，在里面走了一圈，只有少数仍然开着的店铺还有那么一两个服务员在，她们仍要以一个较高的音量对顾客展示欢迎语，这个声音在这样一个人流稀少的商场里显得更加冷清。</p>
+<p>而梦境又向我呈现出二十年前的景象，内容似乎映射了一段我当服务员的日子。于是就在某一个人流熙攘、外面摆满了临街小吃店摊位的小巷口里，我在一个明显是由一层仓库改成的廉价服装商铺里工作。像那时很多的服装批发市场一样，这间仓库里在白天几乎不开灯，地上也扔满了包装拆下来的废旧硬纸板，衣架间穿行的服务员和想要试鞋子的顾客时不时互相交流，店里人们的声音都比较大，因为店面离巷口不远，街道上的嘈杂声很容易就能盖过这里的正常音量。我以前只做过餐饮服务员，的确没有当过服装店的服务员，我对自己的“工作”的想象也只能基于自己见到的场景：将一包包衣服从包装箱里拆出来，一件件整理好，再一件件将他们挂到墙上或衣架上去。和如今我能够睡个懒觉相比，当服务员只是看起来轻松，实际却是很累很耗时间的工作。我在梦里的全部时间似乎都要彻底消耗在这些重复体力劳动上了，但梦境并没有给我更多关于这项工作的具体内容，我似乎又变成了一个经理一般的角色，还是那家商铺，只不过我变成了管理者，像我以前的老板那样训斥员工们——他们的衣服叠的实在太乱了。</p>
+<p>我在服装商店老旧的的卷帘门前遇到了熟人，一个中学时代关系还算好的女同学，她似乎并不是某一个特定的我认识的人，而是由多个女孩的元素拼成的，但我很确定的是我在中学时代就喜欢过她，是很老套的情节。但她看起来不像中学时代那么富有魅力了，她标志性的黑色长头发被剪到很短很短，几乎和男生的头发差不多了。我这时应该是扔下了服装店的工作，跑出去和她聊天。她的头发几乎算是我见过的所有女生里发质最好、最密的那个，我问到她长头发为什么剪掉了，她不肯说话，我开玩笑说你的头发也太短了，比我在网上看到的乌克兰女兵都短（其实我想说“你像俄罗斯最凶狠的光头党女混混”，当然这太过分了，不会真这么干的xD）。和她分开后又遇到了熟人同学，他告诉我那个女孩其实把头发卖掉了，卖了500万，这个数字当然很离谱，但我的第一反应居然是嫉妒，就像人听说周围哪个朋友中了百万大奖一样产生嫉妒情绪，并且因为刚刚才嘲笑人家头发短，我不得不接受一位“富婆”很可能已经把我“拉黑”了的事实。醒来后我还很好奇地专门查了一下女生的头发到底能卖多少钱，大概得出结论后我觉得，假设那个现实中的女孩真的就把头发给卖了，卖到上千块钱是绝对没问题的，她的头发太好了，确实少见。而且我还查到了莫文蔚为头发投保1000万人民币，詹妮弗·洛佩兹为屁股投保2700万美元等信息，看来现实远比梦境离谱。</p>
+<p>于是我又得回到那个昏暗的库房里当我的服务员，似乎又不再是经理了，场景也变到了另一个同样拥有很多小商铺的邻近街道上，我找了好几家店却都不是我在的那个，我意识到我似乎并不想回去工作，这并不是因为那500万的铂铑钯铱神奇头发刺激到了我，我在梦中也压根没有工资的概念，单纯是因为我认为服装店服务员的工作实在太无聊、太辛苦，就像一个小学生不愿意进学校的门那样。梦境也随着我的失落变得模糊，也就无法找到后面的记忆了。</p>
+<h2 id="梦境的原像"><a href="#梦境的原像" class="headerlink" title="梦境的原像"></a>梦境的原像</h2><p>回想我真正做餐饮服务员的经历，以及和身边其他做过餐饮服务业的人交流得出的结论，它确实是很累的，比高三都累的多，因为在学校你起码可以选择“不学”，只要保证自己能考进大学门就行了。通过摆烂和不求上进，等到老师或家长眼睁睁看着你这个明晃晃的“业绩”蜕变成一个不仅不会再升值，反而还在慢慢掉价的“垃圾股”的时候，他们脑子里就只有尽快“抛售”，于是自由便降临了。这样即使是面临高考你也能轻松地过下去，事实上我在高中就是这么做的。从这个角度讲，所谓的“摸鱼哲学”、“躺平摆烂”等消极抵抗行为天然有其作用优势，因为业绩教师和鸡娃家长们其实就像是一个个股市投机者，他们凭借自己的能力参赌，却无法随意处置发生的后果，对于手中的“垃圾股”的处理手段十分有限，一旦学生/子女变成了摆烂咸鱼，他们就陷入了套牢散户的处境。这时的主场其实已经变成“股票”了。我着实要感谢高中时的两个不仅不鸡娃，甚至连自己上班上课都在摸鱼的语文老师，他们称得上是世外高人。感谢他们让我用他们所有的语文课，拿一个简易电子设备读完了E. B. Potter的《世界海军史（Sea Power: A Naval History）》、梭罗的《瓦尔登湖》，托尔斯泰的《复活》等对我影响深远的作品，当然也有《最后的莫西干人》、《麦田里的守望者》等经典小说，并在语文课本和练习册上画出我想象中“汉普顿锚地海战”里Monitor号和Merrimack号的正面对决，以及比克卡战役（Battle of Bicocca）中佩斯卡拉侯爵（Fernando d’Ávalos）的西班牙火枪队。我觉得我当时的同桌完全可以证实这些。</p>
+<p>但工作却往往不同，如果老板不愁招不到工人的话，他拥有随时踢出不合格者的权力，这里完全是老板的世界，他可以无视劳动法而把每周的高强度劳动时间提高到令人瞠目结舌的水平，50、60小时已是家常便饭，“高强度劳动”这个词是我自创的，目的是区别于一般的低强度劳动时间，例如学生上课睡觉、公务员闲时玩手机、管理人员带薪出差旅游等等，虽然也都算作一般意义上的劳动时间之内，但其对人精力的消耗明显没有全天加班的码农、一单接一单的外卖小哥或是体力活工人明显。反正韭菜割倒一批又一批，哪怕就是把你当成燃料消耗掉，黑心企业家们连眉头都不会皱一下的。</p>
+<p>如果一个社会的劳动福利够好、法制完善的话，即使丢了工作通常也是吃喝不愁的，也就不会对被解雇怀着那么明显的生存恐惧，这样往往还是有机会把握一些基本权利的，企业家们也不敢那么肆意妄为；但现实让我们看到，许多“社畜”连摆烂的机会都没有，完全就是脖子上上了套一般任人驱使，和封建时代的奴仆没有多少区别。</p>
+<p>很多年前我见过一家餐馆的一个服务员，那家餐馆菜价并不贵，厨师也挺有水平，所以每天人都特别多，当然一到饭点服务员也都忙飞了。其中一个服务员女孩看起来确实比较好看，身材又好个子也不矮，年龄看起来比我大不了几岁，总之是一个很好看的姐姐。要是碰巧是她来给我收拾餐桌的话，我一定会提前把饭菜吃干净（虽然我一直吃的都很干净），尽量减少桌子上的垃圾，好让她收拾起来方便。我时不时观察她，她从头到尾也没有表现出一点笑容，甚至就是在收拾一个脏乱不堪、黏糊糊的啤酒瓶跌的到处都是的大桌的时候也没有露出一点厌恶之情，只是在像执行程序一样不停地端盘擦桌，偶尔用本地方言和别的服务员沟通，她的声音也和普通的本地女孩一样没什么特别的，可能是因为成长环境或是长期劳动的原因，她的皮肤不像那些不用从事体力劳动的女性那样柔顺，衣服上也总是沾着好些油渍。类似的还有我在工厂里见到的一个年轻工人，他的年纪明显比别的工人小得多，和我差不多。那里的工人平均估计都在四五十岁了，长期的重体力劳动再加上年龄的因素，再换上一身脏兮兮的工作服，如果他们就这样走在街上，你是一定不愿意靠近的。而那个年轻工人的长相和皮肤确实比一般的年轻人都好得多，戴着一副金属边框的眼镜，文质彬彬的。而当工人下班后脱下工作服，我才发现他们一下子好看了许多，平常让人觉得最不想接近的老工人都变得像是一个可爱的邻家大叔一般，而我有幸在这时又见到了那个年轻工人，说实话有点“惊为天人”，他给人的感觉就是普朗克年轻时那个照片的翻版，要不是在工厂里，你一定会想到在哪个大学的数学/物理系的楼道里，那个手里抱着书，学习最好、教授最喜欢的优秀学生。这样的学生要是往图书馆一坐，该是要吸引多少女孩的目光了；同样的，那个餐厅里见到的姐姐要是坐在教室里上课，也一定会成为大家追捧的对象。</p>
+<p>我的审美似乎对人的外形有着一种执着的追求，有人可能会说我颜控了，而我个人却认为这是一种很自然、甚至可以说很古典的审美感，就和今天的人同样欣赏《米洛斯的阿芙洛蒂特》、《大卫》等作品一样，这种美不是吹出来的，而是实打实存在着的感觉。然而我和这些人的确没有什么交集，我不知道他们的名字，连一句话也没有说过，更让人觉得残酷的现实是：漂亮姐姐在餐馆做了起码三年以上的工，之后便不知去向了，她大概率还留在这个城市，我想她可能已经嫁给了某个男人，又或是换了一份服务工作；而那个年轻人，在我离开工厂的时候，那天早上领导刚训完话，我看到他仍在这个厂里最累最热、环境最差的岗位上——那是一个连车间里一个干了二十年农活的农村大爷都不愿意碰的苦差。他面无表情、慢慢地推着一个运载车朝车间的另一端走去。他很可能没有上过大学，我不知道他是什么时候、从哪里来这个工厂的，也不清楚现在他还在不在那。上帝啊，我真希望他赶快离开那个反人类的工作岗位，让那些领导们自个上；对于那个曾在餐馆里工作的姐姐，我也只能祝愿她生活幸福、工作顺利，少遇那些烂人破事。</p>
+<h2 id="现实的指引"><a href="#现实的指引" class="headerlink" title="现实的指引"></a>现实的指引</h2><p>梦境有它真实的一面，而我们的生活还有多少真实的东西呢，我们现在可真算是谎言遍地了：媒体不说真话、官员不说真话、就连一个个普通人也因为害怕说真话而给自己带来麻烦选择沉默：老师家长不说真话，领导员工不说真话，甚至有些夫妻之间都不肯掏心掏肺了，年轻人也一个个学会了尔虞我诈之本事，也难怪汉娜·阿伦特（Hannah Arendt）认为现代极权主义建立在谎言之上。这往往和很多人想的不一样，这架庞大的机器的运作核心并非是暴力，暴力只是一个成效低下、早已过时的、且在捉襟见肘时才被统治者们使用的下策，而这一代人所面对力量的却更为可怕：古老的奴隶主们在高科技手段和现代经济理论所加持下，用两百年以上的社会实践经验以及两次世界大战的所有残酷流血共同锻造了一副前所未有的武器装甲，其名为谎言与蒙昧。今年的离谱之事真可谓是铺天盖地，如7月的河南水灾，7月20日当晚我就看到了郑州地铁里传出的信息，从后续的结果看，河南那次的死伤人数绝对是一个不小的数字，我当时每天都在关注这个新闻，但官媒在那几天的时间里几乎天天报平安。最离谱的要属被全淹的京广北路隧道，可以说是这次事件最神秘的地方，这条全长1.8公里、挤满了车辆的隧道被彻底淹没，仅拖出来的泡水车就有上千辆之多，隧道随后被军管。而官方26日的通报显示隧道只有6人死亡。再加上更加传不出消息的郑州周边被淹没的广大农村地区，真相至今成谜。我想，任何一个有良心且不是傻子的人都不得不承认，我们的官方媒体已经彻底失去作用，这是一个危险的信号，你再也无法得知那些人的脑子里到底在盘算些什么了，“闷声发大财”这套已被他们玩到炉火纯青，而这种建立在谎言之上的阴谋与权术，却为街头巷尾在暗地里所推崇，被世人冠以“能人”之名号——人人皆以当镰刀为荣，对真理和智慧的信仰早已毁灭，自由之神不再眷顾我们——或许也根本不曾存在过。似乎这就是索尔仁尼琴言晚年所描述的——“21世纪的真面目”，一个世界问题，但对我们来说尤为严重。</p>
+<p>所以我经常对周围的人强调，我们被逼无奈可以考虑躺平摆烂，但躺平摆烂的要义是人要有一个强大的灵魂，要相信自己的判断，而不是镰刀们的贬损和诋毁。相信狼们镰刀们和你一样都是一个脑袋四条腿，无论是探索未知的悟性和效率，又或是战斗的意志与技巧，都不见得比你高明到哪里去。实在不行的话，只是活下去便是，不仅要健康地活着，而且是带着精神和思想健康地活着，思想和灵魂的成毁要远比物质的得失重要得多，将火种传给更多的年轻人，真理和智慧终将破除一切谎言与蒙昧，成功不必在我。</p>
+<p>以斯诺登（Edward Snowden）的一句话作为结尾吧，8月份斯诺登本人关注到了中国目前年轻人的状态，他写下了这么一句话，甚至同时使用了中英双语：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">“系统的目的不是帮助你，而是控制你。 无论您感到多么孤立，请永远不要忘记您并不孤单：对新兴世代的剥削是一场全球斗争。”(对不起，我可怜的中文。'-.-)。</span><br><span class="line"></span><br><span class="line">"The system was not designed to <span class="keyword">help</span> you, but <span class="keyword">to</span> control you. <span class="keyword">No</span> matter how isolated you feel, <span class="keyword">never</span> forget that you <span class="keyword">are</span> <span class="keyword">not</span> alone: the exploitation <span class="keyword">of</span> rising generations <span class="keyword">is</span> a <span class="keyword">global</span> issue.<span class="string">"</span></span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>通识污染——某搜索引擎离谱的医学词条</title>
+    <url>/2022/01/15/%E9%80%9A%E8%AF%86%E6%B1%A1%E6%9F%93%E2%80%94%E2%80%94%E6%9F%90%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E7%A6%BB%E8%B0%B1%E7%9A%84%E5%8C%BB%E5%AD%A6%E8%AF%8D%E6%9D%A1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>真给我整蒙了.jpg <a id="more"></a><br>百度百科痢疾词条：<a href="https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047" target="_blank" rel="noopener">https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047</a><br>维基百科Dysentery词条：<a href="https://en.wikipedia.org/wiki/Dysentery" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Dysentery</a><br>当然这些词条都可能在今后发生变化，所以这里将作截图解释。</p>
+</blockquote>
+<p>&emsp;&emsp;我这人本不打算和中医打任何交道，没想到就是没得病也给我整蒙了。起因是睡觉前读了一会Philip Parker的《维京人的世界（The Northmen’s Fury: A History of the Viking World）》，非常专业的全方位讲维京人历史的一本书，里面提到845年围攻巴黎的维京人战团中爆发了痢疾，导致其进攻受挫，连维京人的首领拉格纳也死于此病，有意思的是，这被法国人看作是因维京人掠夺了附近的修道院而受到的上帝的“神罚”。于是我随手就百度了一下痢疾是什么病，没想到这一搜真给我长见识了：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/1.png" title="a">
+<p>&emsp;&emsp;好家伙，居然是文言文的中医词条，我看了半天也就认得“脓血”、“腹痛”、“饮食不洁”、“病位在肠”，“与脾胃有密切关系”。至于“外感时邪疫毒”，到底感了什么毒，是病毒还是细菌还是化学毒剂？“湿热、疫毒、寒湿，气血壅滞”这又是啥，谁会念这个字？后面的更让我摸不着头脑：什么“宜清”、“宜温”、“实证”、“虚证”、“通涩兼施”、“虚实夹杂”着实搞的人云里雾里。更好笑的是，简表里写的传染性是“无”，正文里又写明了“是夏秋季节常见的传染病”，“应重在预防，控制传染”，所以说这病到底传不传染？文章自己都矛盾。而且，也没有痢疾的英文学名，一个单词都不让你学。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/2.png" title="b">
+<p>&emsp;&emsp;然后是贴了一堆只讲大空话的古文，并且“进一步阐明痢疾具有流行性、传染性”。有意思的是，出现了一段“本节讨论的内容以西医学中的细菌性痢疾、阿米巴痢疾为主”，意思等于是说，我和你们西医讲的是一个玩意，但我不按照你们那套规则来描述事物，不过“溃疡性结肠炎、放射性结肠炎、细菌性食物中毒”这涵盖的范围也太广了吧，这也“均可参照本节辨证论治”？这真让人很好奇下面是不是有什么包治百病的神药。至于发病机理，又是上面见过的什么“湿热疫毒”、“邪蕴肠腑”，到底是什么毒什么菌、通过什么途径什么原理把肠道损害了，只字不提。</p>
+<p>于是我们看看中医是怎么治痢疾的：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/3.jpg" title="c">
+<p>&emsp;&emsp;我不觉得一个没学过中医的正常中国人能一字不落地读完这些内容，互联网百科说到底应该是一种通识教育（General Education），是给老百姓看的，不是光给中医医生看的，更何况谁家科班出身的医生照着网上搜来的的百科词条给人看病啊？这写一堆这玩意，是要叫身患痢疾的老百姓进深山老林学神农，尝百草么？</p>
+<p>再看一下维基百科对于Dysentery的解释：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/4.png" title="d">
+<p>翻译一下：</p>
+<blockquote>
+<p>痢疾（Dysentery）是一种导致血性腹泻的肠胃炎。其他症状可能包括发烧、腹痛和不能完全排便的感觉，并发症可能包括脱水症。<br>痢疾的原因通常是志贺氏属（Genus Shigella）的细菌，在此情况下，它被称为志贺氏菌病（shigellosis）或溶组织内阿米巴（Entamoeba histolytica）原虫；并被称为阿米巴病（amoebiasis）。其他的某些化学物质、细菌、其他原生动物或寄生虫也可能导致此病。它可在人与人之间传播。风险因素包括由于卫生条件差而导致的粪便污染食物和水。潜在机制涉及肠道炎症，尤其是结肠炎症。<br>预防痢疾的有效措施包括在高风险地区旅行时洗手，以及食品安全措施。虽然这种情况通常会在一周内自行消退，但喝足够的液体（例如口服电解质补水液）很重要。阿奇霉素等抗生素可用于治疗与发展中国家旅行相关的病例。洛哌丁胺等用于减少腹泻的药物不建议单独使用，它们应当与抗生素一起使用。<br>志贺氏菌每年导致约1.65亿例腹泻病例和110万人死亡，几乎所有病例都发生在发展中国家。在卫生条件差的地区，近一半的腹泻病例是由溶组织内阿米巴引起的。溶组织内阿米巴每年导致超过55000人死亡，影响了数百万人。它通常发生在中美洲和南美洲、非洲和亚洲的欠发达地区。至少自希波克拉底时代以来，就已经描述了痢疾。</p>
+</blockquote>
+<p>&emsp;&emsp;维基词条在概述中其实也没有说得太清楚，志贺氏菌（也就是我们说的细菌性痢疾）和阿米巴原虫（阿米巴痢疾）是两种病因，不过这里我们也可以看出，痢疾（Dysentery）是一个比较笼统的传统叫法，因为致病病原体不是唯一的，但大多数情况下为志贺氏菌和阿米巴原虫，下文中得到了详述。而且我觉得feeling of incomplete defecation不比什么“里急后重”明白多了？过多的中医术语也是让此类文章失去可读性的重要原因。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/5.png" title="e">
+
+<blockquote>
+<p>体征与症状：最常见的痢疾是细菌性痢疾，通常是一种轻度疾病，引起的症状通常包括轻度肠痛和频繁排便或腹泻。症状通常在1-3天后出现，通常一周后不再持续。排便冲动的频率、排出大量液体便以及血液、粘液或脓液的存在取决于引起疾病的病原体。也可能发生暂时的乳糖不耐症。在某些严重情况下，可能会出现严重的腹部绞痛、发烧、休克以及谵妄。<br>在极端情况下，病人每小时可能会排出超过一升的生殖器和肛门液。更常见的是，病人会抱怨伴有极度腹痛、直肠疼痛和低烧的带血腹泻。有时痢疾伴随快速的体重减轻和肌肉疼痛，而恶心和呕吐很少见。在许多情况下，可能会出现影响整个上肠周围肌肉的级联痉挛；有时严重到足以导致肠膜与肠壁分离，导致全身感染。<br>在极少数情况下，阿米巴寄生虫会通过阴道血流侵入人体并扩散到肠道之外。在这种情况下，它可能会更严重地感染其他器官，例如大脑、肺，最常见的是肝脏。</p>
+</blockquote>
+<p>&emsp;&emsp;照中医词条的说法你根本不知道这个疾病能严重到什么程度，如果没有施以有效的治疗，确实足以要命，看来不是维京人不能打，而是疾病太狠。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/6.png" title="f">
+
+<blockquote>
+<p>病因：痢疾是由细菌，或寄生虫感染引起的。病毒通常不会引起这种疾病。这些病原体通常通过摄入受污染的食物或水、或口腔接触受污染的物体或手等途径，从口腔进入后到达大肠。每种特定的病原体都有其自身的机制或发病机制，但总的来说其结果是对肠壁的损伤，导致炎症的免疫反应。这会导致体温升高、肠道肌肉疼痛性痉挛，因液体从肠道毛细血管渗漏而导致肿胀（水肿），以及身体免疫细胞和称为细胞因子（cytokines）的化学物质进一步对组织造成损害，因人体会释放这些化学物质以对抗感染。结果可能是营养吸收功能受损，肠道组织通常从粪便中除去水分的控制机制的破坏导致的水分和矿物质的流失，以及严重的情况下，病原微生物会进入血液循环。贫血也可能由于腹泻失血而引起。<br>导致血性腹泻的细菌感染通常被归类为侵入性（invasive）或产毒性（toxogenic）。侵入性物种通过侵入肠道黏膜直接造成损害，而产毒性物种不会侵入，但会通过分泌毒素造成细胞损伤，导致血性腹泻。这也与导致水样腹泻的毒素形成对比，后者通常不会造成细胞损伤，而是在细胞的一部分生命中接管细胞机制。<br>一些微生物——例如志贺氏菌属的细菌——分泌被称为细胞毒素（cytotoxins）的物质，在接触时会杀死和破坏肠道组织。而与其毒性相比，志贺氏菌被认为其侵入性更强从而引起出血，因为即使是非产毒菌株也会引发痢疾，但带有志贺样毒素的大肠杆菌无法入侵肠粘膜，因此，是毒素机制具有依赖性，不能独立存在。<br>痢疾的定义可能因地区和医学专业而异。美国疾病控制和预防中心 (CDC) 将其定义限制为“可见血液的腹泻”。其他人更广泛地定义了这个术语。在定义机制时必须考虑到这些定义上的差异。例如，使用CDC 的定义要求肠道组织受到严重损伤，以至于血管破裂，排便时会流失可见量的血液。其他定义可能需要的具体损害相对较少。</p>
+</blockquote>
+<blockquote>
+<p>阿米巴痢疾（Amoebic dysentery） 主条目：阿米巴病（Amoebiasis）<br>阿米巴病，也称为阿米巴痢疾，是由溶组织内阿米巴变形虫感染引起的，多见于热带地区。正确治疗阿米巴痢疾的潜在感染很重要；未得到充分治疗的阿米巴病可能会潜伏多年，随后导致严重且可能致命的并发症。<br>当感染者肠道内的变形虫（amoebae）准备离开身体时，它们会聚集在一起形成一个外壳包围并保护它们。这组变形虫被称为囊肿（cyst），然后通过粪便排出人体，并可以在体外存活。如果卫生标准很差——例如，如果人们不卫生地处理粪便——那么它可能会污染周围的环境，例如附近的食物和水。如果另一个人随后食用或饮用被含有此囊肿的粪便污染的食物或水，该人也会感染阿米巴虫。阿米巴痢疾在世界上将人类粪便用作肥料的部分地区尤为常见。通过口腔进入人体后，囊肿向下进入胃部。囊肿内的变形虫可避免胃酸的腐蚀。囊肿从胃进入肠道，在那里它破裂并释放变形虫，从而导致感染。变形虫可以钻入病人的肠壁并导致形成小脓肿和溃疡。然后循环将再次开始。</p>
+</blockquote>
+<blockquote>
+<p>细菌性痢疾（Bacillary dysentery） 主条目：细菌性痢疾<br>痢疾也可能由志贺氏菌病引起，志贺氏菌属细菌感染，然后被称为细菌性痢疾（或马洛综合征）。细菌性痢疾一词在词源学上似乎是指由任何杆菌状细菌引起的任何痢疾，但其含义仅限于志贺氏痢疾。<br>其他细菌：一些大肠杆菌菌株会引起血性腹泻。典型的罪魁祸首是肠出血性大肠杆菌，其中O157:H7最为人所知。</p>
+</blockquote>
+<p>&emsp;&emsp;这条就讲的非常清楚了，相比中医条目那看不懂的古文甚至可以用精彩来形容。志贺氏菌和阿米巴寄生虫都会导致此类疾病，志贺氏菌通过直接侵入肠粘膜+分泌细胞毒素的方式引起肠炎，而阿米巴虫则是一种典型的寄生虫病，拥有一套完善的寄生-繁殖机制，可抵御人体的各种免疫措施，且可在人类社区中依靠排泄物传染他人。并且说明了狭义上的“细菌性痢疾”仅指志贺氏菌痢疾，但广义上的细菌性痢疾可以包含其他细菌病原体。从致病机理可以看出，痢疾均从大肠发病，和脾、肾确实没有什么关系，和胃的关系也很小，不知道为什么中医理论老是把什么病都扯上脾肾。</p>
+<p>再来看看治疗手段：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/7.png" title="g">
+<blockquote>
+<p>痢疾可通过使用口服电解质补液的疗法维持液体得到控制。但这种治疗方法如果由于呕吐或大量腹泻而无法维持，则可能需要住院以进行静脉输液。在理想情况下，在通过显微镜微生物和培养研究确定所涉及的感染种类之前，不应进行抗细菌治疗。当这种实验室服务条件不可用时，可能需要联合使用药物，包括能杀死阿米巴寄生虫的药物和治疗任何相关细菌感染的抗生素。<br>如果怀疑是志贺氏菌病并且不太严重，让它自然发展可能是合理的——通常不到一周。如果情况严重，可以使用环丙沙星或TMP-SMX等抗生素。然而，许多志贺氏菌菌株对普通抗生素产生抗药性，而有效药物在发展中国家往往供不应求。如有必要，医生可能必须为死亡风险最高的人保留抗生素，包括幼儿、50岁以上的人以及任何患有脱水或营养不良的人。<br>阿米巴痢疾通常用两种抗菌药物治疗，例如甲硝唑和巴龙霉素或碘喹啉。<br>医疗预后：通过正确的治疗，大多数阿米巴痢疾和细菌性痢疾会在10天内消退，大多数人在开始适当治疗后的两到四个星期内即可完全康复。如果疾病不治疗，预后会随着个体患者的免疫状态和疾病的严重程度而变化。极度脱水会延迟恢复并显着增加严重并发症的风险。</p>
+</blockquote>
+<p>&emsp;&emsp;这也是医疗上的一个基本道理，先确定病原体再对症下药，且也存在口服电解质补液的自愈疗法和轻度疗法，并非某些人认为的“西医只有打针输液”。甚至还考虑到了资源匮乏的非理想情况，毕竟地球上不是哪里都发达，很多穷困地区没有医学条件，病人还特别多，在没有实验室无法确定病原体的情况下，杀寄生虫和杀细菌应当双管齐下二者并用，这也是不得已而为之。而且说了这么多，这也只是百科词条，是属于世界人民的“通识教育”。</p>
+<p>&emsp;&emsp;然后我还找到一篇1991年的《睢县腹泻患者中志贺氏菌和溶组织阿米巴原虫的调查分析》：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/8.png" title="h">
+<p>&emsp;&emsp;文献也写的很清楚，河南睢县出现的阿米巴痢疾和志贺氏菌痢疾病例上基本五五开，很多阿米巴痢疾被误诊为细菌性痢疾导致久治不愈。检测手段也当然是粪便常规，并非靠什么听起来就不靠谱的“伤气伤血、虚实主次”。</p>
+<p>最后再对比一下参考文献：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/9.png" title="i">
+<p>&emsp;&emsp;这么写文章也是明摆着糊弄人了，仔细看了看，本词条居然还有北京中医药大学第三附属医院的刘金民主任医师作专家认证，还是教授、博士生导师，不知道这导师的博士生是不是论文都是这么写参考文献的，哦还有“国家中医药管理局百度百科科普词条项目审核专家组”认证，且本词条是“国家中医药管理局中医药名词术语成果转化与规范推广项目”的提供内容，至于这项目是啥咱不知道，只知道这还是个锁定词条，一般人还别想编辑。</p>
+<p>&emsp;&emsp;就这条目本身提供的古代文献来看，也只有非常少数的内容提到了“大小肠”，而更多的内容都是“胃气败”、“腹痛”、“血虚”、“气湿”，压根无法指出病因所在。我们可以推断，这个满篇文言文的古怪词条一定是现代人写的，古人哪有这本事，用文言文写出的“假古文”也引证不出文献来源，只能骗骗不懂的人以为古代文献有多高深。</p>
+<p>&emsp;&emsp;也许有人会想当然的说，鬼才看百度词条。或者重复我上面说的，医生也不靠百度词条治病。其实我上面写了这么多，关键就在这一点，这种想法大大忽视了通识教育的必要性，也大大低估了此类行为的危害性。全国上下十几亿老百姓，不是人人都能读英语，更不是人人都能上维基的。说到底，这个词条的目的就是让普通老百姓们上网搜一大圈也搞不懂什么是痢疾，读不懂“医学”内容然后产生自我否定，也不知道该用什么药，得病了只能病急乱投医，然后再被这些老中医们用一记十几块钱的便常规，再附带一堆上百元的乱七八糟的中药，宰得盆满钵满。毫不怀疑的说，已经不知道有多少人受了这样的骗，但几十年前确实信息通讯不发达，你得病了可能还真得求助于村里那个没什么证的赤脚医生。但现在都什么年代了，不由的让我想到互联网上的“DNS污染”的概念：你求取一个内容，系统识别后给你发送一个错误内容，把你引到沟里去，你永远也获得不到正确的内容。</p>
+<p>&emsp;&emsp;我们的医学正在遭受这样一种污染，其实在历史、哲学等学科上我们早已见识过，我认为不应当将这种污染称为学术污染，学术污染这个词汇应该指的是在某些特定学术领域制造的学术功利或虚假，比如学者靠一些骗人的垃圾项目套取资源、发垃圾论文谋晋升等常见套路，但这些学术内容的腐败是让那些专家教授得了利，和普通老百姓的生活的关系不是非常直接。</p>
+<p>&emsp;&emsp;但此类污染不同，它直接影响、误导了一个普通人对一些基本生活常识的获取能力、思维方式和价值判断，危害远远不可估量。我思来想去之后自创了一个词汇（我不确定是否有人已经提出过），这应当被称为“通识污染（General knowledge pollution）”，这里有必要阐述一下为什么我认为“通识教育”是真正的教育，且从来没有在我们国家进行过，通识教育早在19世纪就已经提出，如今已经可以算是现代大学教育思想的基本内核，但经过这样的通识污染后，普通人即使走上学术道路，也只能最后异化为某个狭窄领域上的技术性人才，学建筑的不懂医学，学医的不懂机械原理，学机械的不懂人文艺术，等等，这里的不懂不是指无法成为某个领域的专业人士，而是不具备很多基本常识。结果是只要出了这一行就是小学生，就要受骗受欺负，这样的人才被牢牢捆绑在自己的狭窄岗位上，难以有所自由选择，其目的显而易见，即将其固定为一个为某个特定领域服务终生的“工具人”，最终满足某些上层阶级的目的。到底来讲，他们压根不希望真正的通识教育得以普及，也不想让人民中诞生出不只为某些利益团体服务的、自由的通识性人才。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>翻译</tag>
       </tags>
   </entry>
   <entry>
