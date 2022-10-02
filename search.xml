@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Flash被各大浏览器彻底停用后的处理办法</title>
+    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
+</blockquote>
+<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
+<center>按钮彻底消失了</center>
+
+<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
+<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
+<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
+<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
+<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
+<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
+<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
+<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
+<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
+<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
+<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
+<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
+<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
+<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
+<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
+<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
+<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
+<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CSS中引入自定义字体</title>
     <url>/2022/04/18/CSS%E4%B8%AD%E5%BC%95%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -47,44 +85,6 @@
       <tags>
         <tag>CSS</tag>
         <tag>网页</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Flash被各大浏览器彻底停用后的处理办法</title>
-    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
-</blockquote>
-<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
-<center>按钮彻底消失了</center>
-
-<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
-<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
-<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
-<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
-<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
-<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
-<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
-<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
-<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
-<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
-<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
-<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
-<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
-<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
-<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
-<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
-<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
-<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -220,6 +220,41 @@
       </tags>
   </entry>
   <entry>
+    <title>hexo添加网易云音乐播放器</title>
+    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
+</blockquote>
+<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
+<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
+
+<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
+<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
+<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
+<p>不再重叠了~</p>
+<hr>
+<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
+<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
+<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
+<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
+]]></content>
+      <tags>
+        <tag>网页</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Y7000P更换散热模组</title>
     <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -299,41 +334,6 @@
 
 
 
-]]></content>
-      <tags>
-        <tag>网页</tag>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo添加网易云音乐播放器</title>
-    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
-</blockquote>
-<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
-<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
-
-<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
-<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
-<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
-
-<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
-<p>不再重叠了~</p>
-<hr>
-<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
-<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
-<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
-<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
 ]]></content>
       <tags>
         <tag>网页</tag>
@@ -424,6 +424,23 @@
       </tags>
   </entry>
   <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用PS的液化工具绘制弯刀的曲线</title>
     <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -453,20 +470,140 @@
       </tags>
   </entry>
   <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <title>利用Youtube的版权审查功能来识别音乐或歌曲</title>
+    <url>/2022/10/02/%E5%88%A9%E7%94%A8Youtube%E7%9A%84%E7%89%88%E6%9D%83%E5%AE%A1%E6%9F%A5%E5%8A%9F%E8%83%BD%E6%9D%A5%E8%AF%86%E5%88%AB%E9%9F%B3%E4%B9%90%E6%88%96%E6%AD%8C%E6%9B%B2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+<p>这个“邪门歪道”确实很令人吃惊，能准确有效地找到一些不为人知的罕见音乐的对应源。<a id="more"></a></p>
 </blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+<h3 id="方法简介"><a href="#方法简介" class="headerlink" title="方法简介"></a>方法简介</h3><p>首先我们将视频下载下来，获得视频文件。如果手里的是音频格式的话可以考虑通过录像软件等工具转成视频格式。只要是常见格式应该都是可以的。然后在Youtube频道上上传这个视频。YouTube这里默认上传成私享视频，因此不用担心侵权问题。上传过程中我们先简单填写视频信息，上传成功后，Youtube会自动进行有关的版权审查，此时发现红色叹号提示视频中音乐出现版权问题：</p>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/1.png" title="a">
+
+<p>点击“查看详情”：</p>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/2.png" title="b">
+
+<p>我们可以看到视频中所采用的所有音乐的名称和Youtube上对应的版权源。我们只需复制这些信息然后在YouTube上搜索即可找到源：</p>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/3.png" title="c">
+
+<p>观察《Now may we singen》这首歌。可以看到，牛津卡梅拉塔合唱团（Oxford Camerata）的专辑发布于1993年，但视频是2018年的，2018年前是否有Youtube视频版本暂不清楚，不过《Now may we singen》实际上是一首15世纪的英国传统歌曲，它在YouTube上还存在其他同样版本的作品，所以到这一步可以说就已经找到了。</p>
+<p>Oxford Camerata版本的歌曲链接如下：<br><a href="https://www.youtube.com/watch?v=Loi4Dh9-KbA" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Loi4Dh9-KbA</a></p>
+<h3 id="它的优势在哪"><a href="#它的优势在哪" class="headerlink" title="它的优势在哪"></a>它的优势在哪</h3><p>一些歌曲/音乐可能会非常难找。如果你看完下面的文字，你就能体会到这个难度。如网易云之类的常规的听歌识曲软件对偏门歌曲的识别率不仅低，而且更是无法识别库存中没有的音乐（虽然这个音乐碰巧是有的）。而基于Youtube视频形式的音乐源其实更为广泛，因其可能并不仅仅有于官方账号发布的源，故其库存量更大，更容易找到音乐。</p>
+<p>如上面视频中的音乐《Now may we singen》，对我来说是一个整整十年级别的找歌难题。一切的起因是大约在2012年，优酷网上有人上传了一些关于欧洲长剑（longsword）相关的视频，推测是从Youtube搬运的，当时在优酷上关注度还挺高，至少在那时候中世纪相关的圈子里是这样。优酷网目前还有这个视频，但从上传时间（2014年）和叠加的水印来看可能已经被翻录了多次：<a href="https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html" target="_blank" rel="noopener">https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html</a></p>
+<p>视频中相关的音乐我一直都没找到，视频内容中也没有给出背景音乐的信息。当我也开始使用Youtube后，在Youtube甚至连这个视频源都找不到了（有点讽刺的是，优酷网居然还留着有）。根据视频开头的元素，这个视频实际上是一个美国纽约州的剑术团体Lake Ontario Fechtschule制作的教学演示，由Todd Sullivan表演。网址为：<a href="https://toddsullivan.webs.com" target="_blank" rel="noopener">https://toddsullivan.webs.com</a> 。Lake Ontario Fechtschule从属于美国一个名为Selohaar Fechtschule的HEMA剑术团体，以德式长剑为主。而Selohaar Fechtschule又从属于美国一个名为The Order of Selohaar的民间神秘学团体，似乎至今仍有活动。他们的网址为：<a href="http://www.selohaar.org" target="_blank" rel="noopener">www.selohaar.org</a></p>
+<p>了解这些是为了找到视频源或者上传者，以求获得音乐的相关信息，但这个Lake Ontario Fechtschule可能早已经停止活动了，故有可能是上传者自行下架了视频。并且在整个Google上也无法找到这个视频，这个方法就行不通了。</p>
+<p>鉴于得不到任何相关的信息，于是我先是尝试了原始的笨办法：尝试听出歌词并搜索。对于有歌词的歌曲，很多情况下这是一个行之有效的方案，我曾经这样找到了好些日语歌曲。但这回实在是被彻底难倒了：开始我从听感上判断它可能是拉丁语，但实际上，它的歌词的主体是中古英语（Middle English），但加入了少量拉丁语，并且其中的英语词汇没有使用现代英语读法，而是采用了类似拉丁语的中世纪读法以契合音律。种种变数导致我听的一头雾水，导致这个方法也告吹了。（如果你看到这里，可以先试试在不看下面歌词的前提下能听出几个“英语”单词xD）</p>
+<p>最终通过文首的方法终于找到了这个歌曲。现在我们再来分析一下这个东西究竟是何方神物。下文的大多数结论均来自这个页面：<a href="https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm" target="_blank" rel="noopener">https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm</a></p>
+<p>根据说法，《Now may we singen》是一首15世纪的英国歌曲，属于一种Medieval Carol，最早的音乐和诗歌均记录在一张15世纪的羊皮纸卷轴上，作者已不可考。现存于英国剑桥三一学院图书馆（Library of Trinity College），18世纪后的作家记录了一些不同的版本副本。</p>
+<p>现代版本（19世纪版本）的歌词和乐谱如下，其中副歌（Refrain）中反复出现的拉丁语“Quod puer natus est nobis”意为“因为（那个）孩子是为我们而生”。：</p>
+<blockquote>
+<p>Now may we singen as it is,<br>Quod puer natus est nobis</p>
+<ol>
+<li>This babe to us that now is born,<br>Wonderful workës He hath ywrought,<br>He would not lose what was forlorn,<br>But boldly again it bought;<br> And thus it is<br> For sooth I wis,<br> He asketh nought but that is His.</li>
+<li>This bargain lovëd He right well,<br>The price was high and bought full dear,<br>Who would suffer and for us feel<br>As did that Prince withouten peer?<br> And thus it is, etc.</li>
+<li>His ransom for us hath ypaid.<br>Good reason have we to be His.<br>Be mercy asked and He be prayed<br>We may deserve the heavenly bliss.<br> And thus it is, etc.</li>
+<li>To some purpose God made man;<br>I trust well to salvation.<br>What was His blood that from Him ran.<br>But fence against damnation?<br> And thus it is, etc.</li>
+<li>Almighty God in Trinity,<br>Thy mercy we pray with whole heart<br>Thy mercy may all woe make flee<br>And dangerous dread from us to start.<br> And thus it is, etc.</li>
+</ol>
+</blockquote>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/4.jpg" title="d">
+
+<p>而Oxford Camerata所演唱的版本（即视频中的音乐）用的是原汁原味的15世纪原版歌词，相当难懂，甚至一些字符并不能在HTML下正确显示出来：</p>
+<blockquote>
+<p>Now may we syngyn as it is<br>Quod puer natus est nobis.</p>
+<ol>
+<li>This babe to us that now is bore.<br>Wundyrful werkys he hath i wrowt.<br>He wil not lese that was I lore.<br>But boldly aƺen it bowth.<br> And thus it is<br> ffor sothe I wys<br> he askyth nouth but that is hys.</li>
+<li>This chaffare fouyd he rith weel.<br>The prys was hey &amp; bowth ful dere<br>Qwo wold suffre and for us feele<br>As dede that prince was owtyn pere<br> And thus it is, (etc.)</li>
+<li>Hys raunsum for us hath I payd.<br>Of resoun than we owyn to ben hys<br>Be mercy askyd and he be prayd.<br>We may be rith kalange blys.<br> And thus it is, (etc.)</li>
+<li>To sum parpos god made man.<br>I leue weel to saluacyoun<br>Qwat was his blood that fro hym ran.<br>But defens aƺens dampnacyoun.<br> And thus it is, (etc.)</li>
+<li>Almythy god in trynyte.<br>Thy mercy we pray wyth hool herte<br>Thy mercy may all woo make fle.<br>And daungerous dreed fro us do sterte.<br> And thus it is, (etc.)</li>
+</ol>
+</blockquote>
 ]]></content>
       <tags>
-        <tag>软件</tag>
+        <tag>音乐</tag>
+        <tag>艺术</tag>
+        <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+]]></content>
+      <tags>
         <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>大型翻译计划：魔兽世界日记</title>
+    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
+</blockquote>
+<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
+<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
+<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
+<hr>
+<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>翻译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客建好了~</title>
+    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
+</blockquote>
+<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
+<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
+<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
+<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
+<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
+<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
+<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
+<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，包括我的父亲，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
+<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
+<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
+<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
+<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
+<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>如何移植hexo到新的设备上</title>
+    <url>/2020/04/25/%E5%A6%82%E4%BD%95%E7%A7%BB%E6%A4%8Dhexo%E5%88%B0%E6%96%B0%E7%9A%84%E8%AE%BE%E5%A4%87%E4%B8%8A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>关于更换机器后如何移植hexo的简述<a id="more"></a></p>
+</blockquote>
+<p>最近新入手一个电脑，想把整个博客都移植到新电脑上编辑操作，看了很多教程后大概明白了步骤，可能是因为都是静态文件的原因，搬起来还挺简单的，似乎即使新设备是mac系统一样可以这么操作。以下是具体步骤：</p>
+<p>1.给新设备安装Git和Node.js，这个是必须得有的。</p>
+<p>2.给新设备添加SSH密钥。打开Git Bash：<br>虽然新设备肯定是没有SSH了，不过这里为完备起见，可用下面的方法检测本机器已经拥有的的SSH：<br><code>$ ls -al ~/.ssh</code><br>如果终端输出的是：<br><code>cannot access ... No such file or directory</code><br>那么就说明本地没有SSH key<br>如果显示出一堆 id_rsa 和 id_rsa.pub文件的存在以及它们的创建日期，就说明此设备存在SSH，需要考虑移除该设备的SSH。简单来说就是直接把<code>C:\Users\机器用户名\</code> 下的.ssh文件夹给删了就行了。</p>
+<p>好的现在开始正式创建SSH key，Git Bash里输入：<br><code>$ ssh-keygen -t rsa -C &quot;你的GitHub邮箱地址&quot;</code><br>然后三次回车键（跳过passphrase口令，即给SSH本身设置一个保护密码，相当于二道锁，建议跳过），就在用户目录生成了一个名为.ssh的文件夹，里面有id_rsa和id_rsa.pub两个文件，用户目录就是C:\Users\XXX这里。ssh文件可以备份一下，登录Github的用户界面,找到Settings里面的SSH and GPG keys，里面可以看到旧的ssh密钥，点击new SSH key添加一个新的ssh密钥，Title可以自定义，内容填入记事本打开id_rsa.pub里的内容（开头为ssh-rsa后面跟着一大串字母）。点保存即可，旧的SSH也可以移除了。</p>
+<p>可以测试一下ssh，在Git Bash里输入<br><code>$ ssh -T git@github.com</code>（注意这里的邮箱地址就是<a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>，并不是个人邮箱）<br>此时可能跳出一行host确认信息，直接输入yes，此时会看到：Hi &lt;你的用户名&gt;! You’ve successfully authenticated, but GitHub does not provide shell access.则表示配置成功。</p>
+<p>接下来还需要配置<br><code>$ git config --global user.name</code>（格式为”xxxxxxxx”// 即github的登陆用户名，非昵称）<br><code>$ git config --global user.email</code>（”<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>“// 即github注册邮箱）<br>这个不配置的话似乎会在hexo d的时候跳出”please tell me who are you”的问题。</p>
+<p>3.接下来就是装hexo，打开Git Bash，输入<br><code>$ npm install hexo-cli -g</code><br>这步其实非常慢，回车键发现没反应需要等，等了N久都没用或者出错怎么办？可以强关Git，在Git里执行npm uninstall hexo卸载hexo（没装上的话这步是没用的，以防万一），然后在C:\Users\用户名\AppData\Roaming里把npm和npm-cache文件夹都删掉，这样让新设备回到安装前的初始状态，再尝试安装hexo。</p>
+<p>有人说国内hexo的npm源有问题，经我测试是没有问题的，npm hexo的时候也没有挂梯子，正常安装即可。</p>
+<p>4.这里我们确认hexo已经安装好了，就可以开始创建本地仓库。建议自己建一个路径简单的文件夹，这里注意一下，最好和旧设备的路径是一样的，比如我的是D:\Blog\Aetherial，空文件夹建好后，将旧博客的一些文件复制进来，这些文件是：</p>
+<p>source/（博客文章内容）<br>theme/（博客主题）<br>scaffolds/（文章模板）<br>_config.yml（网站配置文件）<br>package.json（有关使用的包）<br>.gitignore（忽略选项）</p>
+<p>其他文件不要复制进来。</p>
+<p>上述文件都复制好以后，在git bash中cd到该目录：<br><code>$ cd /d/blog/aetherial</code>（这是我的目录）<br>然后<br><code>$ npm install</code>（注意，不是npm init）<br>这步安装完，大部工作就解决了。</p>
+<p>5.为了使用hexo d还需要执行<br><code>$ npm install hexo-deployer-git --save</code><br>若博客还设置有RSS订阅还需<br><code>$ npm install hexo-generator-feed --save</code>（这里认为config.yml里的配置都是正常的）</p>
+<p>6.这样就彻底完成了。可以用本地预览服务先看一下：<br><code>$ hexo s -p 5555</code><br>这里的5555是自己随便定的端口名称，不同的程序使用的端口五花八门，有可能会出现端口占用冲突的问题，建议就5555。</p>
+<p>7.本地预览能成功的话那基本就没啥问题了，可以尝试hexo clean、hexo g一遍，看看能否正常工作。最后新建一个测试用的博客文章，尝试hexo d，验证一下是否上传成功。刚移植完后第一次hexo d似乎要输入一遍Github的账号和密码确认，之后就不用了，因为已经添加了ssh密钥。</p>
+<p>本地预览失败？重新检查步骤4以后的内容，特别是_config.yml里的内容是不是正确。</p>
+]]></content>
+      <tags>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -634,85 +771,32 @@
       </tags>
   </entry>
   <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <title>小荷尔拜因-吕策尔伯格《死亡之舞》全套高清图</title>
+    <url>/2022/09/11/%E5%B0%8F%E8%8D%B7%E5%B0%94%E6%8B%9C%E5%9B%A0-%E5%90%95%E7%AD%96%E5%B0%94%E4%BC%AF%E6%A0%BC%E3%80%8A%E6%AD%BB%E4%BA%A1%E4%B9%8B%E8%88%9E%E3%80%8B%E5%85%A8%E5%A5%97%E9%AB%98%E6%B8%85%E5%9B%BE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+<p>16世纪著名的《死亡之舞》艺术作品，由小汉斯·荷尔拜因设计、吕策尔伯格雕刻的木版画。 <a id="more"></a></p>
 </blockquote>
-<a id="more"></a>
+<embed src="./Hans Holbein's Dance of Death (pdf).pdf" width="100%" height="700" type="application/pdf">
 
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+<p>&emsp;&emsp;在之前的文章《<a href="https://caelica.github.io/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/"><font color="blue">一些拉丁语谚语的含义考据与派生用法</font></a>》中简单提到了这个在16世纪的各类“死亡之舞”中具有代表意义的作品，但一直没能找到这个作品的高清全集。后来我发现一个丹麦的网站上收录了全部内容，还做了详细解释，于是我下载了全部原图并以PDF的形式整合到了一起。网站原址为：<a href="http://www.dodedans.com/Eindex.htm" target="_blank" rel="noopener">http://www.dodedans.com/Eindex.htm</a></p>
+<p>&emsp;&emsp;这套作品初版创作于1522年至1526年之间，由文艺复兴时期著名画家小汉斯·荷尔拜因（Hans Holbein）和著名雕刻艺术家汉斯·吕策尔伯格（Hans Lützelburger）共同创作的木版画，可谓是16世纪两位大师强强联手的典范。完整版共41+10张。以下是我按照剧情顺序，自己制作的目录列表，德语部分采用16世纪原文以对应原图上的标题：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> Die Schöpffung aller ding (the Creation of All Things)	万物的创始</span><br><span class="line"><span class="number">2.</span> Adam Eua im Paradiss (Adam <span class="keyword">and</span> Eve <span class="keyword">in</span> Paradise)		亚当夏娃在乐园</span><br><span class="line"><span class="number">3.</span> Vsstribung Ade Eue (The Expulsion)				亚当夏娃被驱逐</span><br><span class="line"><span class="number">4.</span> Adam bawgt die erden (Adam Tills the Soil)			亚当在翻耕土地</span><br><span class="line"><span class="number">5.</span> Der Bapst (The Pope)						教皇	</span><br><span class="line"><span class="number">6.</span> Der Keyser (The Emperor)					皇帝</span><br><span class="line"><span class="number">7.</span> Der Künig (The King)						国王</span><br><span class="line"><span class="number">8.</span> Der Cardinal (The Cardinal)					红衣主教</span><br><span class="line"><span class="number">9.</span> Die Keyserinn (The Empress)					皇后/女皇（现代德语为kaiserin，二者都可以指，下面的王后女伯爵等同理）</span><br><span class="line"><span class="number">10.</span> Die Küniginn (The Queen)					王后/女王</span><br><span class="line"><span class="number">11.</span> Der Bischoff (The Bishop)					主教</span><br><span class="line"><span class="number">12.</span> Der Hertzog (The Duke)					公爵</span><br><span class="line"><span class="number">13.</span> Der Apt (The Abbot)						修道院长</span><br><span class="line"><span class="number">14.</span> Die Aptissinn（The Abbess)					女修道院长					</span><br><span class="line"><span class="number">15.</span> Der Edelman (The Nobleman)					贵族</span><br><span class="line"><span class="number">16.</span> Der Thumherr (The Canon)					司铎				</span><br><span class="line"><span class="number">17.</span> Der Richter (The Judge)					法官</span><br><span class="line"><span class="number">18.</span> Der Fürspräch (The Lawyer)					律师</span><br><span class="line"><span class="number">19.</span> Der Ratssherr (The Senator)					议员</span><br><span class="line"><span class="number">20.</span> Der Predicant (The Preacher)				传教士</span><br><span class="line"><span class="number">21.</span> Der Pfarrherr (The Priest)					牧师</span><br><span class="line"><span class="number">22.</span> Der Münch (The Monk)					僧侣</span><br><span class="line"><span class="number">23.</span> Die Nunne (The Nun)						修女</span><br><span class="line"><span class="number">24.</span> Dass Altweyb (The Old Woman)				老妇人</span><br><span class="line"><span class="number">25.</span> Der Artzet (The Physician)					医师</span><br><span class="line"><span class="number">26.</span> Der Sternensecher (The Astrologer)				占星者</span><br><span class="line"><span class="number">27.</span> Der Rychman (The Rich man)					富人</span><br><span class="line"><span class="number">28.</span> Der Kauffman (The Merchant)					商人</span><br><span class="line"><span class="number">29.</span> Der Schiffman (The Sailor)					水手</span><br><span class="line"><span class="number">30.</span> Der Ritter (The Knight)					骑士</span><br><span class="line"><span class="number">31.</span> Der Groff (The Count)					伯爵								</span><br><span class="line"><span class="number">32.</span> Der Altman (The Old Man)					老人</span><br><span class="line"><span class="number">33.</span> Die Greffinn (The Countess)					伯爵夫人/女伯爵</span><br><span class="line"><span class="number">34.</span> Die Edelfraw (The Lady)					女贵族</span><br><span class="line"><span class="number">35.</span> Die Hertzoginn (The Duchess)				公爵夫人/女公爵</span><br><span class="line"><span class="number">36.</span> Der Krämer (The Peddler)					小贩</span><br><span class="line"><span class="number">37.</span> Der Ackerman (The Peasant)					农民</span><br><span class="line"><span class="number">38.</span> Dass Jung kint (The Young Child)				小孩子</span><br><span class="line"><span class="number">39.</span> Gebeyn aller menschen (Bones of All Men)			众人的尸骨</span><br><span class="line"><span class="number">40.</span> Dass Jüngst gericht (The Last Judgment)			最后的审判</span><br><span class="line"><span class="number">41.</span> Die Wapen dess Thotss - Gedenck das end (the Escutcheon of Death - Remember the End)	死神的纹章盾徽 - 记住一切的结局</span><br><span class="line"><span class="number">42.</span> Soldier			士兵</span><br><span class="line"><span class="number">43.</span> Waggoner			马车夫</span><br><span class="line"><span class="number">44.</span> Gambler			赌徒</span><br><span class="line"><span class="number">45.</span> Robber			强盗</span><br><span class="line"><span class="number">46.</span> Blind man 			盲人</span><br><span class="line"><span class="number">47.</span> Beggar			乞丐</span><br><span class="line"><span class="number">48.</span> Drunkard			酒鬼</span><br><span class="line"><span class="number">49.</span> Fool 			愚者</span><br><span class="line"><span class="number">50.</span> Young woman			年轻女人</span><br><span class="line"><span class="number">51.</span> Young man 			年轻男人</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;1526年的初版是40幅木版画，这个版本被称为“印刷校样版”，即“Printer’s proofs”或”proof impressions”，此版本不含有“占星师”，可能是为了凑40个的整数；而1538年出版商梅尔基奥尔和加斯帕.特雷克塞（Brothers Melchoir and Gaspard Trechsel）兄弟在法国里昂正式出版了这套木版画，补上了缺少的“占星师”。虽然吕策尔伯格在1526年去世，荷尔拜因在1543年也去世了，但后续的一些艺术家在大约于1545年至1562年的时间中，在模仿两位大师风格的基础上又向其中陆续增添了士兵、车夫、赌徒、强盗等十幅作品。共同组成了41+10的完整作品集。这部作品集被后世的许多画家临摹或参考创作过。其中一些经典篇目如“骑士”、“富人”、“士兵”等，更是广受欢迎。</p>
+<p>&emsp;&emsp;据说这部作品一经问世就被法国名为维达尔·德·贝卡尼斯（Vidal de Bécanis）的宗教审判长（General inquisitor）下令禁止，可能是认为它有丑化宗教人士的嫌疑。有必要说明的是，当时正值宗教改革最为激烈残酷的时期，在荷尔拜因创作这部作品的时候，也就是1525年，德意志中部爆发了著名的闵采尔农民起义，最终于弗兰肯豪森战役（Battle of Frankenhausen）中，约7000农民起义者被军队包围并杀害，各地起义也均遭镇压。在德意志文化圈出生长大的荷尔拜因不可能不知道这些事，这部作品直到12年后即1538年才有人在法国出版，也很可能和当时的社会情况有关。</p>
+<p>&emsp;&emsp;关于“死亡之舞”的背景已在前文中叙述过，在此不赘述。从荷尔拜因这41幅画来看，故事是从亚当和夏娃的传统圣经故事开端，而死神则在亚当夏娃被逐出伊甸园就开始跟随着他们，即死神从此常伴人类。接下来则是社会各个阶层的角色被死神拖入死亡的场景。死神既动作滑稽、又所向披靡，且不止出现了一个，沙漏也是一个几乎和死神并排出现的元素，暗示着生者时日无多。虽然死神最终带走了所有人，但我们仍能在其中隐约看出作者的创作倾向——死神在带走穷苦百姓的时候显得较为礼貌、平和；而在带走那些作威作福、目中无人的角色时则是生拖死拽、百般嘲弄。作者甚至直接描绘出这些角色的恶行现场——如【17.法官】中展现了一位收受贿赂的法官；而在【8.红衣主教】中更是直接展示了红衣主教出售赎罪券的场景，其中的批判意图可谓直截了当。也难怪这部作品被那位审判长当成了眼中钉。</p>
+<p>&emsp;&emsp;而值得注意的是倒数三张图片（即39、40、41），在【39.众人的尸骨】中，绘制的是经典的题材“死神胜利”的场景，所有人都已变成骷髅，得胜的骷髅们吹起了乐器敲起了鼓；而在【40.最后的审判】中，上帝终于出现，人类又似乎重新得救了。而骷髅则全部消失，故事也没有明确交代大获全胜的死神究竟怎么样了，是像上帝在《浮士德》中最终制裁了墨菲斯托那样一般，上帝阻止了死神的阴谋大计，把骷髅们都变回了活人吗？作者没有明说。不过整个故事也就到此结束了，整部作品的主题可以看作是以死神的元素复刻了传统的宗教故事。</p>
+<p>&emsp;&emsp;而最后一张图【41.死神的纹章盾徽】，则是荷尔拜因为死神这一主题设计的纹章形象，并将这个纹章放在1538年版本的最后，这是那时的“死亡之舞”作品中的一个常见的做法。这个图片伴随着一条圣经中的引用，即武加大本（Vulgate）中的《西拉书（Sirach）》第7章节的最后一句：</p>
+<blockquote>
+<p>…in omnibus operibus tuis memorare novissima tua et in aeternum non peccabis.<br>…无论你做任何事情，都要记住最后的结局（即死亡），这样你就永远不会犯大错。</p>
+</blockquote>
+<p>&emsp;&emsp;最后得简单说明一下，《西拉书》又称《便西拉智训（Ecclesiasticus）》，中文也通常翻译为《德训篇》、《次经传道书》（并非《传道书》）或《智训》。此书在天主教或东正教圣经中为旧约中的【正典】（Canon），也就是正式篇目，但在新教中则属于【次经】（Apocrypha）。因我们今天能看到的《圣经》以新教圣经居多，故《西拉书》通常无法在一些圣经中找到，属于是圣经不同版本的问题。</p>
+<p>【次经】即Apocrypha或Deuterocanonical Books，有时又称作“伪经”、“旁经”、“外经”等，中文并没有一个约定俗成的通行翻译，但需要指出的是，“伪经”这个翻译是错误的。</p>
+<p>真正的【伪经】应该写作Pseudepigrapha，字面意思是“伪名书、托名假作”，即假冒其他作者之名号而创作的作品，目的是增加作品的可信度。而Apocrypha的词根是“隐藏的”的含义，Deuterocanonical的字面意思则是“第二类正经”。一般在宗教历史学上认为，Apocrypha也是真正的古代犹太经典著作，与正典具有同等的地位，故在宗教意义上也具有同等的信仰价值，只是由于种种历史原因，没有被列入后世一些不同版本的圣经中。像《西拉书》、《犹滴传》这类就属于Apocrypha。20世纪死海古卷等古籍的出土，侧面说明了仍可能存在没有被发掘出的次经，也说明即使是古代的希伯来抄本圣经也绝非只有一个标准版本。综上所述，次经是真经，不是伪经。</p>
 ]]></content>
       <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>大型翻译计划：魔兽世界日记</title>
-    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
-</blockquote>
-<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
-<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
-<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
-<hr>
-<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客建好了~</title>
-    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
-</blockquote>
-<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
-<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
-<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
-<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
-<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
-<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
-<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
-<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，包括我的父亲，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
-<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
-<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
-<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
-<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
-<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>如何移植hexo到新的设备上</title>
-    <url>/2020/04/25/%E5%A6%82%E4%BD%95%E7%A7%BB%E6%A4%8Dhexo%E5%88%B0%E6%96%B0%E7%9A%84%E8%AE%BE%E5%A4%87%E4%B8%8A/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>关于更换机器后如何移植hexo的简述<a id="more"></a></p>
-</blockquote>
-<p>最近新入手一个电脑，想把整个博客都移植到新电脑上编辑操作，看了很多教程后大概明白了步骤，可能是因为都是静态文件的原因，搬起来还挺简单的，似乎即使新设备是mac系统一样可以这么操作。以下是具体步骤：</p>
-<p>1.给新设备安装Git和Node.js，这个是必须得有的。</p>
-<p>2.给新设备添加SSH密钥。打开Git Bash：<br>虽然新设备肯定是没有SSH了，不过这里为完备起见，可用下面的方法检测本机器已经拥有的的SSH：<br><code>$ ls -al ~/.ssh</code><br>如果终端输出的是：<br><code>cannot access ... No such file or directory</code><br>那么就说明本地没有SSH key<br>如果显示出一堆 id_rsa 和 id_rsa.pub文件的存在以及它们的创建日期，就说明此设备存在SSH，需要考虑移除该设备的SSH。简单来说就是直接把<code>C:\Users\机器用户名\</code> 下的.ssh文件夹给删了就行了。</p>
-<p>好的现在开始正式创建SSH key，Git Bash里输入：<br><code>$ ssh-keygen -t rsa -C &quot;你的GitHub邮箱地址&quot;</code><br>然后三次回车键（跳过passphrase口令，即给SSH本身设置一个保护密码，相当于二道锁，建议跳过），就在用户目录生成了一个名为.ssh的文件夹，里面有id_rsa和id_rsa.pub两个文件，用户目录就是C:\Users\XXX这里。ssh文件可以备份一下，登录Github的用户界面,找到Settings里面的SSH and GPG keys，里面可以看到旧的ssh密钥，点击new SSH key添加一个新的ssh密钥，Title可以自定义，内容填入记事本打开id_rsa.pub里的内容（开头为ssh-rsa后面跟着一大串字母）。点保存即可，旧的SSH也可以移除了。</p>
-<p>可以测试一下ssh，在Git Bash里输入<br><code>$ ssh -T git@github.com</code>（注意这里的邮箱地址就是<a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>，并不是个人邮箱）<br>此时可能跳出一行host确认信息，直接输入yes，此时会看到：Hi &lt;你的用户名&gt;! You’ve successfully authenticated, but GitHub does not provide shell access.则表示配置成功。</p>
-<p>接下来还需要配置<br><code>$ git config --global user.name</code>（格式为”xxxxxxxx”// 即github的登陆用户名，非昵称）<br><code>$ git config --global user.email</code>（”<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>“// 即github注册邮箱）<br>这个不配置的话似乎会在hexo d的时候跳出”please tell me who are you”的问题。</p>
-<p>3.接下来就是装hexo，打开Git Bash，输入<br><code>$ npm install hexo-cli -g</code><br>这步其实非常慢，回车键发现没反应需要等，等了N久都没用或者出错怎么办？可以强关Git，在Git里执行npm uninstall hexo卸载hexo（没装上的话这步是没用的，以防万一），然后在C:\Users\用户名\AppData\Roaming里把npm和npm-cache文件夹都删掉，这样让新设备回到安装前的初始状态，再尝试安装hexo。</p>
-<p>有人说国内hexo的npm源有问题，经我测试是没有问题的，npm hexo的时候也没有挂梯子，正常安装即可。</p>
-<p>4.这里我们确认hexo已经安装好了，就可以开始创建本地仓库。建议自己建一个路径简单的文件夹，这里注意一下，最好和旧设备的路径是一样的，比如我的是D:\Blog\Aetherial，空文件夹建好后，将旧博客的一些文件复制进来，这些文件是：</p>
-<p>source/（博客文章内容）<br>theme/（博客主题）<br>scaffolds/（文章模板）<br>_config.yml（网站配置文件）<br>package.json（有关使用的包）<br>.gitignore（忽略选项）</p>
-<p>其他文件不要复制进来。</p>
-<p>上述文件都复制好以后，在git bash中cd到该目录：<br><code>$ cd /d/blog/aetherial</code>（这是我的目录）<br>然后<br><code>$ npm install</code>（注意，不是npm init）<br>这步安装完，大部工作就解决了。</p>
-<p>5.为了使用hexo d还需要执行<br><code>$ npm install hexo-deployer-git --save</code><br>若博客还设置有RSS订阅还需<br><code>$ npm install hexo-generator-feed --save</code>（这里认为config.yml里的配置都是正常的）</p>
-<p>6.这样就彻底完成了。可以用本地预览服务先看一下：<br><code>$ hexo s -p 5555</code><br>这里的5555是自己随便定的端口名称，不同的程序使用的端口五花八门，有可能会出现端口占用冲突的问题，建议就5555。</p>
-<p>7.本地预览能成功的话那基本就没啥问题了，可以尝试hexo clean、hexo g一遍，看看能否正常工作。最后新建一个测试用的博客文章，尝试hexo d，验证一下是否上传成功。刚移植完后第一次hexo d似乎要输入一遍Github的账号和密码确认，之后就不用了，因为已经添加了ssh密钥。</p>
-<p>本地预览失败？重新检查步骤4以后的内容，特别是_config.yml里的内容是不是正确。</p>
-]]></content>
-      <tags>
-        <tag>hexo</tag>
+        <tag>艺术</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -727,55 +811,6 @@
 <img src="/2019/10/18/测试一种新的画风/1.jpg" title="ol_in_coat">
 <p>大概在前几个月我在制作一些表情包的时候发现自己的CS6版本出现了字体乱码问题，一直无法解决，于是换了CC2018，感觉还是比CS6要好用一些，同时也大致接触了一下Sai2，不得不说Sai这个软件真的还是很实用的，尤其是对付这种动漫画风。但是我PS实在是用习惯了，就尝试着在PS里模拟Sai里面的一些工具比如水彩笔、喷枪之类的效果，但除了喷枪做好了其他的都效果一般，于是用喷枪的渐变效果加上赛璐珞上色做了这么一张图，感觉还是很难实现Sai里面那种长距离渐变。</p>
 <p>虽然画人体时发现基础还是很垃圾，不过总体来说还是比我之前的动漫画风要满意一些了，以前我在处理阴影的时候总是喜欢像实体画那样涂很多层，而且还滥用高光，造成整个形象看上去就像一个塑料小人，总是形不成动漫画特有的那种平面感。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个尖耳朵小姐姐</title>
-    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
-</blockquote>
-<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
-<hr>
-<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
-<p>接下来说一下设计思路：</p>
-<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
-<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
-<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
-<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
-<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
-<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
-<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
-<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
-<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
-<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
-<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
-<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
-<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
-<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
-<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个库拉</title>
-    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
-</blockquote>
-<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
-<hr>
-<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
-<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
-<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
-<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
-<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
 ]]></content>
       <tags>
         <tag>绘画</tag>
@@ -817,6 +852,37 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个尖耳朵小姐姐</title>
+    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
+</blockquote>
+<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
+<hr>
+<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
+<p>接下来说一下设计思路：</p>
+<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
+<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
+<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
+<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
+<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
+<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
+<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
+<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
+<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
+<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
+<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
+<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
+<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
+<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
+<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个Q版二头身</title>
     <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -838,82 +904,21 @@
       </tags>
   </entry>
   <entry>
-    <title>简单的手动批量下载网页图片的方法</title>
-    <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <title>画一个库拉</title>
+    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
+<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
 </blockquote>
-<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville步枪），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
-<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔（Charleville）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
-<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
-<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
-<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
-<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
-<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
-<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
-<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
-<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
-<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
-<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
-<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
-
-<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考古一个小众老游戏出色的音乐</title>
-    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
-</blockquote>
-<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
-<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
-<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
+<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
 <hr>
-<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
-<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
-<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
-<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
+<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
+<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
+<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
+<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
+<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
-        <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决Xshell6强制更新的问题</title>
-    <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>绕过Xshell6的强制更新。<a id="more"></a></p>
-</blockquote>
-<p>最近弄服务器的时候把以前用来管理别的服务器的Xshell6拿出来看了看，结果提示“要继续使用此程序,您必须应用最新的更新或使用新版本”，不更新就不给用。但离谱的是这个更新压根无法进行，挂魔法都没用，所以就找了个办法绕过这个更新：</p>
-<p>在简书上看到一个好用的解决办法：</p>
-<ol>
-<li><p>Xshell6的根目录里有一个名为 nslicense.dll 的dll文件，使用十六进制编辑器打开该文件；</p>
-</li>
-<li><p>搜索（或Ctrl+F）字节序列，输入7F0C81F98033E1010F8681，从头搜索，点确定。如图所示：</p>
-<img src="/2021/09/14/解决Xshell6强制更新的问题/1.png" title="a"></li>
-<li><p>将倒数第三位的6改成3，也就是将“86”字符段改为“83”。改完后保存退出十六进制编辑器。</p>
-</li>
-</ol>
-<p>重启Xshell6即可绕过更新。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
+        <tag>绘画</tag>
       </tags>
   </entry>
   <entry>
@@ -969,6 +974,63 @@
       </tags>
   </entry>
   <entry>
+    <title>简单的手动批量下载网页图片的方法</title>
+    <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
+</blockquote>
+<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville步枪），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
+<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔（Charleville）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
+<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
+<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
+<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
+<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
+<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
+<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
+<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
+<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
+<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
+<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
+<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
+
+<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决Xshell6强制更新的问题</title>
+    <url>/2021/09/14/%E8%A7%A3%E5%86%B3Xshell6%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>绕过Xshell6的强制更新。<a id="more"></a></p>
+</blockquote>
+<p>最近弄服务器的时候把以前用来管理别的服务器的Xshell6拿出来看了看，结果提示“要继续使用此程序,您必须应用最新的更新或使用新版本”，不更新就不给用。但离谱的是这个更新压根无法进行，挂魔法都没用，所以就找了个办法绕过这个更新：</p>
+<p>在简书上看到一个好用的解决办法：</p>
+<ol>
+<li><p>Xshell6的根目录里有一个名为 nslicense.dll 的dll文件，使用十六进制编辑器打开该文件；</p>
+</li>
+<li><p>搜索（或Ctrl+F）字节序列，输入7F0C81F98033E1010F8681，从头搜索，点确定。如图所示：</p>
+<img src="/2021/09/14/解决Xshell6强制更新的问题/1.png" title="a"></li>
+<li><p>将倒数第三位的6改成3，也就是将“86”字符段改为“83”。改完后保存退出十六进制编辑器。</p>
+</li>
+</ol>
+<p>重启Xshell6即可绕过更新。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>那些追求真正价值的上传者</title>
     <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -986,6 +1048,28 @@
       <tags>
         <tag>生活</tag>
         <tag>随想</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考古一个小众老游戏出色的音乐</title>
+    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
+</blockquote>
+<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
+<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
+<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
+<hr>
+<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
+<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
+<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
+<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>音乐</tag>
       </tags>
   </entry>
   <entry>
@@ -1020,6 +1104,58 @@
       <tags>
         <tag>软件</tag>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>当年那些经典的Windows迷你小游戏</title>
+    <url>/2021/09/22/%E5%BD%93%E5%B9%B4%E9%82%A3%E4%BA%9B%E7%BB%8F%E5%85%B8%E7%9A%84Windows%E8%BF%B7%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>考古1999年前后的一批Windows小游戏的真名及其背景等。<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;说到99年前后的游戏相信很多人第一反应都是红警、星际、帝国、CS等根本不用叫全名就耳熟能详的大作，当然还有暗黑2、仙剑1、英雄无敌3、大航海4、三国群英传等等经典作品，这些当年的“3A大作”的名字已经成为游戏玩家们最深刻的记忆，有的甚至开创了一个系列的作品。但是游戏世界从来都不是只是由大作，还有那些同样经典但却没人能叫得出来名字的小游戏们，它们基本都是由那个年代的独立开发者们制作的，没想到也居然成了很多人的重要回忆，所以今天说的这些小游戏，或许其中也有你玩过但不知道名字的那一款？</p>
+<p>&emsp;&emsp;那时候大概是2002年，家里新买了电脑不久，父亲在一次逛街的时候去软件影音店里买软件，那时候都是用光盘的，我记得当时其中有一个红色光盘，这个光盘等于是店家自己将金山画王2002（这个也挺好玩的）、瑞星杀毒2002等常用软件做成的盗版盘合集，当年的新电脑嘛总要装点这些玩意。然而就在这时..命运的齿轮它转动了！我爸买完那些光盘后居然顺手又买了一个“迷你GAMES超市”的小游戏光盘，像我爸这样的人其实几乎不和游戏打交道的，于是这个盘就到我手里了，接下来的时间里我将玩遍这个盘里几乎所有的游戏…它的盘面有一个画风很九十年代的卡通少女，其实我记得还有个塑料包装盒和纸质说明书的，包装盒和这个盘面差不多，而那个纸质说明书很关键，因为好多游戏都是英文的，而这个说明书则用中文介绍了大部分游戏的简介内容，应该是光盘制作者自己编写的。虽然它没有包含这个盘里所有的游戏，却给了我不小的帮助。遗憾的是包装盒和纸质说明书早已不知道丢在哪里了，只有这个盘我一直还保存了下来：</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/0.png" title="a">
+<p>&emsp;&emsp;光盘启动后可以进入这样一个界面。右边居然是拳皇里的马克西玛么？不过我那时还没玩过KOF…</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/1.png" title="b">
+<p>&emsp;&emsp;总共被分了六类的游戏一共有大概230个左右，大部分都是以安装包/压缩包的形式保存在光盘里的。话不多说，搬出我的旧电脑（新电脑没光驱…）用UltraISO直接将光盘做成.ISO，同样也顺便对那张也保存至今的红色光盘再加上一个《雷曼2》的光盘也都做了镜像。将这些ISO都复制到新电脑上就好处理多了。打开的时候我惊奇地发现，光盘内容里原来一直躺着一个txt文本，里面正是丢失掉的那张纸质说明书的内容！感觉又一次验证了“信息不灭理论”啊…于是解压了一连串的游戏之后我又开开心心地都打了一遍，总结了以下十几个我当年就觉得很好玩的游戏，并且简单考证了它们的内容、背景以及发行的时间。因为很多游戏过于古老无法在Win10及64位系统上运行，虚拟机我也懒得去开了，所以这里有些游戏的画面就直接截自Youtube上的视频。</p>
+<hr>
+<p><strong>《暴力摩托2000（Road Rush）》</strong>，2000年。这个不解释了，经典刘沛松战庄臣。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/2.png" title="c">
+<p><strong>《反潜驱逐战（SuperDepth）》</strong>，1999年。也就是俗称的军舰炸潜艇，很多人应该都玩过。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/3.png" title="d">
+<p><strong>《Mario &amp; Luigi (DOS)》</strong>，1994年。这个马里奥游戏是由Mike Wiering于1994年制作的DOS系统的重制版，属于同人作品，但是质量非常优秀。这个游戏当年在国内很流行，几乎每个”电脑房”的某几台机器上都会有一个，这也是我玩的第一款马里奥游戏，之后才接触到FC。不过我小时候玩的那个版本好像还没做完，打到第四关会被困在关底的黑色长廊中无法继续前进。我后来还玩过完整版，黑色长廊里有很多金币，过了就是NG+了。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/4.png" title="e">
+<p><strong>《おでんととどのお鱼钓りゲーム☆》</strong>，1997年。翻译过来其实叫【关东煮和北海狮的钓鱼游戏】，这个游戏很多人应该都玩过，音效超级魔性洗脑的…</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/5.png" title="f">
+<p><strong>《Zeek the geek》</strong>，1995年。一个吃花过关的益智小游戏。这下才发现游戏背景音乐基本都是一些很有名的美国民歌，Little Brown Jug、Oh Susanna、I’ve Been Working on The Railroad等等。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/6.png" title="g">
+<p><strong>《Troy 2000》</strong>，2000年。一个恐龙吐泡泡闯关的游戏，画风精致也很好玩，试玩版只能玩20关。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/7.png" title="h">
+<p><strong>《紫色小精灵（Dweep）》</strong>，1999年。超可爱的小游戏，音乐也很好听，就是后面关卡难度对小学生来说还是挺高的。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/8.png" title="i">
+
+<p>下面几个游戏从Youtube上看关注度都比较高，应该是很多老外的童年回忆了，虽然国内玩过的人可能不多：</p>
+<p><strong>《Kung Fu Kim》</strong>，1997年。主角明显是一个跆拳练习者，用四个方向键阻挡异物的进攻，可以不断升级腰带，玩起来的确能感受到一点练功的意境。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/9.png" title="j">
+<p><strong>《Rat Poker》</strong>，1997年。微软做的一个拼同色老鼠的游戏，这游戏的背景音乐超级好听。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/10.png" title="k">
+<p><strong>《Hot Wheels: Crash!》</strong>，1999年。看起来应该是美泰公司旗下的车模品牌Hot Wheels（风火轮）和车模玩具同步推广的游戏，游戏内容就是发射一辆“自爆卡车”撞毁建筑、汽车和公共设施，破坏得越厉害得分越高。这个游戏确实有意思，因为它是真3D游戏（99年那会真3D真的很少的），并且拥有简单的物理引擎。每次发射车辆还有跟电影镜头一样的特效，看着很爽。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/11.png" title="l">
+<p><strong>《Elf Bowling》</strong>，1998年。圣诞老人扔保龄球砸小矮人的搞笑游戏，保龄球甚至能在特定角度砸倒路过的动物，很有意思。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/12.png" title="m">
+<p><strong>《Baroque Shooting》</strong>，2000年。一个名为《巴洛克（Baroque）》的日本游戏衍生的STG游戏，末世世界观和哥特恐怖题材画风，感兴趣的可以Google一下这个游戏的历史，讲道理这种玩意对小学生来说还是有点吓人的，小时候放大招弹出的那个娃娃感觉有点恐怖。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/13.png" title="n">
+
+<p>&emsp;&emsp;最后当这个光盘点击退出的时候，还会出来个八神和京的背景，这张图应该是拳皇97的CG，背景音乐还是仙剑1主题曲，感觉直接是把仙剑的MIDI复制过来了。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/14.png" title="b">
+
+<p>&emsp;&emsp;总的来说可以看出，这些游戏基本都是国外独立制作者们在网站上放出的免费试玩版，或者是Demo，往往只能体验游戏的一部分内容，而要想购买完整版则差不多都需要付费5-10美元不等。而光盘的制作者“佳鑫科技”则是将这些免费试玩版都收录了下来，然后放到国内市场上售卖。现在想想好像是有点“恰烂钱”的感觉，不过能将这么多经典游戏收录到一起也未尝不是一项有意义的工作，也让我们这帮小学生能够玩到当时国际上的经典作品。</p>
+<p>&emsp;&emsp;其实这件事的契机是有一个人问我一款20年前的Windows飞镖小游戏的名字，我刚好记得我那张光盘里有那个小游戏，最后考证出游戏是一个叫Dart’m up的荷兰游戏，被翻译成“休闲飞镖”。于是借着这个机会才重新审阅了那张远古游戏光盘，我相信学历史的人都一定有着深厚的考古情节吧，借助技术手段复原那些被遗忘的信息，还原出更清晰的“我的历史”，似乎觉得自己对自己的认识又上了一层，确实是一种很奇妙的感觉。</p>
+<p>&emsp;&emsp;最后还有一个推断。既然那么多“机房”都安装着这些游戏，说明很多人手里也都有类似的光盘（当年没U盘，流行的3.5inch软盘只有1.44MB容量），你手里有这种光盘吗？会不会和我的一样？</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1121,94 +1257,6 @@
 ]]></content>
       <tags>
         <tag>游戏</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一些拉丁语谚语的含义考据与派生用法</title>
-    <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>列举了一些我见过的意义较为晦涩的拉丁语谚语及其背后的故事<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;拉丁语作为古罗马及基督教教会的官方语言，曾经是欧洲主流文化的重要载体。可以说拉丁语如同基督教一样，反映了西方文明在文化内核上具有同一性的一面。虽时至今日已不再作为一门日常使用的语言，却早已深扎在了各种西方语言之中。我认为拉丁语之于西方文明，就相当于汉字之于东方文明。举例如越南、韩国、日本等国家虽然在今天已经与汉字分道扬镳，但对于语言、历史、文化研究者来说汉字仍是众多问题的答案之源。我们可以看到，对于很多想要了解东方文化的西方人来说，汉字是“一个令人费解的谜团”，而反过来，拉丁语在西方也拥有同样的地位，对于东方人来说也是如此。</p>
-<p>&emsp;&emsp;在今天，拉丁语经常以谚语、格言的形式出现在我们面前，如哈佛校训“Veritas”、凯撒著名的“三V”：“Veni vidi vici”，君士坦丁一世的“In hoc signo vinces”等，有点类似我们文言文成语的地位。故这些拉丁语谚语几乎都带着它诞生时特有的历史寓意，即使是看懂了字面意思，也不容易明白它到底想说的是什么，并且这些谚语经过上千年的使用，有些已经派生出了多层含义，同时也产生了一些新的用法，最终所有这些事件和内容都统统总和到了一句简单的句子之上，大大丰富了其背后的信息量。而这可能是才是除开语言因素之外最难掌握的东西。</p>
-<p>&emsp;&emsp;拉丁语虽早已不再是交流用的语言，但在今天的西方仍是一门常见的基础课程，换句话说，受过教育的西方人多多少少都学过它。但是对于这样一门古代语言和宗教专业语言，其实大多数西方人自己也没法熟练使用，就如同也没多少中国人能拿几千年前的之乎者也作文一样。所以我们不必学成语言专家，有一些基础知识就行。对这个在阅读诸多西方文学、历史相关的内容时经常遇到的难点，如果能做到一个粗浅的认识的话，理解的也当然会更加深入。</p>
-<h2 id="1-Ultima-Ratio-Regis"><a href="#1-Ultima-Ratio-Regis" class="headerlink" title="1. Ultima Ratio Regis"></a>1. Ultima Ratio Regis</h2><p>&emsp;&emsp;从字面意义直译应为“国王最后的论据”，英语可作“The king’s final argument”。这句话另有写法写作Ultima Ratio Regum，Regum和Regis都是Rex（国王）的属格形式，前者为复数，后者为单数，故两者都是说得通的。</p>
-<p>&emsp;&emsp;Ultima Ratio Regis被认为起源于三十年战争（1618-1648）时期，有说法认为是法国红衣主教黎塞留（Cardinal Richelieu）所言。法国国王路易十四（Louis XIV）继承了这个名言，将Ultima Ratio Regis作为铭文铸刻在了一些大炮上。而在一百多年后，普鲁士的腓特烈二世（Friedrich II）时期也将这句话作为铭文刻在普鲁士的火炮上。在当时火炮越发成为陆战中的决定性武器，是战争中的王牌，故Ultima Ratio Regis的含义也不言而喻——当一个国王把他真正的论据牌都打完了，却仍还不能解决问题的话，那么国王最后的论据就将是可怕的军事武力。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/4.jpg" title="ultima">
-
-<p>&emsp;&emsp;这个谚语的含义也就在后世得到了广泛应用，用于指代当权者所诉诸的一切武力手段。例如在1775年美国独立战争前夕，帕特里克·亨利（Patrick Henry）发表了一篇演讲，也就是著名的《不自由，毋宁死（Give me liberty or give me death）》，其中将英国政府威胁殖民地的军事行动描述为：</p>
-<blockquote>
-<p>“…These are the implements of war and subjugation; the last arguments to which kings resort.”<br>“…此乃是是战争和镇压之手段；是国王们所诉诸的最后论据。” </p>
-</blockquote>
-<p>&emsp;&emsp;很明显，帕特里克此句的后半句就是Ultima Ratio Regis(-um)的一种英语版本。注意其使用了国王的复数形式（kings），这显然是一种习惯性用法。</p>
-<h2 id="2-Nulla-Crux-Nulla-Corona"><a href="#2-Nulla-Crux-Nulla-Corona" class="headerlink" title="2. Nulla Crux, Nulla Corona."></a>2. Nulla Crux, Nulla Corona.</h2><p>&emsp;&emsp;应该翻译为“不要十字架，不要王冠”。写成英语大概是“No Cross, No Crown”。这句话传说是德国农民起义（1524）时期，一位名为弗洛里安·盖叶（Florian Geyer）的起义领导者的剑上所刻的铭文。弗洛里安·盖叶是一名贵族、骑士，他率领了一些下级贵族、骑士及一群武装农民共同组成了“黑色连队”（Black Company），加入了另一位著名的起义领导人闵采尔（Thomas Münzer）的大部队麾下，与他并肩作战。因为封建制度下的欧洲总体来说农民起义的规模都比较小，质量普遍难成气候，故盖叶领导的这群“专业农民军”相当特殊，他们当中的这些反叛的骑士和职业军人可能是欧洲历史上极少数属于农民阵营的重装武力。当时正值宗教改革运动如火如荼，教会和封建领主的双重压迫是当时农民起义的直接原因，所以Nulla Crux, Nulla Corona的具体解释应与当时农民起义军所打的其他一些旗号（如闵采尔的旗帜上画着一只草鞋，以表示和穿皮靴的贵族对抗）所表达的含义类似——即号召农民们摧毁教堂和城堡，也就是说，推翻教会（十字架）和封建领主（王冠）。</p>
-<p>&emsp;&emsp;在弗兰肯豪森（Frankenhausen）的失败后闵采尔被捕处决，给这场轰轰烈烈、昙花一现的斗争画上了句号。黑色连队也溃散了，盖叶随后遭人暗杀，至今不知埋骨何方。但这句话仍然传了下来，通常是作为宗教改革或是社会革命的主题而被后世的人们所引用。</p>
-<p>&emsp;&emsp;如奥地利作家茨威格（Stefan Zweig）于1928年写过一篇名为《世间最美丽的坟墓》（Das schönste Grab der Welt）的文章，来描述托尔斯泰（Л.Н.Толстой）朴实无华的坟墓。在文章里直接使用了这句话。毕竟托尔斯泰晚年在作品中公开批判教会和沙俄政府，主张信仰和博爱的重要性，甚至可以说，他形成了一种属于自己的宗教观念——后人称为“托尔斯泰主义”。但他的作品在当时触怒了主导俄国的沙皇与东正教会，导致东正教会将其开除教籍。</p>
-<p>&emsp;&emsp;托尔斯泰于1910年去世，而十八年后，茨威格在文章中使用这段十六世纪宗教改革时期农民起义军的谚语描述托尔斯泰，无疑是在将历史人物的境遇投射到托尔斯泰身上，是在将托尔斯泰比作新一代的宗教改革继任者，以及俄国农民的解放者——托尔斯泰乃贵族出身，坐拥家产无数，却将一生都投入到了那些不像是欧洲传统贵族干的事情上：如对抗东正教会，并在自家庄园进行农奴改革试验（这些经历成为了他晚年小说《复活》的主要内容）。而茨威格作为奥地利作家，当然会联想到那位三百年前出身贵族骑士，却站在了农民一边，并为农民而死的盖叶。这句话显然是暗中肯定了托尔斯泰那抛弃名利而追寻真理与良心的反抗精神。了解了这些，我们才能感觉到这句拉丁语谚语运用之精妙，含义之深刻所在。</p>
-<p>&emsp;&emsp;顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章自从九十年代进入了高中课本，却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，更离谱的是，三十年过去了，几乎从未有教材出面订正这个错误，造成了一句错误的句子和翻译被我国中学语文课本一直用到了今天的现象。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
-
-<p>&emsp;&emsp;虽然这个例子可以侧面反映出拉丁语在我国文化界的陌生程度。但可想而知的是，即使是正确拼写了这句话，正确作了翻译，解释它也并非是容易的事情——若在教育中始终避而不谈这背后涉及到的深层次历史、文化、宗教背景，我想，学生也就永远理解不了那坟墓为何简陋，为何像一个“不为人知的士兵一般不留名姓地被埋葬”，也就触及不到这篇文章的灵魂。</p>
-<p>&emsp;&emsp;我担心的不是拉丁语，语言——不难，我担心的是后面这些。</p>
-<p>&emsp;&emsp;茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
-<h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>&emsp;&emsp;字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
-<blockquote>
-<p>“…et dominabitur a mari usque ad mare et a flumine usque ad terminos orbis terrarum.”<br>“…他将统治大地，从这海到那海；由大河的流域，至地极的边界。”</p>
-</blockquote>
-<p>&emsp;&emsp;此处描述的是圣经中非常常见的说法：即上帝与圣君治下的、理想的人间天国。</p>
-<p>&emsp;&emsp;A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在宗教意义上更是直接成了上帝和基督的外号。诗篇 72:8中也有这样一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
-<p>&emsp;&emsp;而在更一般的意义上，A mari usque ad mare早已经被引申为描述一个强大而繁荣的国家或统治的用法。例如波兰在17世纪的波兰立陶宛联邦时代是其最强盛的时期，也有着“从海到海”的称号（从黑海到波罗的海）。这么说的话，丘吉尔1946年的“铁幕演说”里所说的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”也算是某种意义上的A mari usque ad mare了。</p>
-<h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>&emsp;&emsp;字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
-<p>&emsp;&emsp;这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说，一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后变得骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
-<p>&emsp;&emsp;Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
-<p>&emsp;&emsp;必死性的影响是如此之深，以至于我们能看到历史上有许多艺术作品都反映出这样的信息，尤其是文艺复兴时期，这些作品经常被称为“死亡之舞（Dance of Death/La Danse Macabre）”。典型的有老勃鲁盖尔（Pieter Bruegel）于1562年的油画《死神的胜利（The Triumph of Death）》，描绘了死神的骷髅大军横行人间的景象。在这些作品中，骷髅是最常出现的元素，它们经常做出跳舞、演奏等动作；此外还有拿镰刀披黑斗篷的死神（Grim Reaper）、圣经启示录中描述的四骑士（他们的形象通常和死神融合）等，也是常见的形象。</p>
-<p>&emsp;&emsp;“死亡之舞”的另一个特点是反映出死亡的平等性（equality）。在小汉斯·荷尔拜因（Hans Holbein）于1523至1526年间创作的一系列以“死亡之舞”为主题的木版画里，每一张都展示了不同社会阶级的人被一个骷髅模样的死神带走的场面。如一个骑士不愿被死神带走，与死神展开战斗却被死神用长枪杀死；守财的富人在沉迷数钱，没想到死神已经坐在了桌边和他一起数钱；农民在辛苦耕种，死神甚至来帮他驱赶牛羊；死神把公爵夫人从豪华的床上拽下来；无论是虔诚的修女还是贪腐的法官也统统都不放过。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/2.png" title="b">
-<p>&nbsp;<br>&emsp;&emsp;我们可以在同时代的众多“死亡之舞”艺术作品看到同样的设计思路，即描述各种属于不同的社会阶层人物被拖向他们死亡的命运，借以表达死亡对一切人都是平等的主题，无论人出身贫富贵贱，生前追寻什么样的价值观（财富、权力、美丽、智慧等），死神都最终会让一切趋于一致。贾科莫·德布希斯 (Giacomo Borlone de Buschis)于1484年至1485年间在贝加莫省克吕松（Clusone）的礼拜堂外制作了一系列“死亡之舞”壁画，其中的文字提到：</p>
-<blockquote>
-<p>«Gionto (e sonto) per nome chiamata morte / ferisco a chi tocherà la sorte; / no è homo chosì forte/che da mi no po’ a schanmoare»<br>«Gionto la morte piena de equaleza / sole voi ve volio e non vostra richeza / e digna sonto da portar corona / perché signorezi ognia persona»<br>«Ognia omo more e questo mondo lassa / chi ofende a Dio amaramente pasa»<br>«Chi è fundato in la iustitia e (bene) / e lo alto Dio non discha(ro tiene)/la morte a lui non ne vi(en con dolore) / poy che in vita (lo mena assai meliore)»<br>—（此为壁画原文，用15世纪意大利语书写）</p>
-</blockquote>
-<blockquote>
-<p>“I come (and I am) called by name Death, I hurt those who fate has chosen, There is no man so strong who can escape from me”<br>“I am the Death, full of equality, I want only you and not your wealth, And I am worthy to wear a crown because I am the master of every person”<br>“Every man dies and leaves this world. Who offends God bitterly passes away”<br>“Who is based on justice and right, and he does not have in disdain the Supreme God, Death does not come painful for him since (Death) takes him in a better life”<br>“Oh you, who serve kind-hearted God, do not be scared to come at this (Death) dance, but blithely come here and have no fear, since who is born, then he has to die”<br>—（英文翻译来自互联网）</p>
-</blockquote>
-<p>我大概翻译为：</p>
-<blockquote>
-<p>“我即是死神，为死亡而来，我要伤害那些被命运选择的人，没有谁强大到能够从我身边逃脱”<br>“我是让万物平等的死亡之主，我只要你的人，不要你的财富。我配得上一顶王冠，因为我才是每个人的主人”<br>“即使每个人都会死去并离开这个世界，但那些得罪上帝的人会死得更惨”<br>“而对那些坚持了正义，没有蔑视至高上帝的人来说，死亡并不痛苦，死亡反而给他带来更好的生活”<br>“所以，敬畏上帝的你们，不要害怕参加这个死亡之舞，不要害怕，欢快地来吧，这是人生而必死的命运” </p>
-</blockquote>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/5.jpg" title="Clusone1">
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/6.jpg" title="Clusone2">
-<p><strong><center>克吕松的“死亡之舞”</center></strong></p>
-<p>&emsp;&emsp;虽然这张壁画的下半部分严重受损，但仍可以看到传统的宗教式结局，就如同文字中描述的那样：即使众人皆死，却在左侧有一个张着血盆大口的怪物等着那些“恶人”，口中喷出燃烧的火焰，象征着地狱；而在右侧则有一个通往上层的楼梯则留给那些祈祷的人们，这显然是通往天堂的阶梯，他们是死后得救的人。</p>
-<p>&emsp;&emsp;从这个角度讲，并不能用一般意义上的悲剧来解释Memento mori、Danse Macabre等艺术，它们虽披着令人毛骨悚然的外衣，其所表达的思想内核却并不是严格意义上的虚无，甚至都不是悲剧，而可以说是一种“死亡崇拜（Death Worship）”的情节，它借着强调物质与肉身的不可持续性，实在暗中阐述精神、灵魂的永恒，这与基督教的传统观念乃是殊途同归的。死神消灭了所有活着的人类，毁灭了凡人的世界，契合了亚伯拉罕系宗教中一贯的末日审判的观念，死神实际上是代替上帝的出现并完成了上帝的审判工作，是类似旧约中上帝毁灭索多玛（Sodom）与蛾摩拉（Gomorrah）时残酷、绝情的一面。也就是说，这些“死神”实则可以看作是宗教中上帝意志的化身。</p>
-<p>&emsp;&emsp;所以我们也可以从宗教改革的层面上解释这一现象，我们看到各类作品均侧重展现了死神对权力阶层——尤其是宗教机构、政治机构的威胁，而这些人在作品中则又更多地被描述成作恶多端的反面形象，死神的出现，实际上体现了死神/上帝能够越过宗教机构而审判世人甚至审判宗教、政治机构的无上权力，无形中抬高了上帝或死神的力量，而贬低了从教皇到神父的各类宗教机构的神圣性，这与当时宗教改革中的主流观念一致。故可以认为，Memento Mori/Danse Macabre在这种特定历史环境下具有一定的进步意义，这可能也是为什么16、17世纪如此多的画家、诗人、乐手都热衷于以这个题材进行创作的原因。</p>
-<h2 id="5-Sic-transit-gloria-mundi"><a href="#5-Sic-transit-gloria-mundi" class="headerlink" title="5. Sic transit gloria mundi."></a>5. Sic transit gloria mundi.</h2><p>&emsp;&emsp;这是一个与Memento mori有着类似含义的句子。它的字面意思为“世间的荣耀就这样逝去了”，有时会被缩写为S.T.G.M.。英文通常作”Thus passes worldly glory”。它的起源也没有准确的考据，不过它于1409年7月7日在教皇亚历山大五世的加冕典礼上首次使用。并一直沿用到了1963年。新加冕的教皇会在圣彼得大教堂前祭祀，游行队伍会停下三次，每停一次教皇的司仪都会在教皇面前跪下，他手里拿着一根银制或铜制的细棒，上面挂着一条正在闷烧的亚麻布。每停下一次他都会大声而悲痛地说道：“Pater Sancte, sic transit gloria mundi!”（“圣父，世间的荣耀就此逝去！”），亚麻布块就在这个过程中慢慢燃烧掉。</p>
-<p>&emsp;&emsp;这个仪式和上文提到的凯旋式的传说具有类似的功能，旨在提醒教皇尘世荣耀的短暂和不可持续的本质。在今天，这句话在今天通常用来描述一种时过境迁、往日不在的主题，如一个文明的消亡或是一个强大权力者的退位等。</p>
-<p>&emsp;&emsp;1959年由小沃尔特·M.·米勒（Walter M. Miller Jr.）所著的科幻小说《莱博维兹的赞歌（A Canticle for Leibowitz）》中引用了这句话，讲述了经历全球核战争后的地球退回了中世纪水平，但一位电气工程莱博维兹师将人类的知识保存在了一个修道院里。而后的数百年间，教士们借由被保存的知识复原了人类文明，但核战争的危机再临，爆发之际幸存的人们乘坐飞船离开地球寻找新的家园。在小说中，最后一个登上飞船的教士看着新核战的蘑菇云念出了“Sic transit gloria mundi”，昭示着地球的再一次毁灭。</p>
-<h2 id="6-Agnosco-veteris-vestigia-flammae"><a href="#6-Agnosco-veteris-vestigia-flammae" class="headerlink" title="6. Agnosco veteris vestigia flammae."></a>6. Agnosco veteris vestigia flammae.</h2><p>&emsp;&emsp;也是一句很著名的话，但似乎很少有人对其作详细解释。这句话直译过来大概是：“（我）感到了过去的火焰的痕迹”，原文出自古罗马作家维吉尔（Virgil）的《埃涅阿斯纪（Aeneid）》，第IV卷第23行：</p>
-<blockquote>
-<p>Anna, fatebor enim, miseri post fata Sychaei<br>coniugis et sparsos fraterna caede Penates<br>solus hic inflexit sensus animumque labantem<br>impulit. Agnosco veteris vestigia flammae.</p>
-</blockquote>
-<p>&emsp;&emsp;我大概翻译为：</p>
-<blockquote>
-<p>安娜，我必须承认，我经历了我可怜丈夫绪开俄斯（Sychaeus）的命运<br>我的哥哥杀害了我的丈夫，让我的家族被鲜血所染<br>在这之后，只有这一个人能让我如此视线迷离，神魂颠倒<br>我感觉到了那过去的火焰余烬，就要在我心中重新燃起</p>
-</blockquote>
-<p>&emsp;&emsp;维吉尔的《埃涅阿斯纪》系古代神话传说改编而来，讲述了败战后的特洛伊英雄埃涅阿斯（Aeneas）流亡到意大利半岛的故事。此时罗马尚未形成，但传说上又认为，埃涅阿斯即是传说中罗马建城者罗慕路斯（Romulus）的祖先之一，他们之间隔了约400年，故这个传说也在试图展现罗马和希腊文明之间在血缘上的直接继承关系。</p>
-<p>&emsp;&emsp;此段讲述的是埃涅阿斯先是流落到北非的迦太基，在这里见到了建立迦太基的女王狄多（Dido）（又称伊莉莎（Elissa））。这段即为狄多向妹妹安娜所述。狄多虽贵为女王，追求者无数，但她过去在家族的残酷内乱中失去了丈夫，从此就一直心如死灰。但英雄埃涅阿斯的到来让她一见钟情，她疯狂地爱上了埃涅阿斯。不过埃涅阿斯仍坚持去了意大利以执行朱庇特的神意，狄多最终在精神错乱中殉情自杀，死前向埃涅阿斯发出诅咒。有人据此认为，正是这个诅咒预示了罗马和迦太基几百年后的大规模战争。</p>
-<p>&emsp;&emsp;著名诗人但丁（Dante）在他的《神曲（Divine Comedy）》中也引用过这段话，炼狱篇，第XXX章：</p>
-<blockquote>
-<p>per dicere a Virgilio: “Men che dramma;<br>di sangue m’è rimaso che non tremi:<br>conosco i segni de l’antica fiamma.”</p>
-</blockquote>
-<p>&emsp;&emsp;田德望版《神曲》中这样翻译：</p>
-<blockquote>
-<p>对维吉尔说：“我浑身没有一滴血不颤抖：我知道这是旧时火焰的征象”；</p>
-</blockquote>
-<p>&emsp;&emsp;但丁引用此句即是用《埃涅阿斯纪》中的典故来说明对贝雅特丽齐（Beatrice）的爱情焰火重燃。所以原文中的“火焰”指的是爱情之火，指的是爱情的复活。但经过引申，这句话也不仅仅指爱情了，也可以用来描述一个人找回了过去曾经有过的事物，重新回到了过去曾经拥有过的激情状态中的独特感觉。</p>
-<p>本文永久更新，未完待续。</p>
-]]></content>
-      <tags>
-        <tag>翻译</tag>
-        <tag>历史</tag>
         <tag>文化</tag>
       </tags>
   </entry>
@@ -1370,84 +1418,91 @@
       </tags>
   </entry>
   <entry>
-    <title>小荷尔拜因-吕策尔伯格《死亡之舞》全套高清图</title>
-    <url>/2022/09/11/%E5%B0%8F%E8%8D%B7%E5%B0%94%E6%8B%9C%E5%9B%A0-%E5%90%95%E7%AD%96%E5%B0%94%E4%BC%AF%E6%A0%BC%E3%80%8A%E6%AD%BB%E4%BA%A1%E4%B9%8B%E8%88%9E%E3%80%8B%E5%85%A8%E5%A5%97%E9%AB%98%E6%B8%85%E5%9B%BE/</url>
+    <title>一些拉丁语谚语的含义考据与派生用法</title>
+    <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>16世纪著名的《死亡之舞》艺术作品，由小汉斯·荷尔拜因设计、吕策尔伯格雕刻的木版画。 <a id="more"></a></p>
+<p>列举了一些我见过的意义较为晦涩的拉丁语谚语及其背后的故事<a id="more"></a></p>
 </blockquote>
-<embed src="./Hans Holbein's Dance of Death (pdf).pdf" width="100%" height="700" type="application/pdf">
+<p>&emsp;&emsp;拉丁语作为古罗马及基督教教会的官方语言，曾经是欧洲主流文化的重要载体。可以说拉丁语如同基督教一样，反映了西方文明在文化内核上具有同一性的一面。虽时至今日已不再作为一门日常使用的语言，却早已深扎在了各种西方语言之中。我认为拉丁语之于西方文明，就相当于汉字之于东方文明。举例如越南、韩国、日本等国家虽然在今天已经与汉字分道扬镳，但对于语言、历史、文化研究者来说汉字仍是众多问题的答案之源。我们可以看到，对于很多想要了解东方文化的西方人来说，汉字是“一个令人费解的谜团”，而反过来，拉丁语在西方也拥有同样的地位，对于东方人来说也是如此。</p>
+<p>&emsp;&emsp;在今天，拉丁语经常以谚语、格言的形式出现在我们面前，如哈佛校训“Veritas”、凯撒著名的“三V”：“Veni vidi vici”，君士坦丁一世的“In hoc signo vinces”等，有点类似我们文言文成语的地位。故这些拉丁语谚语几乎都带着它诞生时特有的历史寓意，即使是看懂了字面意思，也不容易明白它到底想说的是什么，并且这些谚语经过上千年的使用，有些已经派生出了多层含义，同时也产生了一些新的用法，最终所有这些事件和内容都统统总和到了一句简单的句子之上，大大丰富了其背后的信息量。而这可能是才是除开语言因素之外最难掌握的东西。</p>
+<p>&emsp;&emsp;拉丁语虽早已不再是交流用的语言，但在今天的西方仍是一门常见的基础课程，换句话说，受过教育的西方人多多少少都学过它。但是对于这样一门古代语言和宗教专业语言，其实大多数西方人自己也没法熟练使用，就如同也没多少中国人能拿几千年前的之乎者也作文一样。所以我们不必学成语言专家，有一些基础知识就行。对这个在阅读诸多西方文学、历史相关的内容时经常遇到的难点，如果能做到一个粗浅的认识的话，理解的也当然会更加深入。</p>
+<h2 id="1-Ultima-Ratio-Regis"><a href="#1-Ultima-Ratio-Regis" class="headerlink" title="1. Ultima Ratio Regis"></a>1. Ultima Ratio Regis</h2><p>&emsp;&emsp;从字面意义直译应为“国王最后的论据”，英语可作“The king’s final argument”。这句话另有写法写作Ultima Ratio Regum，Regum和Regis都是Rex（国王）的属格形式，前者为复数，后者为单数，故两者都是说得通的。</p>
+<p>&emsp;&emsp;Ultima Ratio Regis被认为起源于三十年战争（1618-1648）时期，有说法认为是法国红衣主教黎塞留（Cardinal Richelieu）所言。法国国王路易十四（Louis XIV）继承了这个名言，将Ultima Ratio Regis作为铭文铸刻在了一些大炮上。而在一百多年后，普鲁士的腓特烈二世（Friedrich II）时期也将这句话作为铭文刻在普鲁士的火炮上。在当时火炮越发成为陆战中的决定性武器，是战争中的王牌，故Ultima Ratio Regis的含义也不言而喻——当一个国王把他真正的论据牌都打完了，却仍还不能解决问题的话，那么国王最后的论据就将是可怕的军事武力。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/4.jpg" title="ultima">
 
-<p>&emsp;&emsp;在之前的文章《<a href="https://caelica.github.io/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/"><font color="blue">一些拉丁语谚语的含义考据与派生用法</font></a>》中简单提到了这个在16世纪的各类“死亡之舞”中具有代表意义的作品，但一直没能找到这个作品的高清全集。后来我发现一个丹麦的网站上收录了全部内容，还做了详细解释，于是我下载了全部原图并以PDF的形式整合到了一起。网站原址为：<a href="http://www.dodedans.com/Eindex.htm" target="_blank" rel="noopener">http://www.dodedans.com/Eindex.htm</a></p>
-<p>&emsp;&emsp;这套作品初版创作于1522年至1526年之间，由文艺复兴时期著名画家小汉斯·荷尔拜因（Hans Holbein）和著名雕刻艺术家汉斯·吕策尔伯格（Hans Lützelburger）共同创作的木版画，可谓是16世纪两位大师强强联手的典范。完整版共41+10张。以下是我按照剧情顺序，自己制作的目录列表，德语部分采用16世纪原文以对应原图上的标题：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> Die Schöpffung aller ding (the Creation of All Things)	万物的创始</span><br><span class="line"><span class="number">2.</span> Adam Eua im Paradiss (Adam <span class="keyword">and</span> Eve <span class="keyword">in</span> Paradise)		亚当夏娃在乐园</span><br><span class="line"><span class="number">3.</span> Vsstribung Ade Eue (The Expulsion)				亚当夏娃被驱逐</span><br><span class="line"><span class="number">4.</span> Adam bawgt die erden (Adam Tills the Soil)			亚当在翻耕土地</span><br><span class="line"><span class="number">5.</span> Der Bapst (The Pope)						教皇	</span><br><span class="line"><span class="number">6.</span> Der Keyser (The Emperor)					皇帝</span><br><span class="line"><span class="number">7.</span> Der Künig (The King)						国王</span><br><span class="line"><span class="number">8.</span> Der Cardinal (The Cardinal)					红衣主教</span><br><span class="line"><span class="number">9.</span> Die Keyserinn (The Empress)					皇后/女皇（现代德语为kaiserin，二者都可以指，下面的王后女伯爵等同理）</span><br><span class="line"><span class="number">10.</span> Die Küniginn (The Queen)					王后/女王</span><br><span class="line"><span class="number">11.</span> Der Bischoff (The Bishop)					主教</span><br><span class="line"><span class="number">12.</span> Der Hertzog (The Duke)					公爵</span><br><span class="line"><span class="number">13.</span> Der Apt (The Abbot)						修道院长</span><br><span class="line"><span class="number">14.</span> Die Aptissinn（The Abbess)					女修道院长					</span><br><span class="line"><span class="number">15.</span> Der Edelman (The Nobleman)					贵族</span><br><span class="line"><span class="number">16.</span> Der Thumherr (The Canon)					司铎				</span><br><span class="line"><span class="number">17.</span> Der Richter (The Judge)					法官</span><br><span class="line"><span class="number">18.</span> Der Fürspräch (The Lawyer)					律师</span><br><span class="line"><span class="number">19.</span> Der Ratssherr (The Senator)					议员</span><br><span class="line"><span class="number">20.</span> Der Predicant (The Preacher)				传教士</span><br><span class="line"><span class="number">21.</span> Der Pfarrherr (The Priest)					牧师</span><br><span class="line"><span class="number">22.</span> Der Münch (The Monk)					僧侣</span><br><span class="line"><span class="number">23.</span> Die Nunne (The Nun)						修女</span><br><span class="line"><span class="number">24.</span> Dass Altweyb (The Old Woman)				老妇人</span><br><span class="line"><span class="number">25.</span> Der Artzet (The Physician)					医师</span><br><span class="line"><span class="number">26.</span> Der Sternensecher (The Astrologer)				占星者</span><br><span class="line"><span class="number">27.</span> Der Rychman (The Rich man)					富人</span><br><span class="line"><span class="number">28.</span> Der Kauffman (The Merchant)					商人</span><br><span class="line"><span class="number">29.</span> Der Schiffman (The Sailor)					水手</span><br><span class="line"><span class="number">30.</span> Der Ritter (The Knight)					骑士</span><br><span class="line"><span class="number">31.</span> Der Groff (The Count)					伯爵								</span><br><span class="line"><span class="number">32.</span> Der Altman (The Old Man)					老人</span><br><span class="line"><span class="number">33.</span> Die Greffinn (The Countess)					伯爵夫人/女伯爵</span><br><span class="line"><span class="number">34.</span> Die Edelfraw (The Lady)					女贵族</span><br><span class="line"><span class="number">35.</span> Die Hertzoginn (The Duchess)				公爵夫人/女公爵</span><br><span class="line"><span class="number">36.</span> Der Krämer (The Peddler)					小贩</span><br><span class="line"><span class="number">37.</span> Der Ackerman (The Peasant)					农民</span><br><span class="line"><span class="number">38.</span> Dass Jung kint (The Young Child)				小孩子</span><br><span class="line"><span class="number">39.</span> Gebeyn aller menschen (Bones of All Men)			众人的尸骨</span><br><span class="line"><span class="number">40.</span> Dass Jüngst gericht (The Last Judgment)			最后的审判</span><br><span class="line"><span class="number">41.</span> Die Wapen dess Thotss - Gedenck das end (the Escutcheon of Death - Remember the End)	死神的纹章盾徽 - 记住一切的结局</span><br><span class="line"><span class="number">42.</span> Soldier			士兵</span><br><span class="line"><span class="number">43.</span> Waggoner			马车夫</span><br><span class="line"><span class="number">44.</span> Gambler			赌徒</span><br><span class="line"><span class="number">45.</span> Robber			强盗</span><br><span class="line"><span class="number">46.</span> Blind man 			盲人</span><br><span class="line"><span class="number">47.</span> Beggar			乞丐</span><br><span class="line"><span class="number">48.</span> Drunkard			酒鬼</span><br><span class="line"><span class="number">49.</span> Fool 			愚者</span><br><span class="line"><span class="number">50.</span> Young woman			年轻女人</span><br><span class="line"><span class="number">51.</span> Young man 			年轻男人</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;1526年的初版是40幅木版画，这个版本被称为“印刷校样版”，即“Printer’s proofs”或”proof impressions”，此版本不含有“占星师”，可能是为了凑40个的整数；而1538年出版商梅尔基奥尔和加斯帕.特雷克塞（Brothers Melchoir and Gaspard Trechsel）兄弟在法国里昂正式出版了这套木版画，补上了缺少的“占星师”。虽然吕策尔伯格在1526年去世，荷尔拜因在1543年也去世了，但后续的一些艺术家在大约于1545年至1562年的时间中，在模仿两位大师风格的基础上又向其中陆续增添了士兵、车夫、赌徒、强盗等十幅作品。共同组成了41+10的完整作品集。这部作品集被后世的许多画家临摹或参考创作过。其中一些经典篇目如“骑士”、“富人”、“士兵”等，更是广受欢迎。</p>
-<p>&emsp;&emsp;据说这部作品一经问世就被法国名为维达尔·德·贝卡尼斯（Vidal de Bécanis）的宗教审判长（General inquisitor）下令禁止，可能是认为它有丑化宗教人士的嫌疑。有必要说明的是，当时正值宗教改革最为激烈残酷的时期，在荷尔拜因创作这部作品的时候，也就是1525年，德意志中部爆发了著名的闵采尔农民起义，最终于弗兰肯豪森战役（Battle of Frankenhausen）中，约7000农民起义者被军队包围并杀害，各地起义也均遭镇压。在德意志文化圈出生长大的荷尔拜因不可能不知道这些事，这部作品直到12年后即1538年才有人在法国出版，也很可能和当时的社会情况有关。</p>
-<p>&emsp;&emsp;关于“死亡之舞”的背景已在前文中叙述过，在此不赘述。从荷尔拜因这41幅画来看，故事是从亚当和夏娃的传统圣经故事开端，而死神则在亚当夏娃被逐出伊甸园就开始跟随着他们，即死神从此常伴人类。接下来则是社会各个阶层的角色被死神拖入死亡的场景。死神既动作滑稽、又所向披靡，且不止出现了一个，沙漏也是一个几乎和死神并排出现的元素，暗示着生者时日无多。虽然死神最终带走了所有人，但我们仍能在其中隐约看出作者的创作倾向——死神在带走穷苦百姓的时候显得较为礼貌、平和；而在带走那些作威作福、目中无人的角色时则是生拖死拽、百般嘲弄。作者甚至直接描绘出这些角色的恶行现场——如【17.法官】中展现了一位收受贿赂的法官；而在【8.红衣主教】中更是直接展示了红衣主教出售赎罪券的场景，其中的批判意图可谓直截了当。也难怪这部作品被那位审判长当成了眼中钉。</p>
-<p>&emsp;&emsp;而值得注意的是倒数三张图片（即39、40、41），在【39.众人的尸骨】中，绘制的是经典的题材“死神胜利”的场景，所有人都已变成骷髅，得胜的骷髅们吹起了乐器敲起了鼓；而在【40.最后的审判】中，上帝终于出现，人类又似乎重新得救了。而骷髅则全部消失，故事也没有明确交代大获全胜的死神究竟怎么样了，是像上帝在《浮士德》中最终制裁了墨菲斯托那样一般，上帝阻止了死神的阴谋大计，把骷髅们都变回了活人吗？作者没有明说。不过整个故事也就到此结束了，整部作品的主题可以看作是以死神的元素复刻了传统的宗教故事。</p>
-<p>&emsp;&emsp;而最后一张图【41.死神的纹章盾徽】，则是荷尔拜因为死神这一主题设计的纹章形象，并将这个纹章放在1538年版本的最后，这是那时的“死亡之舞”作品中的一个常见的做法。这个图片伴随着一条圣经中的引用，即武加大本（Vulgate）中的《西拉书（Sirach）》第7章节的最后一句：</p>
+<p>&emsp;&emsp;这个谚语的含义也就在后世得到了广泛应用，用于指代当权者所诉诸的一切武力手段。例如在1775年美国独立战争前夕，帕特里克·亨利（Patrick Henry）发表了一篇演讲，也就是著名的《不自由，毋宁死（Give me liberty or give me death）》，其中将英国政府威胁殖民地的军事行动描述为：</p>
 <blockquote>
-<p>…in omnibus operibus tuis memorare novissima tua et in aeternum non peccabis.<br>…无论你做任何事情，都要记住最后的结局（即死亡），这样你就永远不会犯大错。</p>
+<p>“…These are the implements of war and subjugation; the last arguments to which kings resort.”<br>“…此乃是是战争和镇压之手段；是国王们所诉诸的最后论据。” </p>
 </blockquote>
-<p>&emsp;&emsp;最后得简单说明一下，《西拉书》又称《便西拉智训（Ecclesiasticus）》，中文也通常翻译为《德训篇》、《次经传道书》（并非《传道书》）或《智训》。此书在天主教或东正教圣经中为旧约中的【正典】（Canon），也就是正式篇目，但在新教中则属于【次经】（Apocrypha）。因我们今天能看到的《圣经》以新教圣经居多，故《西拉书》通常无法在一些圣经中找到，属于是圣经不同版本的问题。</p>
-<p>【次经】即Apocrypha或Deuterocanonical Books，有时又称作“伪经”、“旁经”、“外经”等，中文并没有一个约定俗成的通行翻译，但需要指出的是，“伪经”这个翻译是错误的。</p>
-<p>真正的【伪经】应该写作Pseudepigrapha，字面意思是“伪名书、托名假作”，即假冒其他作者之名号而创作的作品，目的是增加作品的可信度。而Apocrypha的词根是“隐藏的”的含义，Deuterocanonical的字面意思则是“第二类正经”。一般在宗教历史学上认为，Apocrypha也是真正的古代犹太经典著作，与正典具有同等的地位，故在宗教意义上也具有同等的信仰价值，只是由于种种历史原因，没有被列入后世一些不同版本的圣经中。像《西拉书》、《犹滴传》这类就属于Apocrypha。20世纪死海古卷等古籍的出土，侧面说明了仍可能存在没有被发掘出的次经，也说明即使是古代的希伯来抄本圣经也绝非只有一个标准版本。综上所述，次经是真经，不是伪经。</p>
+<p>&emsp;&emsp;很明显，帕特里克此句的后半句就是Ultima Ratio Regis(-um)的一种英语版本。注意其使用了国王的复数形式（kings），这显然是一种习惯性用法。</p>
+<h2 id="2-Nulla-Crux-Nulla-Corona"><a href="#2-Nulla-Crux-Nulla-Corona" class="headerlink" title="2. Nulla Crux, Nulla Corona."></a>2. Nulla Crux, Nulla Corona.</h2><p>&emsp;&emsp;应该翻译为“不要十字架，不要王冠”。写成英语大概是“No Cross, No Crown”。这句话传说是德国农民起义（1524）时期，一位名为弗洛里安·盖叶（Florian Geyer）的起义领导者的剑上所刻的铭文。弗洛里安·盖叶是一名贵族、骑士，他率领了一些下级贵族、骑士及一群武装农民共同组成了“黑色连队”（Black Company），加入了另一位著名的起义领导人闵采尔（Thomas Münzer）的大部队麾下，与他并肩作战。因为封建制度下的欧洲总体来说农民起义的规模都比较小，质量普遍难成气候，故盖叶领导的这群“专业农民军”相当特殊，他们当中的这些反叛的骑士和职业军人可能是欧洲历史上极少数属于农民阵营的重装武力。当时正值宗教改革运动如火如荼，教会和封建领主的双重压迫是当时农民起义的直接原因，所以Nulla Crux, Nulla Corona的具体解释应与当时农民起义军所打的其他一些旗号（如闵采尔的旗帜上画着一只草鞋，以表示和穿皮靴的贵族对抗）所表达的含义类似——即号召农民们摧毁教堂和城堡，也就是说，推翻教会（十字架）和封建领主（王冠）。</p>
+<p>&emsp;&emsp;在弗兰肯豪森（Frankenhausen）的失败后闵采尔被捕处决，给这场轰轰烈烈、昙花一现的斗争画上了句号。黑色连队也溃散了，盖叶随后遭人暗杀，至今不知埋骨何方。但这句话仍然传了下来，通常是作为宗教改革或是社会革命的主题而被后世的人们所引用。</p>
+<p>&emsp;&emsp;如奥地利作家茨威格（Stefan Zweig）于1928年写过一篇名为《世间最美丽的坟墓》（Das schönste Grab der Welt）的文章，来描述托尔斯泰（Л.Н.Толстой）朴实无华的坟墓。在文章里直接使用了这句话。毕竟托尔斯泰晚年在作品中公开批判教会和沙俄政府，主张信仰和博爱的重要性，甚至可以说，他形成了一种属于自己的宗教观念——后人称为“托尔斯泰主义”。但他的作品在当时触怒了主导俄国的沙皇与东正教会，导致东正教会将其开除教籍。</p>
+<p>&emsp;&emsp;托尔斯泰于1910年去世，而十八年后，茨威格在文章中使用这段十六世纪宗教改革时期农民起义军的谚语描述托尔斯泰，无疑是在将历史人物的境遇投射到托尔斯泰身上，是在将托尔斯泰比作新一代的宗教改革继任者，以及俄国农民的解放者——托尔斯泰乃贵族出身，坐拥家产无数，却将一生都投入到了那些不像是欧洲传统贵族干的事情上：如对抗东正教会，并在自家庄园进行农奴改革试验（这些经历成为了他晚年小说《复活》的主要内容）。而茨威格作为奥地利作家，当然会联想到那位三百年前出身贵族骑士，却站在了农民一边，并为农民而死的盖叶。这句话显然是暗中肯定了托尔斯泰那抛弃名利而追寻真理与良心的反抗精神。了解了这些，我们才能感觉到这句拉丁语谚语运用之精妙，含义之深刻所在。</p>
+<p>&emsp;&emsp;顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章自从九十年代进入了高中课本，却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，更离谱的是，三十年过去了，几乎从未有教材出面订正这个错误，造成了一句错误的句子和翻译被我国中学语文课本一直用到了今天的现象。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
+
+<p>&emsp;&emsp;虽然这个例子可以侧面反映出拉丁语在我国文化界的陌生程度。但可想而知的是，即使是正确拼写了这句话，正确作了翻译，解释它也并非是容易的事情——若在教育中始终避而不谈这背后涉及到的深层次历史、文化、宗教背景，我想，学生也就永远理解不了那坟墓为何简陋，为何像一个“不为人知的士兵一般不留名姓地被埋葬”，也就触及不到这篇文章的灵魂。</p>
+<p>&emsp;&emsp;我担心的不是拉丁语，语言——不难，我担心的是后面这些。</p>
+<p>&emsp;&emsp;茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
+<h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>&emsp;&emsp;字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
+<blockquote>
+<p>“…et dominabitur a mari usque ad mare et a flumine usque ad terminos orbis terrarum.”<br>“…他将统治大地，从这海到那海；由大河的流域，至地极的边界。”</p>
+</blockquote>
+<p>&emsp;&emsp;此处描述的是圣经中非常常见的说法：即上帝与圣君治下的、理想的人间天国。</p>
+<p>&emsp;&emsp;A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在宗教意义上更是直接成了上帝和基督的外号。诗篇 72:8中也有这样一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
+<p>&emsp;&emsp;而在更一般的意义上，A mari usque ad mare早已经被引申为描述一个强大而繁荣的国家或统治的用法。例如波兰在17世纪的波兰立陶宛联邦时代是其最强盛的时期，也有着“从海到海”的称号（从黑海到波罗的海）。这么说的话，丘吉尔1946年的“铁幕演说”里所说的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”也算是某种意义上的A mari usque ad mare了。</p>
+<h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>&emsp;&emsp;字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
+<p>&emsp;&emsp;这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说，一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后变得骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
+<p>&emsp;&emsp;Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
+<p>&emsp;&emsp;必死性的影响是如此之深，以至于我们能看到历史上有许多艺术作品都反映出这样的信息，尤其是文艺复兴时期，这些作品经常被称为“死亡之舞（Dance of Death/La Danse Macabre）”。典型的有老勃鲁盖尔（Pieter Bruegel）于1562年的油画《死神的胜利（The Triumph of Death）》，描绘了死神的骷髅大军横行人间的景象。在这些作品中，骷髅是最常出现的元素，它们经常做出跳舞、演奏等动作；此外还有拿镰刀披黑斗篷的死神（Grim Reaper）、圣经启示录中描述的四骑士（他们的形象通常和死神融合）等，也是常见的形象。</p>
+<p>&emsp;&emsp;“死亡之舞”的另一个特点是反映出死亡的平等性（equality）。在小汉斯·荷尔拜因（Hans Holbein）于1523至1526年间创作的一系列以“死亡之舞”为主题的木版画里，每一张都展示了不同社会阶级的人被一个骷髅模样的死神带走的场面。如一个骑士不愿被死神带走，与死神展开战斗却被死神用长枪杀死；守财的富人在沉迷数钱，没想到死神已经坐在了桌边和他一起数钱；农民在辛苦耕种，死神甚至来帮他驱赶牛羊；死神把公爵夫人从豪华的床上拽下来；无论是虔诚的修女还是贪腐的法官也统统都不放过。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/2.png" title="b">
+<p>&nbsp;<br>&emsp;&emsp;我们可以在同时代的众多“死亡之舞”艺术作品看到同样的设计思路，即描述各种属于不同的社会阶层人物被拖向他们死亡的命运，借以表达死亡对一切人都是平等的主题，无论人出身贫富贵贱，生前追寻什么样的价值观（财富、权力、美丽、智慧等），死神都最终会让一切趋于一致。贾科莫·德布希斯 (Giacomo Borlone de Buschis)于1484年至1485年间在贝加莫省克吕松（Clusone）的礼拜堂外制作了一系列“死亡之舞”壁画，其中的文字提到：</p>
+<blockquote>
+<p>«Gionto (e sonto) per nome chiamata morte / ferisco a chi tocherà la sorte; / no è homo chosì forte/che da mi no po’ a schanmoare»<br>«Gionto la morte piena de equaleza / sole voi ve volio e non vostra richeza / e digna sonto da portar corona / perché signorezi ognia persona»<br>«Ognia omo more e questo mondo lassa / chi ofende a Dio amaramente pasa»<br>«Chi è fundato in la iustitia e (bene) / e lo alto Dio non discha(ro tiene)/la morte a lui non ne vi(en con dolore) / poy che in vita (lo mena assai meliore)»<br>—（此为壁画原文，用15世纪意大利语书写）</p>
+</blockquote>
+<blockquote>
+<p>“I come (and I am) called by name Death, I hurt those who fate has chosen, There is no man so strong who can escape from me”<br>“I am the Death, full of equality, I want only you and not your wealth, And I am worthy to wear a crown because I am the master of every person”<br>“Every man dies and leaves this world. Who offends God bitterly passes away”<br>“Who is based on justice and right, and he does not have in disdain the Supreme God, Death does not come painful for him since (Death) takes him in a better life”<br>“Oh you, who serve kind-hearted God, do not be scared to come at this (Death) dance, but blithely come here and have no fear, since who is born, then he has to die”<br>—（英文翻译来自互联网）</p>
+</blockquote>
+<p>我大概翻译为：</p>
+<blockquote>
+<p>“我即是死神，为死亡而来，我要伤害那些被命运选择的人，没有谁强大到能够从我身边逃脱”<br>“我是让万物平等的死亡之主，我只要你的人，不要你的财富。我配得上一顶王冠，因为我才是每个人的主人”<br>“即使每个人都会死去并离开这个世界，但那些得罪上帝的人会死得更惨”<br>“而对那些坚持了正义，没有蔑视至高上帝的人来说，死亡并不痛苦，死亡反而给他带来更好的生活”<br>“所以，敬畏上帝的你们，不要害怕参加这个死亡之舞，不要害怕，欢快地来吧，这是人生而必死的命运” </p>
+</blockquote>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/5.jpg" title="Clusone1">
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/6.jpg" title="Clusone2">
+<p><strong><center>克吕松的“死亡之舞”</center></strong></p>
+<p>&emsp;&emsp;虽然这张壁画的下半部分严重受损，但仍可以看到传统的宗教式结局，就如同文字中描述的那样：即使众人皆死，却在左侧有一个张着血盆大口的怪物等着那些“恶人”，口中喷出燃烧的火焰，象征着地狱；而在右侧则有一个通往上层的楼梯则留给那些祈祷的人们，这显然是通往天堂的阶梯，他们是死后得救的人。</p>
+<p>&emsp;&emsp;从这个角度讲，并不能用一般意义上的悲剧来解释Memento mori、Danse Macabre等艺术，它们虽披着令人毛骨悚然的外衣，其所表达的思想内核却并不是严格意义上的虚无主义（至少不是现代意义上的虚无主义），甚至有时候都不是悲剧，而更像是一种“死亡崇拜（Death Worship）”的情节，它借着强调物质与肉身的不可持续性，实在暗中阐述精神、灵魂的永恒，这与宗教的传统观念是殊途同归的。死神消灭了所有活着的人类，毁灭了凡人的世界，契合了亚伯拉罕系宗教中一贯的末日观念，死神实际上是代替上帝的出现并完成了上帝的审判工作，也就是说，这些“死神”实则可以看作是宗教中上帝意志的化身，体现了类似旧约中的上帝作为审判者的残酷、绝情的一面。</p>
+<p>&emsp;&emsp;所以我们也可以从宗教改革的层面上解释这一主题，我们看到各类作品均侧重展现了死神对权力阶层——尤其是宗教机构、政治机构的威胁，而这些人在作品中则又更多地被描述成作恶多端的反面形象，死神的出现，实际上体现了死神/上帝能够越过宗教机构而审判世人甚至审判宗教、政治机构的无上权力，无形中抬高了上帝/死神的力量，而贬低了从教皇到神父的各类宗教机构的神圣性，这与当时宗教改革的观念是一致的。故可以认为，Memento Mori/Danse Macabre在这种特定历史环境下具有一定的进步意义，这可能也是为什么16、17世纪如此多的画家、诗人、乐手都热衷于以这个题材进行创作的原因。</p>
+<h2 id="5-Sic-transit-gloria-mundi"><a href="#5-Sic-transit-gloria-mundi" class="headerlink" title="5. Sic transit gloria mundi."></a>5. Sic transit gloria mundi.</h2><p>&emsp;&emsp;这是一个与Memento mori有着类似含义的句子。它的字面意思为“世间的荣耀就这样逝去了”，有时会被缩写为S.T.G.M.。英文通常作”Thus passes worldly glory”。它的起源也没有准确的考据，不过它于1409年7月7日在教皇亚历山大五世的加冕典礼上首次使用。并一直沿用到了1963年。新加冕的教皇会在圣彼得大教堂前祭祀，游行队伍会停下三次，每停一次教皇的司仪都会在教皇面前跪下，他手里拿着一根银制或铜制的细棒，上面挂着一条正在闷烧的亚麻布。每停下一次他都会大声而悲痛地说道：“Pater Sancte, sic transit gloria mundi!”（“圣父，世间的荣耀就此逝去！”），亚麻布块就在这个过程中慢慢燃烧掉。</p>
+<p>&emsp;&emsp;这个仪式和上文提到的凯旋式的传说具有类似的功能，旨在提醒教皇尘世荣耀的短暂和不可持续的本质。在今天，这句话在今天通常用来描述一种时过境迁、往日不在的主题，如一个文明的消亡或是一个强大权力者的退位等。</p>
+<p>&emsp;&emsp;1959年由小沃尔特·M.·米勒（Walter M. Miller Jr.）所著的科幻小说《莱博维兹的赞歌（A Canticle for Leibowitz）》中引用了这句话，讲述了经历全球核战争后的地球退回了中世纪水平，但一位电气工程莱博维兹师将人类的知识保存在了一个修道院里。而后的数百年间，教士们借由被保存的知识复原了人类文明，但核战争的危机再临，爆发之际幸存的人们乘坐飞船离开地球寻找新的家园。在小说中，最后一个登上飞船的教士看着新核战的蘑菇云念出了“Sic transit gloria mundi”，昭示着地球的再一次毁灭。</p>
+<h2 id="6-Agnosco-veteris-vestigia-flammae"><a href="#6-Agnosco-veteris-vestigia-flammae" class="headerlink" title="6. Agnosco veteris vestigia flammae."></a>6. Agnosco veteris vestigia flammae.</h2><p>&emsp;&emsp;也是一句很著名的话，但似乎很少有人对其作详细解释。这句话直译过来大概是：“（我）感到了过去的火焰的痕迹”，原文出自古罗马作家维吉尔（Virgil）的《埃涅阿斯纪（Aeneid）》，第IV卷第23行：</p>
+<blockquote>
+<p>Anna, fatebor enim, miseri post fata Sychaei<br>coniugis et sparsos fraterna caede Penates<br>solus hic inflexit sensus animumque labantem<br>impulit. Agnosco veteris vestigia flammae.</p>
+</blockquote>
+<p>&emsp;&emsp;我大概翻译为：</p>
+<blockquote>
+<p>安娜，我必须承认，我经历了我可怜丈夫绪开俄斯（Sychaeus）的命运<br>我的哥哥杀害了我的丈夫，让我的家族被鲜血所染<br>在这之后，只有这一个人能让我如此视线迷离，神魂颠倒<br>我感觉到了那过去的火焰余烬，就要在我心中重新燃起</p>
+</blockquote>
+<p>&emsp;&emsp;维吉尔的《埃涅阿斯纪》系古代神话传说改编而来，讲述了败战后的特洛伊英雄埃涅阿斯（Aeneas）流亡到意大利半岛的故事。此时罗马尚未形成，但传说上又认为，埃涅阿斯即是传说中罗马建城者罗慕路斯（Romulus）的祖先之一，他们之间隔了约400年，故这个传说也在试图展现罗马和希腊文明之间在血缘上的直接继承关系。</p>
+<p>&emsp;&emsp;此段讲述的是埃涅阿斯先是流落到北非的迦太基，在这里见到了建立迦太基的女王狄多（Dido）（又称伊莉莎（Elissa））。这段即为狄多向妹妹安娜所述。狄多虽贵为女王，追求者无数，但她过去在家族的残酷内乱中失去了丈夫，从此就一直心如死灰。但英雄埃涅阿斯的到来让她一见钟情，她疯狂地爱上了埃涅阿斯。不过埃涅阿斯仍坚持去了意大利以执行朱庇特的神意，狄多最终在精神错乱中殉情自杀，死前向埃涅阿斯发出诅咒。有人据此认为，正是这个诅咒预示了罗马和迦太基几百年后的大规模战争。</p>
+<p>&emsp;&emsp;著名诗人但丁（Dante）在他的《神曲（Divine Comedy）》中也引用过这段话，炼狱篇，第XXX章：</p>
+<blockquote>
+<p>per dicere a Virgilio: “Men che dramma;<br>di sangue m’è rimaso che non tremi:<br>conosco i segni de l’antica fiamma.”</p>
+</blockquote>
+<p>&emsp;&emsp;田德望版《神曲》中这样翻译：</p>
+<blockquote>
+<p>对维吉尔说：“我浑身没有一滴血不颤抖：我知道这是旧时火焰的征象”；</p>
+</blockquote>
+<p>&emsp;&emsp;但丁引用此句即是用《埃涅阿斯纪》中的典故来说明对贝雅特丽齐（Beatrice）的爱情焰火重燃。所以原文中的“火焰”指的是爱情之火，指的是爱情的复活。但经过引申，这句话也不仅仅指爱情了，也可以用来描述一个人找回了过去曾经有过的事物，重新回到了过去曾经拥有过的激情状态中的独特感觉。</p>
+<p>本文永久更新，未完待续。</p>
 ]]></content>
       <tags>
         <tag>文化</tag>
-        <tag>艺术</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>当年那些经典的Windows迷你小游戏</title>
-    <url>/2021/09/22/%E5%BD%93%E5%B9%B4%E9%82%A3%E4%BA%9B%E7%BB%8F%E5%85%B8%E7%9A%84Windows%E8%BF%B7%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>考古1999年前后的一批Windows小游戏的真名及其背景等。<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;说到99年前后的游戏相信很多人第一反应都是红警、星际、帝国、CS等根本不用叫全名就耳熟能详的大作，当然还有暗黑2、仙剑1、英雄无敌3、大航海4、三国群英传等等经典作品，这些当年的“3A大作”的名字已经成为游戏玩家们最深刻的记忆，有的甚至开创了一个系列的作品。但是游戏世界从来都不是只是由大作，还有那些同样经典但却没人能叫得出来名字的小游戏们，它们基本都是由那个年代的独立开发者们制作的，没想到也居然成了很多人的重要回忆，所以今天说的这些小游戏，或许其中也有你玩过但不知道名字的那一款？</p>
-<p>&emsp;&emsp;那时候大概是2002年，家里新买了电脑不久，父亲在一次逛街的时候去软件影音店里买软件，那时候都是用光盘的，我记得当时其中有一个红色光盘，这个光盘等于是店家自己将金山画王2002（这个也挺好玩的）、瑞星杀毒2002等常用软件做成的盗版盘合集，当年的新电脑嘛总要装点这些玩意。然而就在这时..命运的齿轮它转动了！我爸买完那些光盘后居然顺手又买了一个“迷你GAMES超市”的小游戏光盘，像我爸这样的人其实几乎不和游戏打交道的，于是这个盘就到我手里了，接下来的时间里我将玩遍这个盘里几乎所有的游戏…它的盘面有一个画风很九十年代的卡通少女，其实我记得还有个塑料包装盒和纸质说明书的，包装盒和这个盘面差不多，而那个纸质说明书很关键，因为好多游戏都是英文的，而这个说明书则用中文介绍了大部分游戏的简介内容，应该是光盘制作者自己编写的。虽然它没有包含这个盘里所有的游戏，却给了我不小的帮助。遗憾的是包装盒和纸质说明书早已不知道丢在哪里了，只有这个盘我一直还保存了下来：</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/0.png" title="a">
-<p>&emsp;&emsp;光盘启动后可以进入这样一个界面。右边居然是拳皇里的马克西玛么？不过我那时还没玩过KOF…</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/1.png" title="b">
-<p>&emsp;&emsp;总共被分了六类的游戏一共有大概230个左右，大部分都是以安装包/压缩包的形式保存在光盘里的。话不多说，搬出我的旧电脑（新电脑没光驱…）用UltraISO直接将光盘做成.ISO，同样也顺便对那张也保存至今的红色光盘再加上一个《雷曼2》的光盘也都做了镜像。将这些ISO都复制到新电脑上就好处理多了。打开的时候我惊奇地发现，光盘内容里原来一直躺着一个txt文本，里面正是丢失掉的那张纸质说明书的内容！感觉又一次验证了“信息不灭理论”啊…于是解压了一连串的游戏之后我又开开心心地都打了一遍，总结了以下十几个我当年就觉得很好玩的游戏，并且简单考证了它们的内容、背景以及发行的时间。因为很多游戏过于古老无法在Win10及64位系统上运行，虚拟机我也懒得去开了，所以这里有些游戏的画面就直接截自Youtube上的视频。</p>
-<hr>
-<p><strong>《暴力摩托2000（Road Rush）》</strong>，2000年。这个不解释了，经典刘沛松战庄臣。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/2.png" title="c">
-<p><strong>《反潜驱逐战（SuperDepth）》</strong>，1999年。也就是俗称的军舰炸潜艇，很多人应该都玩过。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/3.png" title="d">
-<p><strong>《Mario &amp; Luigi (DOS)》</strong>，1994年。这个马里奥游戏是由Mike Wiering于1994年制作的DOS系统的重制版，属于同人作品，但是质量非常优秀。这个游戏当年在国内很流行，几乎每个”电脑房”的某几台机器上都会有一个，这也是我玩的第一款马里奥游戏，之后才接触到FC。不过我小时候玩的那个版本好像还没做完，打到第四关会被困在关底的黑色长廊中无法继续前进。我后来还玩过完整版，黑色长廊里有很多金币，过了就是NG+了。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/4.png" title="e">
-<p><strong>《おでんととどのお鱼钓りゲーム☆》</strong>，1997年。翻译过来其实叫【关东煮和北海狮的钓鱼游戏】，这个游戏很多人应该都玩过，音效超级魔性洗脑的…</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/5.png" title="f">
-<p><strong>《Zeek the geek》</strong>，1995年。一个吃花过关的益智小游戏。这下才发现游戏背景音乐基本都是一些很有名的美国民歌，Little Brown Jug、Oh Susanna、I’ve Been Working on The Railroad等等。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/6.png" title="g">
-<p><strong>《Troy 2000》</strong>，2000年。一个恐龙吐泡泡闯关的游戏，画风精致也很好玩，试玩版只能玩20关。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/7.png" title="h">
-<p><strong>《紫色小精灵（Dweep）》</strong>，1999年。超可爱的小游戏，音乐也很好听，就是后面关卡难度对小学生来说还是挺高的。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/8.png" title="i">
-
-<p>下面几个游戏从Youtube上看关注度都比较高，应该是很多老外的童年回忆了，虽然国内玩过的人可能不多：</p>
-<p><strong>《Kung Fu Kim》</strong>，1997年。主角明显是一个跆拳练习者，用四个方向键阻挡异物的进攻，可以不断升级腰带，玩起来的确能感受到一点练功的意境。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/9.png" title="j">
-<p><strong>《Rat Poker》</strong>，1997年。微软做的一个拼同色老鼠的游戏，这游戏的背景音乐超级好听。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/10.png" title="k">
-<p><strong>《Hot Wheels: Crash!》</strong>，1999年。看起来应该是美泰公司旗下的车模品牌Hot Wheels（风火轮）和车模玩具同步推广的游戏，游戏内容就是发射一辆“自爆卡车”撞毁建筑、汽车和公共设施，破坏得越厉害得分越高。这个游戏确实有意思，因为它是真3D游戏（99年那会真3D真的很少的），并且拥有简单的物理引擎。每次发射车辆还有跟电影镜头一样的特效，看着很爽。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/11.png" title="l">
-<p><strong>《Elf Bowling》</strong>，1998年。圣诞老人扔保龄球砸小矮人的搞笑游戏，保龄球甚至能在特定角度砸倒路过的动物，很有意思。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/12.png" title="m">
-<p><strong>《Baroque Shooting》</strong>，2000年。一个名为《巴洛克（Baroque）》的日本游戏衍生的STG游戏，末世世界观和哥特恐怖题材画风，感兴趣的可以Google一下这个游戏的历史，讲道理这种玩意对小学生来说还是有点吓人的，小时候放大招弹出的那个娃娃感觉有点恐怖。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/13.png" title="n">
-
-<p>&emsp;&emsp;最后当这个光盘点击退出的时候，还会出来个八神和京的背景，这张图应该是拳皇97的CG，背景音乐还是仙剑1主题曲，感觉直接是把仙剑的MIDI复制过来了。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/14.png" title="b">
-
-<p>&emsp;&emsp;总的来说可以看出，这些游戏基本都是国外独立制作者们在网站上放出的免费试玩版，或者是Demo，往往只能体验游戏的一部分内容，而要想购买完整版则差不多都需要付费5-10美元不等。而光盘的制作者“佳鑫科技”则是将这些免费试玩版都收录了下来，然后放到国内市场上售卖。现在想想好像是有点“恰烂钱”的感觉，不过能将这么多经典游戏收录到一起也未尝不是一项有意义的工作，也让我们这帮小学生能够玩到当时国际上的经典作品。</p>
-<p>&emsp;&emsp;其实这件事的契机是有一个人问我一款20年前的Windows飞镖小游戏的名字，我刚好记得我那张光盘里有那个小游戏，最后考证出游戏是一个叫Dart’m up的荷兰游戏，被翻译成“休闲飞镖”。于是借着这个机会才重新审阅了那张远古游戏光盘，我相信学历史的人都一定有着深厚的考古情节吧，借助技术手段复原那些被遗忘的信息，还原出更清晰的“我的历史”，似乎觉得自己对自己的认识又上了一层，确实是一种很奇妙的感觉。</p>
-<p>&emsp;&emsp;最后还有一个推断。既然那么多“机房”都安装着这些游戏，说明很多人手里也都有类似的光盘（当年没U盘，流行的3.5inch软盘只有1.44MB容量），你手里有这种光盘吗？会不会和我的一样？</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
+        <tag>翻译</tag>
+        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -1476,8 +1531,8 @@
 <p>&emsp;&emsp;这下算是说清楚了为什么一百年都没做到的原因，是人出了大问题：他目光太短浅，太急功近利，没有意识到那些不能直接给他带来物质利益的、看不见摸不着的东西的重要和伟大之所在；就算是有幸意识到了，却放不下那个架子，不肯改变自身的形象；他害怕新东西，不适应事情的变化，怕新事物超出了他的控制范围，最终却要去主动抵制这些新事物带来的变革。甚至我敢说，只要再有人认识不到、或是不承认这样的落后，这个国家就还要继续在这个荒唐的迷宫中兜兜转转下去，一百年都不止。</p>
 ]]></content>
       <tags>
-        <tag>随想</tag>
         <tag>文化</tag>
+        <tag>随想</tag>
       </tags>
   </entry>
   <entry>
