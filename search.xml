@@ -1,6 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
+    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
+</blockquote>
+<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
+<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
+<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
+<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
+<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
+<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
+<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
+<hr>
+<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
+<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+        <tag>服务器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Flash被各大浏览器彻底停用后的处理办法</title>
+    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
+</blockquote>
+<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
+<center>按钮彻底消失了</center>
+
+<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
+<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
+<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
+<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
+<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
+<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
+<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
+<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
+<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
+<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
+<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
+<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
+<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
+<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
+<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
+<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
+<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
+<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CSS中引入自定义字体</title>
     <url>/2022/04/18/CSS%E4%B8%AD%E5%BC%95%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -50,42 +131,34 @@
       </tags>
   </entry>
   <entry>
-    <title>Flash被各大浏览器彻底停用后的处理办法</title>
-    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
+    <title>Q版二头身第二弹</title>
+    <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
+<p>再次挑战萌系二头身的制作 <a id="more"></a></p>
 </blockquote>
-<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
-<center>按钮彻底消失了</center>
+<img src="/2022/11/12/Q版二头身第二弹/Caelica_C.png" title="You deserve this name">
 
-<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
-<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
-<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
-<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
-<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
-<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
-<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
-<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
-<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
-<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
-<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
-<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
-<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
-<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
-<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
-<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
-<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
-<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
+<p>在上次制作了第一个二头身之后，有了更多的制作经验。这次应该说更加贴近冒险岛（Maplestory）近年来的画风了，事实上是因为我又玩了100多小时的美服冒险岛…不过话说回来，历史上那些艺术家出去闲逛出去浪，那都不叫逛，曰采风也，像高更（Paul Gauguin）这样的人为了艺术般的生活都跑到太平洋上的小岛去了，咱因为太平洋加了盖，比不过他，那怎么办？遁入游戏世界呗！所以咱玩游戏那能叫玩游戏吗，当然不叫玩了，故从今往后这就定调：再遇到normies觉得我老大一人怎么还玩游戏，我就笑笑，因为他们不明白——</p>
+<p>&emsp;&emsp;<em>normies玩游戏那就是叫玩，叫打发时间，叫消磨人生。因为他们对艺术和文化没有信仰，所以连他们自己都会这么觉得；</em></p>
+<p>&emsp;&emsp;<em>我玩游戏，至少在我这里永远都不那样叫，现在我造了个新名词</em>——<strong><em>赛博采风（Cyber Art &amp; Design Tour）</em></strong>！！</p>
+<p>言归正传，相对于之前的作品，除了整体的画风比例之外，这次着重处理了线稿的粗细分布问题，花了不少功夫，但最终的实际效果让我觉得很值，这个粗细的感觉一出来整个画面都看起来舒服了许多。之前对最外层轮廓线做了加厚加深的优点也得到了进一步发挥。</p>
+<p>色彩上优化了一级阴影的分布，减弱了一级阴影的渐变程度，总之这次喷枪式的渐变用的很谨慎，这样整体看起来更“二次元”而不是像一个厚涂作品，这可能是近年来漫画插画的绘柄特点，观察冒险岛十年前的风格也能明显看出这个变化。</p>
+<p>最后采用了PS自带的噪声生成添加了一个噪声材质图层，并用波点式贴图处理了服饰的材质。这样能看起来不是那么单调。</p>
+<p>泳衣样式是临时起意搞得，因为有人说我画的女人个个都包的严严实实，不够色，所以身材故意弄的比较…前凸后翘的那种感觉。冒险岛本身其实一直还是比较子供向，大概是很难找到这种的，所以这样处理也不至于因过度模仿而失去特点。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
+        <tag>绘画</tag>
+        <tag>设计</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>This is for the Record</title>
+    <url>/2022/04/17/This-is-for-the-Record/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
+</blockquote>
+<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
+]]></content>
   </entry>
   <entry>
     <title>Steam社区里利用高仿网站钓鱼的骗术</title>
@@ -115,106 +188,6 @@
       <tags>
         <tag>游戏</tag>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>This is for the Record</title>
-    <url>/2022/04/17/This-is-for-the-Record/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
-</blockquote>
-<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E642074776F206772656174206469637461746F72732C20616E6420746865697220617574686F726974617269616E20656D706972652E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C2077652077696C6C20736F6F6E2073656520746861742C20616E64206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C792064726976652074686520776F726C6420696E746F206465766173746174696E67206772656174207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220616E6369656E7420656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
-    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
-</blockquote>
-<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
-<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
-<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
-<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
-<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
-<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
-<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
-<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
-<hr>
-<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
-<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-        <tag>服务器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo中插入本地pdf文档</title>
-    <url>/2022/05/17/hexo%E4%B8%AD%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0pdf%E6%96%87%E6%A1%A3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>在hexo页面中实现浏览pdf文档的功能，以及过程中一些问题的解释<a id="more"></a></p>
-</blockquote>
-<p>在之前的文章：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a>中，实现了hexo页面插入pdf文档页面的功能。因为网上关于这里的内容写的不够细致，官方文档也写的不太行，种种原因导致我卡了一会坑。所以这次单独说一下这个功能。</p>
-<p>本功能是依靠一个叫hexo-pdf的插件实现的。这个插件的github项目地址为：<a href="https://github.com/superalsrk/hexo-pdf" target="_blank" rel="noopener">https://github.com/superalsrk/hexo-pdf</a></p>
-<p>首先我们需要安装这个插件。先从Git-Bash cd到hexo文件夹所在的目录（即_config.yml、source等文件所在的目录），然后执行npm安装命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ npm <span class="keyword">install</span> <span class="comment">--save hexo-pdf</span></span><br></pre></td></tr></table></figure>
-
-<p>回车后是这个样子：</p>
-<img src="/2022/05/17/hexo中插入本地pdf文档/1.png" title="a">
-<p>可以看到，npm install首先报出了很多WARN，其实，<strong>这些WARN大多数都是版本问题，我认为都可以不管。</strong>这里简单说一下这些WARN都是什么意思：</p>
-<p>第一条是指1.0.0版本的ejs太过老旧，建议升级到2.5.5。ejs是Node.js的模板引擎，在我们搭建hexo博客的时候默认就安装好了，一般都是是1.0版本的，这个是完全不影响的；</p>
-<p>第二条是说的是没有装版本号大于等于4.12.1的eslint。eslint是一个代码语法的检测工具，用来规范代码。这个也没啥用，可以忽略。修复的话也可以，输入<code>npm install --save-dev &quot;eslint@&gt;=4.12.1&quot;</code>即可安装一个版本号大于等于4.12.1的eslint；</p>
-<p>后面几条都是关于fsevents的，这个是因为我们使用了win/linux系统。因为fsevents是依赖mac操作系统的，也就是说别人在mac上做的东西放到win系统上就会报这个问题。所以也不管；</p>
-<p>我们只需要看到<code>+ hexo-pdf@1.1.1</code>以及下面的<code>updated X packages and audited...</code>就行了。</p>
-<p>最后是发现了多少个漏洞（vulnerabilities），统统不管。</p>
-<p>hexo-pdf插件装好后，就可以在.md文本中引入.pdf文件。和插入图片有些类似，首先我们得把_config.yml中的<code>post_asset_folder</code>的值改为true，这样就会在新建文章即hexo new的时候在source目录下生成一个与.md文本同名的空文件夹，也就是这个文章的资源存放文件夹。如果之前插入过图片的话应该本来就是true。然后我们把需要展示的.pdf文档放入这个文件夹中。</p>
-<img src="/2022/05/17/hexo中插入本地pdf文档/2.png" title="b">
-<p>接下来在.md文章中引入这个pdf，最基本的句法为：（如这里的pdf文件名为mydoc.pdf）</p>
-<figure class="highlight django"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">pdf</span> ./mydoc.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>这样写的话是使用相对路径，其实pdf文档放在source文件夹下的任何目录都是能用的，因为我的pdf不多，我习惯把pdf和图片都放在post_asset_folder生成的文件夹里。如果需要涉及到的pdf非常多的话，建议可以在source文件夹下开一个单独的文件夹存放pdf文档（可命名为files或pdf等），然后通过<code>hexo new page</code>新建一个栏目页面，这样可以从主页方便进入这个地方。</p>
-<p><strong>重点要说一下，这里就算引入成功了，也是不支持本地预览的！</strong>..通过<code>hexo s</code>或<code>hexo s -p XXXX</code>进行本地预览的话，会直接弹出下载这个pdf的下载框，并且看不到任何插件效果！<strong>如果你本地预览时弹出了下载pdf的框，而不是一行Cannot…就说明已经引入成功了！</strong>我之前就是因为看不到效果，以为是插件npm install报错的问题，实际上一点关系都没有，这个东西就是不支持本地预览，因为我们现在引入的pdf文档是在本地的，不是外部资源链接。</p>
-<p>后面发现这个句法不够灵活，使用下面的embed src句法能够通过调整width和height改变pdf文档框的大小，要更好一点，我这里就使用的是这个句法：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">&lt;embed <span class="attribute">src</span>=<span class="string">"./mydoc.pdf"</span> <span class="attribute">width</span>=<span class="string">"100%"</span> <span class="attribute">height</span>=<span class="string">"700"</span> <span class="attribute">type</span>=<span class="string">"application/pdf"</span>&gt;</span><br></pre></td></tr></table></figure>
-
-<p>也可以使用外部资源链接，如官方教程中的（仅参考其格式即可），使用外部链接的话应该是可以进行本地预览的，不过我没试过：</p>
-<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;% pdf <span class="symbol">http:</span>/<span class="regexp">/7xov2f.com1.z0.glb.clouddn.com/bash</span>_freshman.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>最后就是hexo c、hexo g、hexo d提交部署，等一会后，就能在真实页面中看到实现后的效果：</p>
-<img src="/2022/05/17/hexo中插入本地pdf文档/3.png" title="c">
-
-
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>网页</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -341,66 +314,51 @@
       </tags>
   </entry>
   <entry>
-    <title>使用PS的液化工具绘制弯刀的曲线</title>
-    <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
+    <title>hexo中插入本地pdf文档</title>
+    <url>/2022/05/17/hexo%E4%B8%AD%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0pdf%E6%96%87%E6%A1%A3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>学生时代经常爱在课本上乱画各种武器，总是会发现弯刀的曲线很不好把握，怎么画怎么别扭。事实上虽然世界各地的曲刃刀剑五花八门，但其曲线其实都是很严谨的。这里用一种偷懒的方法可以快速制作弯刀形状，并且允许你随意胡整。<a id="more"></a></p>
+<p>在hexo页面中实现浏览pdf文档的功能，以及过程中一些问题的解释<a id="more"></a></p>
 </blockquote>
-<p>思路是利用一个PS修图经常用的叫液化工具的变形能力，将直刀挤压拉伸，从而变成弯刀的样式。<br>比如我们先画一个简单的直刃军刀，手柄可以先不画。把剑身单独放到一个图层里，将剑身略微拉宽一点。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/1.png" title="直刃看起来很low吧"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/2.png" title="直刃看起来很low吧">
-<p>然后使用PS滤镜——液化工具，即可对图层进行挤压。这里将半径调到一个很大的水平。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/3.png" title="液化半径">
-<p>仅仅只需要一下，就把直刀给挤成弯刀了…再把护手给接上去…</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/4.png" title="image"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/5.png" title="image">
-<p>一把造型中规中矩的欧洲军刀（Saber）就做好了。</p>
-<p>看到这里你可能会觉得我考这有啥用还不如直接上手画一个，别急，接下来换难一点的。<br>把直剑的两头拉长，注意将剑尖部位弧度拉大并让它更加尖锐；而靠近剑柄的地方只拉出切线，基本不要弧度。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/6.png" title="就问你清真不清真">
-<p>这样就形成了一把中东风格的“舍施尔”（Shamshir）弯刀，截然不同于欧洲军刀的曲线，它的弧度并不是均匀的，更靠前端。而且刀尖更为尖锐，有如新月。就问你清真不清真。<br>同理，如果想让之前的欧洲军刀更偏向刺击风格，也可以这样把剑身搞细，剑尖搞尖。</p>
-<p>再做一个更有特点的，这次要像捏橡皮泥一样来处理这些曲线。<br>还是之前的直剑模型，把它反向挤弯，然后把液化半径缩小，利用液化半径的边缘地带把两头的线段拉扯开，使剑身两端膨胀。<br>再把剑尖拉尖，调整好曲线和曲线的过渡区域。</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/7.png" title="大号廓尔喀">
-<p>一把逆刃的“亚特坎”（Yataghans），宽大的头部有着重劈砍的风格，虽然我感觉我捏成了大号廓尔喀…</p>
-<p>最后添加一些细节，给三把刀剑合个影~</p>
-<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/8.png" title="Kira!☆">
+<p>在之前的文章：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a>中，实现了hexo页面插入pdf文档页面的功能。因为网上关于这里的内容写的不够细致，官方文档也写的不太行，种种原因导致我卡了一会坑。所以这次单独说一下这个功能。</p>
+<p>本功能是依靠一个叫hexo-pdf的插件实现的。这个插件的github项目地址为：<a href="https://github.com/superalsrk/hexo-pdf" target="_blank" rel="noopener">https://github.com/superalsrk/hexo-pdf</a></p>
+<p>首先我们需要安装这个插件。先从Git-Bash cd到hexo文件夹所在的目录（即_config.yml、source等文件所在的目录），然后执行npm安装命令：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ npm <span class="keyword">install</span> <span class="comment">--save hexo-pdf</span></span><br></pre></td></tr></table></figure>
 
-<p>嗯，这样就好了，理论上日本刀也是可以捏的，甚至可以调整刀反的位置（虽然可能不大需要），但是就不能直接套用之前那种直刀的模板了，剑尖得修改一下。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
-</blockquote>
-<a id="more"></a>
+<p>回车后是这个样子：</p>
+<img src="/2022/05/17/hexo中插入本地pdf文档/1.png" title="a">
+<p>可以看到，npm install首先报出了很多WARN，其实，<strong>这些WARN大多数都是版本问题，我认为都可以不管。</strong>这里简单说一下这些WARN都是什么意思：</p>
+<p>第一条是指1.0.0版本的ejs太过老旧，建议升级到2.5.5。ejs是Node.js的模板引擎，在我们搭建hexo博客的时候默认就安装好了，一般都是是1.0版本的，这个是完全不影响的；</p>
+<p>第二条是说的是没有装版本号大于等于4.12.1的eslint。eslint是一个代码语法的检测工具，用来规范代码。这个也没啥用，可以忽略。修复的话也可以，输入<code>npm install --save-dev &quot;eslint@&gt;=4.12.1&quot;</code>即可安装一个版本号大于等于4.12.1的eslint；</p>
+<p>后面几条都是关于fsevents的，这个是因为我们使用了win/linux系统。因为fsevents是依赖mac操作系统的，也就是说别人在mac上做的东西放到win系统上就会报这个问题。所以也不管；</p>
+<p>我们只需要看到<code>+ hexo-pdf@1.1.1</code>以及下面的<code>updated X packages and audited...</code>就行了。</p>
+<p>最后是发现了多少个漏洞（vulnerabilities），统统不管。</p>
+<p>hexo-pdf插件装好后，就可以在.md文本中引入.pdf文件。和插入图片有些类似，首先我们得把_config.yml中的<code>post_asset_folder</code>的值改为true，这样就会在新建文章即hexo new的时候在source目录下生成一个与.md文本同名的空文件夹，也就是这个文章的资源存放文件夹。如果之前插入过图片的话应该本来就是true。然后我们把需要展示的.pdf文档放入这个文件夹中。</p>
+<img src="/2022/05/17/hexo中插入本地pdf文档/2.png" title="b">
+<p>接下来在.md文章中引入这个pdf，最基本的句法为：（如这里的pdf文件名为mydoc.pdf）</p>
+<figure class="highlight django"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">pdf</span> ./mydoc.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
 
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+<p>这样写的话是使用相对路径，其实pdf文档放在source文件夹下的任何目录都是能用的，因为我的pdf不多，我习惯把pdf和图片都放在post_asset_folder生成的文件夹里。如果需要涉及到的pdf非常多的话，建议可以在source文件夹下开一个单独的文件夹存放pdf文档（可命名为files或pdf等），然后通过<code>hexo new page</code>新建一个栏目页面，这样可以从主页方便进入这个地方。</p>
+<p><strong>重点要说一下，这里就算引入成功了，也是不支持本地预览的！</strong>..通过<code>hexo s</code>或<code>hexo s -p XXXX</code>进行本地预览的话，会直接弹出下载这个pdf的下载框，并且看不到任何插件效果！<strong>如果你本地预览时弹出了下载pdf的框，而不是一行Cannot…就说明已经引入成功了！</strong>我之前就是因为看不到效果，以为是插件npm install报错的问题，实际上一点关系都没有，这个东西就是不支持本地预览，因为我们现在引入的pdf文档是在本地的，不是外部资源链接。</p>
+<p>后面发现这个句法不够灵活，使用下面的embed src句法能够通过调整width和height改变pdf文档框的大小，要更好一点，我这里就使用的是这个句法：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">&lt;embed <span class="attribute">src</span>=<span class="string">"./mydoc.pdf"</span> <span class="attribute">width</span>=<span class="string">"100%"</span> <span class="attribute">height</span>=<span class="string">"700"</span> <span class="attribute">type</span>=<span class="string">"application/pdf"</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用外部资源链接，如官方教程中的（仅参考其格式即可），使用外部链接的话应该是可以进行本地预览的，不过我没试过：</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;% pdf <span class="symbol">http:</span>/<span class="regexp">/7xov2f.com1.z0.glb.clouddn.com/bash</span>_freshman.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>最后就是hexo c、hexo g、hexo d提交部署，等一会后，就能在真实页面中看到实现后的效果：</p>
+<img src="/2022/05/17/hexo中插入本地pdf文档/3.png" title="c">
+
+
+
+
+
+
+
+
 ]]></content>
       <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>绘画</tag>
+        <tag>网页</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -487,6 +445,52 @@
       </tags>
   </entry>
   <entry>
+    <title>使用PS的液化工具绘制弯刀的曲线</title>
+    <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>学生时代经常爱在课本上乱画各种武器，总是会发现弯刀的曲线很不好把握，怎么画怎么别扭。事实上虽然世界各地的曲刃刀剑五花八门，但其曲线其实都是很严谨的。这里用一种偷懒的方法可以快速制作弯刀形状，并且允许你随意胡整。<a id="more"></a></p>
+</blockquote>
+<p>思路是利用一个PS修图经常用的叫液化工具的变形能力，将直刀挤压拉伸，从而变成弯刀的样式。<br>比如我们先画一个简单的直刃军刀，手柄可以先不画。把剑身单独放到一个图层里，将剑身略微拉宽一点。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/1.png" title="直刃看起来很low吧"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/2.png" title="直刃看起来很low吧">
+<p>然后使用PS滤镜——液化工具，即可对图层进行挤压。这里将半径调到一个很大的水平。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/3.png" title="液化半径">
+<p>仅仅只需要一下，就把直刀给挤成弯刀了…再把护手给接上去…</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/4.png" title="image"><img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/5.png" title="image">
+<p>一把造型中规中矩的欧洲军刀（Saber）就做好了。</p>
+<p>看到这里你可能会觉得我考这有啥用还不如直接上手画一个，别急，接下来换难一点的。<br>把直剑的两头拉长，注意将剑尖部位弧度拉大并让它更加尖锐；而靠近剑柄的地方只拉出切线，基本不要弧度。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/6.png" title="就问你清真不清真">
+<p>这样就形成了一把中东风格的“舍施尔”（Shamshir）弯刀，截然不同于欧洲军刀的曲线，它的弧度并不是均匀的，更靠前端。而且刀尖更为尖锐，有如新月。就问你清真不清真。<br>同理，如果想让之前的欧洲军刀更偏向刺击风格，也可以这样把剑身搞细，剑尖搞尖。</p>
+<p>再做一个更有特点的，这次要像捏橡皮泥一样来处理这些曲线。<br>还是之前的直剑模型，把它反向挤弯，然后把液化半径缩小，利用液化半径的边缘地带把两头的线段拉扯开，使剑身两端膨胀。<br>再把剑尖拉尖，调整好曲线和曲线的过渡区域。</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/7.png" title="大号廓尔喀">
+<p>一把逆刃的“亚特坎”（Yataghans），宽大的头部有着重劈砍的风格，虽然我感觉我捏成了大号廓尔喀…</p>
+<p>最后添加一些细节，给三把刀剑合个影~</p>
+<img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/8.png" title="Kira!☆">
+
+<p>嗯，这样就好了，理论上日本刀也是可以捏的，甚至可以调整刀反的位置（虽然可能不大需要），但是就不能直接套用之前那种直刀的模板了，剑尖得修改一下。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>利用Youtube的版权审查功能来识别音乐或歌曲</title>
     <url>/2022/10/02/%E5%88%A9%E7%94%A8Youtube%E7%9A%84%E7%89%88%E6%9D%83%E5%AE%A1%E6%9F%A5%E5%8A%9F%E8%83%BD%E6%9D%A5%E8%AF%86%E5%88%AB%E9%9F%B3%E4%B9%90%E6%88%96%E6%AD%8C%E6%9B%B2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -507,7 +511,7 @@
 <p>如上面视频中的音乐《Now may we singen》，对我来说是一个整整十年级别的找歌难题。一切的起因是大约在2012年，优酷网上有人上传了一些关于欧洲长剑（longsword）相关的视频，推测是从Youtube搬运的，当时在优酷上关注度还挺高，至少在那时候中世纪相关的圈子里是这样。优酷网目前还有这个视频，但从上传时间（2014年）和叠加的水印来看可能已经被翻录了多次：<a href="https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html" target="_blank" rel="noopener">https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html</a></p>
 <p>视频中相关的音乐我一直都没找到，视频内容中也没有给出背景音乐的信息。当我也开始使用Youtube后，在Youtube甚至连这个视频源都找不到了（有点讽刺的是，优酷网居然还留着有）。根据视频开头的元素，这个视频实际上是一个美国纽约州的剑术团体Lake Ontario Fechtschule制作的教学演示，由Todd Sullivan表演。网址为：<a href="https://toddsullivan.webs.com" target="_blank" rel="noopener">https://toddsullivan.webs.com</a> 。Lake Ontario Fechtschule从属于美国一个名为Selohaar Fechtschule的HEMA剑术团体，以德式长剑为主。而Selohaar Fechtschule又从属于美国一个名为The Order of Selohaar的民间神秘学团体，似乎至今仍有活动。他们的网址为：<a href="http://www.selohaar.org" target="_blank" rel="noopener">www.selohaar.org</a></p>
 <p>了解这些是为了找到视频源或者上传者，以求获得音乐的相关信息，但这个Lake Ontario Fechtschule可能早已经停止活动了，故有可能是上传者自行下架了视频。并且在整个Google上也无法找到这个视频，这个方法就行不通了。</p>
-<p>鉴于得不到任何相关的信息，于是我先是尝试了原始的笨办法：尝试听出歌词并搜索。对于有歌词的歌曲，很多情况下这是一个行之有效的方案，我曾经这样找到了好些日语歌曲。但这回实在是被彻底难倒了：开始我从听感上判断它可能是拉丁语，但实际上，它的歌词的主体是中古英语（Middle English），但加入了少量拉丁语，并且其中的英语词汇没有使用现代英语读法，而是采用了类似拉丁语的中世纪读法以契合音律。种种变数导致我听的一头雾水，导致这个方法也告吹了。（如果你看到这里，可以先试试在不看下面歌词的前提下能听出几个“英语”单词xD）</p>
+<p>鉴于得不到任何相关的信息，于是我先是尝试了原始的笨办法：尝试听出歌词并搜索。对于有歌词的歌曲，很多情况下这是一个行之有效的方案，我曾经这样找到了好些日语歌曲。但这回实在是被彻底难倒了：开始我从听感上判断它可能是拉丁语，但实际上，它的歌词的主体是中古英语（Middle English），但加入了少量拉丁语，并且其中的很多英语词汇没有使用现代英语的读法和发音，而是采用了类似拉丁语的中世纪读法。种种变数导致我听的一头雾水，导致这个方法也告吹了。（如果你看到这里，可以先试试在不看下面歌词的前提下能听出几个“英语”单词xD）</p>
 <p>最终通过文首的方法终于找到了这个歌曲。现在我们再来分析一下这个东西究竟是何方神物。下文的大多数结论均来自这个页面：<a href="https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm" target="_blank" rel="noopener">https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm</a></p>
 <p>根据说法，《Now may we singen》是一首15世纪的英国歌曲，属于一种Medieval Carol，最早的音乐和诗歌均记录在一张15世纪的羊皮纸卷轴上，作者已不可考。现存于英国剑桥三一学院图书馆（Library of Trinity College），18世纪后的作家记录了一些不同的版本副本。</p>
 <p>现代版本（19世纪版本）的歌词和乐谱如下，其中副歌（Refrain）中反复出现的拉丁语“Quod puer natus est nobis”意为“因为（那个）孩子是为我们而生”。：</p>
@@ -523,7 +527,7 @@
 </blockquote>
 <img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/4.jpg" title="d">
 
-<p>而Oxford Camerata所演唱的版本（即视频中的音乐）用的是原汁原味的15世纪原版歌词，相当难懂，甚至一些字符并不能在HTML下正确显示出来：</p>
+<p>而Oxford Camerata所演唱的版本（即视频中的音乐）用的是原汁原味的15世纪原版歌词，相当难懂，据说一些字符甚至不能在HTML下正确显示出来：</p>
 <blockquote>
 <p>Now may we syngyn as it is<br>Quod puer natus est nobis.</p>
 <ol>
@@ -539,6 +543,23 @@
         <tag>音乐</tag>
         <tag>艺术</tag>
         <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -561,6 +582,23 @@
 <p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
 <p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>大型翻译计划：魔兽世界日记</title>
+    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
+</blockquote>
+<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
+<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
+<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
+<hr>
+<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>翻译</tag>
+      </tags>
   </entry>
   <entry>
     <title>如何移植hexo到新的设备上</title>
@@ -590,23 +628,6 @@
       </tags>
   </entry>
   <entry>
-    <title>大型翻译计划：魔兽世界日记</title>
-    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
-</blockquote>
-<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
-<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
-<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
-<hr>
-<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>测试一种新的画风</title>
     <url>/2019/10/18/%E6%B5%8B%E8%AF%95%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84%E7%94%BB%E9%A3%8E/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -621,58 +642,6 @@
 ]]></content>
       <tags>
         <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个尖耳朵小姐姐</title>
-    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
-</blockquote>
-<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
-<hr>
-<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
-<p>接下来说一下设计思路：</p>
-<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
-<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
-<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
-<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
-<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
-<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
-<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
-<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
-<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
-<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
-<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
-<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
-<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
-<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
-<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个Q版二头身</title>
-    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>并制作成亚克力挂件~！<a id="more"></a></p>
-</blockquote>
-<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
-<p>下面是制成亚克力挂件后的效果：</p>
-<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
-<hr>
-<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
-<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
-<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
-<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
-<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -711,6 +680,27 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个Q版二头身</title>
+    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>并制作成亚克力挂件~！<a id="more"></a></p>
+</blockquote>
+<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
+<p>下面是制成亚克力挂件后的效果：</p>
+<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
+<hr>
+<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
+<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
+<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
+<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
+<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个库拉</title>
     <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -726,6 +716,59 @@
 ]]></content>
       <tags>
         <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个尖耳朵小姐姐</title>
+    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
+</blockquote>
+<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
+<hr>
+<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
+<p>接下来说一下设计思路：</p>
+<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
+<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
+<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
+<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
+<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
+<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
+<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
+<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
+<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
+<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
+<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
+<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
+<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
+<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
+<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考古一个小众老游戏出色的音乐</title>
+    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
+</blockquote>
+<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
+<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
+<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
+<hr>
+<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
+<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
+<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
+<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
+<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>音乐</tag>
       </tags>
   </entry>
   <entry>
@@ -759,25 +802,25 @@
       </tags>
   </entry>
   <entry>
-    <title>考古一个小众老游戏出色的音乐</title>
-    <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
+    <title>画一个燧发枪小姐姐</title>
+    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>撕裂重罪，一个最早制作于1999年的日本格斗游戏，官方名称叫ヒノカケラ（火の欠片/火之碎片），国内普遍称之为撕裂重罪。是一个伪3D的格斗游戏，比较类似于90年代的VR战士。<a id="more"></a></p>
+<p>似乎是有进步的对吧？ <a id="more"></a></p>
 </blockquote>
-<p>90年代街机发达，各种格斗游戏层出不穷，最广为人知的应该是拳皇系列，尤其是拳皇97。对我来说格斗游戏向来就和RTS一样属于最苦手的游戏类型，小时候只会用普通攻击，被同学用各种八稚女、大蛇薙（也是最近才知道这些名字）轰得爬不起来。</p>
-<p>这次说的这个撕裂重罪是一个叫赤石榴火的日本人单独制作的，99年单独制作出3D模型的格斗游戏那可真是了不得，关键是，这游戏的一些背景音乐还做的特别好听。也就是说，赤石榴火本人独自包揽程序、建模、美术、音乐等所有内容，并且质量很高，确实是非常强悍了，也难怪该游戏的玩家把赤石榴火看成和东方project系列神主ZUN一样的大神。貌似日本还经常出这种全能型大神，我知道的还有龙骑士07（寒蝉鸣泣之时的作者），多说一句，“ZUN绘”、“龙绘”已经变成梗，用来吐槽大神们奇特的画风，而撕裂重罪的美术明显要优秀得多，这么看来，赤石榴火或许是一个被埋没的天才人物，他完全有开创一个同人系列的能力，也从侧面说明这些大神的出现并不是偶然，而是一个社会现象，不得不说日本人的能力确实不可小觑。</p>
-<p>有关这个游戏和作者的信息非常少，赤石榴火本人也在2012年宣告游戏停止更新，撕裂重罪成为历史。我也没太研究过这个游戏本身，游戏和作者相关的就写到这里。接下来分享一下我很欣赏的几个游戏音乐。</p>
+<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
+
 <hr>
-<p>我对游戏音乐的质量向来要求都还是比较高的，即使是游戏性不强，只要音乐出色，我一般都很喜欢去玩，通过各种接触也积攒了一些互联网上没有的，“压箱底”的好听音乐。《撕裂重罪》的BGM也算是其中之一了，我最早通过一个4399上很出名的Flash小游戏接触到它，名叫死神vs火影，相信很多人也都玩过，死神vs火影在早期开发阶段（0.8版本）直接使用了撕裂重罪的音乐，我也是顺藤摸瓜找到了来源。撕裂重罪的音乐已经被网友在网易云音乐上制成电台，这里直接给出电台曲目链接和曲目信息。如果某天电台失效，通过曲目名称也能找到对应的音乐。</p>
-<p><a href="https://music.163.com/#/dj?id=905631377" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631377</a><br>The missing is… ，撕裂重罪中角色Aya的主题曲，非常燃。</p>
-<p><a href="https://music.163.com/#/dj?id=905631374" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631374</a><br>名为Ending的音乐，Aya主题曲舒缓版，在死神vs火影中是开场菜单音乐，也是小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631379" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631379</a><br>マイチルサクラ，舞い散る桜，即飘落之樱。游戏中角色Kasumi（霞）的主题曲，在死神vs火影中是对战音乐，小游戏玩家最常听到的音乐之一。</p>
-<p><a href="https://music.163.com/#/dj?id=905631376" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631376</a><br>Will of Adamant，游戏中角色Silvis Laws主题曲，设定为执法者，玩家俗称白剑，BGM用了管风琴一样的音色，又燃又中二。</p>
-<p><a href="https://music.163.com/#/dj?id=905631373" target="_blank" rel="noopener">https://music.163.com/#/dj?id=905631373</a><br>Character Select，对战角色选择界面音乐，在小游戏中也是角色选择界面的音乐。</p>
+<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
+<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
+<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
+<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
+<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
+<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
-        <tag>音乐</tag>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -813,28 +856,6 @@
       <tags>
         <tag>软件</tag>
         <tag>系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个燧发枪小姐姐</title>
-    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>似乎是有进步的对吧？ <a id="more"></a></p>
-</blockquote>
-<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
-
-<hr>
-<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
-<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
-<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
-<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
-<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
-<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -877,40 +898,6 @@
       <tags>
         <tag>生活</tag>
         <tag>随想</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>配置了SSH后仍然需要输密码的情况</title>
-    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
-</blockquote>
-<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
-<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
-<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
-<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
-<ol>
-<li>删除<code>.deploy_git</code>文件夹;</li>
-<li>输入<code>git config --global core.autocrlf false</code></li>
-<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
-</ol>
-<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
-<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
-<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>修改为：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>（注意要改的地方还有.com后面那个冒号）</p>
-<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
-<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
-<hr>
-<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1143,16 +1130,16 @@
 <figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> Die Schöpffung aller ding (the Creation of All Things)	万物的创始</span><br><span class="line"><span class="number">2.</span> Adam Eua im Paradiss (Adam <span class="keyword">and</span> Eve <span class="keyword">in</span> Paradise)		亚当夏娃在乐园</span><br><span class="line"><span class="number">3.</span> Vsstribung Ade Eue (The Expulsion)				亚当夏娃被驱逐</span><br><span class="line"><span class="number">4.</span> Adam bawgt die erden (Adam Tills the Soil)			亚当在翻耕土地</span><br><span class="line"><span class="number">5.</span> Der Bapst (The Pope)						教皇	</span><br><span class="line"><span class="number">6.</span> Der Keyser (The Emperor)					皇帝</span><br><span class="line"><span class="number">7.</span> Der Künig (The King)						国王</span><br><span class="line"><span class="number">8.</span> Der Cardinal (The Cardinal)					红衣主教</span><br><span class="line"><span class="number">9.</span> Die Keyserinn (The Empress)					皇后/女皇（现代德语为kaiserin，二者都可以指，下面的王后女伯爵等同理）</span><br><span class="line"><span class="number">10.</span> Die Küniginn (The Queen)					王后/女王</span><br><span class="line"><span class="number">11.</span> Der Bischoff (The Bishop)					主教</span><br><span class="line"><span class="number">12.</span> Der Hertzog (The Duke)					公爵</span><br><span class="line"><span class="number">13.</span> Der Apt (The Abbot)						修道院长</span><br><span class="line"><span class="number">14.</span> Die Aptissinn（The Abbess)					女修道院长					</span><br><span class="line"><span class="number">15.</span> Der Edelman (The Nobleman)					贵族</span><br><span class="line"><span class="number">16.</span> Der Thumherr (The Canon)					司铎				</span><br><span class="line"><span class="number">17.</span> Der Richter (The Judge)					法官</span><br><span class="line"><span class="number">18.</span> Der Fürspräch (The Lawyer)					律师</span><br><span class="line"><span class="number">19.</span> Der Ratssherr (The Senator)					议员</span><br><span class="line"><span class="number">20.</span> Der Predicant (The Preacher)				传教士</span><br><span class="line"><span class="number">21.</span> Der Pfarrherr (The Priest)					牧师</span><br><span class="line"><span class="number">22.</span> Der Münch (The Monk)					僧侣</span><br><span class="line"><span class="number">23.</span> Die Nunne (The Nun)						修女</span><br><span class="line"><span class="number">24.</span> Dass Altweyb (The Old Woman)				老妇人</span><br><span class="line"><span class="number">25.</span> Der Artzet (The Physician)					医师</span><br><span class="line"><span class="number">26.</span> Der Sternensecher (The Astrologer)				占星者</span><br><span class="line"><span class="number">27.</span> Der Rychman (The Rich man)					富人</span><br><span class="line"><span class="number">28.</span> Der Kauffman (The Merchant)					商人</span><br><span class="line"><span class="number">29.</span> Der Schiffman (The Sailor)					水手</span><br><span class="line"><span class="number">30.</span> Der Ritter (The Knight)					骑士</span><br><span class="line"><span class="number">31.</span> Der Groff (The Count)					伯爵								</span><br><span class="line"><span class="number">32.</span> Der Altman (The Old Man)					老人</span><br><span class="line"><span class="number">33.</span> Die Greffinn (The Countess)					伯爵夫人/女伯爵</span><br><span class="line"><span class="number">34.</span> Die Edelfraw (The Lady)					女贵族</span><br><span class="line"><span class="number">35.</span> Die Hertzoginn (The Duchess)				公爵夫人/女公爵</span><br><span class="line"><span class="number">36.</span> Der Krämer (The Peddler)					小贩</span><br><span class="line"><span class="number">37.</span> Der Ackerman (The Peasant)					农民</span><br><span class="line"><span class="number">38.</span> Dass Jung kint (The Young Child)				小孩子</span><br><span class="line"><span class="number">39.</span> Gebeyn aller menschen (Bones of All Men)			众人的尸骨</span><br><span class="line"><span class="number">40.</span> Dass Jüngst gericht (The Last Judgment)			最后的审判</span><br><span class="line"><span class="number">41.</span> Die Wapen dess Thotss - Gedenck das end (the Escutcheon of Death - Remember the End)	死神的纹章盾徽 - 记住一切的结局</span><br><span class="line"><span class="number">42.</span> Soldier			士兵</span><br><span class="line"><span class="number">43.</span> Waggoner			马车夫</span><br><span class="line"><span class="number">44.</span> Gambler			赌徒</span><br><span class="line"><span class="number">45.</span> Robber			强盗</span><br><span class="line"><span class="number">46.</span> Blind man 			盲人</span><br><span class="line"><span class="number">47.</span> Beggar			乞丐</span><br><span class="line"><span class="number">48.</span> Drunkard			酒鬼</span><br><span class="line"><span class="number">49.</span> Fool 			愚者</span><br><span class="line"><span class="number">50.</span> Young woman			年轻女人</span><br><span class="line"><span class="number">51.</span> Young man 			年轻男人</span><br></pre></td></tr></table></figure>
 
 <p>&emsp;&emsp;1526年的初版是40幅木版画，这个版本被称为“印刷校样版”，即“Printer’s proofs”或”proof impressions”，此版本不含有“占星师”，可能是为了凑40个的整数；而1538年出版商梅尔基奥尔和加斯帕.特雷克塞（Brothers Melchoir and Gaspard Trechsel）兄弟在法国里昂正式出版了这套木版画，补上了缺少的“占星师”。虽然吕策尔伯格在1526年去世，荷尔拜因在1543年也去世了，但后续的一些艺术家在大约于1545年至1562年的时间中，在模仿两位大师风格的基础上又向其中陆续增添了士兵、车夫、赌徒、强盗等十幅作品。共同组成了41+10的完整作品集。这部作品集被后世的许多画家临摹或参考创作过。其中一些经典篇目如“骑士”、“富人”、“士兵”等，更是广受欢迎。</p>
-<p>&emsp;&emsp;据说这部作品一经问世就被法国名为维达尔·德·贝卡尼斯（Vidal de Bécanis）的宗教审判长（General inquisitor）下令禁止，可能是认为它有丑化宗教人士的嫌疑。有必要说明的是，当时正值宗教改革最为激烈残酷的时期，在荷尔拜因创作这部作品的时候，也就是1525年，德意志中部爆发了著名的闵采尔农民起义，最终于弗兰肯豪森战役（Battle of Frankenhausen）中，约7000农民起义者被军队包围并杀害，各地起义也均遭镇压。在德意志文化圈出生长大的荷尔拜因不可能不知道这些事，这部作品直到12年后即1538年才有人在法国出版，也很可能和当时的社会情况有关。</p>
+<p>&emsp;&emsp;据说这部作品一经问世就被法国名为维达尔·德·贝卡尼斯（Vidal de Bécanis）的宗教审判长（General inquisitor）下令禁止，可能是认为它有丑化宗教人士的嫌疑。有必要说明的是，当时正值宗教改革最为激烈残酷的时期，在荷尔拜因创作这部作品的时候，也就是1525年，德意志中部爆发了著名的闵采尔农民起义，最终于1525年5月15日的弗兰肯豪森战役（Battle of Frankenhausen）中，7000名农民起义者被诸侯联军包围，约5000人被杀害，各地起义也均在一年之内遭镇压。在德意志文化圈出生长大的荷尔拜因不可能不知道这些事，这部作品直到12年后即1538年才有人在法国出版，也很可能和当时的社会情况有关。</p>
 <p>&emsp;&emsp;关于“死亡之舞”的背景已在前文中叙述过，在此不赘述。从荷尔拜因这41幅画来看，故事是从亚当和夏娃的传统圣经故事开端，而死神则在亚当夏娃被逐出伊甸园就开始跟随着他们，即死神从此常伴人类。接下来则是社会各个阶层的角色被死神拖入死亡的场景。死神既动作滑稽、又所向披靡，且不止出现了一个，沙漏也是一个几乎和死神并排出现的元素，暗示着生者时日无多。虽然死神最终带走了所有人，但我们仍能在其中隐约看出作者的创作倾向——死神在带走穷苦百姓的时候显得较为礼貌、平和；而在带走那些作威作福、目中无人的角色时则是生拖死拽、百般嘲弄。作者甚至直接描绘出这些角色的恶行现场——如【17.法官】中展现了一位收受贿赂的法官；而在【8.红衣主教】中更是直接展示了红衣主教出售赎罪券的场景，其中的批判意图可谓直截了当。也难怪这部作品被那位审判长当成了眼中钉。</p>
-<p>&emsp;&emsp;而值得注意的是倒数三张图片（即39、40、41），在【39.众人的尸骨】中，绘制的是经典的题材“死神胜利”的场景，所有人都已变成骷髅，得胜的骷髅们吹起了乐器敲起了鼓；而在【40.最后的审判】中，上帝终于出现，人类又似乎重新得救了。而骷髅则全部消失，故事也没有明确交代大获全胜的死神究竟怎么样了，是像上帝在《浮士德》中最终制裁了墨菲斯托那样一般，上帝阻止了死神的阴谋大计，把骷髅们都变回了活人吗？作者没有明说。不过整个故事也就到此结束了，整部作品的主题可以看作是以死神的元素复刻了传统的宗教故事。</p>
+<p>&emsp;&emsp;而值得注意的是倒数三张图片（即39、40、41），在【39.众人的尸骨】中，绘制的是经典的题材“死神胜利”的场景，所有人都已死去，只剩下得胜的骷髅们吹起了乐器敲起了鼓；而在【40.最后的审判】中，上帝终于出现，人类又似乎重新复活了。而骷髅们则全部消失，故事也没有明确交代这些大获全胜的死神究竟怎么样了。是上帝像在《浮士德》中制裁墨菲斯托那样一般，阻止了死神的阴谋大计，并让死去的人们都得救了吗？作者没有明说。不过整个故事也就到此结束了，整部作品的主题可以看作是以死神的元素复刻了传统的宗教故事。</p>
 <p>&emsp;&emsp;而最后一张图【41.死神的纹章盾徽】，则是荷尔拜因为死神这一主题设计的纹章形象，并将这个纹章放在1538年版本的最后，这是那时的“死亡之舞”作品中的一个常见的做法。这个图片伴随着一条圣经中的引用，即武加大本（Vulgate）中的《西拉书（Sirach）》第7章节的最后一句：</p>
 <blockquote>
-<p>…in omnibus operibus tuis memorare novissima tua et in aeternum non peccabis.<br>…无论你做任何事情，都要记住最后的结局（即死亡），这样你就永远不会犯大错。</p>
+<p>…in omnibus operibus tuis memorare novissima tua et in aeternum non peccabis.<br>…无论你做任何事情，都要记住最后的结局（这里指的当然是死亡），这样你就永远不会犯大错。</p>
 </blockquote>
 <p>&emsp;&emsp;最后得简单说明一下，《西拉书》又称《便西拉智训（Ecclesiasticus）》，中文也通常翻译为《德训篇》、《次经传道书》（并非《传道书》）或《智训》。此书在天主教或东正教圣经中为旧约中的【正典】（Canon），也就是正式篇目，但在新教中则属于【次经】（Apocrypha）。因我们今天能看到的《圣经》以新教圣经居多，故《西拉书》通常无法在一些圣经中找到，属于是圣经不同版本的问题。</p>
 <p>【次经】即Apocrypha或Deuterocanonical Books，有时又称作“伪经”、“旁经”、“外经”等，中文并没有一个约定俗成的通行翻译，但需要指出的是，“伪经”这个翻译是错误的。</p>
-<p>真正的【伪经】应该写作Pseudepigrapha，字面意思是“伪名书、托名假作”，即假冒其他作者之名号而创作的作品，目的是增加作品的可信度。而Apocrypha的词根是“隐藏的”的含义，Deuterocanonical的字面意思则是“第二类正经”。一般在宗教历史学上认为，Apocrypha也是真正的古代犹太经典著作，与正典具有同等的地位，故在宗教意义上也具有同等的信仰价值，只是由于种种历史原因，没有被列入后世一些不同版本的圣经中。像《西拉书》、《犹滴传》这类就属于Apocrypha。20世纪死海古卷等古籍的出土，侧面说明了仍可能存在没有被发掘出的次经，也说明即使是古代的希伯来抄本圣经也绝非只有一个标准版本。综上所述，次经是真经，不是伪经。</p>
+<p>真正的【伪经】应该写作Pseudepigrapha，字面意思是“伪名书、托名假作”，即假冒其他作者之名号而创作的作品，目的是增加作品的可信度。而Apocrypha的词根是“隐藏的”的含义，Deuterocanonical的字面意思则是“第二类正经”。一般在宗教历史学上认为，Apocrypha也是真正的古代犹太经典著作，与正典具有同等的地位，故在宗教意义上也具有同等的信仰价值，只是由于种种历史原因，没有被列入后世一些不同宗派、不同版本的圣经中。像《西拉书》、《犹滴传》这类就属于Apocrypha。20世纪如死海古卷等一些重要古籍的出土，侧面说明了仍可能存在没有被发掘出的次经，也说明即使是古代的希伯来抄本圣经也绝非只有一个标准版本。综上所述，次经是真经，不是伪经。</p>
 ]]></content>
       <tags>
         <tag>艺术</tag>
@@ -1187,6 +1174,40 @@
       <tags>
         <tag>文化</tag>
         <tag>随想</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置了SSH后仍然需要输密码的情况</title>
+    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
+</blockquote>
+<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
+<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
+<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
+<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
+<ol>
+<li>删除<code>.deploy_git</code>文件夹;</li>
+<li>输入<code>git config --global core.autocrlf false</code></li>
+<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
+</ol>
+<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
+<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
+<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>（注意要改的地方还有.com后面那个冒号）</p>
+<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
+<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
+<hr>
+<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1251,8 +1272,8 @@
 <p><font color="blue">[5]</font>  “精灵（Sprite）”是一个在早期2D游戏开发中广泛使用的概念，可以理解为游戏里的某一单元对象存在一系列可变化的图片组，从而表现出不同的动画。它通常被用于设计那些需要重点精确描绘的角色或者物体，如RPG游戏里的主角角色等。通过“精灵”可以节约早期计算机的图像处理资源。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>设计</tag>
+        <tag>游戏</tag>
         <tag>翻译</tag>
       </tags>
   </entry>
@@ -1289,6 +1310,96 @@
       <tags>
         <tag>游戏</tag>
         <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一些拉丁语谚语的含义考据与派生用法</title>
+    <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>列举了一些我见过的意义较为晦涩的拉丁语谚语及其背后的故事<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;拉丁语作为古罗马及基督教教会的官方语言，曾经是欧洲主流文化的重要载体。可以说拉丁语如同基督教一样，反映了西方文明在文化内核上具有同一性的一面。虽时至今日已不再作为一门日常使用的语言，却早已深扎在了各种西方语言之中。我认为拉丁语之于西方文明，就相当于汉字之于东方文明。举例如越南、韩国、日本等国家虽然在今天已经与汉字分道扬镳，但对于语言、历史、文化研究者来说汉字仍是众多问题的答案之源。我们可以看到，对于很多想要了解东方文化的西方人来说，汉字是“一个令人费解的谜团”，而反过来，拉丁语在西方也拥有同样的地位，对于东方人来说也是如此。</p>
+<p>&emsp;&emsp;在今天，拉丁语经常以谚语、格言的形式出现在我们面前，如哈佛校训“Veritas”、凯撒著名的“三V”：“Veni vidi vici”，君士坦丁一世的“In hoc signo vinces”等，有点类似我们文言文成语的地位。故这些拉丁语谚语几乎都带着它诞生时特有的历史寓意，即使是看懂了字面意思，也不容易明白它到底想说的是什么，并且这些谚语经过上千年的使用，有些已经派生出了多层含义，同时也产生了一些新的用法，最终所有这些事件和内容都统统总和到了一句简单的句子之上，大大丰富了其背后的信息量。而这可能是才是除开语言因素之外最难掌握的东西。</p>
+<p>&emsp;&emsp;拉丁语虽早已不再是交流用的语言，但在今天的西方仍是一门常见的基础课程，换句话说，受过教育的西方人多多少少都学过它。但是对于这样一门古代语言和宗教专业语言，其实大多数西方人自己也没法熟练使用，就如同也没多少中国人能拿几千年前的之乎者也作文一样。所以我们不必学成语言专家，有一些基础知识就行。对这个在阅读诸多西方文学、历史相关的内容时经常遇到的难点，如果能做到一个粗浅的认识的话，理解的也当然会更加深入。</p>
+<h2 id="1-Ultima-Ratio-Regis"><a href="#1-Ultima-Ratio-Regis" class="headerlink" title="1. Ultima Ratio Regis"></a>1. Ultima Ratio Regis</h2><p>&emsp;&emsp;从字面意义直译应为“国王最后的论据”，英语可作“The king’s final argument”。这句话另有写法写作Ultima Ratio Regum，Regum和Regis都是Rex（国王）的属格形式，前者为复数，后者为单数，故两者都是说得通的。</p>
+<p>&emsp;&emsp;Ultima Ratio Regis被认为起源于三十年战争（1618-1648）时期，有说法认为是法国红衣主教黎塞留（Cardinal Richelieu）所言。法国国王路易十四（Louis XIV）继承了这个名言，将Ultima Ratio Regis作为铭文铸刻在了一些大炮上。而在一百多年后，普鲁士的腓特烈二世（Friedrich II）时期也将这句话作为铭文刻在普鲁士的火炮上。在当时火炮越发成为陆战中的决定性武器，是战争中的王牌，故Ultima Ratio Regis的含义也不言而喻——当一个国王把他真正的论据牌都打完了，却仍还不能解决问题的话，那么国王最后的论据就将是可怕的军事武力。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/4.jpg" title="ultima">
+
+<p>&emsp;&emsp;这个谚语的含义也就在后世得到了广泛应用，用于指代当权者所诉诸的一切武力手段。例如在1775年美国独立战争前夕，帕特里克·亨利（Patrick Henry）发表了一篇演讲，也就是著名的《不自由，毋宁死（Give me liberty or give me death）》，其中将英国政府威胁殖民地的军事行动描述为：</p>
+<blockquote>
+<p>“…These are the implements of war and subjugation; the last arguments to which kings resort.”<br>“…此乃是是战争和镇压之手段；是国王们所诉诸的最后论据。” </p>
+</blockquote>
+<p>&emsp;&emsp;很明显，帕特里克此句的后半句就是Ultima Ratio Regis(-um)的一种英语版本。注意其使用了国王的复数形式（kings），这显然是一种习惯性用法。</p>
+<h2 id="2-Nulla-Crux-Nulla-Corona"><a href="#2-Nulla-Crux-Nulla-Corona" class="headerlink" title="2. Nulla Crux, Nulla Corona."></a>2. Nulla Crux, Nulla Corona.</h2><p>&emsp;&emsp;应该翻译为“不要十字架，不要王冠”。写成英语大概是“No Cross, No Crown”。这句话传说是德国农民起义（1524）时期，一位名为弗洛里安·盖叶（Florian Geyer）的起义领导者的剑上所刻的铭文。弗洛里安·盖叶是一名贵族、骑士，他率领了一些下级贵族、骑士及一群武装农民共同组成了“黑色连队”（Black Company，德语作Schwarzer Haufen）。“黑色连队”因穿着黑色军服而得名，虽然一开始他们只有不到200人，却都是装备精良、训练有素的战士。因为封建制度下的欧洲总体来说农民起义的规模都比较小，质量普遍难成气候，故盖叶领导的这群“精锐农民军”相当特殊，他们当中的这些骑士和职业军人可能是欧洲历史上极少数从属于农民阵营的重装武力。当时正值宗教改革运动如火如荼，教会和封建领主的双重压迫是当时农民起义的直接原因，所以Nulla Crux, Nulla Corona的具体解释应与当时农民起义军所打的其他一些旗号（如闵采尔的旗帜上画着一只草鞋，以表示和穿皮靴的贵族对抗）所表达的含义类似——即号召农民们摧毁教堂和城堡，也就是说，推翻教会（十字架）和封建领主（王冠）。</p>
+<p>&emsp;&emsp;1525年在弗兰肯豪森（Frankenhausen），最大的一支起义军遭到围剿覆灭，其领导人闵采尔被捕处决，其他各地的农民军也都接连失败，给这场德国历史上轰轰烈烈却又昙花一现的斗争画上了句号。黑色连队也在人困马乏中溃散了，盖叶随后遭人暗杀，至今不知埋骨何方。但这句话仍然传了下来，通常是作为宗教改革或是社会革命的主题而被后世的人们所引用。</p>
+<p>&emsp;&emsp;如奥地利作家茨威格（Stefan Zweig）于1928年写过一篇名为《世间最美丽的坟墓》（Das schönste Grab der Welt）的文章，来描述托尔斯泰（Л.Н.Толстой）朴实无华的坟墓。在文章里直接使用了这句话。毕竟托尔斯泰晚年在作品中公开批判教会和沙俄政府，主张信仰和博爱的重要性，甚至可以说，他形成了一种属于自己的宗教观念——后人称为“托尔斯泰主义”。但他的作品在当时触怒了主导俄国的沙皇与东正教会，导致东正教会将其开除教籍。</p>
+<p>&emsp;&emsp;托尔斯泰于1910年去世，而十八年后，茨威格在文章中使用这段十六世纪宗教改革时期农民起义军的谚语描述托尔斯泰，无疑是在将历史人物的境遇投射到托尔斯泰身上，是在将托尔斯泰比作新一代的宗教改革继任者，以及俄国农民的解放者——托尔斯泰乃贵族出身，坐拥家产无数，却将一生都投入到了那些不像是欧洲传统贵族干的事情上：如对抗东正教会，并在自家庄园进行农奴改革试验（这些经历成为了他晚年小说《复活》的主要内容）。而茨威格作为奥地利作家，当然会联想到那位三百年前出身贵族骑士，却站在了农民一边，并为农民而死的盖叶。这句话显然是暗中肯定了托尔斯泰那抛弃名利而追寻真理与良心的可贵精神。了解了这些，我们才能感觉到这句拉丁语谚语运用之精妙，含义之深刻所在。</p>
+<p>&emsp;&emsp;顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章自从九十年代进入了高中课本，却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，更离谱的是，三十年过去了，几乎从未有教材出面订正这个错误，造成了一句错误的句子和翻译被我国中学语文课本一直用到了今天的现象。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
+
+<p>&emsp;&emsp;虽然这个例子一定程度反映出拉丁语在我国的陌生程度。但可想而知的是，即使是正确拼写了这句话，正确作了翻译，解释它也并非是容易的事情——若在教育中始终避而不谈这背后涉及到的深层次历史、文化、宗教背景（据说现在的教材中已经严禁出现一切宗教术语和宗教形象、绘画等元素，如下图），我想，学生也就永远理解不了那坟墓为何简陋，为何像一个“不为人知的士兵一般不留名姓地被埋葬”，也就触及不到这篇文章的灵魂。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/7.jpg" title="x">
+
+<p>&emsp;&emsp;我担心的不是拉丁语，语言——说到底——不难，我担心的是后面这些。</p>
+<p>&emsp;&emsp;茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
+<h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>&emsp;&emsp;字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
+<blockquote>
+<p>“…et dominabitur a mari usque ad mare et a flumine usque ad terminos orbis terrarum.”<br>“…他将统治大地，从这海到那海；由大河的流域，至地极的边界。”</p>
+</blockquote>
+<p>&emsp;&emsp;此处描述的是圣经中非常常见的说法：即上帝与圣君治下的、理想的人间天国。</p>
+<p>&emsp;&emsp;A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在宗教意义上更是直接成了上帝和基督的外号。诗篇 72:8中也有这样一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
+<p>&emsp;&emsp;而在更一般的意义上，A mari usque ad mare早已经被引申为描述一个强大而繁荣的国家或统治的用法。例如波兰在17世纪的波兰立陶宛联邦时代是其最强盛的时期，也有着“从海到海”的称号（从黑海到波罗的海）。这么说的话，丘吉尔1946年的“铁幕演说”里所说的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”也算是某种意义上的A mari usque ad mare了。</p>
+<h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>&emsp;&emsp;字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
+<p>&emsp;&emsp;这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说：一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后变得骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
+<p>&emsp;&emsp;Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
+<p>&emsp;&emsp;必死性的影响是如此之深，以至于我们能看到历史上有许多艺术作品都反映出这样的信息，尤其是文艺复兴时期，这些作品经常被称为“死亡之舞（Dance of Death/La Danse Macabre）”。典型的有老勃鲁盖尔（Pieter Bruegel）于1562年的油画《死神的胜利（The Triumph of Death）》，描绘了死神的骷髅大军横行人间的景象。在这些作品中，骷髅是最常出现的元素，它们经常做出跳舞、演奏等动作；此外还有拿镰刀披黑斗篷的死神（Grim Reaper）、圣经启示录中描述的四骑士（他们的形象通常和死神融合）等，也是常见的形象。</p>
+<p>&emsp;&emsp;“死亡之舞”的另一个特点是反映出死亡的平等性（equality）。在小汉斯·荷尔拜因（Hans Holbein）于1523至1526年间创作的一系列以“死亡之舞”为主题的木版画里，每一张都展示了不同社会阶级的人被一个骷髅模样的死神带走的场面。如一个骑士不愿被死神带走，与死神展开战斗却被死神用长枪杀死；守财的富人在沉迷数钱，没想到死神已经坐在了桌边和他一起数钱；农民在辛苦耕种，死神甚至来帮他驱赶牛羊；死神把公爵夫人从豪华的床上拽下来；无论是虔诚的修女还是贪腐的法官也统统都不放过。</p>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/2.png" title="b">
+<p>&nbsp;<br>&emsp;&emsp;我们可以在同时代的众多“死亡之舞”艺术作品看到同样的设计思路，即描述各种属于不同的社会阶层人物被拖向他们死亡的命运，借以表达死亡对一切人都是平等的主题，无论人出身贫富贵贱，生前追寻什么样的价值观（财富、权力、美丽、智慧等），死神都最终会让一切趋于一致。贾科莫·德布希斯 (Giacomo Borlone de Buschis)于1484年至1485年间在贝加莫省克吕松（Clusone）的礼拜堂外制作了一系列“死亡之舞”壁画，其中的文字提到：</p>
+<blockquote>
+<p>«Gionto (e sonto) per nome chiamata morte / ferisco a chi tocherà la sorte; / no è homo chosì forte/che da mi no po’ a schanmoare»<br>«Gionto la morte piena de equaleza / sole voi ve volio e non vostra richeza / e digna sonto da portar corona / perché signorezi ognia persona»<br>«Ognia omo more e questo mondo lassa / chi ofende a Dio amaramente pasa»<br>«Chi è fundato in la iustitia e (bene) / e lo alto Dio non discha(ro tiene)/la morte a lui non ne vi(en con dolore) / poy che in vita (lo mena assai meliore)»<br>—（此为壁画原文，用15世纪意大利语书写）</p>
+</blockquote>
+<blockquote>
+<p>“I come (and I am) called by name Death, I hurt those who fate has chosen, There is no man so strong who can escape from me”<br>“I am the Death, full of equality, I want only you and not your wealth, And I am worthy to wear a crown because I am the master of every person”<br>“Every man dies and leaves this world. Who offends God bitterly passes away”<br>“Who is based on justice and right, and he does not have in disdain the Supreme God, Death does not come painful for him since (Death) takes him in a better life”<br>“Oh you, who serve kind-hearted God, do not be scared to come at this (Death) dance, but blithely come here and have no fear, since who is born, then he has to die”<br>—（英文翻译来自互联网）</p>
+</blockquote>
+<p>我大概翻译为：</p>
+<blockquote>
+<p>“我即是死神，为死亡而来，我要伤害那些命运已定的人们，没有谁强大到能够从我手中逃脱”<br>“我是让万物平等的死亡之主，我只要你的人，不要你的财富。我配得上一顶王冠，因为我才是每个人的主人”<br>“但即便每个人都会死去并离开这个世界，那些得罪上帝的人会死得更惨”<br>“而对那些坚持了正义，没有蔑视至高上帝的人来说，死亡并不痛苦，死亡反而给他带来更好的生活”<br>“所以，敬畏上帝的你们，不要害怕参加这个死亡之舞，不要害怕，欢快地来吧，这是人生而必死的命运” </p>
+</blockquote>
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/5.jpg" title="Clusone1">
+<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/6.jpg" title="Clusone2">
+<p><strong><center>克吕松的“死亡之舞”</center></strong></p>
+<p>&emsp;&emsp;虽然这张壁画的下半部分严重受损，但仍可以看到传统的宗教式结局，就如同文字中描述的那样：即使众人皆死，却在左侧有一个张着血盆大口的怪物等着那些真正的恶人，它口中喷出燃烧的火焰，象征着地狱；而在右侧则有一个通往上层的楼梯则留给那些正在祈祷的人们，这显然是通往天堂的阶梯，他们是死后得救的人。</p>
+<p>&emsp;&emsp;从这个角度讲，并不能用一般意义上的悲剧来解释Memento mori、Danse Macabre等艺术，它们虽披着令人毛骨悚然的外衣，其所表达的思想内核却并不是严格意义上的虚无主义（至少不是现代意义上的虚无主义），甚至有时候都不是悲剧，而更像是一种宗教中“死亡崇拜（Death Worship）”的情节，它借着强调物质与肉身的不可持续性，实在暗中阐述精神、灵魂的永恒，这与亚伯拉罕系宗教中一贯的末日观念是殊途同归的。死神消灭了所有活着的人类，毁灭了凡人的世界，实际上是代替上帝的出现并完成了上帝的审判工作，也就是说，这些“死神”实则可以看作是宗教中上帝意志的化身，体现的是类似旧约中的上帝作为审判者的残酷、绝情的一面。</p>
+<p>&emsp;&emsp;所以我们也可以从宗教改革的层面上解释这一主题，我们看到各类作品均侧重展现了死神对权力阶层——尤其是宗教机构、政治机构的威胁，而这些人在作品中则又更多地被描述成作恶多端的反面形象，死神的出现，实际上体现了死神/上帝能够越过宗教机构而审判世人，甚至反过来审判宗教机构与政治机构的无上权力，无形中抬高了上帝/死神的力量，而贬低了从教皇到神父的各类宗教机构的神圣性，这与当时宗教改革的观念是一致的。故可以认为，Memento Mori/Danse Macabre在这种特定历史环境下具有一定的进步意义，这可能也是为什么16、17世纪如此多的画家、诗人、乐手都热衷于以这个题材进行创作的原因。</p>
+<h2 id="5-Sic-transit-gloria-mundi"><a href="#5-Sic-transit-gloria-mundi" class="headerlink" title="5. Sic transit gloria mundi."></a>5. Sic transit gloria mundi.</h2><p>&emsp;&emsp;这是一个与Memento mori有着类似含义的句子。它的字面意思为“世间的荣耀就这样逝去了”，有时会被缩写为S.T.G.M.。英文通常作”Thus passes worldly glory”。它的起源也没有准确的考据，不过它于1409年7月7日在教皇亚历山大五世的加冕典礼上首次使用。并一直沿用到了1963年。新加冕的教皇会在圣彼得大教堂前祭祀，游行队伍会停下三次，每停一次教皇的司仪都会在教皇面前跪下，他手里拿着一根银制或铜制的细棒，上面挂着一条正在闷烧的亚麻布。每停下一次他都会大声而悲痛地说道：“Pater Sancte, sic transit gloria mundi!”（“圣父，世间的荣耀就此逝去！”），亚麻布块就在这个过程中慢慢燃烧掉。</p>
+<p>&emsp;&emsp;这个仪式和上文提到的凯旋式的传说具有类似的功能，旨在提醒教皇尘世荣耀的短暂和不可持续的本质。在今天，这句话在今天通常用来描述一种时过境迁、往日不在的主题，如一个文明的消亡或是一个强大权力者的退位等。</p>
+<p>&emsp;&emsp;1959年由小沃尔特·M.·米勒（Walter M. Miller Jr.）所著的科幻小说《莱博维兹的赞歌（A Canticle for Leibowitz）》中引用了这句话，讲述了经历全球核战争后的地球退回了中世纪水平，但一位电气工程莱博维兹师将人类的知识保存在了一个修道院里。而后的数百年间，教士们借由被保存的知识复原了人类文明，但核战争的危机再临，爆发之际幸存的人们乘坐飞船离开地球寻找新的家园。在小说中，最后一个登上飞船的教士看着新核战的蘑菇云念出了“Sic transit gloria mundi”，昭示着地球的再一次毁灭。</p>
+<h2 id="6-Agnosco-veteris-vestigia-flammae"><a href="#6-Agnosco-veteris-vestigia-flammae" class="headerlink" title="6. Agnosco veteris vestigia flammae."></a>6. Agnosco veteris vestigia flammae.</h2><p>&emsp;&emsp;也是一句很著名的话，但似乎很少有人对其作详细解释。这句话直译过来大概是：“（我）感到了过去的火焰的痕迹”，原文出自古罗马作家维吉尔（Virgil）的《埃涅阿斯纪（Aeneid）》，第IV卷第23行：</p>
+<blockquote>
+<p>Anna, fatebor enim, miseri post fata Sychaei<br>coniugis et sparsos fraterna caede Penates<br>solus hic inflexit sensus animumque labantem<br>impulit. Agnosco veteris vestigia flammae.</p>
+</blockquote>
+<p>&emsp;&emsp;我大概翻译为：</p>
+<blockquote>
+<p>安娜，我必须承认，我经历了我可怜丈夫绪开俄斯（Sychaeus）的命运<br>我的哥哥杀害了我的丈夫，让我的家族被鲜血所染<br>在这之后，只有这一个人能让我如此视线迷离，神魂颠倒<br>我感觉到了那过去的火焰余烬，就要在我心中重新燃起</p>
+</blockquote>
+<p>&emsp;&emsp;维吉尔的《埃涅阿斯纪》系古代神话传说改编而来，讲述了特洛伊城破后，败战后的特洛伊英雄埃涅阿斯（Aeneas）流亡到意大利半岛的故事。此时罗马尚未形成，但传说上又认为，埃涅阿斯即是传说中的罗马建城者——“狼孩”双胞胎罗慕路斯和雷穆斯（Romulus and Remus）的祖先之一，他们之间隔了约400年，故这个传说也在试图展现罗马和希腊文明之间在血缘上的直接继承关系。</p>
+<p>&emsp;&emsp;此段讲述的是埃涅阿斯先是流落到北非的迦太基，在这里见到了建立迦太基的女王狄多（Dido）。这段即为狄多向妹妹安娜所述。狄多虽贵为女王，追求者无数，但她过去在家族的残酷内乱中失去了丈夫，从此就一直心如死灰。但英雄埃涅阿斯的到来让她一见钟情，她疯狂地爱上了埃涅阿斯。不过埃涅阿斯仍坚持去了意大利以执行朱庇特的神意，狄多最终在精神错乱中殉情自杀，死前向绝情的埃涅阿斯发出诅咒。有人据此认为，正是这个诅咒预示了罗马和迦太基几百年后的大规模战争。</p>
+<p>&emsp;&emsp;13世纪意大利的著名诗人但丁（Dante）在他的《神曲（Divine Comedy）》中将维吉尔看成是老师一般的人物，虽然他们中间隔了一千多年。他在《神曲》也引用过这段话，炼狱篇，第XXX章：</p>
+<blockquote>
+<p>per dicere a Virgilio: “Men che dramma;<br>di sangue m’è rimaso che non tremi:<br>conosco i segni de l’antica fiamma.”</p>
+</blockquote>
+<p>&emsp;&emsp;田德望译版中这样翻译：</p>
+<blockquote>
+<p>对维吉尔说：“我浑身没有一滴血不颤抖：我知道这是旧时火焰的征象”；</p>
+</blockquote>
+<p>&emsp;&emsp;但丁引用此句即是用《埃涅阿斯纪》中的典故来表达自己对贝雅特丽齐（Beatrice）的爱情焰火重燃。所以原文中的“火焰”指的是爱情之火，指的是爱情的复活。但经过引申，这句话也不仅仅指爱情了，也可以用来描述一个人找回了过去曾经有过的事物，重新回到了过去曾经拥有过的激情状态中的独特感觉。</p>
+<p>本文永久更新。</p>
+]]></content>
+      <tags>
+        <tag>文化</tag>
+        <tag>翻译</tag>
+        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -1385,97 +1496,9 @@
 <p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
 ]]></content>
       <tags>
+        <tag>服务器</tag>
         <tag>软件</tag>
         <tag>游戏</tag>
-        <tag>服务器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一些拉丁语谚语的含义考据与派生用法</title>
-    <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>列举了一些我见过的意义较为晦涩的拉丁语谚语及其背后的故事<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;拉丁语作为古罗马及基督教教会的官方语言，曾经是欧洲主流文化的重要载体。可以说拉丁语如同基督教一样，反映了西方文明在文化内核上具有同一性的一面。虽时至今日已不再作为一门日常使用的语言，却早已深扎在了各种西方语言之中。我认为拉丁语之于西方文明，就相当于汉字之于东方文明。举例如越南、韩国、日本等国家虽然在今天已经与汉字分道扬镳，但对于语言、历史、文化研究者来说汉字仍是众多问题的答案之源。我们可以看到，对于很多想要了解东方文化的西方人来说，汉字是“一个令人费解的谜团”，而反过来，拉丁语在西方也拥有同样的地位，对于东方人来说也是如此。</p>
-<p>&emsp;&emsp;在今天，拉丁语经常以谚语、格言的形式出现在我们面前，如哈佛校训“Veritas”、凯撒著名的“三V”：“Veni vidi vici”，君士坦丁一世的“In hoc signo vinces”等，有点类似我们文言文成语的地位。故这些拉丁语谚语几乎都带着它诞生时特有的历史寓意，即使是看懂了字面意思，也不容易明白它到底想说的是什么，并且这些谚语经过上千年的使用，有些已经派生出了多层含义，同时也产生了一些新的用法，最终所有这些事件和内容都统统总和到了一句简单的句子之上，大大丰富了其背后的信息量。而这可能是才是除开语言因素之外最难掌握的东西。</p>
-<p>&emsp;&emsp;拉丁语虽早已不再是交流用的语言，但在今天的西方仍是一门常见的基础课程，换句话说，受过教育的西方人多多少少都学过它。但是对于这样一门古代语言和宗教专业语言，其实大多数西方人自己也没法熟练使用，就如同也没多少中国人能拿几千年前的之乎者也作文一样。所以我们不必学成语言专家，有一些基础知识就行。对这个在阅读诸多西方文学、历史相关的内容时经常遇到的难点，如果能做到一个粗浅的认识的话，理解的也当然会更加深入。</p>
-<h2 id="1-Ultima-Ratio-Regis"><a href="#1-Ultima-Ratio-Regis" class="headerlink" title="1. Ultima Ratio Regis"></a>1. Ultima Ratio Regis</h2><p>&emsp;&emsp;从字面意义直译应为“国王最后的论据”，英语可作“The king’s final argument”。这句话另有写法写作Ultima Ratio Regum，Regum和Regis都是Rex（国王）的属格形式，前者为复数，后者为单数，故两者都是说得通的。</p>
-<p>&emsp;&emsp;Ultima Ratio Regis被认为起源于三十年战争（1618-1648）时期，有说法认为是法国红衣主教黎塞留（Cardinal Richelieu）所言。法国国王路易十四（Louis XIV）继承了这个名言，将Ultima Ratio Regis作为铭文铸刻在了一些大炮上。而在一百多年后，普鲁士的腓特烈二世（Friedrich II）时期也将这句话作为铭文刻在普鲁士的火炮上。在当时火炮越发成为陆战中的决定性武器，是战争中的王牌，故Ultima Ratio Regis的含义也不言而喻——当一个国王把他真正的论据牌都打完了，却仍还不能解决问题的话，那么国王最后的论据就将是可怕的军事武力。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/4.jpg" title="ultima">
-
-<p>&emsp;&emsp;这个谚语的含义也就在后世得到了广泛应用，用于指代当权者所诉诸的一切武力手段。例如在1775年美国独立战争前夕，帕特里克·亨利（Patrick Henry）发表了一篇演讲，也就是著名的《不自由，毋宁死（Give me liberty or give me death）》，其中将英国政府威胁殖民地的军事行动描述为：</p>
-<blockquote>
-<p>“…These are the implements of war and subjugation; the last arguments to which kings resort.”<br>“…此乃是是战争和镇压之手段；是国王们所诉诸的最后论据。” </p>
-</blockquote>
-<p>&emsp;&emsp;很明显，帕特里克此句的后半句就是Ultima Ratio Regis(-um)的一种英语版本。注意其使用了国王的复数形式（kings），这显然是一种习惯性用法。</p>
-<h2 id="2-Nulla-Crux-Nulla-Corona"><a href="#2-Nulla-Crux-Nulla-Corona" class="headerlink" title="2. Nulla Crux, Nulla Corona."></a>2. Nulla Crux, Nulla Corona.</h2><p>&emsp;&emsp;应该翻译为“不要十字架，不要王冠”。写成英语大概是“No Cross, No Crown”。这句话传说是德国农民起义（1524）时期，一位名为弗洛里安·盖叶（Florian Geyer）的起义领导者的剑上所刻的铭文。弗洛里安·盖叶是一名贵族、骑士，他率领了一些下级贵族、骑士及一群武装农民共同组成了“黑色连队”（Black Company），加入了另一位著名的起义领导人闵采尔（Thomas Münzer）的大部队麾下，与他并肩作战。因为封建制度下的欧洲总体来说农民起义的规模都比较小，质量普遍难成气候，故盖叶领导的这群“专业农民军”相当特殊，他们当中的这些反叛的骑士和职业军人可能是欧洲历史上极少数属于农民阵营的重装武力。当时正值宗教改革运动如火如荼，教会和封建领主的双重压迫是当时农民起义的直接原因，所以Nulla Crux, Nulla Corona的具体解释应与当时农民起义军所打的其他一些旗号（如闵采尔的旗帜上画着一只草鞋，以表示和穿皮靴的贵族对抗）所表达的含义类似——即号召农民们摧毁教堂和城堡，也就是说，推翻教会（十字架）和封建领主（王冠）。</p>
-<p>&emsp;&emsp;在弗兰肯豪森（Frankenhausen）的失败后闵采尔被捕处决，给这场轰轰烈烈、昙花一现的斗争画上了句号。黑色连队也溃散了，盖叶随后遭人暗杀，至今不知埋骨何方。但这句话仍然传了下来，通常是作为宗教改革或是社会革命的主题而被后世的人们所引用。</p>
-<p>&emsp;&emsp;如奥地利作家茨威格（Stefan Zweig）于1928年写过一篇名为《世间最美丽的坟墓》（Das schönste Grab der Welt）的文章，来描述托尔斯泰（Л.Н.Толстой）朴实无华的坟墓。在文章里直接使用了这句话。毕竟托尔斯泰晚年在作品中公开批判教会和沙俄政府，主张信仰和博爱的重要性，甚至可以说，他形成了一种属于自己的宗教观念——后人称为“托尔斯泰主义”。但他的作品在当时触怒了主导俄国的沙皇与东正教会，导致东正教会将其开除教籍。</p>
-<p>&emsp;&emsp;托尔斯泰于1910年去世，而十八年后，茨威格在文章中使用这段十六世纪宗教改革时期农民起义军的谚语描述托尔斯泰，无疑是在将历史人物的境遇投射到托尔斯泰身上，是在将托尔斯泰比作新一代的宗教改革继任者，以及俄国农民的解放者——托尔斯泰乃贵族出身，坐拥家产无数，却将一生都投入到了那些不像是欧洲传统贵族干的事情上：如对抗东正教会，并在自家庄园进行农奴改革试验（这些经历成为了他晚年小说《复活》的主要内容）。而茨威格作为奥地利作家，当然会联想到那位三百年前出身贵族骑士，却站在了农民一边，并为农民而死的盖叶。这句话显然是暗中肯定了托尔斯泰那抛弃名利而追寻真理与良心的反抗精神。了解了这些，我们才能感觉到这句拉丁语谚语运用之精妙，含义之深刻所在。</p>
-<p>&emsp;&emsp;顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章自从九十年代进入了高中课本，却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，更离谱的是，三十年过去了，几乎从未有教材出面订正这个错误，造成了一句错误的句子和翻译被我国中学语文课本一直用到了今天的现象。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
-
-<p>&emsp;&emsp;虽然这个例子可以侧面反映出拉丁语在我国文化界的陌生程度。但可想而知的是，即使是正确拼写了这句话，正确作了翻译，解释它也并非是容易的事情——若在教育中始终避而不谈这背后涉及到的深层次历史、文化、宗教背景，我想，学生也就永远理解不了那坟墓为何简陋，为何像一个“不为人知的士兵一般不留名姓地被埋葬”，也就触及不到这篇文章的灵魂。</p>
-<p>&emsp;&emsp;我担心的不是拉丁语，语言——不难，我担心的是后面这些。</p>
-<p>&emsp;&emsp;茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
-<h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>&emsp;&emsp;字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
-<blockquote>
-<p>“…et dominabitur a mari usque ad mare et a flumine usque ad terminos orbis terrarum.”<br>“…他将统治大地，从这海到那海；由大河的流域，至地极的边界。”</p>
-</blockquote>
-<p>&emsp;&emsp;此处描述的是圣经中非常常见的说法：即上帝与圣君治下的、理想的人间天国。</p>
-<p>&emsp;&emsp;A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在宗教意义上更是直接成了上帝和基督的外号。诗篇 72:8中也有这样一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
-<p>&emsp;&emsp;而在更一般的意义上，A mari usque ad mare早已经被引申为描述一个强大而繁荣的国家或统治的用法。例如波兰在17世纪的波兰立陶宛联邦时代是其最强盛的时期，也有着“从海到海”的称号（从黑海到波罗的海）。这么说的话，丘吉尔1946年的“铁幕演说”里所说的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”也算是某种意义上的A mari usque ad mare了。</p>
-<h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>&emsp;&emsp;字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
-<p>&emsp;&emsp;这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说，一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后变得骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
-<p>&emsp;&emsp;Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
-<p>&emsp;&emsp;必死性的影响是如此之深，以至于我们能看到历史上有许多艺术作品都反映出这样的信息，尤其是文艺复兴时期，这些作品经常被称为“死亡之舞（Dance of Death/La Danse Macabre）”。典型的有老勃鲁盖尔（Pieter Bruegel）于1562年的油画《死神的胜利（The Triumph of Death）》，描绘了死神的骷髅大军横行人间的景象。在这些作品中，骷髅是最常出现的元素，它们经常做出跳舞、演奏等动作；此外还有拿镰刀披黑斗篷的死神（Grim Reaper）、圣经启示录中描述的四骑士（他们的形象通常和死神融合）等，也是常见的形象。</p>
-<p>&emsp;&emsp;“死亡之舞”的另一个特点是反映出死亡的平等性（equality）。在小汉斯·荷尔拜因（Hans Holbein）于1523至1526年间创作的一系列以“死亡之舞”为主题的木版画里，每一张都展示了不同社会阶级的人被一个骷髅模样的死神带走的场面。如一个骑士不愿被死神带走，与死神展开战斗却被死神用长枪杀死；守财的富人在沉迷数钱，没想到死神已经坐在了桌边和他一起数钱；农民在辛苦耕种，死神甚至来帮他驱赶牛羊；死神把公爵夫人从豪华的床上拽下来；无论是虔诚的修女还是贪腐的法官也统统都不放过。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/2.png" title="b">
-<p>&nbsp;<br>&emsp;&emsp;我们可以在同时代的众多“死亡之舞”艺术作品看到同样的设计思路，即描述各种属于不同的社会阶层人物被拖向他们死亡的命运，借以表达死亡对一切人都是平等的主题，无论人出身贫富贵贱，生前追寻什么样的价值观（财富、权力、美丽、智慧等），死神都最终会让一切趋于一致。贾科莫·德布希斯 (Giacomo Borlone de Buschis)于1484年至1485年间在贝加莫省克吕松（Clusone）的礼拜堂外制作了一系列“死亡之舞”壁画，其中的文字提到：</p>
-<blockquote>
-<p>«Gionto (e sonto) per nome chiamata morte / ferisco a chi tocherà la sorte; / no è homo chosì forte/che da mi no po’ a schanmoare»<br>«Gionto la morte piena de equaleza / sole voi ve volio e non vostra richeza / e digna sonto da portar corona / perché signorezi ognia persona»<br>«Ognia omo more e questo mondo lassa / chi ofende a Dio amaramente pasa»<br>«Chi è fundato in la iustitia e (bene) / e lo alto Dio non discha(ro tiene)/la morte a lui non ne vi(en con dolore) / poy che in vita (lo mena assai meliore)»<br>—（此为壁画原文，用15世纪意大利语书写）</p>
-</blockquote>
-<blockquote>
-<p>“I come (and I am) called by name Death, I hurt those who fate has chosen, There is no man so strong who can escape from me”<br>“I am the Death, full of equality, I want only you and not your wealth, And I am worthy to wear a crown because I am the master of every person”<br>“Every man dies and leaves this world. Who offends God bitterly passes away”<br>“Who is based on justice and right, and he does not have in disdain the Supreme God, Death does not come painful for him since (Death) takes him in a better life”<br>“Oh you, who serve kind-hearted God, do not be scared to come at this (Death) dance, but blithely come here and have no fear, since who is born, then he has to die”<br>—（英文翻译来自互联网）</p>
-</blockquote>
-<p>我大概翻译为：</p>
-<blockquote>
-<p>“我即是死神，为死亡而来，我要伤害那些被命运选择的人，没有谁强大到能够从我身边逃脱”<br>“我是让万物平等的死亡之主，我只要你的人，不要你的财富。我配得上一顶王冠，因为我才是每个人的主人”<br>“即使每个人都会死去并离开这个世界，但那些得罪上帝的人会死得更惨”<br>“而对那些坚持了正义，没有蔑视至高上帝的人来说，死亡并不痛苦，死亡反而给他带来更好的生活”<br>“所以，敬畏上帝的你们，不要害怕参加这个死亡之舞，不要害怕，欢快地来吧，这是人生而必死的命运” </p>
-</blockquote>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/5.jpg" title="Clusone1">
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/6.jpg" title="Clusone2">
-<p><strong><center>克吕松的“死亡之舞”</center></strong></p>
-<p>&emsp;&emsp;虽然这张壁画的下半部分严重受损，但仍可以看到传统的宗教式结局，就如同文字中描述的那样：即使众人皆死，却在左侧有一个张着血盆大口的怪物等着那些“恶人”，口中喷出燃烧的火焰，象征着地狱；而在右侧则有一个通往上层的楼梯则留给那些祈祷的人们，这显然是通往天堂的阶梯，他们是死后得救的人。</p>
-<p>&emsp;&emsp;从这个角度讲，并不能用一般意义上的悲剧来解释Memento mori、Danse Macabre等艺术，它们虽披着令人毛骨悚然的外衣，其所表达的思想内核却并不是严格意义上的虚无主义（至少不是现代意义上的虚无主义），甚至有时候都不是悲剧，而更像是一种“死亡崇拜（Death Worship）”的情节，它借着强调物质与肉身的不可持续性，实在暗中阐述精神、灵魂的永恒，这与宗教的传统观念是殊途同归的。死神消灭了所有活着的人类，毁灭了凡人的世界，契合了亚伯拉罕系宗教中一贯的末日观念，死神实际上是代替上帝的出现并完成了上帝的审判工作，也就是说，这些“死神”实则可以看作是宗教中上帝意志的化身，体现了类似旧约中的上帝作为审判者的残酷、绝情的一面。</p>
-<p>&emsp;&emsp;所以我们也可以从宗教改革的层面上解释这一主题，我们看到各类作品均侧重展现了死神对权力阶层——尤其是宗教机构、政治机构的威胁，而这些人在作品中则又更多地被描述成作恶多端的反面形象，死神的出现，实际上体现了死神/上帝能够越过宗教机构而审判世人甚至审判宗教、政治机构的无上权力，无形中抬高了上帝/死神的力量，而贬低了从教皇到神父的各类宗教机构的神圣性，这与当时宗教改革的观念是一致的。故可以认为，Memento Mori/Danse Macabre在这种特定历史环境下具有一定的进步意义，这可能也是为什么16、17世纪如此多的画家、诗人、乐手都热衷于以这个题材进行创作的原因。</p>
-<h2 id="5-Sic-transit-gloria-mundi"><a href="#5-Sic-transit-gloria-mundi" class="headerlink" title="5. Sic transit gloria mundi."></a>5. Sic transit gloria mundi.</h2><p>&emsp;&emsp;这是一个与Memento mori有着类似含义的句子。它的字面意思为“世间的荣耀就这样逝去了”，有时会被缩写为S.T.G.M.。英文通常作”Thus passes worldly glory”。它的起源也没有准确的考据，不过它于1409年7月7日在教皇亚历山大五世的加冕典礼上首次使用。并一直沿用到了1963年。新加冕的教皇会在圣彼得大教堂前祭祀，游行队伍会停下三次，每停一次教皇的司仪都会在教皇面前跪下，他手里拿着一根银制或铜制的细棒，上面挂着一条正在闷烧的亚麻布。每停下一次他都会大声而悲痛地说道：“Pater Sancte, sic transit gloria mundi!”（“圣父，世间的荣耀就此逝去！”），亚麻布块就在这个过程中慢慢燃烧掉。</p>
-<p>&emsp;&emsp;这个仪式和上文提到的凯旋式的传说具有类似的功能，旨在提醒教皇尘世荣耀的短暂和不可持续的本质。在今天，这句话在今天通常用来描述一种时过境迁、往日不在的主题，如一个文明的消亡或是一个强大权力者的退位等。</p>
-<p>&emsp;&emsp;1959年由小沃尔特·M.·米勒（Walter M. Miller Jr.）所著的科幻小说《莱博维兹的赞歌（A Canticle for Leibowitz）》中引用了这句话，讲述了经历全球核战争后的地球退回了中世纪水平，但一位电气工程莱博维兹师将人类的知识保存在了一个修道院里。而后的数百年间，教士们借由被保存的知识复原了人类文明，但核战争的危机再临，爆发之际幸存的人们乘坐飞船离开地球寻找新的家园。在小说中，最后一个登上飞船的教士看着新核战的蘑菇云念出了“Sic transit gloria mundi”，昭示着地球的再一次毁灭。</p>
-<h2 id="6-Agnosco-veteris-vestigia-flammae"><a href="#6-Agnosco-veteris-vestigia-flammae" class="headerlink" title="6. Agnosco veteris vestigia flammae."></a>6. Agnosco veteris vestigia flammae.</h2><p>&emsp;&emsp;也是一句很著名的话，但似乎很少有人对其作详细解释。这句话直译过来大概是：“（我）感到了过去的火焰的痕迹”，原文出自古罗马作家维吉尔（Virgil）的《埃涅阿斯纪（Aeneid）》，第IV卷第23行：</p>
-<blockquote>
-<p>Anna, fatebor enim, miseri post fata Sychaei<br>coniugis et sparsos fraterna caede Penates<br>solus hic inflexit sensus animumque labantem<br>impulit. Agnosco veteris vestigia flammae.</p>
-</blockquote>
-<p>&emsp;&emsp;我大概翻译为：</p>
-<blockquote>
-<p>安娜，我必须承认，我经历了我可怜丈夫绪开俄斯（Sychaeus）的命运<br>我的哥哥杀害了我的丈夫，让我的家族被鲜血所染<br>在这之后，只有这一个人能让我如此视线迷离，神魂颠倒<br>我感觉到了那过去的火焰余烬，就要在我心中重新燃起</p>
-</blockquote>
-<p>&emsp;&emsp;维吉尔的《埃涅阿斯纪》系古代神话传说改编而来，讲述了败战后的特洛伊英雄埃涅阿斯（Aeneas）流亡到意大利半岛的故事。此时罗马尚未形成，但传说上又认为，埃涅阿斯即是传说中罗马建城者罗慕路斯（Romulus）的祖先之一，他们之间隔了约400年，故这个传说也在试图展现罗马和希腊文明之间在血缘上的直接继承关系。</p>
-<p>&emsp;&emsp;此段讲述的是埃涅阿斯先是流落到北非的迦太基，在这里见到了建立迦太基的女王狄多（Dido）（又称伊莉莎（Elissa））。这段即为狄多向妹妹安娜所述。狄多虽贵为女王，追求者无数，但她过去在家族的残酷内乱中失去了丈夫，从此就一直心如死灰。但英雄埃涅阿斯的到来让她一见钟情，她疯狂地爱上了埃涅阿斯。不过埃涅阿斯仍坚持去了意大利以执行朱庇特的神意，狄多最终在精神错乱中殉情自杀，死前向埃涅阿斯发出诅咒。有人据此认为，正是这个诅咒预示了罗马和迦太基几百年后的大规模战争。</p>
-<p>&emsp;&emsp;著名诗人但丁（Dante）在他的《神曲（Divine Comedy）》中也引用过这段话，炼狱篇，第XXX章：</p>
-<blockquote>
-<p>per dicere a Virgilio: “Men che dramma;<br>di sangue m’è rimaso che non tremi:<br>conosco i segni de l’antica fiamma.”</p>
-</blockquote>
-<p>&emsp;&emsp;田德望版《神曲》中这样翻译：</p>
-<blockquote>
-<p>对维吉尔说：“我浑身没有一滴血不颤抖：我知道这是旧时火焰的征象”；</p>
-</blockquote>
-<p>&emsp;&emsp;但丁引用此句即是用《埃涅阿斯纪》中的典故来说明对贝雅特丽齐（Beatrice）的爱情焰火重燃。所以原文中的“火焰”指的是爱情之火，指的是爱情的复活。但经过引申，这句话也不仅仅指爱情了，也可以用来描述一个人找回了过去曾经有过的事物，重新回到了过去曾经拥有过的激情状态中的独特感觉。</p>
-<p>本文永久更新，未完待续。</p>
-]]></content>
-      <tags>
-        <tag>文化</tag>
-        <tag>翻译</tag>
-        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -1623,146 +1646,6 @@
       <tags>
         <tag>生活</tag>
         <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Windows环境下编译TrinityCore</title>
-    <url>/2022/05/24/Windows%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%BC%96%E8%AF%91TrinityCore/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>在Windows环境下通过基于TrinityCore的项目源码编译4.3.4-15595版本的服务端，以及服务端、客户端的配置工作，服务端的启动等及过程中的解释说明等。<a id="more"></a></p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p align="left">前言</p></h2><p>在之前的工作（见<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>）中，在不涉及源码编译的情况下，对Trinity服务端进行了简单的介绍，介绍了一些Trinity服务端的基本常识内容，并用别人编译好的服务端实现了3.3.5的WLK版本的服务端搭建。但由于服务端仍是使用现成的构建，略过了编译环节，也就导致一些功能无法实现，如自行提取对应版本的地图资源文件等，因为很多工具只有通过TrinityCore的源码编译才能生成。为了最大程度避免这些问题，从源码开始自行编译构建服务端无疑是最彻底的方案，故本次就从基于TrinityCore的项目进行源码编译。选择了一个基于TrinityCore的非官方分支项目即The-Cataclysm-Preservation-Project，也就是4.3.4版本的端，项目位于：<a href="https://github.com/The-Cataclysm-Preservation-Project" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project</a></p>
-<p>本次说明中的资源都可以在这里找到，该分支项目也给出了TrinityCore的官方编译指南，即：<a href="https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation</a> 。可以说，这次写的这个文章基本可以算是我对这篇TrinityCore官方文档的具体尝试，因为我也是初学者，认识浅薄，有能力的同学可以结合这个官方给出的文档共同参考，我这里重点是写出我自己在编译过程中遇到的具体问题，因为官方文档并不能够面面俱到。并且，这更多是出于我的“本地完备”的技术原则，这只是个占位符名称，因为目前我还没有想到（或学到、找到）一个词汇能够描述这个概念：<strong>即保证个人能够在彻底脱离国际互联网之后还能够以一定的资源开展一定形式的工作</strong>，这不是说我敌视互联网，而是为了应对最极端的情况，是类似于个人化的“防核地堡”的概念。</p>
-<h3 id="什么是编译"><a href="#什么是编译" class="headerlink" title="什么是编译"></a><p align="left">什么是编译</p></h3><p>我觉得有必要以通俗的语言简单重复一下这个概念。<strong>编译实际上可以理解为一种计算机语言之间的“翻译”过程</strong>，即将程序开发者（人）书写的源代码“翻译”——源代码通常是以人可以识别的“高级语言”书写的（如C++、Java等等），翻译成由计算机（机器）才能识别的汇编语言或二进制机器语言等“低级语言”。并且最终由计算机输出生成在某个平台环境下运行的可执行程序，也就是我们平常看到的程序本身，相对于把译文打印装订成书。这个过程就叫编译。</p>
-<p>（事实一再证明，很多基本问题从来不受重视，从来没有哪个老师真正能够告诉我（或试图告诉我）三极管、互联网、宪法以及文学艺术对个人和人类社会到底有什么意义，因为考试永远不会考你自己的理解，他们要的只是工具和程序）</p>
-<h3 id="为什么选择4-3-4（CTM）"><a href="#为什么选择4-3-4（CTM）" class="headerlink" title="为什么选择4.3.4（CTM）"></a><p align="left">为什么选择4.3.4（CTM）</p></h3><p>回到正题，首先说一下为什么选择4.3.4的端。不仅是因为之前已经实现过3.3.5的搭建，更多的是出于游戏性的考虑。熟悉这个游戏的人都知道，CTM版本实际上对这个游戏系统做出了相当大的改动，这在曾经是有争议的（即使是放在今天来说可能也如此）。不过，对于私人搭建的服务端来说，CTM版本的改动无疑是再适合不过的——它将WOW的单机玩法提升到了前所未有的水平，无论是难度曲线还是改版后艾泽拉斯的地图任务的故事情节，要比老版本出色太多了。<strong>单从这一点来讲，我个人就对CTM版本有着非常高的评价</strong>。况且这个版本还新加入了大量优秀动听的音乐，并重新设计了艾泽拉斯的美景，所以说只作为单机游戏看待的话，CTM无疑比之前的老版本更好玩，也更具收藏价值。</p>
-<p>接下来说一下4.3.4端普遍存在的问题。美中不足的事总是有的，因为现在CTM的端大多基于TrinityCore衍生而来，并非是Trinity官方的项目，故这方面的工作仍然不够充分。上面提到的CTM版本设计精良的任务需要复杂的脚本代码机制来实现，比起老版本简单枯燥的任务来说是好玩了不少，但也导致其修复难度较大。种种原因导致现在市面上的4.3.4版本的服务端源代码普遍没有3.3.5那么完善，这点也是不得不接受的事实。不过从这次我亲自测试的结果来看，即使有着很多bug问题，对于单机模式的游戏性来说，我仍更倾向于选择4.3.4版本。</p>
-<h3 id="客户端准备"><a href="#客户端准备" class="headerlink" title="客户端准备"></a><p align="left">客户端准备</p></h3><p>在编译工作开始之前，我建议先下载好这个服务端对应的4.3.4-15595的客户端文件，即通过下面的工具：<br>通过运行wowregeneration下载客户端Data文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/wowregeneration" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/wowregeneration</a><br>通过运行ClientDownloader下载客户端其他文件（如wow.exe等）：<a href="https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader</a><br>这里不用clone代码，直接Download ZIP，解压后就可以运行下载器。全部下完后，将Data文件夹和其他文件放在一个目录下，拼合成完整客户端。这里的完整的4.3.4-15595客户端总大小约15.6GB。</p>
-<p>以及TDB_full_434数据库信息文件（.sql文件）：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z</a></p>
-<p>本次测试不使用远程服务器，即在本地（127.0.0.1）进行测试。</p>
-<p>好了，编译工作现在开始。</p>
-<h2 id="1-Windows上的环境配置"><a href="#1-Windows上的环境配置" class="headerlink" title="1. Windows上的环境配置"></a><p align="left">1. Windows上的环境配置</p></h2><p>对于Windows系统，为了进行编译，我们需要以下工具和环境：</p>
-<blockquote>
-<p>Git-2.23<br>gitExtensions-3.4.3.9999<br>cmake 3.22.1 （版本≥ 3.18.4）<br>boost 1.73.0（版本≥ 1.73.0）<br>Win64OpenSSL 1.1.1o<br>mysql community 8.0.29 (版本≥ mysql5)<br>Navicat8 或 Navicat premium<br>当然还必须要有Visual Studio，这里选择Visual Studio Community 2019，在配置时勾选上C++开发模块即可（此模块需要数个G的空间）。</p>
-</blockquote>
-<p>简单说一下每个东西的用途：</p>
-<blockquote>
-<p>git和gitExtension用来拉取GitHub项目端的源代码到本地，这里我们用clone的方式；<br>cmake用来把源代码编译成提供给Visual Studio的工程文件；<br>Visual Studio就是所谓的“宇宙第一IDE”，集成了各种开发工具和环境。这里我们主要用它来生成构建。<br>boost是为C++标准库提供扩展的扩展库；<br>OpenSSL是一个加密工具，通过SSL协议实现传输的加密对接；<br>mysql提供服务器系统；Navicat则提供数据库的图形化管理功能。</p>
-</blockquote>
-<p>安装每个工具的过程详见：<a href="https://www.trinitycore.info/en/install/requirements/windows" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/requirements/windows</a></p>
-<p>别的基本都没什么变数，这里主要说一下MySQL 8.0的安装。这里选择mysql community 8.0.29，安装包下载地址为：<a href="https://dev.mysql.com/downloads/windows/installer/8.0.html" target="_blank" rel="noopener">https://dev.mysql.com/downloads/windows/installer/8.0.html</a> ，选择432mb大小的那个msi进行下载。安装时首先选择Custom模式，因为若不选择Custom，MySQL是默认安装到C盘的，只有选Custom才能在之后的选项中改变安装路径，产品（product）中只需要选择安装MySQL Server 8.0.24-x64即可，别的是关于数据库的开发组件，不选。然后建议点击Advanced Options，自定义一个安装目录。将Install Directory（主程序目录）和Data Directory（数据库目录）定位到不同的两个文件夹里。如果之前装过MySQL的话可能会有个叹号提示，无视即可。这里我直接使用网络上找到教程的图片：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/1.png" title="a">
-<p>然后是填入默认数据库端口。端口一般默认是3306就行，直接next。但我因为之前还装过一个老版本的MySQL为3.3.5的端提供服务（同时还集成了V079冒险岛的数据库），我就改了一个3307，最后在服务端的配置文件（.conf）中将所有数据库的端口都改成3307即可。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/2.png" title="b">
-<p>最后是输入默认数据库名、数据库密码，这里建议都填root。若自定义的话这两个一定不能忘，否则会很麻烦。MySQL的服务名是无所谓的，建议就默认的MySQL80。</p>
-<p>所以说，一个设备上安装两个MySQL版本是可行的，我这里就成功安装了两个版本的MySQL，算上冒险岛的话，已经在一台设备上集成了三个服务端。不过不推荐这样的做法，因为这样没法同时运行，两个MySQL的服务窗口和进程都是冲突的。若想运行旧版本的MySQL，则需在任务管理器&gt;服务中手动停止相关的进程（一般是mysqld），并停用相关的服务（MySQL80）。以后会想办法把旧的数据库都集成到MySQL8中。</p>
-<p>MySQL安装完成后，建议直接用Navicat尝试连接localhost_3306的数据库，能连进去就说明数据库服务在正常运行。</p>
-<h2 id="2-拉取源代码"><a href="#2-拉取源代码" class="headerlink" title="2. 拉取源代码"></a><p align="left">2. 拉取源代码</p></h2><p>用Git Extensions从<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore</a> 拉取源代码。安装Git Extensions后，右键菜单栏会多出一些栏目，我这里在C盘新建一个TRINITY 4.3.4的文件夹，在其中右键选择GitExt Clone…，可将源代码克隆到本地：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/3.png" title="c">
-<p>分支（Branch）选择需要注意，这里的branch建议选HEAD或master，因为只有4.3.4相关的内容。我这里对源代码克隆经常显示失败，通常错误是没有Github端的响应，可能是因为我的全局魔法不够厉害导致的，不过多试几次后还是成功了。</p>
-<h2 id="3-CMake生成C-方案和工程"><a href="#3-CMake生成C-方案和工程" class="headerlink" title="3. CMake生成C++方案和工程"></a><p align="left">3. CMake生成C++方案和工程</p></h2><p>先简单说一下这个CMake是干什么的，它可以从源代码生成不同平台或不同编译器需要的makefile（优化的编译方案）以及构建的工程文件。首先我们先建立一个名为Build的文件夹，如C:\Build。然后打开CMake工具（cmake-gui.exe），指定Browse Source（源码路径）和Browse Build（Build的路径，即这里的C:\Build）。然后点左下的Configure配置目标的工程平台，这里当然就选择Visual Studio 2019。下面两个不填，最后点击finish：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/4.png" title="d">
-<p>finish后，将会生成一些配置的缓存。首先检查Configuring是否成功完毕，即下方的框中是否存在Could not Found…之类的错误（如Could not Found OpenSSL、Could not Found MySQL等），如果有这类错误，说明对应的环境没有配置好，或是OpenSSL没有配置环境变量；如果黑字全部显示Found…，一般就能够成功Configuring done。在上方的红色区域，我们需要重点检查的是Tools选项是否被打勾，这个关系到是否编译出工具文件，这里必须打勾。确认Configuring和Tools都无误后，再点击一遍Configure，确认所有的目标（所有红色会消失），然后点击Generate生成构建方案：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/5.png" title="e">
-
-<h2 id="4-编译源代码"><a href="#4-编译源代码" class="headerlink" title="4. 编译源代码"></a><p align="left">4. 编译源代码</p></h2><p>Generate完成后，会有一个Open Project的按钮，点击即可从VS2019打开这个项目。也可以从C:/Trinity/Build/TrinityCore.sln的.sln文件利用VS打开这个项目（可能需要等待一小会让代码加载完毕）。从顶部的【生成】&gt;【配置管理器】中，将“活动解决方案配置”由默认的Debug模式改为RelwithDebinfo，这是一种介于Debug（调试模式）和Release（发布模式）之间的模式。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/6.png" title="f">
-<p>最后，我们在右边的 “解决方案资源管理器” 中右键ALL_BUILD（一定要点在All_build上），点击“清理”。清理完成后，再次右键，点击“生成”。这是最终的编译步骤，可能需要一小段时间（依机器配置不同），这一步我大概消耗了十几二十分钟。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/7.png" title="g">
-<p>编译完成后，先检查一下VS中输出的编译结果，即形如<code>Build: 22 succeeded, 0 failed, 0 up-to-date, 1 skipped</code>的最后一行，这里的数字不是定死的，我们只要确定没有failed的项目就行了。这样就可以在C:\build\bin\RelWithDebInfo中看到生成的文件。</p>
-<p>检查一下生成的文件，这里面.pdb文件是编译时生成的数据库文件，可以不用管。我们首先将编译出的工具移动到一个独立的位置。并保存好。这里的工具有两种，第一个是connection_patcher.exe，用来patch客户端程序；第二种则是地图数据提取工具，即mapextractor.exe、mmaps_generator.exe、vmap4assembler.exe、vmap4extractor.exe四个.exe。</p>
-<p>虽然编译已经完成，但编译结果不要删掉了，先留着，后面可能有用。</p>
-<h2 id="5-拼合完整的服务端文件"><a href="#5-拼合完整的服务端文件" class="headerlink" title="5. 拼合完整的服务端文件"></a><p align="left">5. 拼合完整的服务端文件</p></h2><p>接下来的任务就是要用这里剩下的文件拼凑出一个完整的服务端。关于Trinity服务端的文件结构，之前在《<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>》进行过描述。首先将这里的两个配置文件（worldserver.conf.dist、authserver.conf.dist / bnetserver.conf.dist或形如此类的文件）删去后缀.dist，使其变成worldserver.conf和authserver.conf / bnetserver.conf。然后将worldserver.exe、authserver/bnetserver.exe以及两个配置文件worldserver.conf、authserver/bnetserver.conf四个文件都移动到一个独立文件夹内，这个文件夹将成为服务端文件夹，文件夹名不能含汉字或特殊字符。authserver.conf和bnetserver.conf实际上作用相同，是一个东西，只是看这个源码版本里叫什么罢了。</p>
-<p>然后，在这里复制放入三个.dll文件，这些dll文件通过OpenSSL控制服务端和数据库的对接，它们是：libmysql.dll、libeay32.dll、ssleay32.dll。这三个.dll都可以从环境程序中手动复制提取：</p>
-<p>libmysql.dll位于MySQL主程序的lib目录下，如C:\Program Files\MySQL\MySQL Server 5.x\lib，复制其放入服务端文件夹；</p>
-<p>libeay32.dll和ssleay32.dll位于OpenSSL主程序根目录中，如C:\OpenSSL-Win64\或C:\OpenSSL-Win32\（取决于你安装的是32位还是64位）；这里要说的是，新版本的32位OpenSSL中这两个.dll已经被改名为libssl-1_1.dll和libcrypto-1_1.dll；在64位新版本OpenSSL中叫libssl-1_1-x64.dll、libcrypto-1_1-x64.dll。如我们之前安装的是64位的OpenSSL，这里就复制libssl-1_1-x64.dll和libcrypto-1_1-x64.dll到服务端文件夹中即可。</p>
-<h3 id="提取地图资源文件"><a href="#提取地图资源文件" class="headerlink" title="提取地图资源文件"></a><p align="left">提取地图资源文件</p></h3><p><strong>注意！这一步相当耗时，可能需要数个小时（依机器配置不同），建议留有充足的时间。</strong></p>
-<p>我们先编写一个简单的.bat，将其命名为【提取Vmaps文件.bat】：</p>
-<figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>                    Welcome to the vmaps extractor and assembler</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> 解压时您的磁盘剩余空必须要大于<span class="number">2</span>GB, 按CTRL+C 退出</span><br><span class="line"><span class="built_in">echo</span> 按回车键开始解压 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">EXIST</span> buildings\<span class="built_in">dir</span> (<span class="built_in">ECHO</span> The buildings folder already <span class="keyword">exist</span> <span class="keyword">do</span> you want to delete it?</span><br><span class="line"><span class="built_in">echo</span> <span class="keyword">If</span> YES hit Enter to continue <span class="keyword">if</span> no CLOSE the program now! . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">DEL</span> /S /Q buildings)</span><br><span class="line">vmap4extractor.exe</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap extract tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Vmaps extracted check log.txt <span class="keyword">for</span> errors, now it's <span class="built_in">time</span> to assemble the vmaps press any key to continue . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">md</span> vmaps</span><br><span class="line">vmap4assembler.exe buildings vmaps</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap assembler tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续. . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Process done! <span class="built_in">copy</span> vmaps folder to the MaNGOS main directory</span><br><span class="line"><span class="built_in">echo</span> 按任意按钮退出 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br></pre></td></tr></table></figure>
-
-<p>然后准备提取地图资源：</p>
-<blockquote>
-<ol>
-<li>将【4. 编译源代码】中获取的工具文件即mapextractor.exe、vmap4assembler.exe、vmap4extractor.exe、mmaps_generator.exe四个.exe文件，以及【提取Vmaps文件.bat】，全部复制到下载好的纯净版wow客户端根目录下，必须全部复制，缺一不可。</li>
-<li>执行【mapextractor.exe】，解出maps、dbc、Cameras文件夹，解包完毕后退出；</li>
-<li>上一步运行完毕后，执行【提取Vmaps文件.bat】。等待运行完毕，这一步约需要30-60分钟。跑完后解出vmaps文件夹；</li>
-<li>上一步运行完毕后，执行【mmaps_generator.exe】。如果是带扩展包的wow版本，这一步将会非常非常慢，需要约一个多小时时间。最终解出mmaps文件夹；</li>
-<li>全部执行完毕后，将maps、dbc、Cameras、vmaps、mmaps文件夹全部放到我们的服务端文件夹内。在客户端通常还会生成一个叫building的文件夹，是没有用的，可以删掉。</li>
-</ol>
-</blockquote>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/8.png" title="h">
-
-<p>至此，我们已经拥有了所有服务端的文件，即在服务端文件夹下应包含：</p>
-<blockquote>
-<p>Cameras<br>dbc<br>maps<br>mmaps<br>vmaps<br>bnetserver.conf（或称作authserver）<br>bnetserver.exe（或称作authserver）<br>worldserver.conf<br>worldserver.exe<br>libmysql.dll<br>libeay32.dll（或不同的名称）<br>ssleay32.dll（或不同的名称）</p>
-</blockquote>
-<p>至少的12个项目。如图：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/9.png" title="i">
-
-<p>关于服务端最后我们需要配置的是：两个配置文件中所有需要填入数据库名、数据库端口和数据库密码的位置，否则服务端找不到MySQL数据库。如图（图中只是一部分，端口这里设为3306）：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/10.png" title="j">
-
-<p>服务端到此配置完毕。</p>
-<h2 id="6-填充TrinityCore的数据库"><a href="#6-填充TrinityCore的数据库" class="headerlink" title="6. 填充TrinityCore的数据库"></a><p align="left">6. 填充TrinityCore的数据库</p></h2><p>服务端已经配置好了，但我们现在打开Navicat连接数据库可以发现，localhost_3306下是没有什么东西的（顶多只有几个默认的数据库如information_schema等）。我们需要导入TrinityCore的数据库。TrinityCore的数据库由以下几个数据库构成：</p>
-<blockquote>
-<p>auth - 帐户数据 - 用户名、密码、GM权限、服务器域等的信息；<br>characters - 角色数据 - 创建的角色及其公会、银行、背包、任务状态等信息；<br>world - 游戏内容 - 如NPC，任务，物品等；<br>hotfixes（仅master版本使用） - 保留尚未添加到核心或其他官方数据库的修补程序。</p>
-</blockquote>
-<p>如果是3.3.5a的Trinity，是没有hotfixes数据库的。我们这里是4.3.4版本，则需要这个数据库。</p>
-<p>我们解压之前下载好的TDB_full_434数据库文件（.sql），这里是两个.sql文件：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">TDB_full_world_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br><span class="line"><span class="selector-tag">TDB_full_hotfixes_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br></pre></td></tr></table></figure>
-
-<p>分别对应world数据库和hotfixes数据库。这里我们不要从Navicat手动导入这个.sql（会慢到你怀疑人生）。先在<a href="https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql" target="_blank" rel="noopener">https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql</a> 上下载sql，在localhost中运行它，即可创建这几个空的数据库。实际上，我认为在Navicat中手动建立这四个数据库也是可以的，即使其包含有auth、characters、world、hotfixes这四个空的数据库就可以了。然后我们将TDB_full_434中解压出的两个.sql文件复制进服务端文件夹内，然后启动一次worldserver.exe，worldserver会自动发现没有内容的数据库，并填入对应的数据。不需要多长时间就可以完成。</p>
-<p>数据库中环节的最后一步，我们必须进入数据库auth下realmlist表中，将两个ip地址（address和localaddress）改为本地的127.0.0.1（如果是远程服务器的话就是服务器的公网IP地址），并确认世界服务器端口（这里通常是8085）、gamebuild（必须是15595）。有兴趣的话也可以将服务器名改为你喜欢的名字，这样在游戏中就会显示出这个自定义的服务器域（realm）名。</p>
-<h2 id="7-Patch客户端程序"><a href="#7-Patch客户端程序" class="headerlink" title="7. Patch客户端程序"></a><p align="left">7. Patch客户端程序</p></h2><p>新版本的wow由于对接了战网（Battle.net），Patch起来较为复杂。首先我们配置auth。需要获取AuthModules，即两个.auth文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/AuthModules" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/AuthModules</a> ，下载这里Windows下的x64和x86的两个.auth，然后将x64和x86两个文件分别放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache下的文件夹内，路径规则为：<strong>以.auth文件的前4个字符为参考，放入对应的路径。</strong></p>
-<blockquote>
-<p>如x64.auth文件的前4个字符为0a3a，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\0a\3a 之下；<br>x86的前4个为8f52，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\8f\52 之下。</p>
-</blockquote>
-<p>然后将【4. 编译源代码】中获得的connection_patcher.exe放入wow客户端根目录下。首先将wow.exe拖到connection_patcher.exe上，对它进行patch：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/11.png" title="k">
-<p>这里一定要注意这个黑框是否输出successully的结果，如果命令框在某一步直接闪退，则patch失败，需要重新patch。之前的auth模块如果没有配置正确的话，很可能在Patching module这一步闪退，并在客户端目录生成一个Crash文件夹。这一步我失败了很多次，后来在Discord上询问了服务端开发者本人后，发现先配置好auth后再进行patch就成功了。但他们有人表示，auth模块可以在patch过程中自行生成，但在我这里就不成功（还有另一个人也不成功）。故如果遇到类似的问题的话，首先配置好auth再进行patch，则可解决。</p>
-<p>wow.exe的patch完成后，我们再对wow-64.exe进行patch，这样一共会生成出Wow_patched.exe、Battle.net_patched.dll以及Wow-64_patched.exe、Battle-64.net_patched.dll共四个文件（两个exe、两个dll）。接下来，将原始的wow.exe、wow-64.exe、Battle.net.dll、Battle-64.net.dll四个文件以及launcher.exe都移走到其他独立目录中（或直接删除，只要你有备份的话）。移走它们后，将剩下的带_patched的四个文件改名回原来的样子（即删掉名称中的_patched，如将Battle.net_patched.dll改为Battle.net.dll），完成“狸猫换太子”的步骤。</p>
-<p>这一步仍有问题的可参考项目端给出的troubleshooting：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting</a></p>
-<p>其他启动客户端时的奇怪问题（如“无法传输所需的压缩数据”等）可能与WoW.mfil文件有关，这点可参考之前的文章。</p>
-<h2 id="8-启动"><a href="#8-启动" class="headerlink" title="8. 启动"></a><p align="left">8. 启动</p></h2><p>这样，一切都配置完成了。我们先运行bnetserver.exe和worldserver.exe，正常运行后，启动客户端的wow.exe或wow-64.exe，看看是否能正常进入登陆页面。万事俱备只欠东风，我们似乎还没有注册账号。我们自己编译的服务端由于没有单独制作注册页面，需要手动从worldserver控制台中用服务端命令注册账号，也就是我们打开的worldserver.exe的框。这里简述一下worldserver中与创建账号相关的基础命令：</p>
-<blockquote>
-<p><strong>Trinitycore worldserver控制台基础命令（账户相关）:</strong><br>创建普通账号：account create <user> <password><br>例如：account create admin admin。这样就创建了一个用户名为admin，密码为admin的普通账号<br>注意：普通账号只适用于Trinity 3.3.5（WLK）及其之前版本的Trinitycore中，之后的版本（即master，如4.3.4）必须使用<strong>战网邮箱账号</strong>登录，普通账号几乎已经不起作用。<br>创建战网邮箱账号： bnet create &lt;user@xxxx&gt; <password><br>例如：bnet create admin<span></span>@qq.com admin。这样就创建了一个用户名为admin<span></span>@qq.com，密码为admin的战网邮箱账号。<br>该账号适用于需要战网邮箱账号登录的Trinitycore版本。在创建成功后，数据库auth下的account中将会生成该账号的username，通常形如2#1、3#1。<br>给予账号GM权限：从数据库查看账号的username（形如2#1、3#1的）。如这里要将ID为3#1的账号调整为GM最高权限：<br>account set gmlevel 3#1 3 -1<br>这里的3是指GM的权限等级，3是最高权限，拥有删除普通账号、以及关闭服务器的权力。-1则是指将该账号下的全部服务器都给予该权限。</password></password></user></p>
-</blockquote>
-<p>我们这里<strong>只需要注册战网邮箱账号</strong>。注册好后，输入邮箱和密码即可连接了。若显示“无法连接至服务器”大概率是由于patch失败导致的。然后要想玩的顺利的话，强烈建议认真阅读一下worldserver.conf中的每条内容，尝试理解它们是在控制哪些因素。比如很多人都遇到的一个问题，即GM命令中的.kill不起作用，且.die命令无法拾取战利品，怎么办？这是因为TrinityCore和Mangos不同，需要在worldserver.conf中搜索条目.die，找到<code>Die.Command.Mode = 1</code>，将其值改成0，即可在.die命令时获取战利品。另外如果发现vmaps不生效，通常也是由于worldserver.conf中没有启用vmaps、mmaps（其值为0），将其启用即可。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/12.png" title="l">
-<img src="/2022/05/24/Windows环境下编译TrinityCore/13.png" title="m">
-<p><strong><center>“我重回战场！”</center></strong></p>
-<hr>
-<h2 id="有趣的故事"><a href="#有趣的故事" class="headerlink" title="有趣的故事"></a><p align="left">有趣的故事</p></h2><p>还得感谢这位叫funjoker的服务端开发者耐心地为我和另一个法国老哥（遇到了同样的问题）解决有关客户端patch的问题，最后，我们都成功解决了，给那个法国哥们开心的说了一大串法语（真地看不懂），funjoker和另一个开发者还打趣地说guess why i am bald，xDDD</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/14.png" title="n">
-<p>最后的最后是一个有意思的东西，因为在之前的《魔兽世界日记》中了解到了“程序员岛（ProgrammerIsle）”的存在，我尝试传送“程序员岛”，这个GM命令是<code>.go xyz 16304 16318 69 451</code>，即约翰·斯塔茨在书中所说的坐标16000,16000（之后我也许会单独开一个文章讲Trinity端的GM命令）。结果…账号直接崩溃了，因为服务端无法加载“程序员岛”对应的地图资源：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/15.png" title="o">
-<p>这导致这个角色再也无法正常登录，因为角色已经传送，一登陆就要立即加载“程序员岛”，则又会导致崩溃，进入死循环。所以不得不从Navicat中修改了角色的坐标位置到正常地带，这才将角色救回来…</p>
-<p>451这个地图（即Development Land，台版似乎译为“開發之地”），应该是早已不存在于现有的服务端了，故无法加载。所以这次我也更深入地了解了一下wow的地图结构，每个编号都是一个空间，可以理解为一个位面下。0是东部王国，1是卡利姆多，故有大量的地图带有0和1。而外域的位面号为530，任何TBC版本的地图都位于这个位面下。通过GM的飞行权限以及一些其他手段，我们可以实现从外域直接“飞到”奎尔丹纳斯岛或者秘蓝岛，而不经过黑暗之门，这是因为它们都处在同一位面下。奎岛究竟在外域的哪个方向呢？答案是大约在东北方向，远在地图界面的可视范围之外（约6000个坐标单位）；而秘蓝岛则在更加遥远的东方，大概在外域地狱火半岛的10000个坐标单位之外。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/16.jpg" title="p">
-<img src="/2022/05/24/Windows环境下编译TrinityCore/17.jpg" title="q">
-<center>GM岛的真正位置，其位于卡利姆多（即位面1）的最西北角</center>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>游戏</tag>
-        <tag>服务器</tag>
       </tags>
   </entry>
   <entry>
@@ -2038,8 +1921,148 @@ table th:nth-of-type(3) {
 <p>并关掉网络代理程序，则可以解决问题。或手头有能正常工作的客户端的话，直接复制过来也行。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>服务器</tag>
+        <tag>游戏</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows环境下编译TrinityCore</title>
+    <url>/2022/05/24/Windows%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%BC%96%E8%AF%91TrinityCore/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>在Windows环境下通过基于TrinityCore的项目源码编译4.3.4-15595版本的服务端，以及服务端、客户端的配置工作，服务端的启动等及过程中的解释说明等。<a id="more"></a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p align="left">前言</p></h2><p>在之前的工作（见<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>）中，在不涉及源码编译的情况下，对Trinity服务端进行了简单的介绍，介绍了一些Trinity服务端的基本常识内容，并用别人编译好的服务端实现了3.3.5的WLK版本的服务端搭建。但由于服务端仍是使用现成的构建，略过了编译环节，也就导致一些功能无法实现，如自行提取对应版本的地图资源文件等，因为很多工具只有通过TrinityCore的源码编译才能生成。为了最大程度避免这些问题，从源码开始自行编译构建服务端无疑是最彻底的方案，故本次就从基于TrinityCore的项目进行源码编译。选择了一个基于TrinityCore的非官方分支项目即The-Cataclysm-Preservation-Project，也就是4.3.4版本的端，项目位于：<a href="https://github.com/The-Cataclysm-Preservation-Project" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project</a></p>
+<p>本次说明中的资源都可以在这里找到，该分支项目也给出了TrinityCore的官方编译指南，即：<a href="https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation</a> 。可以说，这次写的这个文章基本可以算是我对这篇TrinityCore官方文档的具体尝试，因为我也是初学者，认识浅薄，有能力的同学可以结合这个官方给出的文档共同参考，我这里重点是写出我自己在编译过程中遇到的具体问题，因为官方文档并不能够面面俱到。并且，这更多是出于我的“本地完备”的技术原则，这只是个占位符名称，因为目前我还没有想到（或学到、找到）一个词汇能够描述这个概念：<strong>即保证个人能够在彻底脱离国际互联网之后还能够以一定的资源开展一定形式的工作</strong>，这不是说我敌视互联网，而是为了应对最极端的情况，是类似于个人化的“防核地堡”的概念。</p>
+<h3 id="什么是编译"><a href="#什么是编译" class="headerlink" title="什么是编译"></a><p align="left">什么是编译</p></h3><p>我觉得有必要以通俗的语言简单重复一下这个概念。<strong>编译实际上可以理解为一种计算机语言之间的“翻译”过程</strong>，即将程序开发者（人）书写的源代码“翻译”——源代码通常是以人可以识别的“高级语言”书写的（如C++、Java等等），翻译成由计算机（机器）才能识别的汇编语言或二进制机器语言等“低级语言”。并且最终由计算机输出生成在某个平台环境下运行的可执行程序，也就是我们平常看到的程序本身，相对于把译文打印装订成书。这个过程就叫编译。</p>
+<p>（事实一再证明，很多基本问题从来不受重视，从来没有哪个老师真正能够告诉我（或试图告诉我）三极管、互联网、宪法以及文学艺术对个人和人类社会到底有什么意义，因为考试永远不会考你自己的理解，他们要的只是工具和程序）</p>
+<h3 id="为什么选择4-3-4（CTM）"><a href="#为什么选择4-3-4（CTM）" class="headerlink" title="为什么选择4.3.4（CTM）"></a><p align="left">为什么选择4.3.4（CTM）</p></h3><p>回到正题，首先说一下为什么选择4.3.4的端。不仅是因为之前已经实现过3.3.5的搭建，更多的是出于游戏性的考虑。熟悉这个游戏的人都知道，CTM版本实际上对这个游戏系统做出了相当大的改动，这在曾经是有争议的（即使是放在今天来说可能也如此）。不过，对于私人搭建的服务端来说，CTM版本的改动无疑是再适合不过的——它将WOW的单机玩法提升到了前所未有的水平，无论是难度曲线还是改版后艾泽拉斯的地图任务的故事情节，要比老版本出色太多了。<strong>单从这一点来讲，我个人就对CTM版本有着非常高的评价</strong>。况且这个版本还新加入了大量优秀动听的音乐，并重新设计了艾泽拉斯的美景，所以说只作为单机游戏看待的话，CTM无疑比之前的老版本更好玩，也更具收藏价值。</p>
+<p>接下来说一下4.3.4端普遍存在的问题。美中不足的事总是有的，因为现在CTM的端大多基于TrinityCore衍生而来，并非是Trinity官方的项目，故这方面的工作仍然不够充分。上面提到的CTM版本设计精良的任务需要复杂的脚本代码机制来实现，比起老版本简单枯燥的任务来说是好玩了不少，但也导致其修复难度较大。种种原因导致现在市面上的4.3.4版本的服务端源代码普遍没有3.3.5那么完善，这点也是不得不接受的事实。不过从这次我亲自测试的结果来看，即使有着很多bug问题，对于单机模式的游戏性来说，我仍更倾向于选择4.3.4版本。</p>
+<h3 id="客户端准备"><a href="#客户端准备" class="headerlink" title="客户端准备"></a><p align="left">客户端准备</p></h3><p>在编译工作开始之前，我建议先下载好这个服务端对应的4.3.4-15595的客户端文件，即通过下面的工具：<br>通过运行wowregeneration下载客户端Data文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/wowregeneration" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/wowregeneration</a><br>通过运行ClientDownloader下载客户端其他文件（如wow.exe等）：<a href="https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader</a><br>这里不用clone代码，直接Download ZIP，解压后就可以运行下载器。全部下完后，将Data文件夹和其他文件放在一个目录下，拼合成完整客户端。这里的完整的4.3.4-15595客户端总大小约15.6GB。</p>
+<p>以及TDB_full_434数据库信息文件（.sql文件）：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z</a></p>
+<p>本次测试不使用远程服务器，即在本地（127.0.0.1）进行测试。</p>
+<p>好了，编译工作现在开始。</p>
+<h2 id="1-Windows上的环境配置"><a href="#1-Windows上的环境配置" class="headerlink" title="1. Windows上的环境配置"></a><p align="left">1. Windows上的环境配置</p></h2><p>对于Windows系统，为了进行编译，我们需要以下工具和环境：</p>
+<blockquote>
+<p>Git-2.23<br>gitExtensions-3.4.3.9999<br>cmake 3.22.1 （版本≥ 3.18.4）<br>boost 1.73.0（版本≥ 1.73.0）<br>Win64OpenSSL 1.1.1o<br>mysql community 8.0.29 (版本≥ mysql5)<br>Navicat8 或 Navicat premium<br>当然还必须要有Visual Studio，这里选择Visual Studio Community 2019，在配置时勾选上C++开发模块即可（此模块需要数个G的空间）。</p>
+</blockquote>
+<p>简单说一下每个东西的用途：</p>
+<blockquote>
+<p>git和gitExtension用来拉取GitHub项目端的源代码到本地，这里我们用clone的方式；<br>cmake用来把源代码编译成提供给Visual Studio的工程文件；<br>Visual Studio就是所谓的“宇宙第一IDE”，集成了各种开发工具和环境。这里我们主要用它来生成构建。<br>boost是为C++标准库提供扩展的扩展库；<br>OpenSSL是一个加密工具，通过SSL协议实现传输的加密对接；<br>mysql提供服务器系统；Navicat则提供数据库的图形化管理功能。</p>
+</blockquote>
+<p>安装每个工具的过程详见：<a href="https://www.trinitycore.info/en/install/requirements/windows" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/requirements/windows</a></p>
+<p>别的基本都没什么变数，这里主要说一下MySQL 8.0的安装。这里选择mysql community 8.0.29，安装包下载地址为：<a href="https://dev.mysql.com/downloads/windows/installer/8.0.html" target="_blank" rel="noopener">https://dev.mysql.com/downloads/windows/installer/8.0.html</a> ，选择432mb大小的那个msi进行下载。安装时首先选择Custom模式，因为若不选择Custom，MySQL是默认安装到C盘的，只有选Custom才能在之后的选项中改变安装路径，产品（product）中只需要选择安装MySQL Server 8.0.24-x64即可，别的是关于数据库的开发组件，不选。然后建议点击Advanced Options，自定义一个安装目录。将Install Directory（主程序目录）和Data Directory（数据库目录）定位到不同的两个文件夹里。如果之前装过MySQL的话可能会有个叹号提示，无视即可。这里我直接使用网络上找到教程的图片：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/1.png" title="a">
+<p>然后是填入默认数据库端口。端口一般默认是3306就行，直接next。但我因为之前还装过一个老版本的MySQL为3.3.5的端提供服务（同时还集成了V079冒险岛的数据库），我就改了一个3307，最后在服务端的配置文件（.conf）中将所有数据库的端口都改成3307即可。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/2.png" title="b">
+<p>最后是输入默认数据库名、数据库密码，这里建议都填root。若自定义的话这两个一定不能忘，否则会很麻烦。MySQL的服务名是无所谓的，建议就默认的MySQL80。</p>
+<p>所以说，一个设备上安装两个MySQL版本是可行的，我这里就成功安装了两个版本的MySQL，算上冒险岛的话，已经在一台设备上集成了三个服务端。不过不推荐这样的做法，因为这样没法同时运行，两个MySQL的服务窗口和进程都是冲突的。若想运行旧版本的MySQL，则需在任务管理器&gt;服务中手动停止相关的进程（一般是mysqld），并停用相关的服务（MySQL80）。以后会想办法把旧的数据库都集成到MySQL8中。</p>
+<p>MySQL安装完成后，建议直接用Navicat尝试连接localhost_3306的数据库，能连进去就说明数据库服务在正常运行。</p>
+<h2 id="2-拉取源代码"><a href="#2-拉取源代码" class="headerlink" title="2. 拉取源代码"></a><p align="left">2. 拉取源代码</p></h2><p>用Git Extensions从<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore</a> 拉取源代码。安装Git Extensions后，右键菜单栏会多出一些栏目，我这里在C盘新建一个TRINITY 4.3.4的文件夹，在其中右键选择GitExt Clone…，可将源代码克隆到本地：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/3.png" title="c">
+<p>分支（Branch）选择需要注意，这里的branch建议选HEAD或master，因为只有4.3.4相关的内容。我这里对源代码克隆经常显示失败，通常错误是没有Github端的响应，可能是因为我的全局魔法不够厉害导致的，不过多试几次后还是成功了。</p>
+<h2 id="3-CMake生成C-方案和工程"><a href="#3-CMake生成C-方案和工程" class="headerlink" title="3. CMake生成C++方案和工程"></a><p align="left">3. CMake生成C++方案和工程</p></h2><p>先简单说一下这个CMake是干什么的，它可以从源代码生成不同平台或不同编译器需要的makefile（优化的编译方案）以及构建的工程文件。首先我们先建立一个名为Build的文件夹，如C:\Build。然后打开CMake工具（cmake-gui.exe），指定Browse Source（源码路径）和Browse Build（Build的路径，即这里的C:\Build）。然后点左下的Configure配置目标的工程平台，这里当然就选择Visual Studio 2019。下面两个不填，最后点击finish：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/4.png" title="d">
+<p>finish后，将会生成一些配置的缓存。首先检查Configuring是否成功完毕，即下方的框中是否存在Could not Found…之类的错误（如Could not Found OpenSSL、Could not Found MySQL等），如果有这类错误，说明对应的环境没有配置好，或是OpenSSL没有配置环境变量；如果黑字全部显示Found…，一般就能够成功Configuring done。在上方的红色区域，我们需要重点检查的是Tools选项是否被打勾，这个关系到是否编译出工具文件，这里必须打勾。确认Configuring和Tools都无误后，再点击一遍Configure，确认所有的目标（所有红色会消失），然后点击Generate生成构建方案：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/5.png" title="e">
+
+<h2 id="4-编译源代码"><a href="#4-编译源代码" class="headerlink" title="4. 编译源代码"></a><p align="left">4. 编译源代码</p></h2><p>Generate完成后，会有一个Open Project的按钮，点击即可从VS2019打开这个项目。也可以从C:/Trinity/Build/TrinityCore.sln的.sln文件利用VS打开这个项目（可能需要等待一小会让代码加载完毕）。从顶部的【生成】&gt;【配置管理器】中，将“活动解决方案配置”由默认的Debug模式改为RelwithDebinfo，这是一种介于Debug（调试模式）和Release（发布模式）之间的模式。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/6.png" title="f">
+<p>最后，我们在右边的 “解决方案资源管理器” 中右键ALL_BUILD（一定要点在All_build上），点击“清理”。清理完成后，再次右键，点击“生成”。这是最终的编译步骤，可能需要一小段时间（依机器配置不同），这一步我大概消耗了十几二十分钟。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/7.png" title="g">
+<p>编译完成后，先检查一下VS中输出的编译结果，即形如<code>Build: 22 succeeded, 0 failed, 0 up-to-date, 1 skipped</code>的最后一行，这里的数字不是定死的，我们只要确定没有failed的项目就行了。这样就可以在C:\build\bin\RelWithDebInfo中看到生成的文件。</p>
+<p>检查一下生成的文件，这里面.pdb文件是编译时生成的数据库文件，可以不用管。我们首先将编译出的工具移动到一个独立的位置。并保存好。这里的工具有两种，第一个是connection_patcher.exe，用来patch客户端程序；第二种则是地图数据提取工具，即mapextractor.exe、mmaps_generator.exe、vmap4assembler.exe、vmap4extractor.exe四个.exe。</p>
+<p>虽然编译已经完成，但编译结果不要删掉了，先留着，后面可能有用。</p>
+<h2 id="5-拼合完整的服务端文件"><a href="#5-拼合完整的服务端文件" class="headerlink" title="5. 拼合完整的服务端文件"></a><p align="left">5. 拼合完整的服务端文件</p></h2><p>接下来的任务就是要用这里剩下的文件拼凑出一个完整的服务端。关于Trinity服务端的文件结构，之前在《<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>》进行过描述。首先将这里的两个配置文件（worldserver.conf.dist、authserver.conf.dist / bnetserver.conf.dist或形如此类的文件）删去后缀.dist，使其变成worldserver.conf和authserver.conf / bnetserver.conf。然后将worldserver.exe、authserver/bnetserver.exe以及两个配置文件worldserver.conf、authserver/bnetserver.conf四个文件都移动到一个独立文件夹内，这个文件夹将成为服务端文件夹，文件夹名不能含汉字或特殊字符。authserver.conf和bnetserver.conf实际上作用相同，是一个东西，只是看这个源码版本里叫什么罢了。</p>
+<p>然后，在这里复制放入三个.dll文件，这些dll文件通过OpenSSL控制服务端和数据库的对接，它们是：libmysql.dll、libeay32.dll、ssleay32.dll。这三个.dll都可以从环境程序中手动复制提取：</p>
+<p>libmysql.dll位于MySQL主程序的lib目录下，如C:\Program Files\MySQL\MySQL Server 5.x\lib，复制其放入服务端文件夹；</p>
+<p>libeay32.dll和ssleay32.dll位于OpenSSL主程序根目录中，如C:\OpenSSL-Win64\或C:\OpenSSL-Win32\（取决于你安装的是32位还是64位）；这里要说的是，新版本的32位OpenSSL中这两个.dll已经被改名为libssl-1_1.dll和libcrypto-1_1.dll；在64位新版本OpenSSL中叫libssl-1_1-x64.dll、libcrypto-1_1-x64.dll。如我们之前安装的是64位的OpenSSL，这里就复制libssl-1_1-x64.dll和libcrypto-1_1-x64.dll到服务端文件夹中即可。</p>
+<h3 id="提取地图资源文件"><a href="#提取地图资源文件" class="headerlink" title="提取地图资源文件"></a><p align="left">提取地图资源文件</p></h3><p><strong>注意！这一步相当耗时，可能需要数个小时（依机器配置不同），建议留有充足的时间。</strong></p>
+<p>我们先编写一个简单的.bat，将其命名为【提取Vmaps文件.bat】：</p>
+<figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>                    Welcome to the vmaps extractor and assembler</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> 解压时您的磁盘剩余空必须要大于<span class="number">2</span>GB, 按CTRL+C 退出</span><br><span class="line"><span class="built_in">echo</span> 按回车键开始解压 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">EXIST</span> buildings\<span class="built_in">dir</span> (<span class="built_in">ECHO</span> The buildings folder already <span class="keyword">exist</span> <span class="keyword">do</span> you want to delete it?</span><br><span class="line"><span class="built_in">echo</span> <span class="keyword">If</span> YES hit Enter to continue <span class="keyword">if</span> no CLOSE the program now! . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">DEL</span> /S /Q buildings)</span><br><span class="line">vmap4extractor.exe</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap extract tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Vmaps extracted check log.txt <span class="keyword">for</span> errors, now it's <span class="built_in">time</span> to assemble the vmaps press any key to continue . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">md</span> vmaps</span><br><span class="line">vmap4assembler.exe buildings vmaps</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap assembler tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续. . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Process done! <span class="built_in">copy</span> vmaps folder to the MaNGOS main directory</span><br><span class="line"><span class="built_in">echo</span> 按任意按钮退出 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br></pre></td></tr></table></figure>
+
+<p>然后准备提取地图资源：</p>
+<blockquote>
+<ol>
+<li>将【4. 编译源代码】中获取的工具文件即mapextractor.exe、vmap4assembler.exe、vmap4extractor.exe、mmaps_generator.exe四个.exe文件，以及【提取Vmaps文件.bat】，全部复制到下载好的纯净版wow客户端根目录下，必须全部复制，缺一不可。</li>
+<li>执行【mapextractor.exe】，解出maps、dbc、Cameras文件夹，解包完毕后退出；</li>
+<li>上一步运行完毕后，执行【提取Vmaps文件.bat】。等待运行完毕，这一步约需要30-60分钟。跑完后解出vmaps文件夹；</li>
+<li>上一步运行完毕后，执行【mmaps_generator.exe】。如果是带扩展包的wow版本，这一步将会非常非常慢，需要约一个多小时时间。最终解出mmaps文件夹；</li>
+<li>全部执行完毕后，将maps、dbc、Cameras、vmaps、mmaps文件夹全部放到我们的服务端文件夹内。在客户端通常还会生成一个叫building的文件夹，是没有用的，可以删掉。</li>
+</ol>
+</blockquote>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/8.png" title="h">
+
+<p>至此，我们已经拥有了所有服务端的文件，即在服务端文件夹下应包含：</p>
+<blockquote>
+<p>Cameras<br>dbc<br>maps<br>mmaps<br>vmaps<br>bnetserver.conf（或称作authserver）<br>bnetserver.exe（或称作authserver）<br>worldserver.conf<br>worldserver.exe<br>libmysql.dll<br>libeay32.dll（或不同的名称）<br>ssleay32.dll（或不同的名称）</p>
+</blockquote>
+<p>至少的12个项目。如图：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/9.png" title="i">
+
+<p>关于服务端最后我们需要配置的是：两个配置文件中所有需要填入数据库名、数据库端口和数据库密码的位置，否则服务端找不到MySQL数据库。如图（图中只是一部分，端口这里设为3306）：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/10.png" title="j">
+
+<p>服务端到此配置完毕。</p>
+<h2 id="6-填充TrinityCore的数据库"><a href="#6-填充TrinityCore的数据库" class="headerlink" title="6. 填充TrinityCore的数据库"></a><p align="left">6. 填充TrinityCore的数据库</p></h2><p>服务端已经配置好了，但我们现在打开Navicat连接数据库可以发现，localhost_3306下是没有什么东西的（顶多只有几个默认的数据库如information_schema等）。我们需要导入TrinityCore的数据库。TrinityCore的数据库由以下几个数据库构成：</p>
+<blockquote>
+<p>auth - 帐户数据 - 用户名、密码、GM权限、服务器域等的信息；<br>characters - 角色数据 - 创建的角色及其公会、银行、背包、任务状态等信息；<br>world - 游戏内容 - 如NPC，任务，物品等；<br>hotfixes（仅master版本使用） - 保留尚未添加到核心或其他官方数据库的修补程序。</p>
+</blockquote>
+<p>如果是3.3.5a的Trinity，是没有hotfixes数据库的。我们这里是4.3.4版本，则需要这个数据库。</p>
+<p>我们解压之前下载好的TDB_full_434数据库文件（.sql），这里是两个.sql文件：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">TDB_full_world_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br><span class="line"><span class="selector-tag">TDB_full_hotfixes_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br></pre></td></tr></table></figure>
+
+<p>分别对应world数据库和hotfixes数据库。这里我们不要从Navicat手动导入这个.sql（会慢到你怀疑人生）。先在<a href="https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql" target="_blank" rel="noopener">https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql</a> 上下载sql，在localhost中运行它，即可创建这几个空的数据库。实际上，我认为在Navicat中手动建立这四个数据库也是可以的，即使其包含有auth、characters、world、hotfixes这四个空的数据库就可以了。然后我们将TDB_full_434中解压出的两个.sql文件复制进服务端文件夹内，然后启动一次worldserver.exe，worldserver会自动发现没有内容的数据库，并填入对应的数据。不需要多长时间就可以完成。</p>
+<p>数据库中环节的最后一步，我们必须进入数据库auth下realmlist表中，将两个ip地址（address和localaddress）改为本地的127.0.0.1（如果是远程服务器的话就是服务器的公网IP地址），并确认世界服务器端口（这里通常是8085）、gamebuild（必须是15595）。有兴趣的话也可以将服务器名改为你喜欢的名字，这样在游戏中就会显示出这个自定义的服务器域（realm）名。</p>
+<h2 id="7-Patch客户端程序"><a href="#7-Patch客户端程序" class="headerlink" title="7. Patch客户端程序"></a><p align="left">7. Patch客户端程序</p></h2><p>新版本的wow由于对接了战网（Battle.net），Patch起来较为复杂。首先我们配置auth。需要获取AuthModules，即两个.auth文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/AuthModules" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/AuthModules</a> ，下载这里Windows下的x64和x86的两个.auth，然后将x64和x86两个文件分别放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache下的文件夹内，路径规则为：<strong>以.auth文件的前4个字符为参考，放入对应的路径。</strong></p>
+<blockquote>
+<p>如x64.auth文件的前4个字符为0a3a，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\0a\3a 之下；<br>x86的前4个为8f52，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\8f\52 之下。</p>
+</blockquote>
+<p>然后将【4. 编译源代码】中获得的connection_patcher.exe放入wow客户端根目录下。首先将wow.exe拖到connection_patcher.exe上，对它进行patch：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/11.png" title="k">
+<p>这里一定要注意这个黑框是否输出successully的结果，如果命令框在某一步直接闪退，则patch失败，需要重新patch。之前的auth模块如果没有配置正确的话，很可能在Patching module这一步闪退，并在客户端目录生成一个Crash文件夹。这一步我失败了很多次，后来在Discord上询问了服务端开发者本人后，发现先配置好auth后再进行patch就成功了。但他们有人表示，auth模块可以在patch过程中自行生成，但在我这里就不成功（还有另一个人也不成功）。故如果遇到类似的问题的话，首先配置好auth再进行patch，则可解决。</p>
+<p>wow.exe的patch完成后，我们再对wow-64.exe进行patch，这样一共会生成出Wow_patched.exe、Battle.net_patched.dll以及Wow-64_patched.exe、Battle-64.net_patched.dll共四个文件（两个exe、两个dll）。接下来，将原始的wow.exe、wow-64.exe、Battle.net.dll、Battle-64.net.dll四个文件以及launcher.exe都移走到其他独立目录中（或直接删除，只要你有备份的话）。移走它们后，将剩下的带_patched的四个文件改名回原来的样子（即删掉名称中的_patched，如将Battle.net_patched.dll改为Battle.net.dll），完成“狸猫换太子”的步骤。</p>
+<p>这一步仍有问题的可参考项目端给出的troubleshooting：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting</a></p>
+<p>其他启动客户端时的奇怪问题（如“无法传输所需的压缩数据”等）可能与WoW.mfil文件有关，这点可参考之前的文章。</p>
+<h2 id="8-启动"><a href="#8-启动" class="headerlink" title="8. 启动"></a><p align="left">8. 启动</p></h2><p>这样，一切都配置完成了。我们先运行bnetserver.exe和worldserver.exe，正常运行后，启动客户端的wow.exe或wow-64.exe，看看是否能正常进入登陆页面。万事俱备只欠东风，我们似乎还没有注册账号。我们自己编译的服务端由于没有单独制作注册页面，需要手动从worldserver控制台中用服务端命令注册账号，也就是我们打开的worldserver.exe的框。这里简述一下worldserver中与创建账号相关的基础命令：</p>
+<blockquote>
+<p><strong>Trinitycore worldserver控制台基础命令（账户相关）:</strong><br>创建普通账号：account create <user> <password><br>例如：account create admin admin。这样就创建了一个用户名为admin，密码为admin的普通账号<br>注意：普通账号只适用于Trinity 3.3.5（WLK）及其之前版本的Trinitycore中，之后的版本（即master，如4.3.4）必须使用<strong>战网邮箱账号</strong>登录，普通账号几乎已经不起作用。<br>创建战网邮箱账号： bnet create &lt;user@xxxx&gt; <password><br>例如：bnet create admin<span></span>@qq.com admin。这样就创建了一个用户名为admin<span></span>@qq.com，密码为admin的战网邮箱账号。<br>该账号适用于需要战网邮箱账号登录的Trinitycore版本。在创建成功后，数据库auth下的account中将会生成该账号的username，通常形如2#1、3#1。<br>给予账号GM权限：从数据库查看账号的username（形如2#1、3#1的）。如这里要将ID为3#1的账号调整为GM最高权限：<br>account set gmlevel 3#1 3 -1<br>这里的3是指GM的权限等级，3是最高权限，拥有删除普通账号、以及关闭服务器的权力。-1则是指将该账号下的全部服务器都给予该权限。</password></password></user></p>
+</blockquote>
+<p>我们这里<strong>只需要注册战网邮箱账号</strong>。注册好后，输入邮箱和密码即可连接了。若显示“无法连接至服务器”大概率是由于patch失败导致的。然后要想玩的顺利的话，强烈建议认真阅读一下worldserver.conf中的每条内容，尝试理解它们是在控制哪些因素。比如很多人都遇到的一个问题，即GM命令中的.kill不起作用，且.die命令无法拾取战利品，怎么办？这是因为TrinityCore和Mangos不同，需要在worldserver.conf中搜索条目.die，找到<code>Die.Command.Mode = 1</code>，将其值改成0，即可在.die命令时获取战利品。另外如果发现vmaps不生效，通常也是由于worldserver.conf中没有启用vmaps、mmaps（其值为0），将其启用即可。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/12.png" title="l">
+<img src="/2022/05/24/Windows环境下编译TrinityCore/13.png" title="m">
+<p><strong><center>“我重回战场！”</center></strong></p>
+<hr>
+<h2 id="有趣的故事"><a href="#有趣的故事" class="headerlink" title="有趣的故事"></a><p align="left">有趣的故事</p></h2><p>还得感谢这位叫funjoker的服务端开发者耐心地为我和另一个法国老哥（遇到了同样的问题）解决有关客户端patch的问题，最后，我们都成功解决了，给那个法国哥们开心的说了一大串法语（真地看不懂），funjoker和另一个开发者还打趣地说guess why i am bald，xDDD</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/14.png" title="n">
+<p>最后的最后是一个有意思的东西，因为在之前的《魔兽世界日记》中了解到了“程序员岛（ProgrammerIsle）”的存在，我尝试传送“程序员岛”，这个GM命令是<code>.go xyz 16304 16318 69 451</code>，即约翰·斯塔茨在书中所说的坐标16000,16000（之后我也许会单独开一个文章讲Trinity端的GM命令）。结果…账号直接崩溃了，因为服务端无法加载“程序员岛”对应的地图资源：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/15.png" title="o">
+<p>这导致这个角色再也无法正常登录，因为角色已经传送，一登陆就要立即加载“程序员岛”，则又会导致崩溃，进入死循环。所以不得不从Navicat中修改了角色的坐标位置到正常地带，这才将角色救回来…</p>
+<p>451这个地图（即Development Land，台版似乎译为“開發之地”），应该是早已不存在于现有的服务端了，故无法加载。所以这次我也更深入地了解了一下wow的地图结构，每个编号都是一个空间，可以理解为一个位面下。0是东部王国，1是卡利姆多，故有大量的地图带有0和1。而外域的位面号为530，任何TBC版本的地图都位于这个位面下。通过GM的飞行权限以及一些其他手段，我们可以实现从外域直接“飞到”奎尔丹纳斯岛或者秘蓝岛，而不经过黑暗之门，这是因为它们都处在同一位面下。奎岛究竟在外域的哪个方向呢？答案是大约在东北方向，远在地图界面的可视范围之外（约6000个坐标单位）；而秘蓝岛则在更加遥远的东方，大概在外域地狱火半岛的10000个坐标单位之外。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/16.jpg" title="p">
+<img src="/2022/05/24/Windows环境下编译TrinityCore/17.jpg" title="q">
+<center>GM岛的真正位置，其位于卡利姆多（即位面1）的最西北角</center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>服务器</tag>
+        <tag>软件</tag>
+        <tag>游戏</tag>
       </tags>
   </entry>
   <entry>
