@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
-    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
-</blockquote>
-<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
-<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
-<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
-<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
-<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
-<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
-<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
-<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
-<hr>
-<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
-<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-        <tag>服务器</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CSS中引入自定义字体</title>
     <url>/2022/04/18/CSS%E4%B8%AD%E5%BC%95%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -93,6 +50,70 @@
       </tags>
   </entry>
   <entry>
+    <title>Q版二头身第二弹</title>
+    <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>再次挑战萌系二头身的制作 <a id="more"></a></p>
+</blockquote>
+<img src="/2022/11/12/Q版二头身第二弹/Caelica_C.png" title="You deserve this name">
+
+<p>在上次制作了第一个二头身之后，有了更多的制作经验。这次应该说更加贴近冒险岛（Maplestory）近年来的画风了，事实上是因为我又玩了100多小时的美服冒险岛…不过话说回来，历史上那些艺术家出去闲逛出去浪，那都不叫逛，曰采风也，像高更（Paul Gauguin）这样的人为了艺术般的生活都跑到太平洋上的小岛去了，咱因为太平洋加了盖，比不过他，那怎么办？遁入游戏世界呗！所以咱玩游戏那能叫玩游戏吗，当然不叫玩了，故从今往后这就定调：再遇到normies觉得我老大一人怎么还玩游戏，我就笑笑，因为他们不明白——</p>
+<p>&emsp;&emsp;<em>normies玩游戏，叫打发时间，叫消磨人生。因为他们对游戏艺术和游戏文化没有信仰，所以连他们自己都会这么觉得；</em></p>
+<p>&emsp;&emsp;<em>我玩游戏，至少在我这里永远都不那样叫，现在我造了个新名词</em>——<strong><em>赛博采风（Cyber Art &amp; Design Tour）</em></strong>！！</p>
+<p>言归正传，相对于之前的作品，除了整体的画风比例之外，这次着重处理了线稿的粗细分布问题，花了不少功夫，但最终的实际效果让我觉得很值，这个粗细的感觉一出来整个画面都看起来舒服了许多。之前对最外层轮廓线做了加厚加深的优点也得到了进一步发挥。</p>
+<p>色彩上优化了一级阴影的分布，减弱了一级阴影的渐变程度，总之这次喷枪式的渐变用的很谨慎，这样整体看起来更“二次元”而不是像一个厚涂作品，这可能是近年来漫画插画的绘柄特点，观察冒险岛十年前的风格也能明显看出这个变化。</p>
+<p>最后采用了PS自带的噪声生成添加了一个噪声材质图层，并用波点式贴图处理了服饰的材质。这样能看起来不是那么单调。</p>
+<p>泳衣样式是临时起意搞得，因为有人说我画的女人个个都包的严严实实，不够色，所以身材故意弄的比较…前凸后翘的那种感觉。冒险岛本身其实一直还是比较子供向，大概是很难找到这种的，所以这样也不至于因过度模仿而失去特点。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
+    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
+</blockquote>
+<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
+<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
+<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
+<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
+<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
+<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
+<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
+<hr>
+<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
+<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+        <tag>服务器</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Flash被各大浏览器彻底停用后的处理办法</title>
     <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -128,27 +149,6 @@
 ]]></content>
       <tags>
         <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Q版二头身第二弹</title>
-    <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>再次挑战萌系二头身的制作 <a id="more"></a></p>
-</blockquote>
-<img src="/2022/11/12/Q版二头身第二弹/Caelica_C.png" title="You deserve this name">
-
-<p>在上次制作了第一个二头身之后，有了更多的制作经验。这次应该说更加贴近冒险岛（Maplestory）近年来的画风了，事实上是因为我又玩了100多小时的美服冒险岛…不过话说回来，历史上那些艺术家出去闲逛出去浪，那都不叫逛，曰采风也，像高更（Paul Gauguin）这样的人为了艺术般的生活都跑到太平洋上的小岛去了，咱因为太平洋加了盖，比不过他，那怎么办？遁入游戏世界呗！所以咱玩游戏那能叫玩游戏吗，当然不叫玩了，故从今往后这就定调：再遇到normies觉得我老大一人怎么还玩游戏，我就笑笑，因为他们不明白——</p>
-<p>&emsp;&emsp;<em>normies玩游戏，叫打发时间，叫消磨人生。因为他们对游戏艺术和游戏文化没有信仰，所以连他们自己都会这么觉得；</em></p>
-<p>&emsp;&emsp;<em>我玩游戏，至少在我这里永远都不那样叫，现在我造了个新名词</em>——<strong><em>赛博采风（Cyber Art &amp; Design Tour）</em></strong>！！</p>
-<p>言归正传，相对于之前的作品，除了整体的画风比例之外，这次着重处理了线稿的粗细分布问题，花了不少功夫，但最终的实际效果让我觉得很值，这个粗细的感觉一出来整个画面都看起来舒服了许多。之前对最外层轮廓线做了加厚加深的优点也得到了进一步发挥。</p>
-<p>色彩上优化了一级阴影的分布，减弱了一级阴影的渐变程度，总之这次喷枪式的渐变用的很谨慎，这样整体看起来更“二次元”而不是像一个厚涂作品，这可能是近年来漫画插画的绘柄特点，观察冒险岛十年前的风格也能明显看出这个变化。</p>
-<p>最后采用了PS自带的噪声生成添加了一个噪声材质图层，并用波点式贴图处理了服饰的材质。这样能看起来不是那么单调。</p>
-<p>泳衣样式是临时起意搞得，因为有人说我画的女人个个都包的严严实实，不够色，所以身材故意弄的比较…前凸后翘的那种感觉。冒险岛本身其实一直还是比较子供向，大概是很难找到这种的，所以这样也不至于因过度模仿而失去特点。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -241,6 +241,44 @@
       </tags>
   </entry>
   <entry>
+    <title>Y7000P更换散热模组</title>
+    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
+<p>话不多说了，开搞。</p>
+<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
+<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
+<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
+<p>首先是一些说明：</p>
+<ol>
+<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
+<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
+<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
+</ol>
+<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
+<p>然后观察一下新买的散热的样子：</p>
+<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
+<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
+<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
+<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
+<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
+<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
+<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
+<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
+<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
+<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
+<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>硬件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo添加网易云音乐播放器</title>
     <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -321,44 +359,6 @@
       <tags>
         <tag>网页</tag>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Y7000P更换散热模组</title>
-    <url>/2022/04/18/Y7000P%E6%9B%B4%E6%8D%A2%E6%95%A3%E7%83%AD%E6%A8%A1%E7%BB%84/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给双风道的笔记本电脑更换新的散热模组的简单操作说明<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;前段时间很不凑巧，笔记本右手边的风扇坏掉了，风扇转动时会发出拖拉机一样的声音。其实大概半年前这个风扇就有点轻微地嘎嘎响，当时以为是灰进多了，还特地拆开清了下灰尘，不过清灰后并没有好转，直到前段时间恶化成了这样。首先考虑的当然是换风扇，但之前在拆开清灰的时候就发现，这款拯救者Y7000P的风扇和散热铜管焊在了一起，无法通过正常手段单独拆卸下来（似乎18年之前的旧款是可以拆的），调查了网上其他人的经验后，决定替换整个散热模组。这样不仅省了一笔维修钱（虽然购买散热模组也要花钱，但比起售后还是少多了，保修一般就一年，但这玩意基本都是一年之后才会出问题），也能顺便练练手，一把螺丝刀就解决的问题干嘛不自己折腾呢。不过坑人的是因为赶上某奇葩政策的原因，快递在路上被卡了好长时间，导致我不得不多听了几天拖拉机响。</p>
-<p>话不多说了，开搞。</p>
-<p>&emsp;&emsp;在拆机之前先要做的就是除静电，首先是避免穿着平常觉得静电特别多的衣服（尤其是毛衣），然后摸一摸家里接地的金属管道、水龙头什么的，找不到金属的话摸水泥墙也是可以的…</p>
-<p>&emsp;&emsp;拆后盖这里就见仁见智了，主要是拧下螺丝之后还有几排塑料卡扣比较难对付，指甲不够结实的话建议搞一把尖锐一点的平头螺丝刀一点一点去撬。</p>
-<p>这是Y7000P拆开后的情况，我这里画了一下各个部件的位置：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/1.png" title="a">
-<p>首先是一些说明：</p>
-<ol>
-<li>上方黑色部分为散热模组，标数字的均是螺丝，绿色为风扇螺丝，黄色为散热模块的螺丝，蓝色是电池的螺丝。且因为新款拯救者的风扇和散热管被焊在了一块，想要拆掉散热模组则必须将所有的黄色螺丝和绿色螺丝都拧掉。其中散热模块螺丝（黄色）均为带弹簧固定的螺丝，是只能拧出而不能卸下的；</li>
-<li>仔细观察可发现显卡风扇和CPU风扇是不一样大的，是不一样的风扇，二者不能互换。因为本机的散热模组只有两根铜管，将CPU和显卡串联在了一起，是整体化的，不过某些高端机型可能在CPU和显卡上各拥有一套单独的散热模组（即CPU和显卡各拥有2-3根铜管和一只风扇），需要单独购买某一部分的风扇或散热零件的话，一定要搞清楚要买的是CPU部分的还是显卡部分的。</li>
-<li>内存条上是有一块金属屏蔽罩的，这里已经将屏蔽罩拆掉，屏蔽罩是通过几根卡扣卡住的，很好拆。</li>
-</ol>
-<p>&emsp;&emsp;拆开后建议先卸掉电池，因为不拆电池的话会给后续的操作带来一定风险，有可能导致某些部件被击穿，所以还是建议先拆掉电池。先下所有电池螺丝（蓝色），然后尝试拔掉电池的排线，笔记本的排线都是一个比一个难拔，这里要一点一点耐心往出拔。</p>
-<p>然后观察一下新买的散热的样子：</p>
-<img src="/2022/04/18/Y7000P更换散热模组/2.jpg" title="b">
-<p>&emsp;&emsp;主要观察背面，风扇和原厂风扇都是台湾SUNON的，质量应该没问题，就是不知道是不是因为在路上辗转久了，很多散热硅胶都裂开了，不得不把几个旧的风扇的散热胶片换到新的上面来。然后看一下商家有没有给配送散热硅脂（长得像灰色泥浆一样的东西），如果没有配散热硅脂的话，要确保手头有能用的散热硅脂。这里说一下，一般在电脑行业都把散热用的硅脂简单叫成硅脂，而实际上电脑行业之外还有很多硅脂，如绝缘硅脂、真空硅脂、光学透明硅脂等等，这些“硅脂”统统都不是一个玩意，不可互相替代，不可将别的硅脂用在电脑散热系统上。</p>
-<p>&emsp;&emsp;确认新散热没问题后，就可以拆旧散热了。首先拔掉两个风扇的排线，一样会很难拔，需要耐心一点一点往外晃出来。拔掉两个排线后，把黄色螺丝和绿色螺丝都拧掉，从电脑中间位置的部分将散热微微抬起，不要抬得太高，然后把整个散热模组慢慢向出拔，可能会有些地方卡住，所以这里要慢点操作。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/3.jpg" title="c">
-<p>&emsp;&emsp;这是电池和散热都拆掉后的样子，可以看到显卡和CPU上残留有旧的干掉的硅脂，风扇部位沉积了一些灰尘，需要将这些地方都打扫干净。灰清一次也不容易，还是好好打扫一下，至于硅脂建议用卫生纸擦干净就行。</p>
-<img src="/2022/04/18/Y7000P更换散热模组/4.jpg" title="c">
-<p>&emsp;&emsp;清理掉硅脂后的CPU。如果某些死角落实在擦不到就算了，保证大面积是干净的就行。</p>
-<p>&emsp;&emsp;接下来就是给显卡和CPU涂上新的硅脂，涂硅脂之前建议先将新散热往上试着放一次，看看放不放的进去，你能顺利拆下来不代表你能顺利放进去，还是找找手感好，这样大概率能避免硅脂涂好了却半天卡不进去散热的尴尬问题。</p>
-<p>&emsp;&emsp;因为涂硅脂操作比较认真，就没拍照片。涂硅脂这个经常被各种人乱吹，其实没那么玄乎，有手就行，原理上有点类似于师傅摊大煎饼的操作。也不需要什么工具，我觉得撕几片硬纸壳子当刮板就行了，就是那种面包、饼干零食外面的单层硬纸包装盒，找一个有直边的地方扯几个就行。把硅脂涂上去后慢慢将其刮平，最后保证硅脂层大概有1mm厚就行了。我个人是觉得不能太薄了，因为这玩意最后还是得和散热管上的铜片接触才行，过薄的话会导致接触不够充分，这才是会出问题的。</p>
-<p>&emsp;&emsp;放好散热后用一只手把散热的中间部分先按住，保证硅脂层在上螺丝的过程中不会自行脱离，优先上紧显卡和CPU附近的弹簧螺丝，确保中间部分不再发生回弹后就可以松手了。然后将后续的螺丝都上好。散热部分的所有螺丝建议都稍微上得紧一点，上紧散热板是因为新散热模组的硅胶片都是新的，没被压过，需要一定的压力才能按下去；而上紧风扇则可以防止风扇在运行中外壳出现震荡。</p>
-<p>&emsp;&emsp;按照相反的顺序把其他部件都装回去，这样手术就完成咯。</p>
-<p>&emsp;&emsp;最后当然是开机了，先开个小程序或看看视频什么的让风扇转起来，观察一下两个风道是不是都在正常出风。如果都正常后，就可以测试“双烤”了，看一下CPU和显卡的温度都正不正常，看不到示数也没关系，简单用手摸一下键盘部分感觉一下是不是和平时温度差不多也是不错的办法。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>硬件</tag>
       </tags>
   </entry>
   <entry>
@@ -486,30 +486,26 @@
 <p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>绘画</tag>
+        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
-    <title>博客建好了~</title>
-    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
 </blockquote>
-<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
-<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
-<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
-<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
-<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
-<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
-<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
-<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，包括我的父亲，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
-<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
-<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
-<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
-<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
-<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
 ]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
   </entry>
   <entry>
     <title>利用Youtube的版权审查功能来识别音乐或歌曲</title>
@@ -567,40 +563,6 @@
       </tags>
   </entry>
   <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
-</blockquote>
-<a id="more"></a>
-
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>大型翻译计划：魔兽世界日记</title>
-    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
-</blockquote>
-<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
-<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
-<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
-<hr>
-<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何移植hexo到新的设备上</title>
     <url>/2020/04/25/%E5%A6%82%E4%BD%95%E7%A7%BB%E6%A4%8Dhexo%E5%88%B0%E6%96%B0%E7%9A%84%E8%AE%BE%E5%A4%87%E4%B8%8A/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -625,6 +587,44 @@
 ]]></content>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客建好了~</title>
+    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
+</blockquote>
+<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
+<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
+<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
+<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
+<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
+<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
+<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
+<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，包括我的父亲，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
+<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
+<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
+<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
+<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
+<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写，然后仰天大笑出门去，岂不是大大的丢人。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>大型翻译计划：魔兽世界日记</title>
+    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
+</blockquote>
+<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
+<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
+<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
+<hr>
+<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>翻译</tag>
       </tags>
   </entry>
   <entry>
@@ -676,6 +676,27 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个Q版二头身</title>
+    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>并制作成亚克力挂件~！<a id="more"></a></p>
+</blockquote>
+<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
+<p>下面是制成亚克力挂件后的效果：</p>
+<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
+<hr>
+<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
+<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
+<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
+<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
+<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>用RGB通道还原色盲视角下的色盲图</title>
     <url>/2019/10/03/%E7%94%A8RGB%E9%80%9A%E9%81%93%E8%BF%98%E5%8E%9F%E8%89%B2%E7%9B%B2%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E8%89%B2%E7%9B%B2%E5%9B%BE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -708,27 +729,6 @@
 ]]></content>
       <tags>
         <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个Q版二头身</title>
-    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>并制作成亚克力挂件~！<a id="more"></a></p>
-</blockquote>
-<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
-<p>下面是制成亚克力挂件后的效果：</p>
-<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
-<hr>
-<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
-<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
-<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
-<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
-<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -878,60 +878,6 @@
 ]]></content>
       <tags>
         <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>那些追求真正价值的上传者</title>
-    <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>写给那些不知名的上传者们。 <a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;不知道为什么突然想到了AFK PL@YERS，和那个我能和同学坐在屏幕前面看一下午魔兽搞笑视频的日子。</p>
-<p>&emsp;&emsp;大概是2010年前后，记忆中有《星际争霸2》上线时的消息，那会视频都在优酷网看（应该也有土豆网），虽然每点一个视频都要等大概30-60秒的烂广告，却还是让人看的很入迷，那会魔兽还很火，看的最多的就是AFK PL@YERS、性感玉米这些，当然还有《我叫mt》。巫妖电视王，晚安部落，性感玉米的《网瘾战争》这些更是看了一遍又一遍。这些创作者们直接调用魔兽世界的游戏框架和地图、人物模型，制作出机械木偶般的游戏动画，比起传统的动画来说虽然看起来十分简陋粗糙，却仍讲出了活灵活现的故事。可贵的是，这些往往是由几个朋友们拼凑而成的同好小队，靠着对游戏的热爱和热情，靠着对真相和事实的坚持，胜过了影视、动画行业的很多所谓的专业人士和团队。现在去B站等视频网站搜索AFK PL@YERS也找不到多少视频了，可能是现在对外网搬运有一定的打压，以前我记得可是有好几个人在系统地在搬运他们的作品，数量都是一整页一整页，能让人在炎热的夏天拿着冰镇饮料快乐一下午。</p>
-<p>&emsp;&emsp;现在想想，那会优酷、土豆其实一定程度上充当了Youtube的本地化版本，因为那时管的不严，有大量不知名的上传者搬运Youtube上优质的作品（其实通过他们也筛选掉了Youtube上的低劣内容），经常能找到哪个独立音乐人的新作品，哪个黑死金乐队的现场录像，魔兽星际的游戏原声，从来没能在盗版游戏中看到的结局动画，还有那些我从来没有接触过的电影和动漫。我记得我还看过一些枪械火药制造过程的录像，Youtube上最早的一批冷兵器和盔甲锻造视频，甚至还有几首后来被汇入Botho Lukas Chor的宝藏专辑《Wenn die Landsknecht singen》里的音乐（确实很让人吃惊，连这都有！而且比这张14年的汇总专辑还早，但十多年前我对德语和Landsknecht的历史一无所知，只是觉得很好听），以及某些打擦边球的玩意（质量也确实很高就是了）。当然那些太敏感直接的话题肯定是没有的。那会确实是没有什么自媒体圈子、营销号的，网友们ID都是一串IP地址。虽然这样的搬运或者盗版视频侵犯了原作者的版权也是事实，但还是能让我们接触到这么多优秀的作品。我后来在Youtube上也一个一个找回了那些原作者，虽然很多都在数年前就已经停更了，但也总归是找到了他们。</p>
-<p>&emsp;&emsp;不过现在打开视频网站都是一群什么玩意？说实话没人会喜欢现在这样的东西，除了一些官方牵头搞得诸如后浪二舅之类的假大空，大部分自媒体作者也不是在做什么有价值的原创内容，而是天天在那造人设、以打造泛社会化的meme为目标，批量生产没有什么技术含量的低成本视频，试图以这些东西来吸引全网无头苍蝇一般的受众，当年玉米就曾在作品和现实中狠狠吐槽过这些正在互联网上越来越泛滥的虚假：为什么我们生产的大部分电影、电视剧、小品相声，都那么无聊？还不是因为假的东西太多。虚假的作者和没有价值的作品在一个正常的互联网上是没有任何生存空间的，拒绝虚假和错误是人和动物的天性，他们在被强迫的时候接受了大量的虚假和错误，但当他们接触到自由的互联网的时候，又为什么要去主动收看毫无价值的东西呢？相反，如果谁在那时的视频站发布“假大空”，干什么都散发着一股铜臭味的时候，一定会被那些顶着一串IP地址的网友们亲切招呼。</p>
-<p>&emsp;&emsp;但是在一个不正常或者说环境很恶劣的互联网体系和社会环境中，一切都翻了过来，人们比的不再是谁的作品更有价值更有意义，而是只认让流量和金钱，看你搞这个视频能不能变现，做这个爱好能不能养家糊口。结果就是，那些说起话来神采奕奕个个都有一股推销员的感觉的家伙们，虽然他们十句话九句假，却占据了网络媒体主流。甚至我觉得现在这个环境下，这些都可以拿来当成一条鉴定标准：那些说话表情像推销员一样一惊一乍的，封面放个张个大嘴巴脸，再配上一堆像香港广告牌风格一样的标语，特效还满天飞，标题也不是正常句子的，大概率都是垃圾。一般来说即使是在市场环境下，这些东西有那么一点也就够了，最后还是得靠质量和实力说话。但现在的视频却把它们当成主要目标在经营，最应该下功夫的视频内容却毫无价值。俗话说的好，丑人多作怪，现在Youtube上也有越来越多的垃圾作者，这个傻掉的网站也学起Tiktok开始搞无聊的短视频业务了，我认为它们一样统统适用于这个标准。</p>
-<p>&emsp;&emsp;就看视频这点上，我宁愿回到那个我只有一个小手机，在上课、在被折磨人的各种试卷困住的时候偷偷看的状态，因为我知道那个社区是有活力有价值的，上传者是目光敏锐的，它就像一座宝库一样等着我去探索，而不是现在这种同质化严重，只需看一眼就知道这视频该是有多无聊的内容。</p>
-<p>&emsp;&emsp;我也是最近才知道AFK PL@YERS成员之一的“战锁锁不住”就是后来开发游戏《返校》的导演，这中间也隔了很多年了，一些台湾的网友似乎也对这个感到惊讶。不过我想，某种程度上它加深了我的一个猜想的可能性：“能人”比“专业人”要更可贵，因为“专业人”是可以在简单模型下训练出来的，而“能人”往往是复杂条件下自我培养出来的，“能人”的高明之处并非某个专业水平的高低，而在于其文明程度上的整体先进（甚至我认为社区、社会也同理）。正因为如此，能人也始终是能人，这些人从事任何事业都不会落到后面去，而“专业人”一旦离开专业岗位往往难以适应，这被称为“专家陷阱（Expert trap）”。我相信，像战锁和玉米这样的人，他们的才能是显而易见的，即使他们被这个社会压制了，哪怕是五年、十年甚至一辈子，他们也会把文明的火种传递到下一代身上。再不济，哪怕就像是那些早期从Youtube上搬运来视频的上传者们一样，比起什么马云马化腾，这些无名无姓的人可能才是国内互联网被忽略的先驱者们，他们连个像样的头像也没有，估计从没想过要靠这些视频火一把或者赚到什么利益，就像那些给开源社区默默贡献着的人，仅仅是出于他们对价值判断的敏锐程度和对事物的热情，就足以使他们把这些有价值的东西带到高墙之内来。虽然这些作品随着服务器的关停，以及原作者的停更等等因素湮灭在了网络中，我再登上那个收藏夹的时候，所有的视频都已经404。但那些深受他们作品影响的人会成为他们精神上的后人，这些人感受过充满价值与自由秩序的互联网，也就永远不会再掉头返回到曾经的虚假和错误中。终有一天，这些火种将重新燃起，那些先驱者们曾经培养出的才能与远见，也都会以另一种方式重见天日。</p>
-<p>&emsp;&emsp;而我呢，我也想成为那样的人。不，不光是想，我一定要这样做。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>随想</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>配置了SSH后仍然需要输密码的情况</title>
-    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
-</blockquote>
-<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
-<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
-<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
-<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
-<ol>
-<li>删除<code>.deploy_git</code>文件夹;</li>
-<li>输入<code>git config --global core.autocrlf false</code></li>
-<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
-</ol>
-<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
-<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
-<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>修改为：</p>
-<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
-
-<p>（注意要改的地方还有.com后面那个冒号）</p>
-<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
-<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
-<hr>
-<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1305,6 +1251,66 @@
       </tags>
   </entry>
   <entry>
+    <title>暴雪战网美区注册避税指南</title>
+    <url>/2023/03/08/%E6%9A%B4%E9%9B%AA%E6%88%98%E7%BD%91%E7%BE%8E%E5%8C%BA%E6%B3%A8%E5%86%8C%E9%81%BF%E7%A8%8E%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>第二篇关于暴雪外服战网的使用指南。<a id="more"></a></p>
+</blockquote>
+<h4 id="1-前情与背景提要"><a href="#1-前情与背景提要" class="headerlink" title="1. 前情与背景提要"></a>1. 前情与背景提要</h4><p>&emsp;&emsp;2020年在玩WOW怀旧服的时候我写过一篇文章，里面介绍了如何玩暴雪欧服战网游戏（见:<a href="https://caelica.github.io/2020/08/03/%E6%80%80%E6%97%A7%E6%9C%8D%E6%AC%A7%E6%9C%8D%E6%B8%B8%E7%8E%A9%E6%94%BB%E7%95%A5/"><font color="blue">《怀旧服欧服游玩攻略》</font></a>）。这篇文章中我认为账号注册地区首选是美国和俄罗斯，理由是美国账号、付款稳定，俄罗斯价钱便宜。最终注册了俄罗斯的战网账号，利用这个账号成功游玩了WOW怀旧服欧服，以及2021年的Diablo2重制版。但现在时过境迁，包括暴雪战网、Steam在内的很多游戏平台的俄罗斯区都在2022年受到了封锁制裁，具体表现为无法充值消费、游戏无法入库等。而且即使是在2023年的现在，这场战争仍然看不到结束的迹象，所以俄区账号可以说基本是报废了。说来也很是倒霉，咱为了逃避国服的工作室和石油遍地，反而却变成了战争受害者。除了这以外，今年的另一个境况就是网易这个代理14年暴雪游戏的代理商终于和暴雪分手，国服战网一夜完蛋，无数玩家的账号变成电子骨灰盒。不管以后有没有下家继续做代理，我相信我们不论从哪个角度考虑，国服战网这种东西都是不建议再碰了。</p>
+<p>&emsp;&emsp;总结种种条件，还是美区比较靠谱。这篇文章就以今年即将上线的DiabloIV为例，介绍美区战网账号的注册和购买。原理性的内容在之前的文章中已介绍过很多，这里不再多述。同时这篇文章也是对之前的补遗和订正，如有冲突以本文为准。</p>
+<h4 id="2-美区战网注册"><a href="#2-美区战网注册" class="headerlink" title="2. 美区战网注册"></a>2. 美区战网注册</h4><p>&emsp;&emsp;我们首先需要一个邮箱账号，之前是用谷歌邮箱注册的，但现在，<strong>本人强烈建议</strong>使用微软的<strong>Outlook邮箱</strong>，原因很简单，Outlook邮箱不需要手机号码，想注册多少个就注册多少个，安全性也没差到哪去。Outlook邮箱网页地址为：<a href="https://outlook.com" target="_blank" rel="noopener">https://outlook.com</a></p>
+<p>&emsp;&emsp;注册好Outlook邮箱后，需要开启一个<strong>强力全局魔法</strong>，以将IP地址改到美国。怎么才算改成功了？我们去<a href="https://whatismyipaddress.com" target="_blank" rel="noopener">https://whatismyipaddress.com</a> 这个网址查看我们的IP地址。如下图所示：</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/0.png" title="a">
+
+<p>&emsp;&emsp;左下角可以看到这个地点在美国，这就算成功了。如果发现已指定了节点A，开了全局，可以魔法上youtube等网站，但这个结果中的IP地点不在A而在别的地方，那说明你的魔法不够强力，需要考虑更换运营商，或找别人来注册也行。这里说一下，这一步是必须要做到的，如果忽略则会在注册时造成致命性的阻碍，原理在下文详述。之后进入暴雪战网官网<a href="https://us.shop.battle.net/zh-tw" target="_blank" rel="noopener">https://us.shop.battle.net/zh-tw</a> 或者<a href="https://us.shop.battle.net/en-us" target="_blank" rel="noopener">https://us.shop.battle.net/en-us</a> ，然后点击新建账号的按钮。这里不做详细描述是因为网站UI布局甚至网址都有可能在今后出现变动，故只将关键环节做重点说明。</p>
+<p>进入注册页面后长这样：</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/1.png" title="b">
+
+<p>&emsp;&emsp;注意，这个网址一打开就显示的国家地区名称才是真实的，因为它会自动检测你的IP位置，然后给你匹配一个对应的国家地区。这个地址<strong>不可</strong>通过手动更改。如果一开始显示的地区不是美国，通过手动更改到美国是不行的！因为最后一步完成注册的时候，网站会在人机验证的环节再检测一遍你的IP位置做验证对比，如果IP地址和你手动选择的国家地区不匹配，则人机验证会出现无限循环，这样永远也过不了人机验证，也就无法完成注册。这就是为什么我们必须将IP地址真正改到对应国家地区，若一打开就自动显示是美国的话，就说明成功了。点击继续下一步。</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/2.png" title="c">
+
+<p>&emsp;&emsp;姓和名可以自定义，但建议使用英文，并且将注册的姓名记录保存好。点击继续下一步。</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/3.png" title="d">
+
+<p>&emsp;&emsp;邮箱填入我们之前注册好的Outlook邮箱地址，电话号码这一栏不用管。点击继续下一步。</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/4.png" title="e">
+<img src="/2023/03/08/暴雪战网美区注册避税指南/5.png" title="f">
+
+<p>&emsp;&emsp;两个勾勾可以都打上，第一个勾去掉可以不接广告邮件。继续下一步。然后是BattleTag和密码的设定，都可以自定义，BattleTag就是战网账号对外显示出的昵称，这里还是建议用英文。这一步点击继续后会自动进行人机验证和IP地址检测，如果上面的步骤都做对了，人机验证是可以自动通过的。如果出现要手动做人机验证的情况，可以先尝试做一遍人机验证，如果发现还要做第二遍，就说明已经被IP检测卡住出现无限循环，可以重来了。</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/6.png" title="g">
+
+<p>&emsp;&emsp;注册成功后，我们去Outlook邮箱内找到一封邮箱验证邮件，点击里面的链接即可验证邮箱，这样就算完全注册好了。</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/7.png" title="h">
+
+<p>&emsp;&emsp;在<strong>个人资料-账号详细资料</strong>里，可以看到这个账号是美区账号。</p>
+<h4 id="3-美区避税大法"><a href="#3-美区避税大法" class="headerlink" title="3. 美区避税大法"></a>3. 美区避税大法</h4><p>&emsp;&emsp;这一步很简单，我们需要添加一个免税州的购买地址，就不用给美国政府上交消费税了。因为之前的文章没有提到过，就在这里详细说一下：</p>
+<p>&emsp;&emsp;美国的消费税由两部分构成：每个州统一的州消费税（State Sales Tax），以及一个州内、但不同区域的地方消费税（Local Sales Tax）。也就是说，同一个州内买东西，交的州消费税都是一样的，交的地方消费税会有略微差异。这两个税加起来合称综合消费税，综合消费税即是通常说的美国消费税。税率分布图如下（2021年的税率，图片来自Wikipedia）：</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/8.png" title="i">
+
+<p>&emsp;&emsp;其中有五个州是免消费税的：俄勒冈州（Oregon, OR）、阿拉斯加州（Alaska, AK）特拉华州（Delaware, DE，有时候也翻译为德拉瓦州）、蒙大拿州（Montana, MT）、新罕布什尔州（New Hampshire, NH）。这五个州的绝大部分地方没有综合消费税（阿拉斯加没有州消费税但部分区域有地方消费税）。可以看出，这些不收消费税的州以及消费税低的州多是一些人口较少、位置较偏的州，这些免税州通常都在个人所得税、地税房产税等税上比其他州收的多，这样可以让低收入人群交税少，让富人多交税，某种意义上是对低收入人群的一种福利。但每个州税率政策不一也有弊端，普通民众更不容易搞懂每个州到底都在收什么税，最后稀里糊涂就把税乖乖交了，混乱的税率也给很多富人提供了逃税漏税的路子，比如特拉华州就素有避税天堂之称。当然，咱又不是俄国人，是属于war refugee的，你美国自己搞出的制裁，然后还要别人给上税，那就是岂有此理了xD</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/9.png" title="j">
+
+<p>&emsp;&emsp;比如我们一般情况下要购买DiabloIV的标准版，可以看到游戏价钱是70美元，但还多了一条7美元的消费税，等于要多掏50块钱。我们在个人资料-账号详细资料里找到联络资讯一栏，添加一个购买地址。如果有旧的非免税州的购买地址就点红圈中的更新：</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/10.png" title="j">
+
+<p>&emsp;&emsp;这里我把地址填到蒙大拿州。可以这样填：（也可以在这个网站查看美国所有地区的邮政编码：<a href="https://usa.youbianku.com/zh-hans" target="_blank" rel="noopener">https://usa.youbianku.com/zh-hans</a> ）</p>
+<blockquote>
+<p>State：Montana（MT, 免税州）<br>City：Missoula<br>Address：University of Montana  （蒙大拿大学）<br>Zip-code: 59812      (UNIV OF MT MISSOULA)</p>
+</blockquote>
+<p>&emsp;&emsp;更新保存后，再购买游戏的话可以看到税变成0了：</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/11.png" title="k">
+
+<p>&emsp;&emsp;现在美元汇率基本维持在7.0左右，且可以使用支付宝或微信支付，很是方便，490块成功预购了DiabloIV的标准版。对于这个游戏里来说，美区其实不算太贵，土耳其区现在都要450（什么阿根廷区土耳其区都没法用支付宝，PayPal好像也没法用），欧洲和香港台湾这些均在500以上（港区现在也是新台币结算，很不划算）。只需要等到六月就可以玩咯~</p>
+<img src="/2023/03/08/暴雪战网美区注册避税指南/12.png" title="l">
+
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>游戏</tag>
+        <tag>攻略</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>当年那些经典的Windows迷你小游戏</title>
     <url>/2021/09/22/%E5%BD%93%E5%B9%B4%E9%82%A3%E4%BA%9B%E7%BB%8F%E5%85%B8%E7%9A%84Windows%E8%BF%B7%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1354,6 +1360,60 @@
       <tags>
         <tag>游戏</tag>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置了SSH后仍然需要输密码的情况</title>
+    <url>/2021/02/28/%E9%85%8D%E7%BD%AE%E4%BA%86SSH%E5%90%8E%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E8%BE%93%E5%AF%86%E7%A0%81%E7%9A%84%E6%83%85%E5%86%B5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
+</blockquote>
+<p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
+<img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
+<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
+<p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
+<ol>
+<li>删除<code>.deploy_git</code>文件夹;</li>
+<li>输入<code>git config --global core.autocrlf false</code></li>
+<li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
+</ol>
+<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
+<p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
+<p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> git@github.com:yonghuming/yonghuming.github.io.git</span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
+
+<p>（注意要改的地方还有.com后面那个冒号）</p>
+<p>这一项改完之后保存，hexo clean、hexo g、hexo d。立刻部署成功，再没有密码框和奇怪的报错了。</p>
+<p>问题似乎解决了。但还有一个问题我无法理解，这个_config.yml的文件是从以前那个旧机器上就在使用的，我不记得那个旧机器修改过此项内容，但为什么旧机器的SSH仍生效工作，也没遇到过这些错误？</p>
+<hr>
+<p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>那些追求真正价值的上传者</title>
+    <url>/2022/08/05/%E9%82%A3%E4%BA%9B%E8%BF%BD%E6%B1%82%E7%9C%9F%E6%AD%A3%E4%BB%B7%E5%80%BC%E7%9A%84%E4%B8%8A%E4%BC%A0%E8%80%85/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>写给那些不知名的上传者们。 <a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;不知道为什么突然想到了AFK PL@YERS，和那个我能和同学坐在屏幕前面看一下午魔兽搞笑视频的日子。</p>
+<p>&emsp;&emsp;大概是2010年前后，记忆中有《星际争霸2》上线时的消息，那会视频都在优酷网看（应该也有土豆网），虽然每点一个视频都要等大概30-60秒的烂广告，却还是让人看的很入迷，那会魔兽还很火，看的最多的就是AFK PL@YERS、性感玉米这些，当然还有《我叫mt》。巫妖电视王，晚安部落，性感玉米的《网瘾战争》这些更是看了一遍又一遍。这些创作者们直接调用魔兽世界的游戏框架和地图、人物模型，制作出机械木偶般的游戏动画，比起传统的动画来说虽然看起来十分简陋粗糙，却仍讲出了活灵活现的故事。可贵的是，这些往往是由几个朋友们拼凑而成的同好小队，靠着对游戏的热爱和热情，靠着对真相和事实的坚持，胜过了影视、动画行业的很多所谓的专业人士和团队。现在去B站等视频网站搜索AFK PL@YERS也找不到多少视频了，可能是现在对外网搬运有一定的打压，以前我记得可是有好几个人在系统地在搬运他们的作品，数量都是一整页一整页，能让人在炎热的夏天拿着冰镇饮料快乐一下午。</p>
+<p>&emsp;&emsp;现在想想，那会优酷、土豆其实一定程度上充当了Youtube的本地化版本，因为那时管的不严，有大量不知名的上传者搬运Youtube上优质的作品（其实通过他们也筛选掉了Youtube上的低劣内容），经常能找到哪个独立音乐人的新作品，哪个黑死金乐队的现场录像，魔兽星际的游戏原声，从来没能在盗版游戏中看到的结局动画，还有那些我从来没有接触过的电影和动漫。我记得我还看过一些枪械火药制造过程的录像，Youtube上最早的一批冷兵器和盔甲锻造视频，甚至还有几首后来被汇入Botho Lukas Chor的宝藏专辑《Wenn die Landsknecht singen》里的音乐（确实很让人吃惊，连这都有！而且比这张14年的汇总专辑还早，但十多年前我对德语和Landsknecht的历史一无所知，只是觉得很好听），以及某些打擦边球的玩意（质量也确实很高就是了）。当然那些太敏感直接的话题肯定是没有的。那会确实是没有什么自媒体圈子、营销号的，网友们ID都是一串IP地址。虽然这样的搬运或者盗版视频侵犯了原作者的版权也是事实，但还是能让我们接触到这么多优秀的作品。我后来在Youtube上也一个一个找回了那些原作者，虽然很多都在数年前就已经停更了，但也总归是找到了他们。</p>
+<p>&emsp;&emsp;不过现在打开视频网站都是一群什么玩意？说实话没人会喜欢现在这样的东西，除了一些官方牵头搞得诸如后浪二舅之类的假大空，大部分自媒体作者也不是在做什么有价值的原创内容，而是天天在那造人设、以打造泛社会化的meme为目标，批量生产没有什么技术含量的低成本视频，试图以这些东西来吸引全网无头苍蝇一般的受众，当年玉米就曾在作品和现实中狠狠吐槽过这些正在互联网上越来越泛滥的虚假：为什么我们生产的大部分电影、电视剧、小品相声，都那么无聊？还不是因为假的东西太多。虚假的作者和没有价值的作品在一个正常的互联网上是没有任何生存空间的，拒绝虚假和错误是人和动物的天性，他们在被强迫的时候接受了大量的虚假和错误，但当他们接触到自由的互联网的时候，又为什么要去主动收看毫无价值的东西呢？相反，如果谁在那时的视频站发布“假大空”，干什么都散发着一股铜臭味的时候，一定会被那些顶着一串IP地址的网友们亲切招呼。</p>
+<p>&emsp;&emsp;但是在一个不正常或者说环境很恶劣的互联网体系和社会环境中，一切都翻了过来，人们比的不再是谁的作品更有价值更有意义，而是只认让流量和金钱，看你搞这个视频能不能变现，做这个爱好能不能养家糊口。结果就是，那些说起话来神采奕奕个个都有一股推销员的感觉的家伙们，虽然他们十句话九句假，却占据了网络媒体主流。甚至我觉得现在这个环境下，这些都可以拿来当成一条鉴定标准：那些说话表情像推销员一样一惊一乍的，封面放个张个大嘴巴脸，再配上一堆像香港广告牌风格一样的标语，特效还满天飞，标题也不是正常句子的，大概率都是垃圾。一般来说即使是在市场环境下，这些东西有那么一点也就够了，最后还是得靠质量和实力说话。但现在的视频却把它们当成主要目标在经营，最应该下功夫的视频内容却毫无价值。俗话说的好，丑人多作怪，现在Youtube上也有越来越多的垃圾作者，这个傻掉的网站也学起Tiktok开始搞无聊的短视频业务了，我认为它们一样统统适用于这个标准。</p>
+<p>&emsp;&emsp;就看视频这点上，我宁愿回到那个我只有一个小手机，在上课、在被折磨人的各种试卷困住的时候偷偷看的状态，因为我知道那个社区是有活力有价值的，上传者是目光敏锐的，它就像一座宝库一样等着我去探索，而不是现在这种同质化严重，只需看一眼就知道这视频该是有多无聊的内容。</p>
+<p>&emsp;&emsp;我也是最近才知道AFK PL@YERS成员之一的“战锁锁不住”就是后来开发游戏《返校》的导演，这中间也隔了很多年了，一些台湾的网友似乎也对这个感到惊讶。不过我想，某种程度上它加深了我的一个猜想的可能性：“能人”比“专业人”要更可贵，因为“专业人”是可以在简单模型下训练出来的，而“能人”往往是复杂条件下自我培养出来的，“能人”的高明之处并非某个专业水平的高低，而在于其文明程度上的整体先进（甚至我认为社区、社会也同理）。正因为如此，能人也始终是能人，这些人从事任何事业都不会落到后面去，而“专业人”一旦离开专业岗位往往难以适应，这被称为“专家陷阱（Expert trap）”。我相信，像战锁和玉米这样的人，他们的才能是显而易见的，即使他们被这个社会压制了，哪怕是五年、十年甚至一辈子，他们也会把文明的火种传递到下一代身上。再不济，哪怕就像是那些早期从Youtube上搬运来视频的上传者们一样，比起什么马云马化腾，这些无名无姓的人可能才是国内互联网被忽略的先驱者们，他们连个像样的头像也没有，估计从没想过要靠这些视频火一把或者赚到什么利益，就像那些给开源社区默默贡献着的人，仅仅是出于他们对价值判断的敏锐程度和对事物的热情，就足以使他们把这些有价值的东西带到高墙之内来。虽然这些作品随着服务器的关停，以及原作者的停更等等因素湮灭在了网络中，我再登上那个收藏夹的时候，所有的视频都已经404。但那些深受他们作品影响的人会成为他们精神上的后人，这些人感受过充满价值与自由秩序的互联网，也就永远不会再掉头返回到曾经的虚假和错误中。终有一天，这些火种将重新燃起，那些先驱者们曾经培养出的才能与远见，也都会以另一种方式重见天日。</p>
+<p>&emsp;&emsp;而我呢，我也想成为那样的人。不，不光是想，我一定要这样做。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>随想</tag>
       </tags>
   </entry>
   <entry>
@@ -1454,99 +1514,6 @@
       </tags>
   </entry>
   <entry>
-    <title>《黑暗之魂3》背后的艺术理念和风格</title>
-    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
-</blockquote>
-<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
-<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
-<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
-<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
-<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
-<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
-<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
-<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
-<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
-<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
-<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
-<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
-<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
-<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
-<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
-<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
-<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
-<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
-<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
-<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
-<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
-<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>你的英勇长存人心——Diablo2与往事</title>
-    <url>/2021/02/22/%E4%BD%A0%E7%9A%84%E8%8B%B1%E5%8B%87%E9%95%BF%E5%AD%98%E4%BA%BA%E5%BF%83%E2%80%94%E2%80%94Diablo2%E4%B8%8E%E5%BE%80%E4%BA%8B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>昨天在21年的BlizzCon上，《暗黑破坏神2》（Diablo 2，或简称暗黑2）出重制版的事已经是板上钉钉了，突然想起来很多关于暗黑2的往事，至于暗黑2给游戏界带来了的影响就不多说了，虽然它不是我玩的最多的游戏，它却像一个影子一般跟在我的游戏历程中，从未离开过。<a id="more"></a></p>
-</blockquote>
-<p>我认为对于一个学习历史的人来说，其实有两部历史。第一部是这个世界的历史，它客观存在且“不以人的意志转移”；而第二部，则是“个人”的历史，虽不敢说这部历史是否就真的以个人的意志书写，但至少对于这部历史，以及两部历史的重叠状态即“我们这代人的历史”来说，每个人都是它的亲历者，都拥有真正的第一手资料。</p>
-<p>今天我就借着我和Diablo2之间的故事来回忆一下二十年的往事。</p>
-<h2 id="一-混沌初开"><a href="#一-混沌初开" class="headerlink" title="一. 混沌初开"></a><p align="left">一. 混沌初开</p></h2><p>小学一年级，就像漫画里的那样，一位神秘的大叔出现在小孩原本平静的生活里，手里拿着一本古代魔法书，向他展示了一个远古时期的景象：那是在人类文明和庇护之地诞生前，至高天堂和燃烧地狱之间的一场永无休止的终极决战……</p>
-<p>咳咳，扯多了。同学他爸拿着硬盘来到我家，带来了一系列当时国内最流行的单机大作，从此Windows 98那标准的800×600分辨率的绿屏桌面上多了一连串的快捷方式，其中有一个名字叫“毁灭之王”，图标是一个蓝色鬼头。当时的我就把这款游戏称作毁灭之王。</p>
-<p>2000年前后那会我年纪实在太小，不算真正经历过那时的生活，只是后来出于“考古”的目的才有所了解。互联网和计算机其实才刚刚在国内起步，一台个人PC的价格就能卡住很多人了，那会流行组装机，根据2000年前后热门杂志《电脑报》上的参考价格，凑合能用的电脑得5000元，而能跑得动热门大型游戏的至少也得七八千，一张正版游戏盘基本就是一两百块的样子，不过当时很少有什么正版观念，盗版游戏盘还是很便宜的；PS2首发价格3100元水平，能在那会玩上GBA或者后来的NDS的都是有点条件的大佬，甚至我感觉只要有一台90年代的小霸王“学习机”那你就是整个社区的小朋友里最靓的仔了。主机玩家更是少得可怜，因为主机只能玩游戏，所以很少有人会去投资这个，并且当时的电脑已经开始出现主机模拟器。根据信息，2000年城镇职工平均工资为每月780元，总的来说要攒出一台跑得动Diablo2的电脑实在是非常不容易的事。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/a.png" title="a">
-<center>老旧的《电脑报》合订本，差不多可以当历史书看了</center>
-
-<p>说到这就不得不提一下国内游戏的曲折历程，2000年5月光明日报发布了那篇著名的文章《电脑游戏是瞄准孩子的“电子海洛因”》，“电子海洛因论”此后在社会上引起广泛反响，不仅是电脑游戏变成了人人喊打的过街老鼠，国内一切跟电子娱乐有关的产业都遭到了打击，也直接促成了长达13年的“游戏机禁令”，06年央视的《战网魔》及之后的一系列相关事件更是该风波的延续，在此不必多述。这些东西虽说是老调重弹，但怎么也是我们这代人的历史烙印，国家每年还要纪念九一八呢，我相信“电子海洛因”就如同“计生办”、“下岗潮”一样，都是“我们这代人的历史”，也具有同样的分量。</p>
-<p>回到正题，暗黑2在国内流行的版本是台湾松岗公司进行汉化的，也就是我们后来看到的繁体中文版本。这造成一年级的我有近乎一大半的汉字文本看不懂，比如第一幕新手村的萝格营地（Rogue Encampment），屏幕上显示的是“踏入蘿格營地”几个大红字，我一直不认识那个“蘿”字。不过话说当时就算能认字，小学生的智商也不足以理解这个游戏里诸多西方传统宗教、奇幻、悲剧等内容元素，这也是导致我后来没有继续玩下去的原因。</p>
-<p>而且单从游戏性上来说，Diablo系列的一大特色就是每个角色都会生成自己的随机地图，我的智商哪认得到路啊，只记得不同角色的新手村大门一会向左开一会向右开，有时候还跑到上面去了，彻底懵逼，爱我的只有全部点亮的传送小站和回城卷轴，让我在各种风景各异的地图间不断穿行。因为不会打字输入角色名，我有段时间甚至不能创建角色，但是创建角色的那个画面在今天看来也做得也非常出色：七位勇士围在一个篝火前各显神通，我印象最深的就是中间野蛮人的那一声战吼，还有圣骑士的剑盾跪姿、浑身燃烧着蓝色火焰的死灵法师；最后还有亚马逊姐姐的白大腿，嗯，小学生的我毫无感觉。从这次重制版放出的视频看，这个经典场景也得到了重制。</p>
-<p>所幸的是，盗版游戏自带了一个强力角色：作弊的99级法师！而且是冰火电三系全满，属性点也全满，导致技能栏多得吓人，经过一个一个尝试后我发现冰环是最具效率的清怪手段。但角色没有装备，我就去第四幕的群魔堡垒（Pandemonium Fortress，混沌界要塞其实是最正确的翻译，就是3代里的混沌要塞），买了一套寒光闪闪的全身板甲和德式双手巨剑，因为属性全满，成功装备。这归功于Diablo2出色的装备造型设计，让我那时就迷上了盔甲冷兵器这样的元素。就这样我弄出了一个左键普攻右键冰环的“魔法骑士”，因为穿的过于厚实，导致我根本不知道这个角色是法师，连她是个女人都不知道。我一直以为我是一个头盔之下长发飘逸，既能挥舞大剑又能施放法术的魔法骑士。</p>
-<p>当时的玩那真是纯粹的玩，因为什么都看不懂，唯一的乐趣就是在不同的地图间旅游、打怪，那些场景过于黑暗、怪物长相太恐怖的地方我是不敢去的，比如皇宫地牢、神罚之城等，我甚至连群魔堡垒前面的那条长楼梯都不敢下；曾经有个同学告诉我第一幕大教堂底下有恐怖至极的怪物，导致我再也不敢踏进大教堂一步，完全不知道自己的“骑士”已经可以在普通难度秒天秒地，可见胆子是有多小。我最喜欢的地方是神秘避难所（Arcane Sanctuary），感觉那里神圣而又宁静，第一次去的时候，背景缓缓飘过的星空、以及脚下凭空出现的白色石板路让我惊艳不已，其实这张图还利用2D画面的特性做出了一些“三维不可能图形（Impossible figure）”的效果，可惜我那时理解不能；其次是火焰之河（River of Flame），我四处屠杀那种爆浆的虫子，也从未找到过大菠萝…<br>过了一段时间，家里来了个比我大几岁的哥哥，他发现桌面上的“毁灭之王”后非常激动，立刻开始玩。他管这个游戏叫“呆波（他也不会读）”，不叫毁灭之王，并且印象中他似乎还用一瓶可乐还是什么饮料贿赂我，让我允许他多玩一会，我当然也就答应了。我在一旁看，他好像也是跑跑刷刷乐在其中，我抓住机会问他，那个“踏入蘿格營地”的“蘿”字怎么读？他直接回答我读“霍”，我顿觉醍醐灌顶，原来是霍格营地啊，长久以来的谜团终于得到了解决，我当时很佩服那位哥哥，高年级的学生就是厉害多了，个个都是文化人。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/b.png" title="b">
-<center>传言说这个“召唤者”正是1代里的法师</center>
-
-<h2 id="二-转变之时"><a href="#二-转变之时" class="headerlink" title="二. 转变之时"></a><p align="left">二. 转变之时</p></h2><p>这样简单而又快乐的时光过了半年到一年吧，我四处旅游打怪，只为收集那些看起来帅气逼人的盔甲部件，直到有一天一个大学生来到家里，他打开了电脑上的“毁灭之王”，并向我展示了Diablo2中著名的“奶牛关（Cow Level）”：只记得他通过赫拉迪姆方块——那是我当做箱子的东西，和一个回城卷轴，点了一下转变按钮，就召唤出一个红色的传送门！之后在奶牛关中他又展示了一系列复杂的操作，说出了一串又一串我根本无法理解的专业游戏术语。我当时最大的感觉是，我跟他玩的完全不是一个游戏，我完全无法理解他在玩什么，我可能根本就不会玩。</p>
-<p>过了几天我决定亲自复制他的操作：我认为那传送门的配方应该是一个回城卷轴和红色药水，我把它们放进赫拉迪姆方块中点击转变，然而无论我放进去几瓶药水都没有任何回应，取出来的回城卷轴也只能开出蓝色的普通传送门。那时的电脑很多都没有互联网，想要解决问题只能靠自己。我绞尽脑汁的尝试，却还是只能开出蓝色传送门，努力尝试终得失败，这给当时的我很大的打击，我突然意识到这个游戏世界是多么的难以理解，比起这里的困境，一个能端起机关枪随便突突的CS1.5显得是那么的简单友善，后来的我渐渐离开这里开始去玩CS，再后来因为家人的工作原因，那台电脑也一块走了。等到那台电脑又回到家里时，我第一次看到XP系统的蓝天白云绿草地，老旧的那批游戏早已消失不见，更好玩的游戏也接踵而至。暗黑破坏神2，连同那些昏暗的地牢和胆小的魔法骑士，换成了另一个个更加光鲜亮丽的世界。他们被尘封在记忆深处很多年。</p>
-<h2 id="三-巡礼之路"><a href="#三-巡礼之路" class="headerlink" title="三. 巡礼之路"></a><p align="left">三. 巡礼之路</p></h2><p>中学时代在艾泽拉斯的多年经历让我对暴雪这个游戏公司敬佩有加，一个游戏中居然能构建起如此强大而又完善的世界体系，那些虚构的民族和王国居然也能有活灵活现的历史。我开始仔细研究暴雪公司的作品。了解到暗黑破坏神也是早期暴雪公司的作品后，我还是有点惊讶的，读了一些Diablo的背景故事，我又想起了十年前在那里的身影。那时我已经上高二，我决定认认真真的玩一遍Diablo2。我记得当时正是期末考试，因为教务安排，我们每天早上10点考到12点，要连续考一周。而父母基本7点多就出门上班了，我凭空多出了十几个小时的游戏时间。</p>
-<p>这回我是一名真正的圣骑士了，走的是白热路线，一路上战锤连敲带打。当我去寻找召唤者赫拉森，再一次穿越传送门来到神秘避难所，看到那片虚无缥缈的星空时，一种似曾相识又恍如隔世的感觉，我放下战锤和大盾，看了很久…</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/g.jpg" title="g">
-<center>高中时用Java手机拍的屏幕，这位堕落天使血量高得惊人</center>
-
-<p>后来我把存档文件带到了学校的计算机课上，和同学联机玩。下课后有个同学找我，他说看到有人在玩暗黑2他很激动，那是他小时候唯一在电脑上玩过的游戏。我有点小吃惊，因为他应该是我们整个学校里面成绩最好的几个学生之一。</p>
-<p>火焰之河的岩浆海倒是比我记忆中更加明亮刺眼（可能跟显示器有关系），在大菠萝的烈火前我倒了几次，最后还是在一天早上车翻了BOSS，到了哈洛加斯，不知当时是时间不够还是什么原因，我没有继续打下去。高三时更是什么都玩不了，不过我把存档文件带进了大学。大学期间我的圣骑士才打通了第五幕的简单难度，终于完成一周目剧情，同时也实现了“奶牛关”的开启。说来也是好笑，我用了十几年时间通关了一款暗黑2，而噩梦和地狱难度则基本没怎么玩过，这在暗黑玩家里应该算是不折不扣的菜鸟级选手（笑）。</p>
-<h2 id="四-后续"><a href="#四-后续" class="headerlink" title="四. 后续"></a><p align="left">四. 后续</p></h2><p>大学那会刚好暗黑3发布，无数老玩家们都十分期待，不过很多人却失望而归，不管是游戏设计还是艺术风格问题，还是人们早已对Diablolike这类游戏失去兴趣，这款游戏并没有造成暗黑2那样的轰动，我也是草草打完了单人剧情内容，就再也没玩过。</p>
-<p>后来我还考古了1996年的暗黑破坏神1代，1代里还没有2代那样复杂的装备系统、符文之语以及成熟的互联网联机功能（战网），这个几乎可以叫做“是男人就下十五层”的简单粗暴的游戏内容给我最大的感觉是：2代继承了1代的风格，而3代却扔掉了这些。2代的第一幕几乎就是一代大部分内容的复刻致敬，那些灰暗的教堂和墓地、阴暗狭窄的地牢角落、小的可怜的照明范围、纯黑的探索迷雾、简单的黑白红色调形成强烈对比、甚至是一些近乎猎奇的邪典场景，其实是北暴时期Diablo的核心艺术基调：哥特式悲剧/恐怖。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/c.jpg" title="c">
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/d.jpg" title="d">
-<center>考古暗黑1时截的图</center>
-
-<p>举个例子，Diablo2没有天堂场景，但我认为如果Diablo2里面出现天堂场景，应该看起来类似于神秘避难所或者混沌要塞的样子，白色大理石地板、石柱配上白色的天空和光芒、黑色的阴影，构成一座黑白相间的宫殿。给人的感觉应该是安静和严肃，就像今天走进那些古老的教堂里一般，大气不敢出一个，其实某种意义上这也是一种阴森恐怖的感觉。而3代里却是以金色为主色调，至高天之上金碧辉煌圣光普照。这也是为什么Diablo2里圣骑士发出的是纯白色的光芒，截然不同于暴雪其他游戏里的圣光系职业，因为它们完全不是一个主题思路，如果是魔兽里的正派骑士们，那就必须是主旋律式的伟光正，也应该做成这样才对。</p>
-<p>但暗黑系列不同，它的故事基调从来都是悲剧，在此类框架下的文学作品里，正义的实现几乎只能是残酷的、不通人情的、并且往往要付出得不偿失的代价，以至于主人公自我毁灭的。一切正义的形象也因此蒙上了残酷的阴影。所以Diablo世界观下对抗邪恶的结局只能是失败的，甚至造成更加严重的后果，但这一切又是那么的必须必要且不可避免，最终导致主人公义无反顾地走向毁灭，葬送一切。正如一句古老的拉丁语：Fiat iustitia et pereat mundus. 即使毁灭世界也要实现正义。便是此类悲剧所要表现的必然性之所在。</p>
-<p>其实我们也知道，一个游戏好玩与否并不直接取决于艺术表现手法，游戏没有剧情音乐画面不代表游戏就不好玩，说到底笔者也只是一个对艺术略有感知，而对机制设计一窍不通的普通玩家，所以我也只能从这个角度提出观点。而抛弃小众硬核的暗黑艺术，题材越来越偏向大众化，也是暴雪公司在功成名就、不断做大以后不得不选择的道路。如同现在看到的哔哩哔哩（B站）也再不是以前那个二次元爱好者的小圈子。有人说是因为画质进步导致再也做不出以前那种效果，其实很不然，从其他游戏——比如作为Diablolike后辈的《恐怖黎明》（Grim Dawn）的表现来看，这明显不是做不到，而是刻意而为之。暗黑变得不够“暗黑”了，正是那些硬核老玩家们最常提到的话，严格地说，就是我们今天看到的这个暗黑2重制版的美术风格，光从已经发布的实机演示上来看也多多少少有点向现代游戏市场妥协的意味。不过重制怀旧游戏本来就是为了怀旧，或者就说是单纯补票吧，甚至即使这次暴雪再重蹈War3重制版的覆辙，像我一样的情怀玩家也会义无反顾的买这个单。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/e.jpg" title="e">
-<center>太真实了</center>
-
-<h2 id="五-遗产"><a href="#五-遗产" class="headerlink" title="五. 遗产"></a><p align="left">五. 遗产</p></h2><p>合上那本厚厚的魔法书，神秘大叔站起身来，说道：“就这样，故事结束了”。<br>“嗯，谢谢你的故事…”<br>“我还有最后一个问题要问你…你觉得，如果英雄知道这一切都是一场悲剧，一切的反抗都是徒劳，庇护之地的一切都终将归于虚无，什么都留不下来。那么，他还会走上这条路吗？”<br>“会的。虚无或许是真的，但过程本身却是有意义的。”<br>“当我退缩到四下无人的虚拟世界的角落里，我会放上一首轻轻的吉他曲，它似乎描述了一个村庄的悲惨命运。我会给那些已经不存在的热心肠村民们讲故事…我讲到Diablo是西班牙语里‘魔鬼’的含义，在美国有很多以西班牙语命名的地名——那是西班牙征服者们的杰作。有一天西班牙士兵们将一群印第安人包围在了一座山上，当他们决定围歼印第安人时，印第安人却从一条无人知晓的小道脱逃了。西班牙人发现印第安人集体消失后，惊呼山中定有魔鬼相助，此山便得名魔鬼山（Mount Diablo）。”<br>“后来有一个经常去山底下玩的美国高中生，当他在高中课本里学到西班牙语的Diablo时，他顿时豁然开朗。后来他觉得这个名字实在是的太酷了，许多年后他做了一款游戏，里面那个最强大的魔鬼，就叫做Diablo。”<br>“这个英雄和他的世界，曾为人所敬仰，也曾为人所唾弃，它被贬斥为0和1的数字玩笑，被讥笑为痴人说梦的疯癫呓语…”<br>“但是，我看到了他的所作所为，我为他的命运所悲哀，为他的勇敢而热血沸腾，他的爱恨情仇，我都感同身受。我清楚的记录下他是如何从一个弱者变成扛起大盾战锤的骑士；如何从一个大字不识、没有智商可言的憨憨一步步通晓那些纷繁复杂的魔法奥秘；从众说纷纭的混沌里计算出自己的结果；在怀疑与恐惧的废墟中，建起一座属于自己的神密圣殿。”<br>“你不会被忘记…”<br>“因为…你的英勇长存人心。（<font color="#EA0000">YOUR DEEDS OF VALOR WILL BE REMEMBERED</font>）”<br>“这部历史就是我们的遗产。”</p>
-<pre><code>睁开眼睛，神秘大叔消失不见，一切似乎只是往日的幻影。</code></pre><hr>
-<p>最后附上一些关于本文的链接和扩展资料：</p>
-<p>暗黑2重制版实机演示：<br><a href="https://www.bilibili.com/video/BV1L5411N7Pd" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1L5411N7Pd</a></p>
-<p>暗黑系列经典音乐崔斯特瑞姆（Tristram）：<br><a href="https://music.163.com/#/song?id=1718051" target="_blank" rel="noopener">https://music.163.com/#/song?id=1718051</a></p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/f.png" title="f">
-<center>暗黑2所有场景的名称</center>
-
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>一些拉丁语谚语的含义考据与派生用法</title>
     <url>/2021/07/19/%E4%B8%80%E4%BA%9B%E6%8B%89%E4%B8%81%E8%AF%AD%E8%B0%9A%E8%AF%AD%E7%9A%84%E5%90%AB%E4%B9%89%E8%80%83%E6%8D%AE%E4%B8%8E%E6%B4%BE%E7%94%9F%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1634,6 +1601,41 @@
         <tag>文化</tag>
         <tag>翻译</tag>
         <tag>历史</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《黑暗之魂3》背后的艺术理念和风格</title>
+    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
+</blockquote>
+<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
+<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
+<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
+<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
+<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
+<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
+<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
+<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
+<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
+<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
+<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
+<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
+<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
+<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
+<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
+<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
+<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
+<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
+<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
+<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
+<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
+<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1736,6 +1738,64 @@
       </tags>
   </entry>
   <entry>
+    <title>你的英勇长存人心——Diablo2与往事</title>
+    <url>/2021/02/22/%E4%BD%A0%E7%9A%84%E8%8B%B1%E5%8B%87%E9%95%BF%E5%AD%98%E4%BA%BA%E5%BF%83%E2%80%94%E2%80%94Diablo2%E4%B8%8E%E5%BE%80%E4%BA%8B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>昨天在21年的BlizzCon上，《暗黑破坏神2》（Diablo 2，或简称暗黑2）出重制版的事已经是板上钉钉了，突然想起来很多关于暗黑2的往事，至于暗黑2给游戏界带来了的影响就不多说了，虽然它不是我玩的最多的游戏，它却像一个影子一般跟在我的游戏历程中，从未离开过。<a id="more"></a></p>
+</blockquote>
+<p>我认为对于一个学习历史的人来说，其实有两部历史。第一部是这个世界的历史，它客观存在且“不以人的意志转移”；而第二部，则是“个人”的历史，虽不敢说这部历史是否就真的以个人的意志书写，但至少对于这部历史，以及两部历史的重叠状态即“我们这代人的历史”来说，每个人都是它的亲历者，都拥有真正的第一手资料。</p>
+<p>今天我就借着我和Diablo2之间的故事来回忆一下二十年的往事。</p>
+<h2 id="一-混沌初开"><a href="#一-混沌初开" class="headerlink" title="一. 混沌初开"></a><p align="left">一. 混沌初开</p></h2><p>小学一年级，就像漫画里的那样，一位神秘的大叔出现在小孩原本平静的生活里，手里拿着一本古代魔法书，向他展示了一个远古时期的景象：那是在人类文明和庇护之地诞生前，至高天堂和燃烧地狱之间的一场永无休止的终极决战……</p>
+<p>咳咳，扯多了。同学他爸拿着硬盘来到我家，带来了一系列当时国内最流行的单机大作，从此Windows 98那标准的800×600分辨率的绿屏桌面上多了一连串的快捷方式，其中有一个名字叫“毁灭之王”，图标是一个蓝色鬼头。当时的我就把这款游戏称作毁灭之王。</p>
+<p>2000年前后那会我年纪实在太小，不算真正经历过那时的生活，只是后来出于“考古”的目的才有所了解。互联网和计算机其实才刚刚在国内起步，一台个人PC的价格就能卡住很多人了，那会流行组装机，根据2000年前后热门杂志《电脑报》上的参考价格，凑合能用的电脑得5000元，而能跑得动热门大型游戏的至少也得七八千，一张正版游戏盘基本就是一两百块的样子，不过当时很少有什么正版观念，盗版游戏盘还是很便宜的；PS2首发价格3100元水平，能在那会玩上GBA或者后来的NDS的都是有点条件的大佬，甚至我感觉只要有一台90年代的小霸王“学习机”那你就是整个社区的小朋友里最靓的仔了。主机玩家更是少得可怜，因为主机只能玩游戏，所以很少有人会去投资这个，并且当时的电脑已经开始出现主机模拟器。根据信息，2000年城镇职工平均工资为每月780元，总的来说要攒出一台跑得动Diablo2的电脑实在是非常不容易的事。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/a.png" title="a">
+<center>老旧的《电脑报》合订本，差不多可以当历史书看了</center>
+
+<p>说到这就不得不提一下国内游戏的曲折历程，2000年5月光明日报发布了那篇著名的文章《电脑游戏是瞄准孩子的“电子海洛因”》，“电子海洛因论”此后在社会上引起广泛反响，不仅是电脑游戏变成了人人喊打的过街老鼠，国内一切跟电子娱乐有关的产业都遭到了打击，也直接促成了长达13年的“游戏机禁令”，06年央视的《战网魔》及之后的一系列相关事件更是该风波的延续，在此不必多述。这些东西虽说是老调重弹，但怎么也是我们这代人的历史烙印，国家每年还要纪念九一八呢，我相信“电子海洛因”就如同“计生办”、“下岗潮”一样，都是“我们这代人的历史”，也具有同样的分量。</p>
+<p>回到正题，暗黑2在国内流行的版本是台湾松岗公司进行汉化的，也就是我们后来看到的繁体中文版本。这造成一年级的我有近乎一大半的汉字文本看不懂，比如第一幕新手村的萝格营地（Rogue Encampment），屏幕上显示的是“踏入蘿格營地”几个大红字，我一直不认识那个“蘿”字。不过话说当时就算能认字，小学生的智商也不足以理解这个游戏里诸多西方传统宗教、奇幻、悲剧等内容元素，这也是导致我后来没有继续玩下去的原因。</p>
+<p>而且单从游戏性上来说，Diablo系列的一大特色就是每个角色都会生成自己的随机地图，我的智商哪认得到路啊，只记得不同角色的新手村大门一会向左开一会向右开，有时候还跑到上面去了，彻底懵逼，爱我的只有全部点亮的传送小站和回城卷轴，让我在各种风景各异的地图间不断穿行。因为不会打字输入角色名，我有段时间甚至不能创建角色，但是创建角色的那个画面在今天看来也做得也非常出色：七位勇士围在一个篝火前各显神通，我印象最深的就是中间野蛮人的那一声战吼，还有圣骑士的剑盾跪姿、浑身燃烧着蓝色火焰的死灵法师；最后还有亚马逊姐姐的白大腿，嗯，小学生的我毫无感觉。从这次重制版放出的视频看，这个经典场景也得到了重制。</p>
+<p>所幸的是，盗版游戏自带了一个强力角色：作弊的99级法师！而且是冰火电三系全满，属性点也全满，导致技能栏多得吓人，经过一个一个尝试后我发现冰环是最具效率的清怪手段。但角色没有装备，我就去第四幕的群魔堡垒（Pandemonium Fortress，混沌界要塞其实是最正确的翻译，就是3代里的混沌要塞），买了一套寒光闪闪的全身板甲和德式双手巨剑，因为属性全满，成功装备。这归功于Diablo2出色的装备造型设计，让我那时就迷上了盔甲冷兵器这样的元素。就这样我弄出了一个左键普攻右键冰环的“魔法骑士”，因为穿的过于厚实，导致我根本不知道这个角色是法师，连她是个女人都不知道。我一直以为我是一个头盔之下长发飘逸，既能挥舞大剑又能施放法术的魔法骑士。</p>
+<p>当时的玩那真是纯粹的玩，因为什么都看不懂，唯一的乐趣就是在不同的地图间旅游、打怪，那些场景过于黑暗、怪物长相太恐怖的地方我是不敢去的，比如皇宫地牢、神罚之城等，我甚至连群魔堡垒前面的那条长楼梯都不敢下；曾经有个同学告诉我第一幕大教堂底下有恐怖至极的怪物，导致我再也不敢踏进大教堂一步，完全不知道自己的“骑士”已经可以在普通难度秒天秒地，可见胆子是有多小。我最喜欢的地方是神秘避难所（Arcane Sanctuary），感觉那里神圣而又宁静，第一次去的时候，背景缓缓飘过的星空、以及脚下凭空出现的白色石板路让我惊艳不已，其实这张图还利用2D画面的特性做出了一些“三维不可能图形（Impossible figure）”的效果，可惜我那时理解不能；其次是火焰之河（River of Flame），我四处屠杀那种爆浆的虫子，也从未找到过大菠萝…<br>过了一段时间，家里来了个比我大几岁的哥哥，他发现桌面上的“毁灭之王”后非常激动，立刻开始玩。他管这个游戏叫“呆波（他也不会读）”，不叫毁灭之王，并且印象中他似乎还用一瓶可乐还是什么饮料贿赂我，让我允许他多玩一会，我当然也就答应了。我在一旁看，他好像也是跑跑刷刷乐在其中，我抓住机会问他，那个“踏入蘿格營地”的“蘿”字怎么读？他直接回答我读“霍”，我顿觉醍醐灌顶，原来是霍格营地啊，长久以来的谜团终于得到了解决，我当时很佩服那位哥哥，高年级的学生就是厉害多了，个个都是文化人。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/b.png" title="b">
+<center>传言说这个“召唤者”正是1代里的法师</center>
+
+<h2 id="二-转变之时"><a href="#二-转变之时" class="headerlink" title="二. 转变之时"></a><p align="left">二. 转变之时</p></h2><p>这样简单而又快乐的时光过了半年到一年吧，我四处旅游打怪，只为收集那些看起来帅气逼人的盔甲部件，直到有一天一个大学生来到家里，他打开了电脑上的“毁灭之王”，并向我展示了Diablo2中著名的“奶牛关（Cow Level）”：只记得他通过赫拉迪姆方块——那是我当做箱子的东西，和一个回城卷轴，点了一下转变按钮，就召唤出一个红色的传送门！之后在奶牛关中他又展示了一系列复杂的操作，说出了一串又一串我根本无法理解的专业游戏术语。我当时最大的感觉是，我跟他玩的完全不是一个游戏，我完全无法理解他在玩什么，我可能根本就不会玩。</p>
+<p>过了几天我决定亲自复制他的操作：我认为那传送门的配方应该是一个回城卷轴和红色药水，我把它们放进赫拉迪姆方块中点击转变，然而无论我放进去几瓶药水都没有任何回应，取出来的回城卷轴也只能开出蓝色的普通传送门。那时的电脑很多都没有互联网，想要解决问题只能靠自己。我绞尽脑汁的尝试，却还是只能开出蓝色传送门，努力尝试终得失败，这给当时的我很大的打击，我突然意识到这个游戏世界是多么的难以理解，比起这里的困境，一个能端起机关枪随便突突的CS1.5显得是那么的简单友善，后来的我渐渐离开这里开始去玩CS，再后来因为家人的工作原因，那台电脑也一块走了。等到那台电脑又回到家里时，我第一次看到XP系统的蓝天白云绿草地，老旧的那批游戏早已消失不见，更好玩的游戏也接踵而至。暗黑破坏神2，连同那些昏暗的地牢和胆小的魔法骑士，换成了另一个个更加光鲜亮丽的世界。他们被尘封在记忆深处很多年。</p>
+<h2 id="三-巡礼之路"><a href="#三-巡礼之路" class="headerlink" title="三. 巡礼之路"></a><p align="left">三. 巡礼之路</p></h2><p>中学时代在艾泽拉斯的多年经历让我对暴雪这个游戏公司敬佩有加，一个游戏中居然能构建起如此强大而又完善的世界体系，那些虚构的民族和王国居然也能有活灵活现的历史。我开始仔细研究暴雪公司的作品。了解到暗黑破坏神也是早期暴雪公司的作品后，我还是有点惊讶的，读了一些Diablo的背景故事，我又想起了十年前在那里的身影。那时我已经上高二，我决定认认真真的玩一遍Diablo2。我记得当时正是期末考试，因为教务安排，我们每天早上10点考到12点，要连续考一周。而父母基本7点多就出门上班了，我凭空多出了十几个小时的游戏时间。</p>
+<p>这回我是一名真正的圣骑士了，走的是白热路线，一路上战锤连敲带打。当我去寻找召唤者赫拉森，再一次穿越传送门来到神秘避难所，看到那片虚无缥缈的星空时，一种似曾相识又恍如隔世的感觉，我放下战锤和大盾，看了很久…</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/g.jpg" title="g">
+<center>高中时用Java手机拍的屏幕，这位堕落天使血量高得惊人</center>
+
+<p>后来我把存档文件带到了学校的计算机课上，和同学联机玩。下课后有个同学找我，他说看到有人在玩暗黑2他很激动，那是他小时候唯一在电脑上玩过的游戏。我有点小吃惊，因为他应该是我们整个学校里面成绩最好的几个学生之一。</p>
+<p>火焰之河的岩浆海倒是比我记忆中更加明亮刺眼（可能跟显示器有关系），在大菠萝的烈火前我倒了几次，最后还是在一天早上车翻了BOSS，到了哈洛加斯，不知当时是时间不够还是什么原因，我没有继续打下去。高三时更是什么都玩不了，不过我把存档文件带进了大学。大学期间我的圣骑士才打通了第五幕的简单难度，终于完成一周目剧情，同时也实现了“奶牛关”的开启。说来也是好笑，我用了十几年时间通关了一款暗黑2，而噩梦和地狱难度则基本没怎么玩过，这在暗黑玩家里应该算是不折不扣的菜鸟级选手（笑）。</p>
+<h2 id="四-后续"><a href="#四-后续" class="headerlink" title="四. 后续"></a><p align="left">四. 后续</p></h2><p>大学那会刚好暗黑3发布，无数老玩家们都十分期待，不过很多人却失望而归，不管是游戏设计还是艺术风格问题，还是人们早已对Diablolike这类游戏失去兴趣，这款游戏并没有造成暗黑2那样的轰动，我也是草草打完了单人剧情内容，就再也没玩过。</p>
+<p>后来我还考古了1996年的暗黑破坏神1代，1代里还没有2代那样复杂的装备系统、符文之语以及成熟的互联网联机功能（战网），这个几乎可以叫做“是男人就下十五层”的简单粗暴的游戏内容给我最大的感觉是：2代继承了1代的风格，而3代却扔掉了这些。2代的第一幕几乎就是一代大部分内容的复刻致敬，那些灰暗的教堂和墓地、阴暗狭窄的地牢角落、小的可怜的照明范围、纯黑的探索迷雾、简单的黑白红色调形成强烈对比、甚至是一些近乎猎奇的邪典场景，其实是北暴时期Diablo的核心艺术基调：哥特式悲剧/恐怖。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/c.jpg" title="c">
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/d.jpg" title="d">
+<center>考古暗黑1时截的图</center>
+
+<p>举个例子，Diablo2没有天堂场景，但我认为如果Diablo2里面出现天堂场景，应该看起来类似于神秘避难所或者混沌要塞的样子，白色大理石地板、石柱配上白色的天空和光芒、黑色的阴影，构成一座黑白相间的宫殿。给人的感觉应该是安静和严肃，就像今天走进那些古老的教堂里一般，大气不敢出一个，其实某种意义上这也是一种阴森恐怖的感觉。而3代里却是以金色为主色调，至高天之上金碧辉煌圣光普照。这也是为什么Diablo2里圣骑士发出的是纯白色的光芒，截然不同于暴雪其他游戏里的圣光系职业，因为它们完全不是一个主题思路，如果是魔兽里的正派骑士们，那就必须是主旋律式的伟光正，也应该做成这样才对。</p>
+<p>但暗黑系列不同，它的故事基调从来都是悲剧，在此类框架下的文学作品里，正义的实现几乎只能是残酷的、不通人情的、并且往往要付出得不偿失的代价，以至于主人公自我毁灭的。一切正义的形象也因此蒙上了残酷的阴影。所以Diablo世界观下对抗邪恶的结局只能是失败的，甚至造成更加严重的后果，但这一切又是那么的必须必要且不可避免，最终导致主人公义无反顾地走向毁灭，葬送一切。正如一句古老的拉丁语：Fiat iustitia et pereat mundus. 即使毁灭世界也要实现正义。便是此类悲剧所要表现的必然性之所在。</p>
+<p>其实我们也知道，一个游戏好玩与否并不直接取决于艺术表现手法，游戏没有剧情音乐画面不代表游戏就不好玩，说到底笔者也只是一个对艺术略有感知，而对机制设计一窍不通的普通玩家，所以我也只能从这个角度提出观点。而抛弃小众硬核的暗黑艺术，题材越来越偏向大众化，也是暴雪公司在功成名就、不断做大以后不得不选择的道路。如同现在看到的哔哩哔哩（B站）也再不是以前那个二次元爱好者的小圈子。有人说是因为画质进步导致再也做不出以前那种效果，其实很不然，从其他游戏——比如作为Diablolike后辈的《恐怖黎明》（Grim Dawn）的表现来看，这明显不是做不到，而是刻意而为之。暗黑变得不够“暗黑”了，正是那些硬核老玩家们最常提到的话，严格地说，就是我们今天看到的这个暗黑2重制版的美术风格，光从已经发布的实机演示上来看也多多少少有点向现代游戏市场妥协的意味。不过重制怀旧游戏本来就是为了怀旧，或者就说是单纯补票吧，甚至即使这次暴雪再重蹈War3重制版的覆辙，像我一样的情怀玩家也会义无反顾的买这个单。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/e.jpg" title="e">
+<center>太真实了</center>
+
+<h2 id="五-遗产"><a href="#五-遗产" class="headerlink" title="五. 遗产"></a><p align="left">五. 遗产</p></h2><p>合上那本厚厚的魔法书，神秘大叔站起身来，说道：“就这样，故事结束了”。<br>“嗯，谢谢你的故事…”<br>“我还有最后一个问题要问你…你觉得，如果英雄知道这一切都是一场悲剧，一切的反抗都是徒劳，庇护之地的一切都终将归于虚无，什么都留不下来。那么，他还会走上这条路吗？”<br>“会的。虚无或许是真的，但过程本身却是有意义的。”<br>“当我退缩到四下无人的虚拟世界的角落里，我会放上一首轻轻的吉他曲，它似乎描述了一个村庄的悲惨命运。我会给那些已经不存在的热心肠村民们讲故事…我讲到Diablo是西班牙语里‘魔鬼’的含义，在美国有很多以西班牙语命名的地名——那是西班牙征服者们的杰作。有一天西班牙士兵们将一群印第安人包围在了一座山上，当他们决定围歼印第安人时，印第安人却从一条无人知晓的小道脱逃了。西班牙人发现印第安人集体消失后，惊呼山中定有魔鬼相助，此山便得名魔鬼山（Mount Diablo）。”<br>“后来有一个经常去山底下玩的美国高中生，当他在高中课本里学到西班牙语的Diablo时，他顿时豁然开朗。后来他觉得这个名字实在是的太酷了，许多年后他做了一款游戏，里面那个最强大的魔鬼，就叫做Diablo。”<br>“这个英雄和他的世界，曾为人所敬仰，也曾为人所唾弃，它被贬斥为0和1的数字玩笑，被讥笑为痴人说梦的疯癫呓语…”<br>“但是，我看到了他的所作所为，我为他的命运所悲哀，为他的勇敢而热血沸腾，他的爱恨情仇，我都感同身受。我清楚的记录下他是如何从一个弱者变成扛起大盾战锤的骑士；如何从一个大字不识、没有智商可言的憨憨一步步通晓那些纷繁复杂的魔法奥秘；从众说纷纭的混沌里计算出自己的结果；在怀疑与恐惧的废墟中，建起一座属于自己的神密圣殿。”<br>“你不会被忘记…”<br>“因为…你的英勇长存人心。（<font color="#EA0000">YOUR DEEDS OF VALOR WILL BE REMEMBERED</font>）”<br>“这部历史就是我们的遗产。”</p>
+<pre><code>睁开眼睛，神秘大叔消失不见，一切似乎只是往日的幻影。</code></pre><hr>
+<p>最后附上一些关于本文的链接和扩展资料：</p>
+<p>暗黑2重制版实机演示：<br><a href="https://www.bilibili.com/video/BV1L5411N7Pd" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1L5411N7Pd</a></p>
+<p>暗黑系列经典音乐崔斯特瑞姆（Tristram）：<br><a href="https://music.163.com/#/song?id=1718051" target="_blank" rel="noopener">https://music.163.com/#/song?id=1718051</a></p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/f.png" title="f">
+<center>暗黑2所有场景的名称</center>
+
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
+        <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>记录一个梦境</title>
     <url>/2021/10/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%AA%E6%A2%A6%E5%A2%83/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1761,71 +1821,6 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">“系统的目的不是帮助你，而是控制你。 无论您感到多么孤立，请永远不要忘记您并不孤单：对新兴世代的剥削是一场全球斗争。”(对不起，我可怜的中文。'-.-)。</span><br><span class="line"></span><br><span class="line">"The system was not designed to <span class="keyword">help</span> you, but <span class="keyword">to</span> control you. <span class="keyword">No</span> matter how isolated you feel, <span class="keyword">never</span> forget that you <span class="keyword">are</span> <span class="keyword">not</span> alone: the exploitation <span class="keyword">of</span> rising generations <span class="keyword">is</span> a <span class="keyword">global</span> issue.<span class="string">"</span></span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>通识污染——某搜索引擎离谱的医学词条</title>
-    <url>/2022/01/15/%E9%80%9A%E8%AF%86%E6%B1%A1%E6%9F%93%E2%80%94%E2%80%94%E6%9F%90%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E7%A6%BB%E8%B0%B1%E7%9A%84%E5%8C%BB%E5%AD%A6%E8%AF%8D%E6%9D%A1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>真给我整蒙了.jpg <a id="more"></a><br>百度百科痢疾词条：<a href="https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047" target="_blank" rel="noopener">https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047</a><br>维基百科Dysentery词条：<a href="https://en.wikipedia.org/wiki/Dysentery" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Dysentery</a><br>当然这些词条都可能在今后发生变化，所以这里将作截图留存。</p>
-</blockquote>
-<p>&emsp;&emsp;我这人本不打算和中医打任何交道，没想到就是没得病也给我整蒙了。起因是睡觉前读了一会Philip Parker的《维京人的世界（The Northmen’s Fury: A History of the Viking World）》，非常专业的全方位讲维京人历史的一本书，里面提到845年围攻巴黎的维京人战团中爆发了痢疾，导致其进攻受挫，连维京人的首领拉格纳也死于此病，有意思的是，这被法国人看作是因维京人掠夺了附近的修道院而受到的上帝的“神罚”。于是我随手就百度了一下痢疾是什么病，没想到这一搜真给我长见识了：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/1.png" title="a">
-<p>&emsp;&emsp;好家伙，居然是文言文的中医词条，我看了半天也就认得“脓血”、“腹痛”、“饮食不洁”、“病位在肠”，“与脾胃有密切关系”。至于“外感时邪疫毒”，到底感了什么毒，是病毒还是细菌还是化学毒剂？“湿热、疫毒、寒湿，气血壅滞”谁会念这个字？后面的更让我摸不着头脑：什么“宜清”、“宜温”、“实证”、“虚证”、“通涩兼施”、“虚实夹杂”，着实搞的人云里雾里。最最好笑的是，简表里写的传染性是“无”，正文里又写明了“是夏秋季节常见的传染病”，“应重在预防，控制传染”，所以说这病到底传不传染？文章自己都是前后矛盾的。而且，也没有痢疾的英文学名，一个单词都不让你学。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/2.png" title="b">
-<p>&emsp;&emsp;然后是贴了一堆只讲大空话的古文，并且“进一步阐明痢疾具有流行性、传染性”。有意思的是，出现了一段“本节讨论的内容以西医学中的细菌性痢疾、阿米巴痢疾为主”，意思等于是说，我和你们西医讲的是一个玩意，但我不按照你们那套规则来描述事物，不过“溃疡性结肠炎、放射性结肠炎、细菌性食物中毒”这涵盖的范围也太广了吧，这也“均可参照本节辨证论治”？这真让人很好奇下面是不是有什么包治百病的神药。至于发病机理，又是上面见过的什么“湿热疫毒”、“邪蕴肠腑”，到底是什么毒什么菌、通过什么途径什么原理把肠道损害了，只字不提。</p>
-<p>于是我们看看中医是怎么治痢疾的：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/3.jpg" title="c">
-<p>&emsp;&emsp;我不觉得一个没学过中医的正常中国人能一字不落地读完这些内容，互联网百科说到底应该是一种通识教育（General Education），是给老百姓看的，不是光给中医医生看的，更何况谁家科班出身的医生照着网上搜来的的百科词条给人看病啊？这写一堆这玩意，是要叫身患痢疾的老百姓进深山老林学神农，尝百草么？</p>
-<p>再看一下维基百科对于Dysentery的解释：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/4.png" title="d">
-<p>翻译一下：</p>
-<blockquote>
-<p>痢疾（Dysentery）是一种导致血性腹泻的肠胃炎。其他症状可能包括发烧、腹痛和不能完全排便的感觉，并发症可能包括脱水症。<br>痢疾的原因通常是志贺氏属（Genus Shigella）的细菌，在此情况下，它被称为志贺氏菌病（shigellosis）或溶组织内阿米巴（Entamoeba histolytica）原虫；并被称为阿米巴病（amoebiasis）。其他的某些化学物质、细菌、其他原生动物或寄生虫也可能导致此病。它可在人与人之间传播。风险因素包括由于卫生条件差而导致的粪便污染食物和水。潜在机制涉及肠道炎症，尤其是结肠炎症。<br>预防痢疾的有效措施包括在高风险地区旅行时洗手，以及食品安全措施。虽然这种情况通常会在一周内自行消退，但喝足够的液体（例如口服电解质补水液）很重要。阿奇霉素等抗生素可用于治疗与发展中国家旅行相关的病例。洛哌丁胺等用于减少腹泻的药物不建议单独使用，它们应当与抗生素一起使用。<br>志贺氏菌每年导致约1.65亿例腹泻病例和110万人死亡，几乎所有病例都发生在发展中国家。在卫生条件差的地区，近一半的腹泻病例是由溶组织内阿米巴引起的。溶组织内阿米巴每年导致超过55000人死亡，影响了数百万人。它通常发生在中美洲和南美洲、非洲和亚洲的欠发达地区。至少自希波克拉底时代以来，就已经描述了痢疾。</p>
-</blockquote>
-<p>&emsp;&emsp;维基词条在概述中其实也没有说得太清楚，志贺氏菌（也就是我们说的细菌性痢疾）和阿米巴原虫（阿米巴痢疾）是两种病因，不过这里我们也可以看出，痢疾（Dysentery）是一个比较笼统的传统叫法，因为致病病原体不是唯一的，但大多数情况下为志贺氏菌和阿米巴原虫，下文中得到了详述。而且我觉得feeling of incomplete defecation不比什么“里急后重”明白多了？过多的中医术语也是让此类文章失去可读性的重要原因。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/5.png" title="e">
-
-<blockquote>
-<p>体征与症状：最常见的痢疾是细菌性痢疾，通常是一种轻度疾病，引起的症状通常包括轻度肠痛和频繁排便或腹泻。症状通常在1-3天后出现，通常一周后不再持续。排便冲动的频率、排出大量液体便以及血液、粘液或脓液的存在取决于引起疾病的病原体。也可能发生暂时的乳糖不耐症。在某些严重情况下，可能会出现严重的腹部绞痛、发烧、休克以及谵妄。<br>在极端情况下，病人每小时可能会排出超过一升的生殖器和肛门液。更常见的是，病人会抱怨伴有极度腹痛、直肠疼痛和低烧的带血腹泻。有时痢疾伴随快速的体重减轻和肌肉疼痛，而恶心和呕吐很少见。在许多情况下，可能会出现影响整个上肠周围肌肉的级联痉挛；有时严重到足以导致肠膜与肠壁分离，导致全身感染。<br>在极少数情况下，阿米巴寄生虫会通过阴道血流侵入人体并扩散到肠道之外。在这种情况下，它可能会更严重地感染其他器官，例如大脑、肺，最常见的是肝脏。</p>
-</blockquote>
-<p>&emsp;&emsp;照中医词条的说法你根本不知道这个疾病能严重到什么程度，如果没有施以有效的治疗，确实足以要命，看来不是维京人不能打，而是疾病太狠。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/6.png" title="f">
-
-<blockquote>
-<p>病因：痢疾是由细菌，或寄生虫感染引起的。病毒通常不会引起这种疾病。这些病原体通常通过摄入受污染的食物或水、或口腔接触受污染的物体或手等途径，从口腔进入后到达大肠。每种特定的病原体都有其自身的机制或发病机制，但总的来说其结果是对肠壁的损伤，导致炎症的免疫反应。这会导致体温升高、肠道肌肉疼痛性痉挛，因液体从肠道毛细血管渗漏而导致肿胀（水肿），以及身体免疫细胞和称为细胞因子（cytokines）的化学物质进一步对组织造成损害，因人体会释放这些化学物质以对抗感染。结果可能是营养吸收功能受损，肠道组织通常从粪便中除去水分的控制机制的破坏导致的水分和矿物质的流失，以及严重的情况下，病原微生物会进入血液循环。贫血也可能由于腹泻失血而引起。<br>导致血性腹泻的细菌感染通常被归类为侵入性（invasive）或产毒性（toxogenic）。侵入性物种通过侵入肠道黏膜直接造成损害，而产毒性物种不会侵入，但会通过分泌毒素造成细胞损伤，导致血性腹泻。这也与导致水样腹泻的毒素形成对比，后者通常不会造成细胞损伤，而是在细胞的一部分生命中接管细胞机制。<br>一些微生物——例如志贺氏菌属的细菌——分泌被称为细胞毒素（cytotoxins）的物质，在接触时会杀死和破坏肠道组织。而与其毒性相比，志贺氏菌被认为其侵入性更强从而引起出血，因为即使是非产毒菌株也会引发痢疾，但带有志贺样毒素的大肠杆菌无法入侵肠粘膜，因此，是毒素机制具有依赖性，不能独立存在。<br>痢疾的定义可能因地区和医学专业而异。美国疾病控制和预防中心 (CDC) 将其定义限制为“可见血液的腹泻”。其他人更广泛地定义了这个术语。在定义机制时必须考虑到这些定义上的差异。例如，使用CDC 的定义要求肠道组织受到严重损伤，以至于血管破裂，排便时会流失可见量的血液。其他定义可能需要的具体损害相对较少。</p>
-</blockquote>
-<blockquote>
-<p>阿米巴痢疾（Amoebic dysentery） 主条目：阿米巴病（Amoebiasis）<br>阿米巴病，也称为阿米巴痢疾，是由溶组织内阿米巴变形虫感染引起的，多见于热带地区。正确治疗阿米巴痢疾的潜在感染很重要；未得到充分治疗的阿米巴病可能会潜伏多年，随后导致严重且可能致命的并发症。<br>当感染者肠道内的变形虫（amoebae）准备离开身体时，它们会聚集在一起形成一个外壳包围并保护它们。这组变形虫被称为囊肿（cyst），然后通过粪便排出人体，并可以在体外存活。如果卫生标准很差——例如，如果人们不卫生地处理粪便——那么它可能会污染周围的环境，例如附近的食物和水。如果另一个人随后食用或饮用被含有此囊肿的粪便污染的食物或水，该人也会感染阿米巴虫。阿米巴痢疾在世界上将人类粪便用作肥料的部分地区尤为常见。通过口腔进入人体后，囊肿向下进入胃部。囊肿内的变形虫可避免胃酸的腐蚀。囊肿从胃进入肠道，在那里它破裂并释放变形虫，从而导致感染。变形虫可以钻入病人的肠壁并导致形成小脓肿和溃疡。然后循环将再次开始。</p>
-</blockquote>
-<blockquote>
-<p>细菌性痢疾（Bacillary dysentery） 主条目：细菌性痢疾<br>痢疾也可能由志贺氏菌病引起，志贺氏菌属细菌感染，然后被称为细菌性痢疾（或马洛综合征）。细菌性痢疾一词在词源学上似乎是指由任何杆菌状细菌引起的任何痢疾，但其含义仅限于志贺氏痢疾。<br>其他细菌：一些大肠杆菌菌株会引起血性腹泻。典型的罪魁祸首是肠出血性大肠杆菌，其中O157:H7最为人所知。</p>
-</blockquote>
-<p>&emsp;&emsp;这条就讲的非常清楚了，相比中医条目那看不懂的古文甚至可以用精彩来形容。志贺氏菌和阿米巴寄生虫都会导致此类疾病，志贺氏菌通过直接侵入肠粘膜+分泌细胞毒素的方式引起肠炎，而阿米巴虫则是一种典型的寄生虫病，拥有一套完善的寄生-繁殖机制，可抵御人体的各种免疫措施，且可在人类社区中依靠排泄物传染他人。并且说明了狭义上的“细菌性痢疾”仅指志贺氏菌痢疾，但广义上的细菌性痢疾可以包含其他细菌病原体。从致病机理可以看出，痢疾均从大肠发病，和脾、肾确实没有什么关系，和胃的关系也很小，不知道为什么中医理论老是把什么病都扯上脾肾。</p>
-<p>再来看看治疗手段：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/7.png" title="g">
-<blockquote>
-<p>痢疾可通过使用口服电解质补液的疗法维持液体得到控制。但这种治疗方法如果由于呕吐或大量腹泻而无法维持，则可能需要住院以进行静脉输液。在理想情况下，在通过显微镜微生物和培养研究确定所涉及的感染种类之前，不应进行抗细菌治疗。当这种实验室服务条件不可用时，可能需要联合使用药物，包括能杀死阿米巴寄生虫的药物和治疗任何相关细菌感染的抗生素。<br>如果怀疑是志贺氏菌病并且不太严重，让它自然发展可能是合理的——通常不到一周。如果情况严重，可以使用环丙沙星或TMP-SMX等抗生素。然而，许多志贺氏菌菌株对普通抗生素产生抗药性，而有效药物在发展中国家往往供不应求。如有必要，医生可能必须为死亡风险最高的人保留抗生素，包括幼儿、50岁以上的人以及任何患有脱水或营养不良的人。<br>阿米巴痢疾通常用两种抗菌药物治疗，例如甲硝唑和巴龙霉素或碘喹啉。<br>医疗预后：通过正确的治疗，大多数阿米巴痢疾和细菌性痢疾会在10天内消退，大多数人在开始适当治疗后的两到四个星期内即可完全康复。如果疾病不治疗，预后会随着个体患者的免疫状态和疾病的严重程度而变化。极度脱水会延迟恢复并显着增加严重并发症的风险。</p>
-</blockquote>
-<p>&emsp;&emsp;这也是医疗上的一个基本道理，先确定病原体再对症下药，且也存在口服电解质补液的自愈疗法和轻度疗法，并非某些人认为的“西医只有打针输液”。甚至还考虑到了资源匮乏的非理想情况，毕竟地球上不是哪里都发达，很多穷困地区没有医学条件，病人还特别多，在没有实验室无法确定病原体的情况下，杀寄生虫和杀细菌应当双管齐下二者并用，这也是不得已而为之。而且说了这么多，这也只是百科词条，是属于世界人民的“通识教育”。</p>
-<p>&emsp;&emsp;然后我还找到一篇1991年的《睢县腹泻患者中志贺氏菌和溶组织阿米巴原虫的调查分析》：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/8.png" title="h">
-<p>&emsp;&emsp;文献也写的很清楚，河南睢县出现的阿米巴痢疾和志贺氏菌痢疾病例上基本五五开，很多阿米巴痢疾被误诊为细菌性痢疾导致久治不愈。检测手段也当然是粪便常规，并非靠什么听起来就不靠谱的“伤气伤血、虚实主次”。</p>
-<p>最后再对比一下参考文献：</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/9.png" title="i">
-<p>&emsp;&emsp;这么写文章也是明摆着糊弄人了，仔细看了看，本词条居然还有北京中医药大学第三附属医院的刘金民主任医师作专家认证，还是教授、博士生导师，不知道这导师的博士生是不是论文都是这么写参考文献的，哦还有“国家中医药管理局百度百科科普词条项目审核专家组”认证，且本词条是“国家中医药管理局中医药名词术语成果转化与规范推广项目”的提供内容，至于这项目是啥咱不知道，只知道这还是个锁定词条，一般人还别想编辑。</p>
-<p>&emsp;&emsp;就这条目本身提供的古代文献来看，也只有非常少数的内容提到了“大小肠”，而更多的内容都是“胃气败”、“腹痛”、“血虚”、“气湿”，压根无法指出病因所在。我们可以推断，这个满篇文言文的古怪词条一定是现代人写就的，古人哪有这本事啊，这些用文言文写出的“假古文”是引证不出文献来源的，只能骗骗不懂的人以为古代文献有多高深。</p>
-<p>&emsp;&emsp;也许有人会想当然的说，鬼才看百度词条。或者重复我上面说的，医生也不靠百度词条治病。其实我上面写了这么多，关键就在这一点，这种想法大大忽视了通识教育的必要性，也大大低估了此类行为的危害性。全国上下十几亿老百姓，不是人人都能读英语，更不是人人都能上维基的。说到底，这个词条的目的就是让普通老百姓们上网搜一大圈也搞不懂什么是痢疾，读不懂“医学”内容然后产生自我否定，也不知道该用什么药，得病了只能病急乱投医，然后再被这些老中医们用一记十几块钱的便常规，再附带上一堆上百元乱七八糟的、里面可能只含了百分之几西药有效成分的中成药，宰得盆满钵满。毫不怀疑的说，几十年过去了已经不知道有多少亿万人受了这样的骗，有人说几十年前信息通讯不发达，你得病了可能还真得求助于村里那个没什么证的赤脚医生，但现在都什么年代了，还把这一套拉出来是为了啥？不由的让我想到互联网上的“DNS污染”的概念：你求取一个地址，系统识别后给你发送一个错误地址，目的就是把你引到沟里去，你永远也获得不到正确的内容。</p>
-<p>&emsp;&emsp;我们的医学常识正在遭受这样一种污染，其实在历史、哲学等学科上我们早已见识过，我认为不应当将这种污染称为学术污染，学术污染这个词汇应该指的是在某些特定学术领域制造的学术功利或虚假，比如学者靠一些骗人的垃圾项目套取资源或谋晋升等套路，但这些学术内容的腐败多是让那些专家教授得了利，也确实损害、污染了社会环境，但相较于上面的情况来说，它和普通老百姓的生活的关系通常不是非常直接。</p>
-<p>&emsp;&emsp;但此类污染不同，它直接影响、误导了一个普通人对一些基本生活常识的获取能力、思维方式和价值判断，剥夺了人的现代性和文明程度，把千千万万的人变成蠢人，危害远远不可估量。我思来想去之后自创了一个词汇（我不确定是否有人已经提出过），这应当被称为“通识污染（General knowledge pollution）”，这里有必要阐述一下为什么我认为“通识教育”是真正的教育，且从来没有在我们国家进行过，通识教育早在19世纪就已经提出，如今已经可以算是现代大学教育思想的基本内核，“人是目的，而不仅仅是手段”，更是在18世纪就被总结出来的社会学基础。但经过这样的通识污染后，让一个普通人在人的基础目的层面上就难以实现现代文明化，即使他受到了教育甚至走上学术道路，最终也只能异化为牢牢捆绑在某个狭窄岗位上的工具性人才，学建筑的不懂医学常识，学医的不懂简单的机械物理原理，学机械的没有哪怕一点人文艺术修养，等等，再次说明这里说的不懂不是指无法成为某个领域的专业人士，而是不具备很多现代社会的基本素质。结果是只要出了这一行就立马变成小学生，没权力的要受骗受欺负，有权力的就瞎指挥，这真是我们天性愚钝，罪该如此吗？绝不，这一切落后都是人为施行的结果，我想其目的也是显而易见的，到底来讲，他们压根不希望真正的通识教育在这片土地上得以普及，也不想看到人民中诞生出不只为某些利益团体服务的、自由的通识性人才。</p>
-<p>&emsp;&emsp;最后，不得不说，Wikipedia是我真正意义上老师之一，它让我学会了无数有价值的东西。反过来说，也让我看清了在一个不那么正常的体系里的公立教育的弊端和危害性——一个“正常”环境里永远不会通过正常渠道交给最普通的人们去保管的、最应得的知识、财产与权利。所以我一直在支持它，就像创始人Jimmy Wales说的：“Imagine a world in which every single person on the planet is given free access to the sum of all human knowledge. That’s what we’re doing.” 在这之上，我看到了一种原始的、可贵的互联网精神，这种精神首先带来一种可能性，一种破除那些由权力意志主导的企图蒙蔽、劣化普通人的文明性，从而把人变成纯粹的工具和手段的可能性，在我看来，这便是国际互联网最伟大的意义所在。</p>
-<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/10.png" title="j">
-
-
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>翻译</tag>
       </tags>
   </entry>
   <entry>
@@ -2345,41 +2340,107 @@ table th:nth-of-type(3) {
       </tags>
   </entry>
   <entry>
+    <title>通识污染——某搜索引擎离谱的医学词条</title>
+    <url>/2022/01/15/%E9%80%9A%E8%AF%86%E6%B1%A1%E6%9F%93%E2%80%94%E2%80%94%E6%9F%90%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E7%A6%BB%E8%B0%B1%E7%9A%84%E5%8C%BB%E5%AD%A6%E8%AF%8D%E6%9D%A1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>真给我整蒙了.jpg <a id="more"></a><br>百度百科痢疾词条：<a href="https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047" target="_blank" rel="noopener">https://baike.baidu.com/item/%E7%97%A2%E7%96%BE/672047</a><br>维基百科Dysentery词条：<a href="https://en.wikipedia.org/wiki/Dysentery" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Dysentery</a><br>当然这些词条都可能在今后发生变化，所以这里将作截图留存。</p>
+</blockquote>
+<p>&emsp;&emsp;我这人本不打算和中医打任何交道，没想到就是没得病也给我整蒙了。起因是睡觉前读了一会Philip Parker的《维京人的世界（The Northmen’s Fury: A History of the Viking World）》，非常专业的全方位讲维京人历史的一本书，里面提到845年围攻巴黎的维京人战团中爆发了痢疾，导致其进攻受挫，连维京人的首领拉格纳也死于此病，有意思的是，这被法国人看作是因维京人掠夺了附近的修道院而受到的上帝的“神罚”。于是我随手就百度了一下痢疾是什么病，没想到这一搜真给我长见识了：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/1.png" title="a">
+<p>&emsp;&emsp;好家伙，居然是文言文的中医词条，我看了半天也就认得“脓血”、“腹痛”、“饮食不洁”、“病位在肠”，“与脾胃有密切关系”。至于“外感时邪疫毒”，到底感了什么毒，是病毒还是细菌还是化学毒剂？“湿热、疫毒、寒湿，气血壅滞”谁会念这个字？后面的更让我摸不着头脑：什么“宜清”、“宜温”、“实证”、“虚证”、“通涩兼施”、“虚实夹杂”，着实搞的人云里雾里。最最好笑的是，简表里写的传染性是“无”，正文里又写明了“是夏秋季节常见的传染病”，“应重在预防，控制传染”，所以说这病到底传不传染？文章自己都是前后矛盾的。而且，也没有痢疾的英文学名，一个单词都不让你学。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/2.png" title="b">
+<p>&emsp;&emsp;然后是贴了一堆只讲大空话的古文，并且“进一步阐明痢疾具有流行性、传染性”。有意思的是，出现了一段“本节讨论的内容以西医学中的细菌性痢疾、阿米巴痢疾为主”，意思等于是说，我和你们西医讲的是一个玩意，但我不按照你们那套规则来描述事物，不过“溃疡性结肠炎、放射性结肠炎、细菌性食物中毒”这涵盖的范围也太广了吧，这也“均可参照本节辨证论治”？这真让人很好奇下面是不是有什么包治百病的神药。至于发病机理，又是上面见过的什么“湿热疫毒”、“邪蕴肠腑”，到底是什么毒什么菌、通过什么途径什么原理把肠道损害了，只字不提。</p>
+<p>于是我们看看中医是怎么治痢疾的：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/3.jpg" title="c">
+<p>&emsp;&emsp;我不觉得一个没学过中医的正常中国人能一字不落地读完这些内容，互联网百科说到底应该是一种通识教育（General Education），是给老百姓看的，不是光给中医医生看的，更何况谁家科班出身的医生照着网上搜来的的百科词条给人看病啊？这写一堆这玩意，是要叫身患痢疾的老百姓进深山老林学神农，尝百草么？</p>
+<p>再看一下维基百科对于Dysentery的解释：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/4.png" title="d">
+<p>翻译一下：</p>
+<blockquote>
+<p>痢疾（Dysentery）是一种导致血性腹泻的肠胃炎。其他症状可能包括发烧、腹痛和不能完全排便的感觉，并发症可能包括脱水症。<br>痢疾的原因通常是志贺氏属（Genus Shigella）的细菌，在此情况下，它被称为志贺氏菌病（shigellosis）或溶组织内阿米巴（Entamoeba histolytica）原虫；并被称为阿米巴病（amoebiasis）。其他的某些化学物质、细菌、其他原生动物或寄生虫也可能导致此病。它可在人与人之间传播。风险因素包括由于卫生条件差而导致的粪便污染食物和水。潜在机制涉及肠道炎症，尤其是结肠炎症。<br>预防痢疾的有效措施包括在高风险地区旅行时洗手，以及食品安全措施。虽然这种情况通常会在一周内自行消退，但喝足够的液体（例如口服电解质补水液）很重要。阿奇霉素等抗生素可用于治疗与发展中国家旅行相关的病例。洛哌丁胺等用于减少腹泻的药物不建议单独使用，它们应当与抗生素一起使用。<br>志贺氏菌每年导致约1.65亿例腹泻病例和110万人死亡，几乎所有病例都发生在发展中国家。在卫生条件差的地区，近一半的腹泻病例是由溶组织内阿米巴引起的。溶组织内阿米巴每年导致超过55000人死亡，影响了数百万人。它通常发生在中美洲和南美洲、非洲和亚洲的欠发达地区。至少自希波克拉底时代以来，就已经描述了痢疾。</p>
+</blockquote>
+<p>&emsp;&emsp;维基词条在概述中其实也没有说得太清楚，志贺氏菌（也就是我们说的细菌性痢疾）和阿米巴原虫（阿米巴痢疾）是两种病因，不过这里我们也可以看出，痢疾（Dysentery）是一个比较笼统的传统叫法，因为致病病原体不是唯一的，但大多数情况下为志贺氏菌和阿米巴原虫，下文中得到了详述。而且我觉得feeling of incomplete defecation不比什么“里急后重”明白多了？过多的中医术语也是让此类文章失去可读性的重要原因。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/5.png" title="e">
+
+<blockquote>
+<p>体征与症状：最常见的痢疾是细菌性痢疾，通常是一种轻度疾病，引起的症状通常包括轻度肠痛和频繁排便或腹泻。症状通常在1-3天后出现，通常一周后不再持续。排便冲动的频率、排出大量液体便以及血液、粘液或脓液的存在取决于引起疾病的病原体。也可能发生暂时的乳糖不耐症。在某些严重情况下，可能会出现严重的腹部绞痛、发烧、休克以及谵妄。<br>在极端情况下，病人每小时可能会排出超过一升的生殖器和肛门液。更常见的是，病人会抱怨伴有极度腹痛、直肠疼痛和低烧的带血腹泻。有时痢疾伴随快速的体重减轻和肌肉疼痛，而恶心和呕吐很少见。在许多情况下，可能会出现影响整个上肠周围肌肉的级联痉挛；有时严重到足以导致肠膜与肠壁分离，导致全身感染。<br>在极少数情况下，阿米巴寄生虫会通过阴道血流侵入人体并扩散到肠道之外。在这种情况下，它可能会更严重地感染其他器官，例如大脑、肺，最常见的是肝脏。</p>
+</blockquote>
+<p>&emsp;&emsp;照中医词条的说法你根本不知道这个疾病能严重到什么程度，如果没有施以有效的治疗，确实足以要命，看来不是维京人不能打，而是疾病太狠。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/6.png" title="f">
+
+<blockquote>
+<p>病因：痢疾是由细菌，或寄生虫感染引起的。病毒通常不会引起这种疾病。这些病原体通常通过摄入受污染的食物或水、或口腔接触受污染的物体或手等途径，从口腔进入后到达大肠。每种特定的病原体都有其自身的机制或发病机制，但总的来说其结果是对肠壁的损伤，导致炎症的免疫反应。这会导致体温升高、肠道肌肉疼痛性痉挛，因液体从肠道毛细血管渗漏而导致肿胀（水肿），以及身体免疫细胞和称为细胞因子（cytokines）的化学物质进一步对组织造成损害，因人体会释放这些化学物质以对抗感染。结果可能是营养吸收功能受损，肠道组织通常从粪便中除去水分的控制机制的破坏导致的水分和矿物质的流失，以及严重的情况下，病原微生物会进入血液循环。贫血也可能由于腹泻失血而引起。<br>导致血性腹泻的细菌感染通常被归类为侵入性（invasive）或产毒性（toxogenic）。侵入性物种通过侵入肠道黏膜直接造成损害，而产毒性物种不会侵入，但会通过分泌毒素造成细胞损伤，导致血性腹泻。这也与导致水样腹泻的毒素形成对比，后者通常不会造成细胞损伤，而是在细胞的一部分生命中接管细胞机制。<br>一些微生物——例如志贺氏菌属的细菌——分泌被称为细胞毒素（cytotoxins）的物质，在接触时会杀死和破坏肠道组织。而与其毒性相比，志贺氏菌被认为其侵入性更强从而引起出血，因为即使是非产毒菌株也会引发痢疾，但带有志贺样毒素的大肠杆菌无法入侵肠粘膜，因此，是毒素机制具有依赖性，不能独立存在。<br>痢疾的定义可能因地区和医学专业而异。美国疾病控制和预防中心 (CDC) 将其定义限制为“可见血液的腹泻”。其他人更广泛地定义了这个术语。在定义机制时必须考虑到这些定义上的差异。例如，使用CDC 的定义要求肠道组织受到严重损伤，以至于血管破裂，排便时会流失可见量的血液。其他定义可能需要的具体损害相对较少。</p>
+</blockquote>
+<blockquote>
+<p>阿米巴痢疾（Amoebic dysentery） 主条目：阿米巴病（Amoebiasis）<br>阿米巴病，也称为阿米巴痢疾，是由溶组织内阿米巴变形虫感染引起的，多见于热带地区。正确治疗阿米巴痢疾的潜在感染很重要；未得到充分治疗的阿米巴病可能会潜伏多年，随后导致严重且可能致命的并发症。<br>当感染者肠道内的变形虫（amoebae）准备离开身体时，它们会聚集在一起形成一个外壳包围并保护它们。这组变形虫被称为囊肿（cyst），然后通过粪便排出人体，并可以在体外存活。如果卫生标准很差——例如，如果人们不卫生地处理粪便——那么它可能会污染周围的环境，例如附近的食物和水。如果另一个人随后食用或饮用被含有此囊肿的粪便污染的食物或水，该人也会感染阿米巴虫。阿米巴痢疾在世界上将人类粪便用作肥料的部分地区尤为常见。通过口腔进入人体后，囊肿向下进入胃部。囊肿内的变形虫可避免胃酸的腐蚀。囊肿从胃进入肠道，在那里它破裂并释放变形虫，从而导致感染。变形虫可以钻入病人的肠壁并导致形成小脓肿和溃疡。然后循环将再次开始。</p>
+</blockquote>
+<blockquote>
+<p>细菌性痢疾（Bacillary dysentery） 主条目：细菌性痢疾<br>痢疾也可能由志贺氏菌病引起，志贺氏菌属细菌感染，然后被称为细菌性痢疾（或马洛综合征）。细菌性痢疾一词在词源学上似乎是指由任何杆菌状细菌引起的任何痢疾，但其含义仅限于志贺氏痢疾。<br>其他细菌：一些大肠杆菌菌株会引起血性腹泻。典型的罪魁祸首是肠出血性大肠杆菌，其中O157:H7最为人所知。</p>
+</blockquote>
+<p>&emsp;&emsp;这条就讲的非常清楚了，相比中医条目那看不懂的古文甚至可以用精彩来形容。志贺氏菌和阿米巴寄生虫都会导致此类疾病，志贺氏菌通过直接侵入肠粘膜+分泌细胞毒素的方式引起肠炎，而阿米巴虫则是一种典型的寄生虫病，拥有一套完善的寄生-繁殖机制，可抵御人体的各种免疫措施，且可在人类社区中依靠排泄物传染他人。并且说明了狭义上的“细菌性痢疾”仅指志贺氏菌痢疾，但广义上的细菌性痢疾可以包含其他细菌病原体。从致病机理可以看出，痢疾均从大肠发病，和脾、肾确实没有什么关系，和胃的关系也很小，不知道为什么中医理论老是把什么病都扯上脾肾。</p>
+<p>再来看看治疗手段：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/7.png" title="g">
+<blockquote>
+<p>痢疾可通过使用口服电解质补液的疗法维持液体得到控制。但这种治疗方法如果由于呕吐或大量腹泻而无法维持，则可能需要住院以进行静脉输液。在理想情况下，在通过显微镜微生物和培养研究确定所涉及的感染种类之前，不应进行抗细菌治疗。当这种实验室服务条件不可用时，可能需要联合使用药物，包括能杀死阿米巴寄生虫的药物和治疗任何相关细菌感染的抗生素。<br>如果怀疑是志贺氏菌病并且不太严重，让它自然发展可能是合理的——通常不到一周。如果情况严重，可以使用环丙沙星或TMP-SMX等抗生素。然而，许多志贺氏菌菌株对普通抗生素产生抗药性，而有效药物在发展中国家往往供不应求。如有必要，医生可能必须为死亡风险最高的人保留抗生素，包括幼儿、50岁以上的人以及任何患有脱水或营养不良的人。<br>阿米巴痢疾通常用两种抗菌药物治疗，例如甲硝唑和巴龙霉素或碘喹啉。<br>医疗预后：通过正确的治疗，大多数阿米巴痢疾和细菌性痢疾会在10天内消退，大多数人在开始适当治疗后的两到四个星期内即可完全康复。如果疾病不治疗，预后会随着个体患者的免疫状态和疾病的严重程度而变化。极度脱水会延迟恢复并显着增加严重并发症的风险。</p>
+</blockquote>
+<p>&emsp;&emsp;这也是医疗上的一个基本道理，先确定病原体再对症下药，且也存在口服电解质补液的自愈疗法和轻度疗法，并非某些人认为的“西医只有打针输液”。甚至还考虑到了资源匮乏的非理想情况，毕竟地球上不是哪里都发达，很多穷困地区没有医学条件，病人还特别多，在没有实验室无法确定病原体的情况下，杀寄生虫和杀细菌应当双管齐下二者并用，这也是不得已而为之。而且说了这么多，这也只是百科词条，是属于世界人民的“通识教育”。</p>
+<p>&emsp;&emsp;然后我还找到一篇1991年的《睢县腹泻患者中志贺氏菌和溶组织阿米巴原虫的调查分析》：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/8.png" title="h">
+<p>&emsp;&emsp;文献也写的很清楚，河南睢县出现的阿米巴痢疾和志贺氏菌痢疾病例上基本五五开，很多阿米巴痢疾被误诊为细菌性痢疾导致久治不愈。检测手段也当然是粪便常规，并非靠什么听起来就不靠谱的“伤气伤血、虚实主次”。</p>
+<p>最后再对比一下参考文献：</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/9.png" title="i">
+<p>&emsp;&emsp;这么写文章也是明摆着糊弄人了，仔细看了看，本词条居然还有北京中医药大学第三附属医院的刘金民主任医师作专家认证，还是教授、博士生导师，不知道这导师的博士生是不是论文都是这么写参考文献的，哦还有“国家中医药管理局百度百科科普词条项目审核专家组”认证，且本词条是“国家中医药管理局中医药名词术语成果转化与规范推广项目”的提供内容，至于这项目是啥咱不知道，只知道这还是个锁定词条，一般人还别想编辑。</p>
+<p>&emsp;&emsp;就这条目本身提供的古代文献来看，也只有非常少数的内容提到了“大小肠”，而更多的内容都是“胃气败”、“腹痛”、“血虚”、“气湿”，压根无法指出病因所在。我们可以推断，这个满篇文言文的古怪词条一定是现代人写就的，古人哪有这本事啊，这些用文言文写出的“假古文”是引证不出文献来源的，只能骗骗不懂的人以为古代文献有多高深。</p>
+<p>&emsp;&emsp;也许有人会想当然的说，鬼才看百度词条。或者重复我上面说的，医生也不靠百度词条治病。其实我上面写了这么多，关键就在这一点，这种想法大大忽视了通识教育的必要性，也大大低估了此类行为的危害性。全国上下十几亿老百姓，不是人人都能读英语，更不是人人都能上维基的。说到底，这个词条的目的就是让普通老百姓们上网搜一大圈也搞不懂什么是痢疾，读不懂“医学”内容然后产生自我否定，也不知道该用什么药，得病了只能病急乱投医，然后再被这些老中医们用一记十几块钱的便常规，再附带上一堆上百元乱七八糟的、里面可能只含了百分之几西药有效成分的中成药，宰得盆满钵满。毫不怀疑的说，几十年过去了已经不知道有多少亿万人受了这样的骗，有人说几十年前信息通讯不发达，你得病了可能还真得求助于村里那个没什么证的赤脚医生，但现在都什么年代了，还把这一套拉出来是为了啥？不由的让我想到互联网上的“DNS污染”的概念：你求取一个地址，系统识别后给你发送一个错误地址，目的就是把你引到沟里去，你永远也获得不到正确的内容。</p>
+<p>&emsp;&emsp;我们的医学常识正在遭受这样一种污染，其实在历史、哲学等学科上我们早已见识过，我认为不应当将这种污染称为学术污染，学术污染这个词汇应该指的是在某些特定学术领域制造的学术功利或虚假，比如学者靠一些骗人的垃圾项目套取资源或谋晋升等套路，但这些学术内容的腐败多是让那些专家教授得了利，也确实损害、污染了社会环境，但相较于上面的情况来说，它和普通老百姓的生活的关系通常不是非常直接。</p>
+<p>&emsp;&emsp;但此类污染不同，它直接影响、误导了一个普通人对一些基本生活常识的获取能力、思维方式和价值判断，剥夺了人的现代性和文明程度，把千千万万的人变成蠢人，危害远远不可估量。我思来想去之后自创了一个词汇（我不确定是否有人已经提出过），这应当被称为“通识污染（General knowledge pollution）”，这里有必要阐述一下为什么我认为“通识教育”是真正的教育，且从来没有在我们国家进行过，通识教育早在19世纪就已经提出，如今已经可以算是现代大学教育思想的基本内核，“人是目的，而不仅仅是手段”，更是在18世纪就被总结出来的社会学基础。但经过这样的通识污染后，让一个普通人在人的基础目的层面上就难以实现现代文明化，即使他受到了教育甚至走上学术道路，最终也只能异化为牢牢捆绑在某个狭窄岗位上的工具性人才，学建筑的不懂医学常识，学医的不懂简单的机械物理原理，学机械的没有哪怕一点人文艺术修养，等等，再次说明这里说的不懂不是指无法成为某个领域的专业人士，而是不具备很多现代社会的基本素质。结果是只要出了这一行就立马变成小学生，没权力的要受骗受欺负，有权力的就瞎指挥，这真是我们天性愚钝，罪该如此吗？绝不，这一切落后都是人为施行的结果，我想其目的也是显而易见的，到底来讲，他们压根不希望真正的通识教育在这片土地上得以普及，也不想看到人民中诞生出不只为某些利益团体服务的、自由的通识性人才。</p>
+<p>&emsp;&emsp;最后，不得不说，Wikipedia是我真正意义上老师之一，它让我学会了无数有价值的东西。反过来说，也让我看清了在一个不那么正常的体系里的公立教育的弊端和危害性——一个“正常”环境里永远不会通过正常渠道交给最普通的人们去保管的、最应得的知识、财产与权利。所以我一直在支持它，就像创始人Jimmy Wales说的：“Imagine a world in which every single person on the planet is given free access to the sum of all human knowledge. That’s what we’re doing.” 在这之上，我看到了一种原始的、可贵的互联网精神，这种精神首先带来一种可能性，一种破除那些由权力意志主导的企图蒙蔽、劣化普通人的文明性，从而把人变成纯粹的工具和手段的可能性，在我看来，这便是国际互联网最伟大的意义所在。</p>
+<img src="/2022/01/15/通识污染——某搜索引擎离谱的医学词条/10.png" title="j">
+
+
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>翻译</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>WOW怀旧服休闲任务流程攻略</title>
     <url>/2020/01/31/WOW%E6%80%80%E6%97%A7%E6%9C%8D%E4%BC%91%E9%97%B2%E4%BB%BB%E5%8A%A1%E6%B5%81%E7%A8%8B%E6%94%BB%E7%95%A5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
 <p>写一篇香草版本（60版本）的《魔兽世界》休闲玩家任务攻略，以联盟玩家为主视角，部落玩家也可以参考，特别是对于副本和一些中立任务。<a id="more"></a></p>
 </blockquote>
 <p>魔兽世界经典怀旧服自从19年8月底开服到现在已经5个月的时间了，不得不说的是，如今这个游戏已经呈现出类似私服一样的状态，正常玩家越来越少，工作室、机器脚本和商人越来越多，正常玩家的小号也宁愿出钱找人带。造成的困境就是，休闲玩家或者真正的新玩家很少能得到其他玩家的帮助，此种困境比笔者在十年前那个万年TBC末期入坑时遇到的情况有过之而无不及，所以说，怀旧服发展到这种情况是必然现象,而且会越来越普遍。实话实说，我已经不建议现在的玩家入坑玩这个游戏，如果入坑了，也请不要在上面投入太多。这里的游戏环境不复当年，玩家的平均素质不升反降，“毛人毛事”每时每刻都在上演。</p>
-<p>所以这次写的这个攻略，已经不适合目前官方服务器的游戏环境，目的只是为了给我对这个游戏的任务流程的理解做一个记录，即试图从游戏设计者的角度出发，说明设计者所认为的玩家正常任务模式是什么样子。或许也能给正式服来的的休闲玩家、考古党们一个基本的游玩指导。所谓“大脚一关，绿水青山”，满级既然是开始，何尝不是通关，当别人都忙于打G、线下交易、毛装备的时候，把这个游戏当成一个练级养成向的单机玩也未尝不可。笔者万年联盟狗，其中的一些涉及联盟专属任务的细节可能无法作为部落玩家的参考，但是对游戏本身的理解一定是通用的。</p>
+<p>所以这次写的这个攻略，已经不适合目前官方服务器的游戏环境，目的只是为了给我对这个游戏的任务流程的理解做一个记录，即试图从游戏设计者的角度出发，解释设计者所认为的正常任务模式是什么样子。或许也能给正式服来的的休闲玩家、考古党们一个基本的游玩指导。所谓“大脚一关，绿水青山”，满级既然是开始，何尝不是通关，当别人都忙于打G、线下交易、毛装备的时候，把这个游戏当成一个练级养成向的半单机玩也未尝不可。笔者万年联盟狗，其中的一些涉及联盟专属任务的细节可能无法作为部落玩家的参考，但是对游戏本身的理解一定是通用的。虽然这篇攻略是以60版本为基础，不过对于WLK及之前的资料片来说，虽然因后续细节上的改动会与这篇攻略有所出入，但做一个大体上的指导还是没有问题的。</p>
 <p>正文开始~</p>
 <h2 id="难度以及职业选择"><a href="#难度以及职业选择" class="headerlink" title="难度以及职业选择"></a>难度以及职业选择</h2><p>现在的一些玩家可能会认为，网络游戏是无所谓难度一说的，但是对于魔兽世界怀旧服，我可以毫无疑问的说，挺难的。不仅是因为早期网游普遍偏难，还因为魔兽世界有某种类似单机游戏的性质，这也是为什么我认为这个游戏可以当成半个单机游戏玩的原因，最理想的情况是有一两个小伙伴一起联机玩。虽然现在已经物是人非，但早期的魔兽的确是这样的。</p>
 <p>拿游戏时间来说，笔者试验的第一个潜行者角色，也就是真正白手起家的角色，升到等级60时一共用了244个小时，满开锁、急救和剥皮制皮，几乎清完了两块大陆除了暗夜精灵领地以外的所有联盟任务。第二个法师角色升到等级60总共用了180小时，裁缝附魔急救满（在游戏中输入/played便能查看游戏时间）。笔者也调查过其他手动玩家的时间，可以说，初始账号1级到60级的游戏时间基本在200-250个小时这个水平上，对于一般玩家来说，通常需要1到2个月。</p>
-<p>接下来是职业，要说明的是，在经典怀旧服里，职业选择和游戏难度直接挂钩，并且差异明显。对于休闲玩家来说，建议选择那些单人能力比较强的职业作为首发职业，如猎人、盗贼、法师。而不建议选择单人能力较差的职业，如战士。在怀旧服里，三系战士都是为多人团队而生的，单人能力也是最差的，它必须有强大的后勤支撑，并且对高级装备的需求十分苛刻。总之，玩战士需要较强的心理准备和资源保障。</p>
-<p>服务器选择也涉及难度，建议休闲玩家选择PVE服务器，麻烦事能少很多，而且PVE服务器一般人也比较少，通常不会出现排队的情况。</p>
-<p>最后是专业，有人可能会认为冲专业无形中增加了难度，其实不然，怀旧服中练专业和练级是完全可以同时进行的，建议每个玩家一定要选择两个互相搭配、适合自己职业的主专业。急救这个简单实用的副专业几乎是必学的，一定要练起来，其他的如钓鱼、烹饪等副专业，一般不建议小号学，满级了再弄。</p>
-<h3 id="地区顺序"><a href="#地区顺序" class="headerlink" title="地区顺序"></a>地区顺序</h3><p>由于60版本设计理念的不同，这可能是正式服玩家最不容易搞懂的地方。首先介绍平行地区的概念，即把一些任务等级相近，怪物强度相同的地图，称之为平行地区，通常对应不同种族的地盘。如艾尔文森林、泰达希尔、丹莫罗，部落的提瑞斯法林地、杜隆塔尔等，这些地区都是新手村，等级都在1-10级之内，它们都是平行地区。而与正式服最大的不同是，在正式服中，玩家只需要到达地区等级，便可以在这张地图一直任务下去，通常会有一条完整的任务线，当玩家完成这个地区的任务线时，等级已经达到地区顶级，甚至会多出一两级，并且有蓝色装备奖励，此时玩家就可以进入下一个更高级的地区继续任务，而完全不需理会其他平行地区的任务。</p>
-<p>但是在经典怀旧服中，却不是这样的，一个地区并无明显的任务线，即使玩家到达了地区等级，也没有能力完成这个地区的所有任务，当玩家完成低级任务后，便会发现后续的任务列表变成一片红名。事实上设计者的想法是这样的，让玩家此时应该前往其他平行地区，完成其他平行地区的低等级任务，最后当玩家清掉所有低级任务以后，等级也就上去了，就可以完成这些平行地区的中高级任务。</p>
+<p>接下来是职业，要说明的是，在经典怀旧服的升级过程中，职业选择和游戏难度直接挂钩，并且差异明显。对于休闲玩家来说，建议选择那些单人能力比较强的职业作为首发职业，如猎人、盗贼、法师。而不建议选择单人能力较差的职业，如战士。在早期版本里，三系战士都是为多人团队而生的，单人能力也是最差的，它必须有强大的后勤支撑，并且对高级装备的需求十分苛刻。总之，玩战士需要较强的资源保障和心理准备，非常不建议独狼玩家在没有任何后勤支持的情况下白手起一个战士号，游戏体验会相当不好。</p>
+<p>服务器选择也涉及难度，建议休闲玩家选择普通（PVE）服务器，麻烦事能少很多，而且PVE服务器一般人也比较少，通常不会出现排队的情况。</p>
+<p>最后是专业，有人可能会认为冲专业无形中增加了难度，其实不然，怀旧服中练专业和练级是完全可以同时进行的，而且也更有意思，建议每个玩家一定要选择两个互相搭配、适合自己职业的主专业。急救这个在升级中简单实用的副专业几乎是必学的，除了法师外，只要是有近战成分的职业一定都要练起来。其他的如钓鱼、烹饪等副专业，一般不建议小号学，满级了再弄吧。</p>
+<h3 id="地区顺序与机制"><a href="#地区顺序与机制" class="headerlink" title="地区顺序与机制"></a>地区顺序与机制</h3><p>由于60版本设计理念的不同，这可能是正式服玩家最不容易搞懂的地方。首先介绍平行地区的概念，即把一些任务等级相近，怪物强度相同的地图，称之为平行地区，通常对应不同种族的地盘。如艾尔文森林、泰达希尔、丹莫罗，部落的提瑞斯法林地、杜隆塔尔等，这些地区都是新手村，等级都在1-10级之内，它们都是平行地区。而与正式服最大的不同是，在正式服中，玩家只需要到达地区等级，便可以在这张地图一直任务下去，通常会有一条完整的任务线，当玩家完成这个地区的任务线时，等级已经达到地区顶级，甚至会多出一两级，并且有蓝色装备奖励，此时玩家就可以进入下一个更高级的地区继续任务，而完全不需理会其他平行地区的任务。</p>
+<p>但是在经典怀旧服中，却不是这样的，一个地区并无明显的任务线，即使玩家到达了地区等级，也没有能力完成这个地区的所有任务，当玩家完成低级任务后，便会发现后续的任务列表变成一片红名。事实上设计者的想法是这样的，让玩家此时应该前往其他平行地区，完成其他平行地区的低等级任务，最后当玩家清掉所有低级任务以后，等级也就上去了，就可以完成这些平行地区的中高级任务。所以玩家不要执着于打黄等级怪，单人玩家的话绿等级地图完全有做的必要。</p>
 <p>比如阿拉希高地，这里的任务30级就能接到（甚至早在28级就有一个湿地的任务把玩家向这里卖），玩家可以完成一两个低级任务，但几个激流堡的精英通缉任务却起码需要一个平均34级的五人小队才能完成，而存在于该地区的任务线“召唤大地公主”，最后的任务怪高达44级，还会召唤各种小弟，毫不夸张的说，就是快满级的玩家也未必单挑得过这个大地公主。正确的做法是穿过索拉丁之墙，去完成南海镇的低等级任务，而不是在阿拉希地区死磕。</p>
-<p>但我们都知道，在魔兽里换地图其实是一件非常麻烦的事情，比如辛特兰换到菲拉斯，这两个点几乎就是整个世界的对角线，谈何容易。所以我认为其实设计者就是故意要让玩家多跑路（好消耗你们的点卡），这种设计理念在今天看来很是奇葩，但也正是这些老游戏区别于现代“快餐”的明显特征，一棍子打死显然不合适。</p>
-<p>所以对玩家来说，跑路和打怪一样其实都是任务的一部分，是肯定要跑的，关键是怎么少跑冤枉路，怎么达到最舒适的游戏体验，才是我们要重点研究的问题。比如，对于一些难度极高、奖励极差的跑路任务可以适当放弃。平行地区数量增加后，很可能出现任务多到接不下的情况，这里需要使用一些技巧，比如将本地的地下城任务予以暂时搁置，等准备攻略时一并领取；将换地图的“报到型”任务予以搁置，等到换地图时一并接到；把任务线型任务的某一步骤固定在关键交通点上，予以放弃，先处理离散型地图任务，再回到关键交通点处，集中统一处理该点的任务。总之，放弃掉的任务要么是确定不会再做的，要么是能够很快回收回来的（如主城的一些副本任务），不要放弃了那些辛辛苦苦接到的触发型任务，回收成本是很高的。</p>
-<p>所以这里就给出一个我认为最适合联盟玩家的地区流程路线：总之一句话，任务打不过，立马换地图；副本组不到，立马换地图；死活都打不过的精英任务直接放弃。</p>
-<h4 id="1-新手村"><a href="#1-新手村" class="headerlink" title="1. 新手村"></a>1. 新手村</h4><p>所有的新手村都是可以一口气做完的，完成后约10-12级。这里要说一下，因为新手村的任务不需要全做完就能到10级，10级就会接到指引到下一个地区的任务，故很多玩家习惯10级后放弃掉任务直接出村。而我的建议是把新手村任务彻底做到一个不剩，这样出村大概就是12级，对下一个区域的过渡能顺利很多，减轻了很多麻烦。而10级就出村很可能会直接接到14级的任务，游戏前期的红字怪那可是真不好对付的。</p>
-<h4 id="2-西部荒野（Westfall）-洛克莫丹（Loch-Modan）。"><a href="#2-西部荒野（Westfall）-洛克莫丹（Loch-Modan）。" class="headerlink" title="2. 西部荒野（Westfall）/洛克莫丹（Loch Modan）。"></a>2. 西部荒野（Westfall）/洛克莫丹（Loch Modan）。</h4><p>这是两个平行地区，10级暗夜精灵玩家也是可以前往西部荒野的，具体方法是从黑海岸去米奈希尔港，然后跑到洛克莫丹去，甚至还可以游泳至丹莫罗西北部沿岸，通过溺死即可在卡拉诺斯的墓地复活。至于为啥精灵玩家要往东部跑，老实说整个从新手村到灰谷的暗夜精灵领地的任务都很坑，做过的都知道，所以人类-矮人领地是最推荐的新手任务地，并且因为副本在人类领地的原因，西部荒野是必做的，而黑海岸则可以完全不做。</p>
-<p>如果是人类玩家的话，西部荒野任务做到匕首岭就可以换洛克莫丹了（矮人和精灵玩家则顺序相反），不出意外可以把洛克莫丹的大部分任务都清掉，精英任务做不了不要紧，再换回西部荒野。约17级就可以前去完成赤脊山的几个低等级任务，几个送信的跑路任务一定要做完，涉及副本主线。然后收拾掉西部荒野的所有任务，18级以后就可以开始尝试加入一个任务队，完成一次死亡矿井（The Deadmines）地下城，关于该副本的任务，一个是西部荒野的迪菲亚兄弟会的，另外还有3个任务都是从暴风城（Stormwind）的矮人区接到的，其中2个任务需要在副本门外区域的一个有很多骷髅矿工的地方完成，建议在进入副本前组队完成。</p>
+<p>但我们都知道，在魔兽里换地图其实是一件非常麻烦的事情，比如辛特兰换到菲拉斯，或者是艾萨拉换到诅咒之地，这些对点几乎就是整个世界的对角线，谈何容易。所以我认为其实设计者就是故意要让玩家多跑路（好消耗你们的游戏时间），这种设计理念在今天看来很是奇葩，今天的话语体系里可能会用“反人类”来形容之，但先别急，这正是这些老游戏区别于现代“快餐”的明显特征，如更早的《无尽的任务》里甚至存在如裸装跑尸等比魔兽还更硬核更“反人类”的设定，让玩家“越死越难”，相比之下魔兽里灵魂形态的玩法是不是一看就简单许多了。总之一个时代有一个时代的玩法，一棍子打死显然不合适。</p>
+<p>所以对老版本玩家来说，跑路和打怪一样其实都是任务的一部分，一点不跑不现实。但问题的关键是怎么少跑冤枉路，怎么达到最舒适的游戏体验，才是我们要重点研究的问题。比如，对于一些难度极高、奖励极差的跑路任务可以适当放弃。平行地区数量增加后，很可能出现任务多到接不下的情况，这里需要使用一些技巧，比如将本地的地下城任务予以暂时搁置，等准备攻略时一并领取；将换地图的“报到型”任务予以搁置，等到换地图时一并接到；把任务线型任务的某一步骤固定在关键交通点上，予以放弃，先处理离散型地图任务，再回到关键交通点处，集中统一处理该点的任务。总之，放弃掉的任务要么是确定不会再做的，要么是能够很快回收回来的（如主城的一些副本任务），不要放弃了那些辛辛苦苦接到的触发型任务，回收成本是很高的。</p>
+<p>最后再介绍两个概念，第一个是前置任务，很多游戏都有的设定，即这个任务/任务链通常是其他任务/任务链的前置要求，如果不完成前置将无法接到后续任务。第二个是指引型任务，指引型任务（或称报道型任务）往往指向一个任务系列的开端位置，目的就是把玩家引导至任务线，通常奖励并不是很多，而且指引型任务不像前置任务，即使不做它也不会影响到后续任务的正常开启，但为了尽善尽美，本文尽量列出且推荐完成这些指引型任务，不仅是因为有一定的奖励，更能让整个任务剧情线显得更加完整，指引型任务在地图上的标注也更能引导玩家前去具体的位置。</p>
+<p>所以本文就给出一个我认为最适合联盟玩家的地区流程路线。总之一句话，任务打不过，立马换地图；副本组不到，立马换地图；死活都打不过的精英任务直接放弃。</p>
+<h4 id="1-新手村"><a href="#1-新手村" class="headerlink" title="1. 新手村"></a>1. 新手村</h4><p>所有的新手村都是可以一口气做完的，完成后约10-12级。这里要说一下，因为新手村的任务不需要全做完就能到10级，一旦到10级就会接到指引到下一个地区的任务，故很多玩家习惯10级后放弃掉任务直接出村。而我的建议是把新手村任务彻底做到一个不剩，这样出村大概就是12级，对下一个区域的过渡能顺利很多，减轻了很多麻烦。而10级就出村很可能会在下一个图直接接到14级难度的任务，游戏前期的红字怪那可是真不好对付的。</p>
+<h4 id="2-西部荒野（Westfall）-洛克莫丹（Loch-Modan）。"><a href="#2-西部荒野（Westfall）-洛克莫丹（Loch-Modan）。" class="headerlink" title="2. 西部荒野（Westfall）/洛克莫丹（Loch Modan）。"></a>2. 西部荒野（Westfall）/洛克莫丹（Loch Modan）。</h4><p>这是两个平行地区，新手暗夜精灵玩家也是可以前往西部荒野的，具体方法是从黑海岸去米奈希尔港，然后跑到洛克莫丹去，甚至还可以游泳至丹莫罗西北部沿岸，通过溺死即可在卡拉诺斯的墓地复活。至于为啥精灵玩家要往东部跑，老实说整个从新手村到灰谷的暗夜精灵领地的任务都很坑，做过的都知道，所以人类-矮人领地是最推荐的新手任务地，并且因为副本在人类领地的原因，西部荒野通常是必做的，而黑海岸则可以完全不做。</p>
+<p>前去西部荒野前先在暴风城大教堂旁边的“城市大厅”里接到“童年的记忆”任务，10级可接，后续就在西部荒野的阿力克斯顿农场完成。西部荒野任务做到匕首岭就可以换洛克莫丹了（矮人和精灵玩家可以先做洛克莫丹），不出意外可以把洛克莫丹的大部分任务都清掉，精英任务做不了不要紧，再换回西部荒野。约17级就可以前去完成赤脊山的几个低等级任务，几个送信的跑路任务一定要做完，涉及副本主线。然后收拾掉西部荒野的所有任务，18级以后就可以开始尝试加入一个任务队，完成一次死亡矿井（The Deadmines）地下城，关于该副本的任务，一个是西部荒野的迪菲亚兄弟会的，另外还有3个任务都是从暴风城（Stormwind）的矮人区接到的，其中2个任务需要在副本门外区域的一个有很多骷髅矿工的地方完成，建议在队伍进入副本前组队完成。</p>
 <h4 id="3-赤脊山（Redridge-Mountains）-暮色森林（Duskwood）-湿地（Wetlands）"><a href="#3-赤脊山（Redridge-Mountains）-暮色森林（Duskwood）-湿地（Wetlands）" class="headerlink" title="3. 赤脊山（Redridge Mountains）/暮色森林（Duskwood）/湿地（Wetlands）"></a>3. 赤脊山（Redridge Mountains）/暮色森林（Duskwood）/湿地（Wetlands）</h4><p>暮色和湿地是平行地区，赤脊山稍低。所以约20级可以开始清理赤脊山的低中级任务，即使是低中级任务，有些单人完成也十分困难，如豺狼人犹勒和撕裂者营地的护送，能组队尽量组队。做不完也不要紧，可以去完成暮色森林和湿地的低级任务。24级以后可以组队暴风城监狱（The Stockade）的任务队，暴风城本地有2个任务（旧城区、典狱长），死亡矿井后续1个，夜色镇和湖畔镇各一个，达到22级便可接到上述全任务，严格的说这个副本还有一个任务，叫卡姆•深怒（Kam Deepfury），是湿地精英任务黑铁战争的后续，需要25级才能接到，而完成黑铁战争需要近30级的小队，所以先不做它。红色面罩一次可能打不够，建议先留着，不要丢弃了。</p>
 <p>到达25级就可以开始清理赤脊山的高级任务了，石堡要塞（Stonewatch Keep）的精英兽人难度较高，建议组队完成。赤脊山的精英首领通缉有3个，萨瑞尔祖恩（Tharil’zun）位于靠近石堡主楼外一扇坍塌的城门后面，加塞尔佐格（Gath’ilzogg）位于城堡主楼，范高雷中尉（Lieutenant Fangore）位于石堡后面的豺狼人营地。关键是，这些通缉令都不在同一个地方接，范高雷中尉的通缉令在酒馆门口，萨瑞尔祖恩则是完成打破斧的任务开启的后续，而加塞尔佐格的通缉令贴在了城镇大厅门口的一张小纸条上，很是隐蔽。</p>
 <p>征服吃鸡山之后我们获得了一些绿色装备，可以开始清理暮色森林和湿地的中高级任务，其中摩本特•费尔（Morbent Fel）任务线需要去湿地一趟，需要注意的是，摩拉迪姆（Mor’Ladim）任务线是在乌鸦岭荒弃鬼屋后面一个破烂墓碑上接到的，需要28级，而这个墓碑本身并不会显示出黄色感叹号。完成后获得双手剑阿契厄斯（Archeus），此剑早已在正式服绝版，建议保留。基本完成暮色森林后可以组队完成湿地的高级任务，若有幸完成黑铁战争和萨多尔大桥，可以考虑再打一次暴风城监狱以完成卡姆•深怒，顺便完成没打够的红色面罩。 </p>
-<p>这个等级还有两个任务因为途经必经地图，建议都完成。一个是28级可在暴风城大教堂接到“失踪的使节”任务，是一个任务线，后续指向米奈希尔港和尘泥沼泽；第二个是物品触发，在暮色森林打怪会掉落一个物品叫“一本破旧的历史书”，后续指向南海镇和奥特兰克山脉的精英任务，整个暮色的人型生物和食尸鬼都会掉落这个物品，随缘接到就行了，一般来说都是在乌鸦岭那里比较容易接到，至少我还没发现有整个暮色做完都没掉这本书的情况，如果有，可以不用管这个任务了。</p>
+<p>这个等级还有两个任务因为途经必经地图，建议都完成。一个是28级可在暴风城大教堂接到“失踪的使节”任务，是一个任务线，后续指向米奈希尔港和尘泥沼泽；第二个是物品触发，在暮色森林打怪会掉落一个物品叫“一本破旧的历史书”，后续指向南海镇和奥特兰克山脉的精英任务，整个暮色的人型生物和食尸鬼都会掉落这个物品，随缘接到就行了，一般来说都是在乌鸦岭那里比较容易接到，至少我还没遇到过有整个暮色做完都没掉这本书的情况。</p>
 <h4 id="4-阿拉希高地（Arathi-Highlands）-南海镇（Southshore）-凄凉之地（Desolace）-其他地区零散的低级任务"><a href="#4-阿拉希高地（Arathi-Highlands）-南海镇（Southshore）-凄凉之地（Desolace）-其他地区零散的低级任务" class="headerlink" title="4. 阿拉希高地（Arathi Highlands）/南海镇（Southshore）/凄凉之地（Desolace）/其他地区零散的低级任务"></a>4. 阿拉希高地（Arathi Highlands）/南海镇（Southshore）/凄凉之地（Desolace）/其他地区零散的低级任务</h4><p>以下几个阶段的任务极其复杂，存在各种平行但又不完全平行的任务地区和副本，属于整个游戏系列里最难以统筹兼顾的，不少玩家都在此被“劝退”。一些地区的任务并无硬性前后顺序要求，总之时刻记得不要硬啃红色任务，勤换地图，先解决低级任务。</p>
 <p>从20级开始就能从暴风城的矮人区和铁炉堡的工匠区陆续接到一些诺莫瑞根（Gnomeregan）的地下城任务，这里建议都先不接，因为这个副本至少需要近30级才能去打。该副本任务众多且繁琐，还存在几个副本内触发的任务。当玩家等级接近30级时，可以考虑组队一次诺莫瑞根的任务队，该副本地图巨大，岔路巨多，很多玩家连门都找不到，更别说打通，而且这个副本后段难度比较高。不过若有幸碰上战斗力较好的任务队，也是能够顺利打完的。这里要说的是，如果实在找不到合适的诺莫瑞根队伍，任务能做则做，打不了的可以放弃。任务“陀螺式挖掘机”通过单打副本门外的精英怪物也是能够单人完成的。</p>
 <p>30级先去南海镇完成低级任务，然后去阿拉希高地的完成一两个低级任务，南海镇的高级任务其实就是奥克兰特山脉的精英任务，需要近40级，先放着不做。但要注意的是，在希尔斯布莱德丘陵（Hillsbrad Foothills）这个区域，联盟玩家会遇到很多热情的部落兄弟，如果是PVP服务器的玩家，需时刻警惕。</p>
-<p>接下来需要兼顾南海镇和阿拉希，互相换地图完成低级任务，这个阶段很容易卡等级导致出现无任务能做的情况，实在周转不过来的话32级可以去千针石林（Thousand Needles）的闪光平原做点任务过度，荆棘谷最低级的那几个任务也能做，或者混一下血色墓地/图书馆的副本，约34级可以组队开打激流堡（Stromgarde）的精英任务，其中激流堡徽章掉率很低，可以不打，公爵和他的保镖相当强悍，实在打不过可以放弃。激流堡里有一块联盟控制的区域，其中有一个NPC出售中级急救书（突破150上限）以及两本绷带书，一定要全买下来。此外还可以把大地公主任务做到“禁锢之石”。大地公主任务线是从避难谷底东北方向的一块水晶上开启的，严格的说还有个项链是最原始的触发，一般不算在内。</p>
-<p>35级就可以前往卡利姆多了，因为塞拉摩（Theramore）的急救任务（突破225上限）需要35级和225点急救，前往塞拉摩之前确保接到“失踪的使节”到塞拉摩的步骤、铁炉堡探险者大厅（Hall of Explorers）指向凄凉之地的报到任务、米奈希尔港本地指向塞拉摩的报到任务、并满225点急救。</p>
-<p>在塞拉摩完成所有任务并彻底完成“失踪的使节”，就可以转战凄凉之地。通过灰谷和贫瘠之地均可到达石爪山脉（Stonetalon Mountains），再进入凄凉之地，这里我们已经到了尘泥沼泽，就选择从贫瘠之地走。石爪山脉的左上方其实也有联盟飞行点，叫石爪峰，只是没什么用，建议一并开了一劳永逸。到达凄凉之地后可以一口气清完凄凉之地的所有联盟任务，其中位于尼耶尔前哨站安东修士（Brother Anton）的打骷髅的任务后续涉及到血色修道院副本，必做。玛拉顿的副本任务暂时不管。</p>
+<p>接下来需要兼顾南海镇和阿拉希，互相换地图完成低级任务，这个阶段很容易卡等级导致出现无任务能做的情况，实在周转不过来的话32级可以去千针石林（Thousand Needles）的闪光平原做点任务过度，荆棘谷最低级的那几个任务也能做，或者混一下血色墓地/图书馆的副本，约34级可以组队开打激流堡（Stromgarde）的精英任务，其中激流堡徽章掉率很低，可以不打，公爵和他的保镖相当强悍，实在打不过可以放弃。激流堡里有一块联盟控制的区域，其中有一个NPC出售中级急救书（突破150上限）以及两本绷带书，一定要全买下来。此外还可以把大地公主任务做到“禁锢之石”。大地公主任务线通常是从避难谷地东北方向的一块水晶上开启的，严格的说还有个血色小怪掉的绿装项链“密斯莱尔坠饰”是最原始的触发指引，不过考虑到等级差异大以及获取难度高，一般不算在内。</p>
+<p>35级就可以前往卡利姆多了，因为塞拉摩（Theramore）的急救任务（突破225上限）需要35级和225点急救，前往塞拉摩之前，确保接到“失踪的使节”到塞拉摩的步骤、铁炉堡探险者大厅（Hall of Explorers）指向凄凉之地的报到任务、米奈希尔港本地指向塞拉摩的报到任务、暴风城大教堂指向凄凉之地的血色十字军指引任务（位于暴风城大教堂地窖的血色十字军使者，34级可接），并满225点急救。</p>
+<p>在塞拉摩完成所有任务并彻底完成“失踪的使节”，就可以转战凄凉之地。通过灰谷和贫瘠之地均可到达石爪山脉（Stonetalon Mountains），再进入凄凉之地，这里我们已经到了尘泥沼泽，就选择从贫瘠之地走。石爪山脉的左上方其实也有联盟飞行点，叫石爪峰，只是没什么用，建议一并开了一劳永逸。到达凄凉之地后可以一口气清完凄凉之地的所有联盟任务。上面血色十字军指引任务会指引到位于尼耶尔前哨站的安东修士（Brother Anton），后续的打骷髅的任务后续涉及到血色修道院副本，是必做的。所有玛拉顿的副本任务暂时不管。</p>
 <p>值得注意的是，凄凉之地地图右侧的大路存在一个不断运动中的地精车队，涉及2个护送任务，当车队运动到北方并保持稳定时可以接到向南护送车队穿过半人马营地的任务，而当车队运动到南方并保持稳定时可以接到向北护送其穿过玛诺洛克集会所（Mannoroc Coven）的任务，很有特点。</p>
 <p>另外，部落的首领级勇士雷克萨（Rexxar）会带着他的狗熊米莎穿过这条路，他是不会主动攻击联盟玩家的，大可放心。</p>
-<h4 id="5-血色修道院（Scarlet-Monastery）"><a href="#5-血色修道院（Scarlet-Monastery）" class="headerlink" title="5. 血色修道院（Scarlet Monastery）"></a>5. 血色修道院（Scarlet Monastery）</h4><p>单独提到这个地下城是因为有很多玩家都会去打这个副本，该地下城产出优秀，尤其适合战士系和法系职业。这里是个副本群，总共有血色墓地（Graveyard）、图书馆(Library)、武器库(Armory)、教堂(Cathedral)四个独立地下城，合适等级分别为30级、34级、36级、38-40级。联盟玩家总共只有2个任务，第一个就是上面提到的凄凉后续，需要击败各个Boss；第二个任务“泰坦神话”在铁炉堡的探险者大厅领取，领取需要28级。这两个任务奖励的东西都还可以。而探险者大厅将成为后续众多任务的发生地，建议每次返回铁炉堡都观察一下是否有新的黄色或灰色叹号。</p>
+<h4 id="5-血色修道院（Scarlet-Monastery）"><a href="#5-血色修道院（Scarlet-Monastery）" class="headerlink" title="5. 血色修道院（Scarlet Monastery）"></a>5. 血色修道院（Scarlet Monastery）</h4><p>单独提到这个地下城是因为有很多玩家都会去打这个副本，该地下城产出优秀，尤其适合战士系和法系职业。这里是个副本群，总共有血色墓地（Graveyard）、图书馆(Library)、武器库(Armory)、教堂(Cathedral)四个独立地下城，合适等级分别为30级、34级、36级、38-40级。联盟玩家总共只有2个任务，第一个就是上面提到的血色十字军使者任务在凄凉之地的后续，需要击败各个Boss；第二个任务“泰坦神话”在铁炉堡的探险者大厅领取，领取需要28级。这两个任务奖励的东西都还可以。而探险者大厅将成为后续众多任务的发生地，建议每次返回铁炉堡都观察一下是否有新的黄色或灰色叹号。</p>
 <h4 id="6-荆棘谷（Stranglethorn-Vale）-荒芜之地（Badlands）"><a href="#6-荆棘谷（Stranglethorn-Vale）-荒芜之地（Badlands）" class="headerlink" title="6. 荆棘谷（Stranglethorn Vale）/荒芜之地（Badlands）"></a>6. 荆棘谷（Stranglethorn Vale）/荒芜之地（Badlands）</h4><p>凄凉做完大概36级，可以适当打一下血色图书馆和武器库，先完成“泰坦神话”。然后返回阿拉希高地做“禁锢之石”，元素怪不吃流血和毒药并且免疫某些属性攻击，属于这个游戏里比较难打的一种，元素怪掉落的物品“元素XX”、“XX咒符”具有一定价值，建议卖到拍卖行去，不要丢弃也不要使用。下一步任务“打开钥匙之石”则需要一个小队，该任务最大的难点其实是找到巨人“弗兹鲁克（Fozruk）”的位置，该巨人没有稳定点，一旦刷新便会在阿拉希高地的几个法阵之间来回走动，刷新点可能是东部禁锢法阵（即水阵），笔者多次见到巨人在水阵旁边的一个山凹里刷新，但不确定巨人是否会在其他法阵刷新，如果确定巨人已死，则建议去水阵耐心等候刷新。</p>
 <p>大地公主任务的后续会指向荒芜之地。待到去荒芜之地一并完成。</p>
 <p>然后可以考虑进发奥特兰克山脉的精英地带，联盟在这里共有3个任务，精英任务“破碎岭好战者”需要先完成普通任务“破碎岭食人魔”才能接到，以及暮色森林历史书的后续“保全书籍”，还有一个叫做“匹瑞诺德王冠（The Perenolde Tiara）”的任务，是在暴风城的暴风要塞（Stormwind Keep）里接到的，领取需要30级。</p>
@@ -2402,40 +2463,40 @@ table th:nth-of-type(3) {
 <p>另外，塔纳利斯地图中间的一个安全废墟里有个叫玛尔冯·瑞文斯克（Marvon Rivetseeker）的地精也会发一些任务。</p>
 <p>最后提一下一些触发任务，基本都是娱乐向跑路任务，有兴趣的玩家可以尝试一下，还是挺好玩的。</p>
 <p>藏宝海湾三个海盗船长的船长室都有几率刷一个“科泰罗的卷轴”，触发一个超级跑路任务，最终奖励一个14格包，酌情完成。</p>
-<p>广为人知的护送小鸡，三个地图各一个，前提是要在该地图到任务物品，45级单人送小鸡有一定难度，等级高几级的话就很简单，只要不离小鸡太远一般都不会失败。人太多的时候可能会出现抢不到任务的情况，甚至引发阵营大战，这才是最难的。<br>OOX-17/TN（TN意为塔纳利斯）位于塔纳利斯的大裂口北边一个小山坡上，要求护送至热砂港；<br>OOX-09/HL（HL意为辛特兰）位于辛特兰地图北部一个小湖中间的一个小山包上，要求护送至靠近东海岸的地方；<br>OOX-22/FE（FE意为菲拉斯）位于菲拉斯地图南部猩猩洞中间的小空地上，要求护送至大陆西部沿海靠近羽月要塞的地方；<br>三个任务都是在藏宝海湾交付的，全部做完后，就能接到任务“你自己的OOX”，赠送玩具宠物小鸡一个。</p>
-<p>塔纳利斯还有一个触发任务叫“科尔戈的黄金”，通过南海海盗掉落的“海盗的手提箱”可以开出各种地图碎片，集齐上中下三个地图碎片就可以拼成完整的地图触发任务。很可能的情况是，玩家开出一串地图上部和中部，而没有下部（地图下部掉率似乎确实要低一点），这里建议直接去拍卖行购买缺失的部分，加基森的中立拍卖行也很有可能买得到。地图指向的位置是塔纳利斯的最南端，即旧版本卡利姆多大陆的最南端，名为天涯海角，了解过安其拉开门任务的玩家可能会知道这里。游泳游过去并对付一群海盗即可完成任务，随机奖励几个绿装或图纸。</p>
-<h4 id="7-5-玛拉顿（Maraudon）"><a href="#7-5-玛拉顿（Maraudon）" class="headerlink" title="7.5. 玛拉顿（Maraudon）"></a>7.5. 玛拉顿（Maraudon）</h4><p>此时玩家接近50级，在前往新地图前，建议先组一个玛拉顿任务队，通关一次副本玛拉顿，目的当然还是清任务，打这个副本的坦克和dps职业不要低于49级，因为最后那个公主比较猛，如果队伍平均等级低于49级，可能会打不过。这个副本仍然是属于那种对新玩家很不友好的“迷路型”副本，甚至拥有两个副本正门。不过其产出和任务奖励都很好，比如最终boss任务奖励中，近战一定要选择“痛击之刃”，这把剑甚至用到满级还能接着用。</p>
-<p>关于这个副本的任务，玩家可以直接接到6个，其中“暗影残片”需要前往塞拉摩的主塔也就是吉安娜旁边接到；“扭曲的邪恶”在凄凉之地中部偏北的一个小屋中接到；“玛拉顿的传说”在副本橙色门外的一个树妖处接到；最难接且最难做的是“贱民的指引”，所需NPC“半人马贱民”在马诺洛克集会所下面的一个小路附近游荡，并且存在一个暂时稳定点，位于吉尔吉斯村偏东的一个小山丘上。其余任务都可以在联盟营地接到，这些任务中只有“维塔利恩的污染”和“贱民的指引”是无法共享的，务必保证队员们都亲自接到这些任务。</p>
-<p>“贱民的指引”任务需要玩家先击杀一个位于玛拉顿副本石门内（并不是副本内，而是副本外区域）的精英怪“无名预言者”，掉落物品“灵魂坠饰”；接下来需要击杀五个半人马可汗，其中123号可汗位于玛拉顿副本外，45号可汗位于副本内。<br>第一可汗“考尔克之魂”位于橙门紫门的分叉处中间，也就是用节杖开传送门近路的地方；<br>第二可汗“格尔克之魂”位于紫门外，和一群石头人和虫子待在一起，在做任务“暗影残片”时一并完成；<br>第三可汗“玛格拉之魂”位于橙门外，即橙门外不是出口的那条路的深处，和一群蜥蜴在一起；<br>第四可汗“玛劳杜斯之魂”在于紫门副本内的区域里转悠，一定时间后会转到靠近副本门口的位置，此时很好完成；<br>第五可汗“温格之魂”在橙门副本内的区域转悠，该区域比较大，需要等待较长时间该可汗才会转悠至靠近副本门口的位置。<br>收集所有的可汗宝石后，返回贱民处完成任务，获得饰品“天选者印记”，对某些近战职业很有用。</p>
-<p>打完瑟莱德丝公主之后会接到一个任务“生命之种”，需要前往月光林地，老实说这个任务就很坑了，在还未攻略费伍德森林的情况下，木喉要塞还是敌对状态，贸然前往月光林地免不了挨一顿打，但这个任务给的经验又还特别多。笔者第一个潜行者是潜行进去的，而第二个法师角色又赶上春节打年兽，直接传送了月光林地。据说还有类似于暗夜精灵小号进铁炉堡的骚操作，即从黑海岸游泳到月光林地北边，靠淹死虚弱复活月光林地，笔者没有亲自试过。总之这个任务还是建议跑一趟，但要注意的是，不可击杀任何一个木喉熊怪，一旦到达月光林地，先开飞行点。</p>
+<p>广为人知的护送小鸡，三个地图各一个，前提是要在该地图到任务物品，45级单人送小鸡有一定难度，等级高几级的话就很简单，只要不离小鸡太远一般都不会失败。人太多的时候可能会出现抢不到任务的情况，甚至引发阵营大战，这才是最难的。<br>OOX-17/TN（TN意为塔纳利斯）位于塔纳利斯的大裂口北边一个小山坡上，要求护送至热砂港；<br>OOX-09/HL（HL意为辛特兰）位于辛特兰地图北部一个小湖中间的一个小山包上，要求护送至靠近东海岸的地方；<br>OOX-22/FE（FE意为菲拉斯）位于菲拉斯地图南部猩猩洞中间的小空地上，要求护送至大陆西部沿海靠近羽月要塞的地方；<br>三个任务都是在藏宝海湾交付的，全部做完后，就能接到任务“你自己的OOX”，赠送宠物玩具机械小鸡一个。</p>
+<p>塔纳利斯还有一个触发任务叫“科尔戈的黄金”，通过南海海盗掉落的“海盗的手提箱”可以开出各种地图碎片，集齐上中下三个地图碎片就可以拼成完整的地图触发任务。很可能的情况是，玩家开出一串同样部位的地图，唯独缺少一种。这里其实可以直接去拍卖行购买缺失的部分，加基森的中立拍卖行也很有可能就买得到。地图指向的位置是塔纳利斯的最南端，即旧版本卡利姆多大陆的最南端，名为天涯海角（Land’s end beach），了解过安其拉开门任务的玩家可能会知道这里。游泳游过去并对付一群海盗即可完成任务，随机奖励几个绿装或图纸。</p>
+<h4 id="7-5-玛拉顿（Maraudon）"><a href="#7-5-玛拉顿（Maraudon）" class="headerlink" title="7.5. 玛拉顿（Maraudon）"></a>7.5. 玛拉顿（Maraudon）</h4><p>此时玩家接近50级，在前往新地图前，建议先组一个玛拉顿任务队，通关一次副本玛拉顿，目的当然还是清任务，打这个副本的坦克和dps职业最好不要低于49级，因为最后那个公主比较猛，如果队伍平均等级低于49级，可能会打不过。这个副本仍然是属于那种对新玩家很不友好的“迷路型”副本，甚至拥有两个副本正门。不过其产出和任务奖励都很好，比如最终boss任务奖励中，近战一定要选择“痛击之刃”，这把剑甚至用到满级还能接着用。</p>
+<p>关于这个副本的任务，玩家可以直接接到6个，其中“暗影残片”需要前往塞拉摩的主塔也就是吉安娜旁边接到；“扭曲的邪恶”在凄凉之地中部偏北的一个小屋中接到；“玛拉顿的传说”在副本橙色门外的一个树妖处接到；最难接且最难做的是“贱民的指引”，所需NPC“半人马贱民”在马诺洛克集会所下面靠山一条小路旁游荡，并且存在一个暂时稳定点，位于吉尔吉斯村偏东的一个小山丘上。其余任务都可以在联盟营地接到，这些任务中只有“维塔利恩的污染”和“贱民的指引”是无法共享的，务必保证队员们都亲自接到这些任务。</p>
+<p>“贱民的指引”任务需要玩家先击杀一个位于玛拉顿副本石门内（有一些并不在副本内，而是在副本外区域）的精英怪“无名预言者”，掉落物品“灵魂坠饰”；接下来需要击杀五个半人马可汗，其中123号可汗位于玛拉顿副本外区域，45号可汗位于副本内。<br>第一可汗“考尔克之魂”位于橙门紫门的分叉处中间，也就是用节杖开传送门近路的地方；<br>第二可汗“格尔克之魂”位于紫门外，和一群石头人和虫子待在一起，在做任务“暗影残片”时一并完成；<br>第三可汗“玛格拉之魂”位于橙门外，即橙门外不是出口的那条路的深处，和一群蜥蜴在一起；<br>第四可汗“玛劳杜斯之魂”在于紫门副本内的区域里转悠，一定时间后会转到靠近副本门口的位置，此时很好完成；<br>第五可汗“温格之魂”在橙门副本内的区域转悠，该区域比较大，需要等待较长时间该可汗才会转悠至靠近副本门口的位置。<br>收集所有的可汗宝石后，返回贱民处完成任务，获得饰品“天选者印记”，对某些近战职业很有用。</p>
+<p>打完瑟莱德丝公主之后会接到一个任务“生命之种”，需要前往月光林地，老实说这个任务就很坑了，在还未攻略费伍德森林的情况下，木喉要塞还是敌对状态，贸然前往月光林地免不了挨一顿打，但这个任务给的经验又还特别多。笔者第一个潜行者是潜行进去的，而第二个法师角色又赶上春节打年兽，直接传送了月光林地。还有类似于暗夜精灵小号进铁炉堡的骚操作，即从黑海岸游泳到和月光林地北边的大地图交界处，靠淹死或疲倦死虚弱复活月光林地，笔者实测可行。总之这个任务还是建议跑一趟，但要注意的是，不可击杀任何一个木喉熊怪，一旦到达月光林地，先开飞行点。</p>
 <h4 id="8-灼热峡谷（Searing-Gorge）-安戈洛环形山（Un’Goro-Crater）-费伍德森林（Felwood）-西瘟疫之地（Western-Plaguelands）"><a href="#8-灼热峡谷（Searing-Gorge）-安戈洛环形山（Un’Goro-Crater）-费伍德森林（Felwood）-西瘟疫之地（Western-Plaguelands）" class="headerlink" title="8. 灼热峡谷（Searing Gorge）/安戈洛环形山（Un’Goro Crater）/费伍德森林（Felwood）/西瘟疫之地（Western Plaguelands）"></a>8. 灼热峡谷（Searing Gorge）/安戈洛环形山（Un’Goro Crater）/费伍德森林（Felwood）/西瘟疫之地（Western Plaguelands）</h4><p>游戏从这里开始，任务复杂程度明显降低，并且随着玩家的熟练、招牌技能的习得以及强力精良物品的装备，怪物对玩家的杀伤力大大下降，玩家的自由度也越来越丰富，挨了好久的打，终于到了起飞的时候了。</p>
-<p>安戈洛和费伍德是平行地区，灼热峡谷等级稍低，因此先去灼热峡谷进行任务。去灼热峡谷前先带15个丝绸，该地图东部的厕所任务需要。厕所下方的坑中存在一个护送任务“苏塔拉之石”，关系到熔渣之池（The Slag Pit）的后续“矮人的正义”，建议完成。地图东南角的山区有一个小路一直通往最深处，有一个精英雷霆蜥蜴“狂暴的玛尔戈”，掉落物品“玛尔戈的巨角”触发灼热峡谷大门钥匙任务，给好多经验，建议完成。</p>
-<p>这里的任务除了那个鼓风机和望远镜比较难出，其他的都很简单。“矮人的正义”后续“奥比斯顿”强度相当之高，石像傀儡一拳一个嘤嘤怪，满级号都难打，一定要组队。实在不行可以先放放。</p>
-<p>冶炼鼓风机（Smithing Tuyere）是整个游戏里掉落最坑的几个任务物品之一，难受程度堪比荒芜之地的黑龙心脏，因为任务怪“黑铁锻造师”实在是太少了，只有地图中间那五个，导致这里挤了好多抢怪的联盟部落，甚至又引发阵营大战。而望远镜由于每个哨塔底下都有几个黑铁哨兵，所以相对好打一点。</p>
+<p>安戈洛和费伍德是平行地区，灼热峡谷等级稍低，因此先去灼热峡谷进行任务。去灼热峡谷前先带15个丝绸，该地图东部的厕所任务需要。厕所下方的坑中存在一个护送任务“苏塔拉之石”，关系到熔渣之池（The Slag Pit）的后续“矮人的正义”，建议完成。地图东南角的山区的一条小路一直通往山间深处，里面有一个精英雷霆蜥蜴“狂暴的玛尔戈”，掉落物品“玛尔戈的巨角”触发灼热峡谷大门钥匙任务，是一个很好做的跑路任务，而且给好多经验，建议完成。</p>
+<p>这里的任务除了那个鼓风机和望远镜比较难出，其他的都很简单。“矮人的正义”后续“奥比斯顿”强度相当之高，石像傀儡一拳一个小朋友，满级号都难打，一定要组队。实在不行可以先放放。</p>
+<p>冶炼鼓风机（Smithing Tuyere）是整个游戏里掉率最坑的几个任务物品之一，难受程度比荒芜之地的黑龙心脏还高，因为任务怪“黑铁锻造师”实在是太少了，只有地图中间那五个，导致这里挤了好多抢怪的联盟部落，甚至又会引发阵营大战。而望远镜由于每个哨塔底下都有那么几个黑铁哨兵，所以相对好打一点。</p>
 <p>去安戈洛前先在拍卖行购买一个“秘银外壳”。安戈洛环形山有很多可以捡的东西，四种水晶至少各捡7个，“安戈洛的泥土”至少捡60个，血瓣花苗可以不捡。</p>
-<p>“安戈洛的泥土”主要用于制造晨光麦，用来完成达纳苏斯和羽月要塞47级任务“晨光麦研究”和“羽月要塞的晨光麦”，两个任务可以无限做，但只有第一次交会给大量经验，一共需要20个晨光麦。每10分钟能开一次，能否开出晨光麦完全看运气。</p>
+<p>“安戈洛的泥土”主要用于制造晨光麦，用来完成达纳苏斯和羽月要塞47级任务“晨光麦研究”和“羽月要塞的晨光麦”，两个任务可以无限做，但只有第一次交会给大量经验，一共需要20个晨光麦。每10分钟能开一次，能否开出晨光麦完全看运气，所以捡60个一般就够用了。</p>
 <p>环形山右下角出口处的NPC托尔瓦•寻路者接到猩猩洞任务和“拉克维的食物”，猩猩洞在东北方向，洞中有个护送任务需要一个秘银外壳才能开启。托尔瓦•寻路者的后续“强大的尤尔查”和“拉克维的诱饵”则需要50级才能接到，53级左右能单人打。值得注意的是，任务“拉克维的食物”的那条蛇颈龙就在东边沼泽地里，需要靠近颈部才能点到，但坑人的是，在这张地图左下方也就是精英恐龙那里，还有一只一模一样的蛇颈龙尸体模型…</p>
 <p>50级在达纳苏斯的月神殿能接到“异种蝎的远征”任务，后续“捕捉女皇”强度较高，需要起码三人队或者高等级玩家，可以放到后面和拉克维、尤尔查的任务一起做。</p>
 <h4 id="8-5-阿塔哈卡神庙（The-Temple-of-Atal’Hakkar）"><a href="#8-5-阿塔哈卡神庙（The-Temple-of-Atal’Hakkar）" class="headerlink" title="8.5. 阿塔哈卡神庙（The Temple of Atal’Hakkar）"></a>8.5. 阿塔哈卡神庙（The Temple of Atal’Hakkar）</h4><p>又叫沉没的神庙（Sunken Temple），50级再来打，因为在厄运之槌版本上线后会开放各个职业的50级职业任务，最后无外乎都是打神庙，所以神庙放到50级之后再打。除了职业任务外，神庙本身也有一些任务，其中一个任务“调查神庙”是在暴风城矮人区的酒馆里接到的，现在去可能叹号消失了，注意接到就是。一些任务其实没有什么太大必要做，比如辛特兰那个“拉普索迪的鸡尾酒”，菲拉斯的“邪恶之雾”。“雕像群的秘密”可能都不会有玩家去打神庙下层，总之清掉一些任务列表就算达到目的。其实这个副本的难度跨越比较大，最后那个55级的绿龙boss严重拉高了这个副本的等级上限，其实这个绿龙的设计就是给差不多满级的非任务队玩家打的，毕竟掉紫装，如果是平均50级的任务队，打不过这个龙就算了。</p>
 <p>51级再考虑火羽山任务，“火山的活动”是从棘齿城接到的，49级可接，需要去火羽山打灰烬。在去火羽山顶之前还要在西部温泉的一个地精处接到测量火山温度的任务，叫“究根问底”，51级可接，这个任务只能在火山最高处的熔岩湖旁边那个柱子上完成，其他柱子的数据都是无效的，后续指引到冬泉谷。在安戈洛的沼泽地还存在一个破烂的小船可以触发林克系列任务，neta任天堂的塞尔达传说，是一个超长的跑路任务，一直持续到冬泉谷，最后回到火羽山打那个精英火元素，到这里差不多满级才能打，有兴趣的可以做一下，这个任务真的要跑好多路。</p>
 <p>52级以后来到费伍德森林，这里任务很简单，就是加德纳尔的暗影堡任务可能需要2个人才能完成。这里的恶魔萨特掉的“恶魔布（Felcloth）”比较值钱，打到的话一定要留下。费伍德的一些后续会指引到冬泉谷，当完成木喉要塞门口的任务后，木喉熊怪的声望会由敌对变成冷淡，就不会再主动攻击玩家了，此时可以穿过木喉要塞来到月光林地开飞行点，如果之前来过月光林地就不用了，直接来到冬泉谷做一部分任务。然后可以来到西瘟疫之地再做一部分任务，几个农场任务建议2人完成就很简单。</p>
-<h4 id="9-燃烧平原（Burning-Steppes）-冬泉谷（Winterspring）-东瘟疫之地（Eastern-Plaguelands）"><a href="#9-燃烧平原（Burning-Steppes）-冬泉谷（Winterspring）-东瘟疫之地（Eastern-Plaguelands）" class="headerlink" title="9. 燃烧平原（Burning Steppes）/冬泉谷（Winterspring）/东瘟疫之地（Eastern Plaguelands）"></a>9. 燃烧平原（Burning Steppes）/冬泉谷（Winterspring）/东瘟疫之地（Eastern Plaguelands）</h4><p>去燃烧平原前先在铁炉堡的国王王座接到“索瑞森废墟”去燃烧平原的步骤（50级可接），并拿好灼热峡谷任务给的黑龙皮。“黑龙的威胁”这个任务必须做，后续“真正的主人”是黑龙门任务的前置。燃烧平原的任务主要后续均在黑石深渊（Blackrock Depths）以及黑石塔下层（Blackrock Spire）两个副本中，这里建议接上所有黑石深渊的任务，而不接黑石塔下层或上层的任务。黑石深渊是一个真正的地区型副本，本身就是一个庞大的矮人城市，加上存在纵向的高度分布，其复杂程度是整个魔兽世界里最高的，也被认为是魔兽世界设计的最好的地下城。其火山套铁锁，铁锁连副本，副本造城市，城市再套副本的俄罗斯套娃式设计足以让任何新玩家彻底懵逼，第一次前去黑石深渊时如果不算副本内任务而算上救公主和救元帅的任务，其任务可多达9个，接不完也不要紧，因为这个副本的很多任务如救元帅、救公主等并不是一次能够做完的，新玩家只需一步步行动便是，能做几个是几个，因为这个副本即使满级后也是需要打的，所以大可不必着急。有关该副本的攻略也很多，这里不再多述。55级就可以组队黑石深渊，而黑石塔下层的任务则建议满级后再去攻略。</p>
+<h4 id="9-燃烧平原（Burning-Steppes）-冬泉谷（Winterspring）-东瘟疫之地（Eastern-Plaguelands）"><a href="#9-燃烧平原（Burning-Steppes）-冬泉谷（Winterspring）-东瘟疫之地（Eastern-Plaguelands）" class="headerlink" title="9. 燃烧平原（Burning Steppes）/冬泉谷（Winterspring）/东瘟疫之地（Eastern Plaguelands）"></a>9. 燃烧平原（Burning Steppes）/冬泉谷（Winterspring）/东瘟疫之地（Eastern Plaguelands）</h4><p>去燃烧平原前先在铁炉堡的国王王座接到“索瑞森废墟”去燃烧平原的步骤（50级可接），并拿好灼热峡谷任务给的黑龙皮。“黑龙的威胁”这个任务必须做，后续“真正的主人”是黑龙门任务的前置。燃烧平原的任务主要后续均在黑石深渊（Blackrock Depths）以及黑石塔下层（Blackrock Spire）两个副本中，这里建议接上所有黑石深渊的任务，而不接黑石塔下层或上层的任务。黑石深渊是一个真正的地区型副本，本身就是一个庞大的矮人城市，加上存在纵向的高度分布，其复杂程度是整个魔兽世界里最高的，也被认为是魔兽世界设计的最好的地下城。其火山套铁锁，铁锁连副本，副本造城市，城市再套副本的究极套娃式设计足以让任何新玩家彻底懵逼，第一次前去黑石深渊时如果不算副本内任务而算上救公主和救元帅的任务，其任务可多达9个，接不完也不要紧，因为这个副本的很多任务如救元帅、救公主等并不是一次能够做完的，新玩家只需一步步行动便可，能做几个是几个，因为这个副本即使满级后也是需要打的，所以大可不必着急，而且黑石深渊还有好些副本内任务，比如一个黑铁酒吧的门居然就有4种开法！有关该副本的攻略也很多，这里不再多述。55级就可以组队黑石深渊，而黑石塔下层的任务则建议满级后再去攻略。</p>
 <p>此时彻底清完冬泉谷包括“冬泉酋长”在内的熊怪任务，以及最后一个从精灵主城鲁瑟兰村接到的枭兽羽毛任务系列，准备前往东瘟疫之地。冬泉谷的永望镇（Everlook）存在两个指向东瘟疫之地的任务，坠星村（Starfall）有一个指向东瘟疫之地的任务，在塔纳利斯热砂港的叶基亚对面的一个矮人可以接到“摩沙鲁石板”指向东瘟的后续，务必接好这些任务。如果等级已经达到56级，还需要回一趟暴风城国王（公爵）处接一个任务系列，见下文。</p>
 <p>东瘟疫之地的常规任务指向副本“斯坦索姆（Stratholme）”，而地图本身存在两个团队级任务，第一个是“达隆郡的战斗”系列，是从西瘟疫之地悔恨岭的一个小房子里的NPC玛莱恩•雷德帕斯处接到的“小帕米拉”开启的；第二个是“重铸秩序”，是从暴风城国王（公爵）处开启的，两个任务都需要至少10人的玩家才能做，建议都将其做到最后一步，因为任务地点都在一块，一旦发现任务队，则往往可一次性做完两个团队任务。</p>
 <p>东瘟疫之地最西北方向的河边可以接到著名任务“爱与家庭”系列，需要先做完提里奥给予的那些打怪任务后才能开启，后续“爱与家庭”指向副本斯坦索姆正门区。</p>
 <p>此时玩家已经接近60级，按理说应该前往斯坦索姆完成副本任务，但就是这一两级的差距往往十分尴尬，因为即使是攻打斯坦索姆前门的队伍往往也都是满级玩家，是去刷各种东西的。不满60级的玩家很容易因为等级不满而没人组。这里建议找专门的斯坦索姆前门任务队，需要说明的是，前门得打两次，第一次用来完成任务“档案管理员”和“爱与家庭”，因为只有完成任务“档案管理员”之后，才可以在前门最终boss巴纳扎尔（Balnazzar）身上摸到任务触发物品“巴纳扎尔的头颅”，进而指向到后门任务“超越”去击杀死亡骑士瑞文戴尔男爵。</p>
-<p>可以猜测，设计者最初也许是想让玩家击败档案管理员之后直接返回去交任务，然后再回来打巴纳扎尔，这才发现十字军的秘密。但是真的有玩家会把打了一半的副本扔下不管跑回去吗…比如黑下那个蜘蛛任务，可以说只有当五个最闲的任务狂魔凑在一起才有可能能完成。这种设计，在超大型副本如黑石深渊可能有点用（救元帅那里有点这个意思），因为黑石深渊分了很多部分，并不会一次全打完，但在小副本的情况下可以说是完全失败的设计。另外，斯坦索姆这个前门还是只能进不能出的，更加断绝了这个操作的可能。这可能是由于60版本的高级副本地区有赶工迹象导致的，下面的纳克萨玛斯也会讲到。</p>
+<p>可以猜测，设计者最初也许是想让玩家击败档案管理员之后直接返回去交任务，然后再回来打巴纳扎尔，这才发现十字军的秘密。但是真的有玩家会把打了一半的副本扔下不管跑回去吗…再比如黑下那个蜘蛛debuff的任务，毫不夸张地说，或许只有当五个最闲的任务狂魔凑在一起才有可能完成。这种设计，在超大型副本如黑石深渊可能有点用（救元帅那里有点这个意思），因为黑石深渊分了很多部分，并不会一次全打完，但在小副本的情况下可以说是完全失败的设计。另外，老版本里斯坦索姆这个前门还是只能进不能出的，更加断绝了这个操作的可能（从后门杀出去也太insane了…）。这可能是由于60版本的高级副本地区有赶工迹象导致的，下面的纳克萨玛斯也会讲到。</p>
 <p>回到攻略，实在不满60级，可以参加一两次黑石深渊队伍完成那些未完成的任务。再不济就打打那些皮薄技能弱的野怪，总会满级的。</p>
-<p>没有提到的高级地区是诅咒之地和希利苏斯，这两块地方的确有一些任务，但因为它们不是非常完整的任务地区，任务也比较坑，事实上诅咒之地的任务是一个比林克系列更难更长的超长任务链，任务后段难度爆炸，满级号都不一定打得过，做过一回的人绝不会想再做第二遍。最终的奖励也只是一个16格的“恶魔皮包”，有这时间不如多刷几个恶魔布搓包卖钱去，所以如果不是任务强迫症的话，建议在任务第一步和“部落英雄的灵魂”对完话吃到4500经验之后直接拍屁股走人xD。</p>
+<p>没有提到的高级地区是诅咒之地和希利苏斯，虽然这两块地方的确有一些任务，但它们不是非常完整的任务地区，任务也比较坑。事实上诅咒之地的任务“恶魔猎手”是一个比林克系列更难更长的任务链，50级就可以开始这个任务，但要在艾萨拉和诅咒之地来回跑，艾萨拉的地形非常烦人，而且任务后段难度爆炸，最后那个大恶魔满级号都不一定打得过，可以说做过一回的人绝不会想再做第二遍，最终的奖励也只是一个16格的“恶魔皮包”，有这时间不如刷几个恶魔布搓月布包或卖给裁缝去。所以如果不是任务强迫症的话，建议在任务初期和“部落英雄的灵魂”对完话吃到4500经验之后直接拍屁股走人xD。</p>
 <h2 id="60级的任务后续"><a href="#60级的任务后续" class="headerlink" title="60级的任务后续"></a>60级的任务后续</h2><p>玩家已经满级，但是艾泽拉斯的种种威胁依然存在，在顶级地区，剧情仍在继续。</p>
-<p>玩家到了60级后，可以开始攻略黑石塔上层，玩家一步步明白，黑龙亡我暴风之心不死，迪菲亚匪徒、黑石部落以及黑铁矮人都是他们的爪牙。拿到龙火护符后，最终击杀死亡之翼的子女——黑龙奥妮克希亚和奈法利安，给了黑龙军团和他们的余党沉重一击，结束了人类玩家从十几级开始一直追击的祸乱之源。</p>
+<p>玩家到了60级后，可以开始攻略黑石塔上层，玩家一步步明白，黑龙亡我暴风之心不死，迪菲亚匪徒、黑铁矮人以及黑石兽人部落其实都是它们的爪牙。拿到龙火护符后，最终击杀死亡之翼的子女——黑龙奥妮克希亚和奈法利安，给了黑龙军团和他们的余党沉重一击，结束了人类和矮人玩家从十几级开始一直追击的祸乱之源。</p>
 <p>在与黑龙军团作战过程中，玩家将在黑石塔中找到最后的摩沙鲁石板，玩家最后会知道，自己一直帮助的叶基亚其实真名叫做妖术师金度，他最终于祖尔格拉布使血神哈卡复活。</p>
-<p>在瘟疫之地，夺回领地、击杀死亡骑士瑞文戴尔只是微不足道的胜利，天灾的首领，阿尔萨斯的得力心腹，巫妖克尔苏加德将亲自和浮空城纳克萨玛斯一起降临瘟疫之地。</p>
-<p>玩家在卡利姆多南部的各个地图调查到的虫灾并不是偶然事件，最终玩家将追击至希利苏斯深处的虫人帝国，直面真正的神明。</p>
+<p>在瘟疫之地，夺回城池、击杀死亡骑士瑞文戴尔只是微不足道的胜利。而天灾的首领，阿尔萨斯的得力心腹，巫妖克尔苏加德将亲自和浮空城纳克萨玛斯一起降临瘟疫之地。</p>
+<p>玩家在卡利姆多南部的多个地图调查到的虫灾并不是偶然事件，最终玩家将追击至希利苏斯深处的虫人帝国，直面真正的古神。</p>
 <p>我们可以发现，60版本还有某些地区做了剧情铺垫，但却未能完工，比如其实是海加尔山的阿克蒙德的恶魔之血毒害了费伍德的生物们，也使得冬泉谷和费伍德的一些熊怪发了疯，甚至影响到黑海岸地区；北方奎尔萨拉斯精灵抵抗瘟疫的努力、格瑞姆巴托的红龙、吉尔尼斯的狼人、奥丹姆的大门、翡翠梦境的入口等等，它们虽然有些在后续版本中得到了补全，但也重写了很多旧任务，一些人的命运我们再也无法得知。不过想想，也正是这些无法到达的地方给了玩家悬念和猜想，无意中让玩家明白，即使你再强，也有你去不了的神秘地方（爬山党：你说啥？）。</p>
 <p>多多少少也可以看出60版本的副本设计理念，就是要把最强大的敌人藏在最深最难以到达的地下城深处。在低级副本死亡矿井中已经出现的副本外区域的设计，目的就是给地下城“造势”，让普通玩家难以接近和发现。而团队级副本更是把这种套娃设计发挥到极致，直接藏在了五人副本里面，形成一个固定的模式，层层铺垫：</p>
 <p>地图地区&gt;副本外精英区域&gt;普通副本&gt;团本门</p>
-<p>有人猜测，60版本的所有团队级地下城都本应遵循这个规律，最明显的证据就是斯坦索姆屠宰场旁边无法进入的团本门，里面其实藏着纳克萨玛斯未完成的模型，甚至是奎尔萨拉斯地区，斯坦索姆本身的赶工迹象或许也能得到解释。另外几个连做都没有做的团队副本则只能凭空猜测了：卡拉赞里面藏的团本正是神秘的“倒吊深渊”；暗语峡谷虽然不太像副本，但地理上存在一个连接艾萨拉的“木喉要塞”大门，可见此地并不简单；甲虫之墙开门后大半个希利苏斯会全被精英虫子占领，变成彻底的副本外区域。当然这些猜测并无直接证据，其实暴雪在60年代就已经进行副本简化，某些副本从10人调整到5人（所谓的三大本斯坦索姆、通灵、黑上其实最早都是10人的小团本，能掉T0套，故称三大本）。从后续几个小版本更新的内容来看，团队副本的设计也简化了，比如祖尔格拉布，可以说就是人多一点的普通本，再也没出现过那种套娃式的复杂地图了。</p>
+<p>有人猜测，在60版本最原始的设计构想中，所有的团队级地下城都本应遵循这个规律。这种说法并非空穴来风，最明显的证据就是斯坦索姆屠宰场旁边无法进入的团本门，里面其实藏着纳克萨玛斯未完成的模型，甚至是奎尔萨拉斯地区，斯坦索姆本身的赶工迹象或许也能得到解释。另外几个连做都没有做的团队副本则只能凭空臆想猜测了：60版卡拉赞里面藏的团本正是神秘的“倒吊深渊”；暗语峡谷里藏着海加尔的入口，虽然暗语峡谷不太像个副本，但地理上存在一个连接艾萨拉的“木喉要塞”大门，这个大门和木喉要塞（并非月光林地那个木喉要塞）很明显是一个废弃的设定，可见此地也并不简单；甲虫之墙开门后大半个希利苏斯可能都会被精英虫子永久占领，变成彻底的副本外区域，不然那三个虫巢的作用实在有点小。其实暴雪在60年代就已经进行副本简化，某些副本从10人调整到5人（所谓的三大本斯坦索姆、通灵、黑上其实最早都是10人的小团本，能掉T0套，故称三大本）。从后续几个小版本更新的内容来看，团队副本的设计也简化了，比如祖尔格拉布，可以说就是人多一点的普通本，再也没出现过那种套娃式的复杂地图了。</p>
 ]]></content>
       <tags>
         <tag>游戏</tag>
