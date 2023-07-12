@@ -50,74 +50,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Flash被各大浏览器彻底停用后的处理办法</title>
-    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
-</blockquote>
-<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
-<center>按钮彻底消失了</center>
-
-<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
-<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
-<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
-<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
-<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
-<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
-<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
-<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
-<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
-<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
-<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
-<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
-<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
-<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
-<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
-<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
-<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
-<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
-<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Steam社区里利用高仿网站钓鱼的骗术</title>
-    <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>又是话题老毒瘤PUBG，虽然这个游戏我卸了很久了，但是不久前本人的一个朋友已经中招导致Steam账号被盗，早就听说过PUBG猖獗的盗号现象，比如网吧Steam客户端被动手脚之类的。不过这次居然是利用高仿网站进行的，花样确实层出不穷。<a id="more"></a></p>
-</blockquote>
-<p>Steam用户都明白，账号被盗后果还是比较严重的，不仅PUBG号难逃一劫，或是导致vac封禁，更严重的是如果账户上的财产比较多，那就危险了。该朋友的Steam账号财产较多，被盗后我也是第一时间在好友列表里监控该账号的动向，幸运的是，盗号似乎是由机器完成的，盗号者并没有在短时间内登录该账号，也没有机会亲自查看该账号拥有的库存，好在Steam的申诉够快，该账号在几个小时内就得以找回。</p>
-<p>中招过程和找回手段</p>
-<p>首先如果Steam用户浏览社区页面（特别是PUBG社区页面），就会发现一个由“PUBG社区管理”发布的页面，该页面往往是维护补偿等等赠送行为，勾引玩家前去查看。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/1.png" title="a">
-<p>细心的玩家也许已经看出，该网址并不正常，打开后是一个高仿的中文版PUBG网站页面。盗号者伪造了很多这种类似的网址，几天就换一次。点击领取后，又出来一个Steam账号的登录页面，和Steam的官网长得一模一样。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/2.png" title="b"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/3.png" title="c">
-<p>当Steam用户输入自己的账户密码后，又会要求用户输入令牌密码和手机验证码，据网上的信息反映，密码对错与否都会进入下一步，盗号者最想要的正是这两个关键的凭据，它使得盗号者拥有取得账户控制权限的能力。</p>
-<p>如果用户给出了这两个凭据，则账户邮箱立刻被替换，手机、令牌瞬间解绑，用户失去所有权限，密码也不攻自破了。这一切应该都是机器自动完成的。</p>
-<p>用户的应对手段只有申诉和锁定账户。Steam账户在更换邮箱后，会自动向旧邮箱发送邮箱被更换的信息，被盗的用户可以在其中找到锁定账户的按钮。也就是说，Steam账户是不能随便锁定的，只有通过被更改邮箱的那个按钮才能进入锁定页面。</p>
-<p>而账户申诉则要求提供正常的初始邮箱和一些交易记录凭证，因为很多用户的邮箱都是QQ邮箱，交易记录是盗号者基本无法得到的，QQ号的所有权也最终握在用户手里，也就是说，只要用户铁了心想找回Steam账号，是比较容易找回的。所以盗号者的战术就是实现短期占有并尽可能拖延找回时间，以完成账号交易和财产交易，最终给用户留下一个烂摊子。其中最重要的就是攻破用户的邮箱，这也是最严重的情况，一旦盗号者能够短时间登录邮箱，第一操作就是彻底删除用户的那些邮箱更改提醒信件，使得账户无法被锁定，也给申诉造成了困难。</p>
-<p>在众多案例中我一直很好奇邮箱是怎么被爆破的，我猜测有两种可能：第一种是撞库，也就是利用很多人将QQ密码和Steam密码相同的缺陷，对用户的qq号进行撞库，一旦正确就可以短时间占据qq邮箱；第二种可能就是利用网吧环境，让用户登录做过手脚的qq账户以获得qq密码。关于如何得到qq号其实很简单，因为Steam页面的个人账户里直接可以看到绑定邮箱的全文，自然也就暴露了qq号。我认为这是Steam个人账户的一个缺陷，给盗号者提供了有用的信息。</p>
-<p>可见，如果连邮箱的控制权都没了，危险就真的大了。这位朋友也是因为邮箱未被攻破，申诉才得以快速进行。所以建议Steam的用户不要使用qq邮箱作为绑定邮箱，qq邮箱其实并不安全。</p>
-<p>小号成群</p>
-<p>还有个问题，盗号的是如何做到将自己的假链接至于Steam社区顶端的？从下图可以看出，盗号者拥有海量Steam账号，估计Steam社区的热度计算方式很简单，并没有怎么考虑机器人的威胁。盗号者使用成千上万的小号对假链接页面进行“顶帖”，强行让它出现在PUBG社区首页，甚至是整个steam社区的首页（的确有这种现象）。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/4.png" title="d"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/5.png" title="e">
-<p>而作为发帖人的这个“PUBG社区管理”，也是利用了Steam账号本身改名毫无限制的特点，只要盗号者需要，他手下的任何一个小号都能立刻变成“XXX社区管理”。Steam社区凭空冒出的中文管理，现在想想感觉挺智障的，不过一开始我和朋友都没有意识到这一点，确实能骗到人呢。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/6.png" title="f">
-<p>查看某个“PUBG社区管理”的曾用名，该账号已经有红字，最原始的id是韩文，意思似乎是“深海”。推测该账号曾经是有过正常主人的PUBG账号，从改名“2sa”开始，已经变成了盗号者手中的“肉鸡号”。</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
     <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -161,6 +93,44 @@
       </tags>
   </entry>
   <entry>
+    <title>Flash被各大浏览器彻底停用后的处理办法</title>
+    <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>采用离线破解版插件包+旧版便携版Chrome组装一个能运行Flash的便携浏览器,安全舒适无广告，能应对大多数需要Flash的情况。<a id="more"></a></p>
+</blockquote>
+<p>Adobe Flash在2020年底遭到了全网的停用，当时还只是弹一弹警告，还可以手动的方式启用flash插件。不过约在2021年1月的Chrome浏览器的一次更新后，设置里的flash插件项按钮完全消失，即使你电脑里仍存在以前装过的flash浏览器插件，也都统统不能再工作了。而且据观察不仅谷歌一家，IE、FireFox、Edge等著名浏览器也陆续跟进，flash彻底没了命。求助于Adobe官方只会通向那个“end-of-life”的页面：<a href="https://www.adobe.com/products/flashplayer/end-of-life.html" target="_blank" rel="noopener">https://www.adobe.com/products/flashplayer/end-of-life.html</a></p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/a.png" title="a">
+<center>按钮彻底消失了</center>
+
+<p>但我们都清楚，即使Adobe给了三年缓冲时间，flash在国内这个环境下仍然不可能立马消失，最典型的就是各种官方机构那些老旧的页面，好多都属于那种平常没人在意，但又必须一直公示，保不准哪天要回来翻查的文件。没了flash听说当时火车票都不好买了，但火车票这玩意关注的人多，几天也就给修复了。而那些偏门别类的老旧页面可能有很多到今天都还是用的flash。</p>
+<p>所以一个奇葩就应运而生了，重庆重橙网络跟Adobe达成合作，继续在中国运营flash。换句话说就是他们出了一个“中国特供版”的flash，不过但凡下载过重庆重橙的“中国特供版”flash的人都清楚，那玩意广告是真滴多！过两天你电脑就会出现一堆“屠龙宝刀点击就送”、“一刀999”。这正常人哪受得了呢，于是360出现了，带着他的360安全浏览器来收拾这个奇葩局面，只要你装了360浏览器，这问题也就差不多解决了。说白了，摆在普通用户面前的就是两条路：第一条是重橙的屎，看你愿不愿意吃；第二个就是霸道总裁360，看你愿不愿意投靠。调查了一下我周围很多人也都是用360浏览器来解决这种问题，看来这个“中国特供版”是真的没法吃。</p>
+<p>那咱就想一个既不吃屎又不靠爹的办法来解决这个问题。</p>
+<p>思路很明确：搞一个旧版稳定的Chrome浏览器，再想办法给它装上旧版的flash插件。</p>
+<p>旧版的Chrome浏览器其实不是很好找，不过真要找还是找得到的。我这里从果核剥壳网站找到了一个Chrome_87.0.4280.141的便携版本，据说是最后一个支持Flash的Chrome版本，该便携版的好处就是可以解压就用，不想用了就删，比较方便，而且取消了它自动更新的功能，完全变成了一个稳定的本地工具。获取地址为：<a href="https://www.ghxi.com/chrome.html" target="_blank" rel="noopener">https://www.ghxi.com/chrome.html</a></p>
+<p>当然这些资源链接或许在不久以后都会失效，这里重点只是给出方法。</p>
+<p>旧版的flash插件必须用离线破解版的，因为正常情况下的flash浏览器插件包在安装时是要验证版本的，现在无论如何都会提示flash安装包不是最新版本，例如这个我很久以前收藏的Flash PPAPI 27.0的官方安装包，点获取最新版本则会被跳转到end-of-life的页面。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/b.png" title="b">
+<p>有必要说一下，Adobe Flash Player的浏览器插件有三种：</p>
+<p>PPAPI：供Opera（15以上）、Chromium（开源谷歌）浏览器使用<br>NPAPI：适用于FireFox（火狐）、Safari（苹果）、Opera（欧朋，12.17版以下）<br>ActiveX：适用于Windows 7、Vista、XP系统IE内核浏览器、本地视频、游戏客户端</p>
+<p>如果是Chrome浏览器的话则只需安装PPAPI的就行了。这里我通过毕方铺的百度网盘资源搜索工具收集了三种flash插件包的离线破解版，自打Pandownload事件以来毕方铺这样的衍生替代物还是很多的，总之这种资源在国内还是比较容易找到的。</p>
+<p>经测试安装前要退出一切有关的杀毒软件，否则有可能报错为：尝试重新命名以下目标目录中的一个文件时发生错误: move file失败 代码: 5。</p>
+<p>若仍无法正常安装，则可能是机器以前装过其他的flash浏览器插件，需要卸载原有的，正常情况下在启动新安装包时<br>会自动卸载原有的flash插件，但自动卸载仍有可能卸不干净。所以建议自动卸载后再前去 C:\Windows\SysWOW64 以及 C:\Windows\System32\Macromed\Flash 下手动检查是否清理完全（文件名和flash相关的文件）。</p>
+<p>安装好以后启动旧版Chrome，在 设置——隐私设置和安全——网站设置 里找到Flash项，首先将默认的“禁用”改为“先询问”（这里没有允许按钮）。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/c.png" title="c">
+<p>在需要加载flash的网页上，点击地址栏左边挨着的“查看网站信息”（一般是一个锁头或者警告标志），将flash选择为允许，这里以4399为例。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/d.png" title="d">
+<p>此时会跳出一个框显示“Adobe Flash Player已因过期而被停用”，有两个按钮，手动选择“运行一次”。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/e.png" title="e">
+<p>flash应该就已经可以正常运作了。对于4399来说可能一打开就会提示flash过期的信息，此时再点“运行一次”是没有反应的，因为没点运行一次的时候它这个报错信息是优先判定的，网页仍然会认为你的浏览器不行。所以这里就需要一点手速，刷新后立即点“运行一次”，抢在它还没判定之前把允许命令给发出去，则可以正常运行这些flash小游戏。</p>
+<img src="/2021/04/19/Flash被各大浏览器彻底停用后的处理办法/f.png" title="f">
+<p>为什么会有点繁琐，是因为Chrome在flash临近死亡的这些版本里已经开始做了一些微妙的改动，比如那个Flash项里面，是不能直接默认成允许的，只有“先询问”，而在下方的禁止/允许的站点里，是不能直接手动添加的，只能通过地址栏左边的“查看网站信息”手动允许过一次以后，这个站点才会出现在允许列表里。可以看出，Chrome早就开始给flash使绊子了，如果要避免这些问题，则需要flash危机之前的、更老旧的Chrome版本，这点有待进一步探索。不过浏览器版本搞得太老也不是什么好事，可能又会出其他的兼容性问题。</p>
+<p>总的来说问题是解决了，而且这里的两个工具都是可以完全在离线的状态下安装的，也不受后续版本更新的影响了。可以说是通用性很高的办法。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Q版二头身第二弹</title>
     <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -179,6 +149,36 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Steam社区里利用高仿网站钓鱼的骗术</title>
+    <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>又是话题老毒瘤PUBG，虽然这个游戏我卸了很久了，但是不久前本人的一个朋友已经中招导致Steam账号被盗，早就听说过PUBG猖獗的盗号现象，比如网吧Steam客户端被动手脚之类的。不过这次居然是利用高仿网站进行的，花样确实层出不穷。<a id="more"></a></p>
+</blockquote>
+<p>Steam用户都明白，账号被盗后果还是比较严重的，不仅PUBG号难逃一劫，或是导致vac封禁，更严重的是如果账户上的财产比较多，那就危险了。该朋友的Steam账号财产较多，被盗后我也是第一时间在好友列表里监控该账号的动向，幸运的是，盗号似乎是由机器完成的，盗号者并没有在短时间内登录该账号，也没有机会亲自查看该账号拥有的库存，好在Steam的申诉够快，该账号在几个小时内就得以找回。</p>
+<p>中招过程和找回手段</p>
+<p>首先如果Steam用户浏览社区页面（特别是PUBG社区页面），就会发现一个由“PUBG社区管理”发布的页面，该页面往往是维护补偿等等赠送行为，勾引玩家前去查看。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/1.png" title="a">
+<p>细心的玩家也许已经看出，该网址并不正常，打开后是一个高仿的中文版PUBG网站页面。盗号者伪造了很多这种类似的网址，几天就换一次。点击领取后，又出来一个Steam账号的登录页面，和Steam的官网长得一模一样。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/2.png" title="b"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/3.png" title="c">
+<p>当Steam用户输入自己的账户密码后，又会要求用户输入令牌密码和手机验证码，据网上的信息反映，密码对错与否都会进入下一步，盗号者最想要的正是这两个关键的凭据，它使得盗号者拥有取得账户控制权限的能力。</p>
+<p>如果用户给出了这两个凭据，则账户邮箱立刻被替换，手机、令牌瞬间解绑，用户失去所有权限，密码也不攻自破了。这一切应该都是机器自动完成的。</p>
+<p>用户的应对手段只有申诉和锁定账户。Steam账户在更换邮箱后，会自动向旧邮箱发送邮箱被更换的信息，被盗的用户可以在其中找到锁定账户的按钮。也就是说，Steam账户是不能随便锁定的，只有通过被更改邮箱的那个按钮才能进入锁定页面。</p>
+<p>而账户申诉则要求提供正常的初始邮箱和一些交易记录凭证，因为很多用户的邮箱都是QQ邮箱，交易记录是盗号者基本无法得到的，QQ号的所有权也最终握在用户手里，也就是说，只要用户铁了心想找回Steam账号，是比较容易找回的。所以盗号者的战术就是实现短期占有并尽可能拖延找回时间，以完成账号交易和财产交易，最终给用户留下一个烂摊子。其中最重要的就是攻破用户的邮箱，这也是最严重的情况，一旦盗号者能够短时间登录邮箱，第一操作就是彻底删除用户的那些邮箱更改提醒信件，使得账户无法被锁定，也给申诉造成了困难。</p>
+<p>在众多案例中我一直很好奇邮箱是怎么被爆破的，我猜测有两种可能：第一种是撞库，也就是利用很多人将QQ密码和Steam密码相同的缺陷，对用户的qq号进行撞库，一旦正确就可以短时间占据qq邮箱；第二种可能就是利用网吧环境，让用户登录做过手脚的qq账户以获得qq密码。关于如何得到qq号其实很简单，因为Steam页面的个人账户里直接可以看到绑定邮箱的全文，自然也就暴露了qq号。我认为这是Steam个人账户的一个缺陷，给盗号者提供了有用的信息。</p>
+<p>可见，如果连邮箱的控制权都没了，危险就真的大了。这位朋友也是因为邮箱未被攻破，申诉才得以快速进行。所以建议Steam的用户不要使用qq邮箱作为绑定邮箱，qq邮箱其实并不安全。</p>
+<p>小号成群</p>
+<p>还有个问题，盗号的是如何做到将自己的假链接至于Steam社区顶端的？从下图可以看出，盗号者拥有海量Steam账号，估计Steam社区的热度计算方式很简单，并没有怎么考虑机器人的威胁。盗号者使用成千上万的小号对假链接页面进行“顶帖”，强行让它出现在PUBG社区首页，甚至是整个steam社区的首页（的确有这种现象）。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/4.png" title="d"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/5.png" title="e">
+<p>而作为发帖人的这个“PUBG社区管理”，也是利用了Steam账号本身改名毫无限制的特点，只要盗号者需要，他手下的任何一个小号都能立刻变成“XXX社区管理”。Steam社区凭空冒出的中文管理，现在想想感觉挺智障的，不过一开始我和朋友都没有意识到这一点，确实能骗到人呢。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/6.png" title="f">
+<p>查看某个“PUBG社区管理”的曾用名，该账号已经有红字，最原始的id是韩文，意思似乎是“深海”。推测该账号曾经是有过正常主人的PUBG账号，从改名“2sa”开始，已经变成了盗号者手中的“肉鸡号”。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -279,41 +279,6 @@
       </tags>
   </entry>
   <entry>
-    <title>hexo添加网易云音乐播放器</title>
-    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
-</blockquote>
-<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
-<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
-
-<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
-<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
-<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
-
-<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
-<p>不再重叠了~</p>
-<hr>
-<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
-<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
-<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
-<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
-]]></content>
-      <tags>
-        <tag>网页</tag>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>hexo中插入本地pdf文档</title>
     <url>/2022/05/17/hexo%E4%B8%AD%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0pdf%E6%96%87%E6%A1%A3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -362,6 +327,41 @@
       </tags>
   </entry>
   <entry>
+    <title>hexo添加网易云音乐播放器</title>
+    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
+</blockquote>
+<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
+<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
+
+<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
+<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
+<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
+<p>不再重叠了~</p>
+<hr>
+<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
+<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
+<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
+<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
+]]></content>
+      <tags>
+        <tag>网页</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用PS的液化工具绘制弯刀的曲线</title>
     <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -384,40 +384,6 @@
 <img src="/2019/09/20/使用PS的液化工具绘制弯刀的曲线/8.png" title="Kira!☆">
 
 <p>嗯，这样就好了，理论上日本刀也是可以捏的，甚至可以调整刀反的位置（虽然可能不大需要），但是就不能直接套用之前那种直刀的模板了，剑尖得修改一下。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
-</blockquote>
-<a id="more"></a>
-
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
 ]]></content>
       <tags>
         <tag>绘画</tag>
@@ -505,6 +471,40 @@
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>绘画</tag>
       </tags>
   </entry>
   <entry>
@@ -960,6 +960,84 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个燧发枪小姐姐</title>
+    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>似乎是有进步的对吧？ <a id="more"></a></p>
+</blockquote>
+<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
+
+<hr>
+<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
+<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
+<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
+<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
+<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
+<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+        <tag>历史</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个Q版二头身</title>
+    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>并制作成亚克力挂件~！<a id="more"></a></p>
+</blockquote>
+<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
+<p>下面是制成亚克力挂件后的效果：</p>
+<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
+<hr>
+<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
+<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
+<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
+<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
+<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>简单的手动批量下载网页图片的方法</title>
+    <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
+</blockquote>
+<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville步枪），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
+<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔（Charleville）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
+<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
+<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
+<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
+<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
+<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
+<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
+<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
+<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
+<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
+<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
+<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
+<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
+
+<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>系统</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个尖耳朵小姐姐</title>
     <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -991,27 +1069,6 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个Q版二头身</title>
-    <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>并制作成亚克力挂件~！<a id="more"></a></p>
-</blockquote>
-<img src="/2021/10/26/画一个Q版二头身/1.png" title="A">
-<p>下面是制成亚克力挂件后的效果：</p>
-<img src="/2021/10/26/画一个Q版二头身/2.png" title="B">
-<hr>
-<p>一直很想画这种萌版二头身，奈何以前技术不行，现在总算掌握了一些方法能够实现一点自己想要的效果，于是也就迫不及待地在某宝上找了个义乌小厂20块钱定做了几个亚克力挂件，坑爹的是亚克力做出来颜色有点失真，可能是商家制作亚克力的设备不支持某些色域，或许转CMYK效果会好一点，反正这制造设备不在自己手上也就基本没什么调试的可能性了，能做出啥效果算啥效果吧。</p>
-<p>应该是早年玩冒险岛的时候最早对这种Q版漫画人物产生兴趣，小学那会还跟同学们在课本上一块临摹冒险岛的原画人物，所以直到现在我在作画的时候也参考冒险岛的各种原画作品。不过韩国人偏好的画风实在是要更萌更幼一点，可以说无论是头的比例还是眼睛的占比都远超过我认为的“萌系角色”的范围上限，可以算是韩国人的一大画风特点了。我记得之前玩一款叫VRchat的换皮聊天游戏，里面一个朋友就告诉我“他这个模型一看就是韩国人做的”，我当时还不理解为啥能一眼就看出是韩国人做的，后来我们找到了那个模型的源房间，果然是韩国人开的，里面摆满了各种又萌又小的卡通模型…于是到最后变成了我和一个韩国妹子用磕磕绊绊的英语互相尬吹然后我那个朋友坐在一旁干瞪眼（他英语盲xD）…</p>
-<p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
-<p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
-<p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>画一个库拉</title>
     <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1030,25 +1087,33 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个燧发枪小姐姐</title>
-    <url>/2022/08/05/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%87%A7%E5%8F%91%E6%9E%AA%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <title>画一个罗斯贵族骑兵</title>
+    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>似乎是有进步的对吧？ <a id="more"></a></p>
+<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
 </blockquote>
-<img src="/2022/08/05/画一个燧发枪小姐姐/Fusilier.png" title="a">
-
+<a id="more"></a>
+<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
+<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
+<p>大概描述一下几个部件的设计思路。</p>
+<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
+<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
+<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
+<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
+<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
+<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
+<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
 <hr>
-<p>前段时间对拿破仑战争时期的武器与制服很感兴趣，也研究了不少时间。于是就这么开始了。采用了新的笔刷和上色思路后，观感的确比之前的作品要好一些。</p>
-<p>制服自由发挥的居多，但武器基本都是照抄历史原型的，步枪是法国共和九年（An IX）的沙勒维尔（Charleville）系列的步兵步枪，准确的来说这个型号是“龙骑兵型（Dragoon）”。在之前的文章《<a href="https://caelica.github.io/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/"><font color="blue">简单的手动批量下载网页图片的方法</font></a>》中简单介绍过一些有关的信息，但后来了解深入以后我发现那篇里面写的一些不太对（已将原文的某些部分更正）。18世纪那会其实制式武器这个概念才刚刚起步，说到底，不像今天的武器型号那么规范严格，各种军刀、枪械等往往是一种习惯型号由很多个工厂在生产，某些零部件存在一定程度的明显差异，且也不一定通用。所谓的“沙勒维尔步枪”实际上指的是18世纪法国生产的一系列武器，远非1777一种型号，但这些武器其实大同小异，所以“沙勒维尔步枪”其实是一种通称叫法，而更精确的描述类似于“共和九年型（modèle An IX）”这样的叫法（法兰西共和元年是1792年，共和九年即为1800年）也不是说就一定能规范到每一个武器零件上，况且，还有大量的其他国家仿制这些武器，如普鲁士奥地利等，沙皇俄国的“图拉步枪”更是直接原样照抄，美国建国后的第一种标准制式步枪——斯普林菲尔德M1795也是在沙勒维尔的基础上仿制而来。这么一来的话，沙勒维尔步枪确实无愧于“18世纪的AK”这个称号。同时代英国的“棕贝斯（Brown Bess）”同样也是一种通称，即使是所谓的“长陆型（Long Land Pattern，意思是陆军长枪，其实我更愿意翻译为“长陆样”，以区别于今天常见的Model和Type的汉语翻译）”在几十年间也是有明显变化的。</p>
-<p>厘清这些后，作为绘画首先遇到的问题是，18世纪的枪实在是太长了，画面不是很容易放得下，沙勒维尔步枪在1777年的步兵型全长是1.52米，拿破仑战争时期的型号大部分缩短到1.42米（龙骑兵型其实和步兵型长度一样，真正短一截子的是卡宾型）。这么接近一人高的玩意，装上刺刀更是突破一米八，这在今天是很难见到的，如二战时期主流步枪大部分长度在1.1米这个水平上，刺刀也大大缩短；今天的主流突击步枪全长基本都在900mm之下，无托结构的还要更短一点。</p>
-<p>这导致我最初很难安排火枪的摆放位置，一度考虑以更短的线膛枪或卡宾枪取而代之，然而削了长度之后又发现，那种长步枪带来的第一感觉其实是旧时代燧发枪兵最核心的观感，让人一眼就能辨认出那个年代的氛围，才意识到这是不可或缺的，于是坚定了采用长枪的设计。除了把它做得比真实情况更短之外，还想到了一个取巧的方法：利用一定程度的透视来缩短长度。但这也大大增加了设计的难度，细心的人估计也能看出，目前这个透视效果还是有着较明显的问题，但无奈水平有限，这已经是我能做到看起来违和感最小的结果了。不过也没关系，还是要难一点才有挑战性嘛。步枪也采用了材质笔刷修理木头和金属的材质效果，从效果来看，有还是比没有强的多。</p>
-<p>军刀是那个年代步兵比较流行的一种被称作Briquet的武器，整体是Saber的样式，但比起真正的骑兵刀长度要短得多，设计也相对简易。从长度可以看出它不是真的用来战斗的武器，本是配发给掷弹兵和近卫军用来摆显身份的，但相当受普通步兵的欢迎，据说步兵们认为佩戴这种军刀能够让自己看起来很有身份，毕竟无论是骑兵还是各路军官都有一把闪闪发光的军刀，而普通线列步兵往往只配发一把连牛排都切不了的刺刀。这种习惯也渐渐流行到了诸如俄国、普鲁士等国家的军队中。我个人也是相当喜欢Briquet的感觉，也难怪它会如此受欢迎。</p>
-<p>有一些结构问题是我从画面平衡和布局的角度做出的决定，比如Shako的长穗其实更应该出现在右侧，但因为燧发枪本身是不能被镜像翻转的（燧发机构必须在枪体右侧，没有在左侧的燧发枪，除非是双管武器），所以就固定在了左侧。刺刀也是故意放到了能看见的地方，画了那么久的艺术资源也得有效利用起来嘛，不能白扔掉了么不是。</p>
+<p>接下来说一下画的过程中的想法。</p>
+<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
+<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
+<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
+<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
+<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
 ]]></content>
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
-        <tag>历史</tag>
       </tags>
   </entry>
   <entry>
@@ -1093,71 +1158,6 @@
 ]]></content>
       <tags>
         <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个罗斯贵族骑兵</title>
-    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
-</blockquote>
-<a id="more"></a>
-<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
-<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
-<p>大概描述一下几个部件的设计思路。</p>
-<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
-<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
-<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
-<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
-<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
-<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
-<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
-<hr>
-<p>接下来说一下画的过程中的想法。</p>
-<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
-<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
-<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
-<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
-<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>简单的手动批量下载网页图片的方法</title>
-    <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>利用浏览器缓存cache和批处理ren命令等方法实现手动批量下载难以下载的网页图片<a id="more"></a></p>
-</blockquote>
-<p>相信每一个喜欢艺术设计的人都拥有一个属于自己的参考素材图片库，见过的那些大佬们的素材库都极其庞大，为了追赶大佬，日常建设自己的素材库是一个很必要的工作。有价值的参考图片并非唾手可得，找起来还真得花一点功夫。比如我要以法国大革命时代的步枪作为参考的话（例如号称“18世纪的AKM”的Charleville步枪），会发现这些古董武器不像今天的自动步枪一样人尽皆知，难以找到非常细节的参考图片。通过搜索我发现，一些搞古董拍卖的网站无意中正好满足了这个需求，因为通常商家为了更好地介绍这些商品，给各种古董拍摄了大量多角度的高清图片。</p>
-<p>例如下面这款“共和十二年（1804）线膛燧发枪”（French AN XII Flintlock Infantry Rifle），是拿破仑战争时期法军为数不多的一种自产线膛枪，据称总共也只生产了2200多支。线膛枪这点上英军强于法军，其生产了22000支贝克式线膛枪（Baker rifle）。但这些跟全球总共生产了七百多万把的查尔维尔（Charleville）、四百多万把的棕贝斯（Brown Bess）相比简直小巫见大巫，网站显示它卖到了七千多美元的价格。（网址：<a href="https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles" target="_blank" rel="noopener">https://www.joesalter.com/category/products/French-AN-XII-Flintlock-Infantry-Rifle-by-Versailles</a> ）</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/a.png" title="a">
-<p>回到正题，该网站拍摄了共27张该步枪的高清照片，一个一个右键保存的话未免也太耗时间，况且很多商业网站经过特殊设计，只允许用户左键预览而无法直接右键保存。想要右键保存的话得通过打开新的图片页才能右键它，更有甚者连这一点都很难做到，得通过F12抓取网页元素之类的手段才能获得原始图片地址。</p>
-<p>有人表示利用某些图片抓取插件可以解决该问题，是这样没错，但图片抓取插件并不能保证在所有情况下都生效（比如这个图钉网Pinterest，只能抓到低清预览版的图片），这里我就利用计算机自己的网页缓存这种简单原始的方法来实现批量下载这种不太好下载的图片，这种原始方法的泛用性应该是很高的。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/b.png" title="b">
-<p>这个网站是可以打开高清图片页的，这里我们不直接右键它（或者可以先右键下载一个看看它的文件名），而是一次性将27张图片的高清页全部打开，一定要保证它们已经全部加载完毕，最好点一遍确认一下，并且再不要作出其他浏览器动作：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/c.png" title="c">
-<p>加载好的图片必定已经被缓存到了本地的某处。我用的是Chrome浏览器，它的缓存地址为<br><code>C:\Users\你的用户名\AppData\Local\Google\Chrome\User Data\Default\Cache</code><br>如果是其他的浏览器的话，也可以找到一个类似这样的缓存目录，只是路径会有所不同。我们现在打开这个目录，将Cache里的的文件按照时间排序：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/d.png" title="d">
-<p>可以看到，正好有27个大小约2-3Mb的文件是最新生成的，不用说这肯定是那27张图，我们将这27张图复制出来到一个空文件夹里。</p>
-<p>这27个文件均没有文件名，但我们断定它必定是.jpg，此时进行批处理，先需要制作一个批处理文件：</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/e.png" title="e">
-<p>先新建一个txt文本文档，输入<code>ren *. *.jpg</code>,ren命令在批处理里是rename，可以对文件进行重命名，语法是:<br><code>ren 文件名A 文件名B</code><br>注意其中的两个空格。*星号在这里表示缺省内容，所以<code>ren *. *.jpg</code>即为将所有没有后缀的文件添加上jpg后缀。再举个例子例如我想把所有的.txt都变成.jpg，则为<code>ren *.txt *.jpg</code>。</p>
-<p>保存关闭后将该txt文档的后缀改为.bat，变成了一个批处理文件。为了防止搞混可以对该批处理文件进行重命名，这里就命名为“修改所有无后缀文件为jpg”。</p>
-<p>然后将这个.bat放到那27个文件的同目录文件夹里，双击运行.bat则可以完成批量重命名。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/f.png" title="f"><img src="/2021/04/09/简单的手动批量下载网页图片的方法/g.png" title="g">
-<p>检查一下这些图片，具有很高的分辨率，和右键出来的一模一样。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/h.png" title="h">
-<p>最后展示一下我收集的这种军事古董图片，咱虽然掏不起钱买古董，但通过空间想象（脑补）也一样可以得到一些粗浅的认识目的嘛。</p>
-<img src="/2021/04/09/简单的手动批量下载网页图片的方法/i.png" title="i">
-
-<p>附上几个我发现的军事古董的网站：<br><a href="http://www.ima-usa.com" target="_blank" rel="noopener">www.ima-usa.com</a> 一个美国拍卖网，有很多二战时期的稀奇玩意；<br><a href="http://www.joesalter.com" target="_blank" rel="noopener">www.joesalter.com</a> 就是文中那个，也是个美国网站；<br><a href="http://www.bertrand-malvaux.com" target="_blank" rel="noopener">www.bertrand-malvaux.com</a> 一个法国拍卖网，大量法国大革命时代的东西，但网页是法语的，不过对古董来说，学几个法语的专有名词也是很不错的；<br><a href="http://www.bygoneblades.com" target="_blank" rel="noopener">www.bygoneblades.com</a> 一个英国拍卖网，有大量18、19世纪刀剑（以英国刀剑为主）；<br><a href="http://www.australianarmsauctions.com" target="_blank" rel="noopener">www.australianarmsauctions.com</a> 一个澳大利亚的古董拍卖网，玩意众多，从簧轮枪到日本刀无所不有，但还是二战的枪械居多。</p>
-]]></content>
-      <tags>
-        <tag>软件</tag>
-        <tag>系统</tag>
       </tags>
   </entry>
   <entry>
@@ -1212,6 +1212,67 @@
       <tags>
         <tag>软件</tag>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>对Warcraft、StarCraft以及Minecraft的原意的小考</title>
+    <url>/2023/01/24/%E5%AF%B9Warcraft%E3%80%81StarCraft%E4%BB%A5%E5%8F%8AMinecraft%E7%9A%84%E5%8E%9F%E6%84%8F%E7%9A%84%E5%B0%8F%E8%80%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>从词源上简单分析一下这些某某craft的真实含义。在探讨词汇的本意的同时对一些命名和翻译作了评价。<a id="more"></a></p>
+</blockquote>
+<p>下表是这几个经典游戏的原名，以及简体中文和繁体中文的翻译：</p>
+<table>
+<thead>
+<tr>
+<th align="center">原文</th>
+<th align="center">简体中文（zh-CN）</th>
+<th align="center">繁体中文（zh-TW）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Warcraft</td>
+<td align="center">魔兽争霸</td>
+<td align="center">魔獸爭霸</td>
+</tr>
+<tr>
+<td align="center">StarCraft</td>
+<td align="center">星际争霸</td>
+<td align="center">星海爭霸</td>
+</tr>
+<tr>
+<td align="center">Minecraft</td>
+<td align="center">我的世界</td>
+<td align="center">當個創世神</td>
+</tr>
+<tr>
+<td align="center">World of Warcraft</td>
+<td align="center">魔兽世界</td>
+<td align="center">魔獸世界</td>
+</tr>
+</tbody></table>
+<h3 id="1-craft是什么意思？"><a href="#1-craft是什么意思？" class="headerlink" title="1. craft是什么意思？"></a>1. craft是什么意思？</h3><p>&emsp;&emsp;现代英语中，craft的直接词源是古英语（Old English）中的cræft或kreft。它们被认为是来自于原始日耳曼语（Proto-Germanic）中的kraf-，这些词汇最早的意思是指“力量”、“体力”、“能力”（见<a href="https://www.etymonline.com/word/craft" target="_blank" rel="noopener">https://www.etymonline.com/word/craft</a> ）。现代德语中，用kraft表示力量、力气、精力等。后来在古英语中演变成表示某种能力、技巧、艺术、才能等的含义。17世纪后出现表示船只的含义，再后来衍生到与某种特定功能或技能相关联的物品、装置、工具上。现代英语里带-craft的词汇基本上均可以对应到以上的一种解释，如：</p>
+<p>巫术（witchcraft），即女巫（witch）所拥有的某种能力或才能、技巧；<br>治才，治国方略（statecraft），即在管理国家（state）上的技术或能力；<br>手工艺、手工制品（handcraft或handicraft），即与手相关的技术，或与手工技术相关联的制品；<br>航空器/航天器/船舶（aircraft/spacecraft/watercraft），即能够在air/space/water中发挥特定功能的装置或设备；<br>气垫船（hovercraft），具有悬浮（hover）能力的一种特定装置；<br>职业技能（tradecraft），trade这个词本身最早有“行当、职业”的含义，类似于tools of the trade（这句话接近于我们说的“没有金刚钻不揽瓷器活”中的金刚钻）中的用法。故tradecraft即为从事某种职业所需的专业本领或能力。在二战中还派生出“谍报技术”的含义；</p>
+<h3 id="2-Warcraft和StarCraft"><a href="#2-Warcraft和StarCraft" class="headerlink" title="2. Warcraft和StarCraft"></a>2. Warcraft和StarCraft</h3><p>&emsp;&emsp;回到游戏话题上，先解释暴雪的Warcraft和StarCraft。（这里注意以下所有的大小写用法，在暴雪游戏中，StarCraft的C是大写的，而Warcraft与World of Warcraft都没有大写其中的C）。</p>
+<p>&emsp;&emsp;首先要说明的一点是，warcraft和starcraft都不是游戏作者自造的，而是英语里已经存在的词汇。warcraft的原意是指战争中所运用的技术或技巧，即skill in warfare，或是the Art of War的字面意思；而StarCraft（1998）发行在Warcraft I（1994）及Warcraft II（1995）之后，通常认为，StarCraft的命名在一定程度上是对Warcraft命名方式的承袭，而其大写了C，是因为starcraft本身并不是生造的词汇，其原本含义接近于占星术（astrology），即“与星星（star）相关的技术或才能（-craft）”。C的大写很明显是一种防止歧义避免混淆的措施，从这里也能看出StarCraft这个命名还是比较严谨的。但因为这并不是starcraft的原意，故严格来讲StarCraft是一个自造词。这也是为什么Warcraft没有做大写C这个处理，是因为它使用的就是原本的含义。根据之前说明的craft的用法和对Warcraft命名方式的承袭，我们可以将StarCraft理解为【在星河太空中（作战）的技艺】。</p>
+<h3 id="3-Minecraft"><a href="#3-Minecraft" class="headerlink" title="3. Minecraft"></a>3. Minecraft</h3><p>&emsp;&emsp;接下来是Minecraft，首先它确实是一个自造的词，这个词汇的本意应理解为【挖掘开矿的技艺】。Mine在这里既可理解为名词“矿物（显然不可能是其他含义）”，亦可理解为动词“开采、挖掘”，结合Minecraft的游戏内容，这两种解释都有符合前文的构词方式的理由，不过作动词解释的适配性更好一点，因为Minecraft中除了开采矿物以外还能够开采其他东西。但要说明的是这里的craft不是动词“制作、合成”，而只是一个词尾（-craft），否则不符合英语中常规的构词规则，若强行理解为动词，则Mine &amp; Craft才会是正确的命名方式。至于Minecraft的名称到底对暴雪的游戏有没有借鉴，有人认为创始人Notch可能参考了StarCraft，我个人也倾向于有，但Notch本人从来没有在正式场合说明过这点，故不得而知。</p>
+<h3 id="4-World-of-Warcraft"><a href="#4-World-of-Warcraft" class="headerlink" title="4. World of Warcraft"></a>4. World of Warcraft</h3><p>&emsp;&emsp;虽然Warcraft的游戏名称确实使用了“战争技术”的含义。但World of Warcraft显然不是World of warcraft，不应该被直接理解为“战争技艺的世界”。World of Warcraft发行于2004年。2003年的《魔兽争霸3冰封王座（WarcraftⅢ: Frozen Throne）》发行后，此时“Warcraft”这个IP已经具有了成熟的市场规模，应当认为Warcraft这个词也派生出了自己的含义。故World of Warcraft应理解为【于前作Warcraft系列的世界观基础上——所构建的世界】，即“Warcraft世界”。</p>
+<h3 id="5-对通行翻译的想法与评价"><a href="#5-对通行翻译的想法与评价" class="headerlink" title="5. 对通行翻译的想法与评价"></a>5. 对通行翻译的想法与评价</h3><p>&emsp;&emsp;必须强调的是，对于影视、游戏娱乐文化中一些关键名称的翻译，大部分情况下是无所谓对错的，只能说有优劣好坏之分。游戏或是影视作品的种种名称有时候通常更会选择去意译，而不是直译，也是考虑到很多词汇并不能很好地翻译成其他语言（如汉语），因为对于电子游戏或是影视作品这样的娱乐产品来说，一个响亮、简单易懂且朗朗上口的命名对于商业运作的重要程度是不言而喻的，甚至可以说做到这一点的重要程度已经远超过其原文本身的真实含义。故在这一特殊情况下，传统的“信达雅”框架不再生效，重点则其实移到了“宣传”上，这其中的一个优秀的翻译结果甚至可以彻底抛弃掉“信”。一直有些争议的“我的世界”是不能算作错误翻译的，我们不能拿本意去套意译，甚至我认为这个翻译还算可以。又如我们看到“Tracer”这个词本身既不“猎空”也不“闪光”，“Optimus Prime”里既不擎天，也没有柱子，但能说它们翻译错了或翻译的不好吗，是很难讲的。</p>
+<p>&emsp;&emsp;其实不仅翻译如此，游戏制作者在给游戏命名的时候，也会遵循某种潜在的“商业规律”：例如曾经我在机核网看过一个统计了Steam上所有游戏的名称的项目，然后将词汇的出镜率做一个排名，前五名分别是War、Space、World、Dark、Heros。他们说，要是将前五名综合起来，游戏名称就会变成——《黑暗太空世界：战争英雄》（World of Dark Space: War Heroes），听起来是很带劲，当然也很俗套，但电子游戏娱乐相关的产业命名确实很多情况下就是这么运作的。</p>
+<p>&emsp;&emsp;最后是我个人对本文开头列出的游戏原名、以及现在市面上通行的翻译结果的一个很主观的个人评价，会淡化游戏本身取得的成绩，更多从名称角度去考虑，满分按5分，首先是原文部分：</p>
+<p>Warcraft：3分。优势在于开头直接就是上面说的游戏名一哥“war”，晴天霹雳当头一棒；劣势在于带war的游戏数不胜数，这个名称也没能说明出是哪一类war，难以突出这款游戏独有的特点。其实Warcraft最早就是一个很简单的以人类战兽人为卖点的游戏，算是一种套了美洲印第安人背景的罗马vs蛮族的archetype，当然也直接参考了《魔戒》以及桌面游戏《战锤》等作品的设定。只是估计暴雪当初在命名的时候，也没想到这个IP将来能做那么久。</p>
+<p>StarCraft：3分。优势在于暴雪的前作Warcraft II已经在RTS上初露锋芒，继续使用-craft的命名方式很容易让玩家能联想到这是一款同公司制作的太空未来题材的全新RTS游戏，Star也点明了主题内容相关的元素；劣势在于，这让这个词汇变得比Warcraft更加难以理解了，相比起Star Wars这样简单明了的名字，很多人可能都不能看懂这个star和craft在这里究竟想要说什么。</p>
+<p>Minecraft：2分。虽然这是一款相当成功的游戏，但从命名上却很难吸引人，这个自造词实在是显得有些过于生硬、晦涩了，加上Mine这个词汇本身对玩家也没有特别强的吸引力；要说优点可能就是在于让人能联想到Warcraft和StarCraft（这两个游戏那个时候还相当出名）。</p>
+<p>World of Warcraft：5分。虽然Warcraft本身并不是那么易懂，但经过暴雪多年铺垫后Warcraft这个名字已经在玩家群体中深入人心。从来电子游戏和“世界”似乎都有着无限的亲和力，游戏名称中带着“世界”自然有着很好的吸引力，而这款游戏的目的正就是要带给玩家们一个Warcraft背景下的MMO世界。</p>
+<p>&emsp;&emsp;再是中文的翻译部分：</p>
+<p>魔兽争霸/魔獸爭霸：3分。优势在于“争霸”一词纳入了War所带来的特点，“魔兽”这个词汇从流行文化的角度看也有些冲击力，让人一看就觉得这是一款以奇幻题材的作品，算是对起到了对Warcraft世界观的一个扩展解释的作用；劣势在于，合在一起后的“魔兽争霸”略微有些偏离了游戏本身的内容，其实并不是“魔”和“兽”要争霸，而是“人”和“兽”在争夺生存空间。“魔兽”这个叫法也不太容易为大众所接受，如2008年著名的反互联网娱乐纪录片《战网魔》中更是以标题《谁把天才变成了魔兽》抓住了这一噱头。至于“魔兽”的翻译其实来自于台湾，最早1994年的Warcraft I中只有人类联盟（Humans）和兽人（Orcs）两个可以选择的势力，其中人类因为具有“牧师（cleric）”和“魔法师（Conjurer）”两个可以施放魔法技能的单位，因而人族被称作了“魔族”，加上与之敌对的兽人族，就变成了“魔兽争霸”；但事实上，兽人族亦拥有“死灵法师（Necrolyte）”和“邪术士（Warlock）”的法系单位，某种意义上说还要比人族更“魔”一些…</p>
+<p>星际争霸/星海爭霸：5分。这个翻译真的非常出色，首先它补全了原文中为了和Warcraft格式严格对齐从而缺失掉的“War”的这部分含义，星际/星海突出了游戏最大的主题，争霸本身也相当贴切：因为故事背景中的三个种族确实都有在这片星区中称王称霸的计划或倾向。而关于太空争霸题材多说一句，1997年正好上映了一部火爆的科幻电影《星河战队（Starship Troopers，原著小说通常称星船伞兵）》，内容也刚好是人类在外太空和异种虫族发生战争的故事，而《星际争霸》于1998年发行后，作为一款电子游戏当然立刻吸引到了大量原本对《星河战队》感兴趣的用户群体，导致甚至有激进的《星河战队》粉丝认为《星际争霸》抄袭了《星河战队》的一些设定。20世纪后半叶也正好是种种太空争霸文艺作品的黄金年代，此时翻译采用“星际争霸”，是相当适合的。</p>
+<p>我的世界：4分。优点在于这种表达方式点出了游戏的很大一块主题，这确实是一个玩家能够随意编辑掌控的沙盒世界。缺点在于光看名字的话很难想到进一步的玩法，“我”究竟要在“我的世界”里做些什么？</p>
+<p>當個創世神：5分。很优秀的名字，这个游戏在“创造模式”中，玩家扮演的就是“创世神”一般的人物，就算是在“生存模式”，世界上往往也只有玩家一个人能够改造世界，那不是神还是什么？这个用法不仅告诉玩家这个世界就是你的，你可以随意编辑、改造，祈使句的用法也更具吸引力，特别是对小孩子们来说，因为游戏本身十分子供向（Minecraft在ESRB中的评级是E10+，而Warcraft和StarCraft都是Teen）。</p>
+<p>魔兽世界/魔獸世界：5分。经过前作的铺垫后“魔兽”当然也在中文玩家圈子里成为了一个响亮的名字，于是到了World of Warcraft上，可以说是没有理由不翻译成“魔兽”的。世界也是直截了当地告诉玩家这就是一个游戏世界，而且相比于“魔兽争霸”，这回真的是既有“魔”又有“兽”了。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>翻译</tag>
       </tags>
   </entry>
   <entry>
@@ -1276,8 +1337,8 @@
 <p><font color="blue">[5]</font>  “精灵（Sprite）”是一个在早期2D游戏开发中广泛使用的概念，可以理解为游戏里的某一单元对象存在一系列可变化的图片组，从而表现出不同的动画。它通常被用于设计那些需要重点精确描绘的角色或者物体，如RPG游戏里的主角角色等。通过“精灵”可以节约早期计算机的图像处理资源。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>设计</tag>
+        <tag>游戏</tag>
         <tag>翻译</tag>
       </tags>
   </entry>
@@ -1313,64 +1374,6 @@
 ]]></content>
       <tags>
         <tag>游戏</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>你的英勇长存人心——Diablo2与往事</title>
-    <url>/2021/02/22/%E4%BD%A0%E7%9A%84%E8%8B%B1%E5%8B%87%E9%95%BF%E5%AD%98%E4%BA%BA%E5%BF%83%E2%80%94%E2%80%94Diablo2%E4%B8%8E%E5%BE%80%E4%BA%8B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>昨天在21年的BlizzCon上，《暗黑破坏神2》（Diablo 2，或简称暗黑2）出重制版的事已经是板上钉钉了，突然想起来很多关于暗黑2的往事，至于暗黑2给游戏界带来了的影响就不多说了，虽然它不是我玩的最多的游戏，它却像一个影子一般跟在我的游戏历程中，从未离开过。<a id="more"></a></p>
-</blockquote>
-<p>我认为对于一个学习历史的人来说，其实有两部历史。第一部是这个世界的历史，它客观存在且“不以人的意志转移”；而第二部，则是“个人”的历史，虽不敢说这部历史是否就真的以个人的意志书写，但至少对于这部历史，以及两部历史的重叠状态即“我们这代人的历史”来说，每个人都是它的亲历者，都拥有真正的第一手资料。</p>
-<p>今天我就借着我和Diablo2之间的故事来回忆一下二十年的往事。</p>
-<h2 id="一-混沌初开"><a href="#一-混沌初开" class="headerlink" title="一. 混沌初开"></a><p align="left">一. 混沌初开</p></h2><p>小学一年级，就像漫画里的那样，一位神秘的大叔出现在小孩原本平静的生活里，手里拿着一本古代魔法书，向他展示了一个远古时期的景象：那是在人类文明和庇护之地诞生前，至高天堂和燃烧地狱之间的一场永无休止的终极决战……</p>
-<p>咳咳，扯多了。同学他爸拿着硬盘来到我家，带来了一系列当时国内最流行的单机大作，从此Windows 98那标准的800×600分辨率的绿屏桌面上多了一连串的快捷方式，其中有一个名字叫“毁灭之王”，图标是一个蓝色鬼头。当时的我就把这款游戏称作毁灭之王。</p>
-<p>2000年前后那会我年纪实在太小，不算真正经历过那时的生活，只是后来出于“考古”的目的才有所了解。互联网和计算机其实才刚刚在国内起步，一台个人PC的价格就能卡住很多人了，那会流行组装机，根据2000年前后热门杂志《电脑报》上的参考价格，凑合能用的电脑得5000元，而能跑得动热门大型游戏的至少也得七八千，一张正版游戏盘基本就是一两百块的样子，不过当时很少有什么正版观念，盗版游戏盘还是很便宜的；PS2首发价格3100元水平，能在那会玩上GBA或者后来的NDS的都是有点条件的大佬，甚至我感觉只要有一台90年代的小霸王“学习机”那你就是整个社区的小朋友里最靓的仔了。主机玩家更是少得可怜，因为主机只能玩游戏，所以很少有人会去投资这个，并且当时的电脑已经开始出现主机模拟器。根据信息，2000年城镇职工平均工资为每月780元，总的来说要攒出一台跑得动Diablo2的电脑实在是非常不容易的事。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/a.png" title="a">
-<center>老旧的《电脑报》合订本，差不多可以当历史书看了</center>
-
-<p>说到这就不得不提一下国内游戏的曲折历程，2000年5月光明日报发布了那篇著名的文章《电脑游戏是瞄准孩子的“电子海洛因”》，“电子海洛因论”此后在社会上引起广泛反响，不仅是电脑游戏变成了人人喊打的过街老鼠，国内一切跟电子娱乐有关的产业都遭到了打击，也直接促成了长达13年的“游戏机禁令”，06年央视的《战网魔》及之后的一系列相关事件更是该风波的延续，在此不必多述。这些东西虽说是老调重弹，但怎么也是我们这代人的历史烙印，国家每年还要纪念九一八呢，我相信“电子海洛因”就如同“计生办”、“下岗潮”一样，都是“我们这代人的历史”，也具有同样的分量。</p>
-<p>回到正题，暗黑2在国内流行的版本是台湾松岗公司进行汉化的，也就是我们后来看到的繁体中文版本。这造成一年级的我有近乎一大半的汉字文本看不懂，比如第一幕新手村的萝格营地（Rogue Encampment），屏幕上显示的是“踏入蘿格營地”几个大红字，我一直不认识那个“蘿”字。不过话说当时就算能认字，小学生的智商也不足以理解这个游戏里诸多西方传统宗教、奇幻、悲剧等内容元素，这也是导致我后来没有继续玩下去的原因。</p>
-<p>而且单从游戏性上来说，Diablo系列的一大特色就是每个角色都会生成自己的随机地图，我的智商哪认得到路啊，只记得不同角色的新手村大门一会向左开一会向右开，有时候还跑到上面去了，彻底懵逼，爱我的只有全部点亮的传送小站和回城卷轴，让我在各种风景各异的地图间不断穿行。因为不会打字输入角色名，我有段时间甚至不能创建角色，但是创建角色的那个画面在今天看来也做得也非常出色：七位勇士围在一个篝火前各显神通，我印象最深的就是中间野蛮人的那一声战吼，还有圣骑士的剑盾跪姿、浑身燃烧着蓝色火焰的死灵法师；最后还有亚马逊姐姐的白大腿，嗯，小学生的我毫无感觉。从这次重制版放出的视频看，这个经典场景也得到了重制。</p>
-<p>所幸的是，盗版游戏自带了一个强力角色：作弊的99级法师！而且是冰火电三系全满，属性点也全满，导致技能栏多得吓人，经过一个一个尝试后我发现冰环是最具效率的清怪手段。但角色没有装备，我就去第四幕的群魔堡垒（Pandemonium Fortress，混沌界要塞其实是最正确的翻译，就是3代里的混沌要塞），买了一套寒光闪闪的全身板甲和德式双手巨剑，因为属性全满，成功装备。这归功于Diablo2出色的装备造型设计，让我那时就迷上了盔甲冷兵器这样的元素。就这样我弄出了一个左键普攻右键冰环的“魔法骑士”，因为穿的过于厚实，导致我根本不知道这个角色是法师，连她是个女人都不知道。我一直以为我是一个头盔之下长发飘逸，既能挥舞大剑又能施放法术的魔法骑士。</p>
-<p>当时的玩那真是纯粹的玩，因为什么都看不懂，唯一的乐趣就是在不同的地图间旅游、打怪，那些场景过于黑暗、怪物长相太恐怖的地方我是不敢去的，比如皇宫地牢、神罚之城等，我甚至连群魔堡垒前面的那条长楼梯都不敢下；曾经有个同学告诉我第一幕大教堂底下有恐怖至极的怪物，导致我再也不敢踏进大教堂一步，完全不知道自己的“骑士”已经可以在普通难度秒天秒地，可见胆子是有多小。我最喜欢的地方是神秘避难所（Arcane Sanctuary），感觉那里神圣而又宁静，第一次去的时候，背景缓缓飘过的星空、以及脚下凭空出现的白色石板路让我惊艳不已，其实这张图还利用2D画面的特性做出了一些“三维不可能图形（Impossible figure）”的效果，可惜我那时理解不能；其次是火焰之河（River of Flame），我四处屠杀那种爆浆的虫子，也从未找到过大菠萝…<br>过了一段时间，家里来了个比我大几岁的哥哥，他发现桌面上的“毁灭之王”后非常激动，立刻开始玩。他管这个游戏叫“呆波（他也不会读）”，不叫毁灭之王，并且印象中他似乎还用一瓶可乐还是什么饮料贿赂我，让我允许他多玩一会，我当然也就答应了。我在一旁看，他好像也是跑跑刷刷乐在其中，我抓住机会问他，那个“踏入蘿格營地”的“蘿”字怎么读？他直接回答我读“霍”，我顿觉醍醐灌顶，原来是霍格营地啊，长久以来的谜团终于得到了解决，我当时很佩服那位哥哥，高年级的学生就是厉害多了，个个都是文化人。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/b.png" title="b">
-<center>传言说这个“召唤者”正是1代里的法师</center>
-
-<h2 id="二-转变之时"><a href="#二-转变之时" class="headerlink" title="二. 转变之时"></a><p align="left">二. 转变之时</p></h2><p>这样简单而又快乐的时光过了半年到一年吧，我四处旅游打怪，只为收集那些看起来帅气逼人的盔甲部件，直到有一天一个大学生来到家里，他打开了电脑上的“毁灭之王”，并向我展示了Diablo2中著名的“奶牛关（Cow Level）”：只记得他通过赫拉迪姆方块——那是我当做箱子的东西，和一个回城卷轴，点了一下转变按钮，就召唤出一个红色的传送门！之后在奶牛关中他又展示了一系列复杂的操作，说出了一串又一串我根本无法理解的专业游戏术语。我当时最大的感觉是，我跟他玩的完全不是一个游戏，我完全无法理解他在玩什么，我可能根本就不会玩。</p>
-<p>过了几天我决定亲自复制他的操作：我认为那传送门的配方应该是一个回城卷轴和红色药水，我把它们放进赫拉迪姆方块中点击转变，然而无论我放进去几瓶药水都没有任何回应，取出来的回城卷轴也只能开出蓝色的普通传送门。那时的电脑很多都没有互联网，想要解决问题只能靠自己。我绞尽脑汁的尝试，却还是只能开出蓝色传送门，努力尝试终得失败，这给当时的我很大的打击，我突然意识到这个游戏世界是多么的难以理解，比起这里的困境，一个能端起机关枪随便突突的CS1.5显得是那么的简单友善，后来的我渐渐离开这里开始去玩CS，再后来因为家人的工作原因，那台电脑也一块走了。等到那台电脑又回到家里时，我第一次看到XP系统的蓝天白云绿草地，老旧的那批游戏早已消失不见，更好玩的游戏也接踵而至。暗黑破坏神2，连同那些昏暗的地牢和胆小的魔法骑士，换成了另一个个更加光鲜亮丽的世界。他们被尘封在记忆深处很多年。</p>
-<h2 id="三-巡礼之路"><a href="#三-巡礼之路" class="headerlink" title="三. 巡礼之路"></a><p align="left">三. 巡礼之路</p></h2><p>中学时代在艾泽拉斯的多年经历让我对暴雪这个游戏公司敬佩有加，一个游戏中居然能构建起如此强大而又完善的世界体系，那些虚构的民族和王国居然也能有活灵活现的历史。我开始仔细研究暴雪公司的作品。了解到暗黑破坏神也是早期暴雪公司的作品后，我还是有点惊讶的，读了一些Diablo的背景故事，我又想起了十年前在那里的身影。那时我已经上高二，我决定认认真真的玩一遍Diablo2。我记得当时正是期末考试，因为教务安排，我们每天早上10点考到12点，要连续考一周。而父母基本7点多就出门上班了，我凭空多出了十几个小时的游戏时间。</p>
-<p>这回我是一名真正的圣骑士了，走的是白热路线，一路上战锤连敲带打。当我去寻找召唤者赫拉森，再一次穿越传送门来到神秘避难所，看到那片虚无缥缈的星空时，一种似曾相识又恍如隔世的感觉，我放下战锤和大盾，看了很久…</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/g.jpg" title="g">
-<center>高中时用Java手机拍的屏幕，这位堕落天使血量高得惊人</center>
-
-<p>后来我把存档文件带到了学校的计算机课上，和同学联机玩。下课后有个同学找我，他说看到有人在玩暗黑2他很激动，那是他小时候唯一在电脑上玩过的游戏。我有点小吃惊，因为他应该是我们整个学校里面成绩最好的几个学生之一。</p>
-<p>火焰之河的岩浆海倒是比我记忆中更加明亮刺眼（可能跟显示器有关系），在大菠萝的烈火前我倒了几次，最后还是在一天早上车翻了BOSS，到了哈洛加斯，不知当时是时间不够还是什么原因，我没有继续打下去。高三时更是什么都玩不了，不过我把存档文件带进了大学。大学期间我的圣骑士才打通了第五幕的简单难度，终于完成一周目剧情，同时也实现了“奶牛关”的开启。说来也是好笑，我用了十几年时间通关了一款暗黑2，而噩梦和地狱难度则基本没怎么玩过，这在暗黑玩家里应该算是不折不扣的菜鸟级选手（笑）。</p>
-<h2 id="四-后续"><a href="#四-后续" class="headerlink" title="四. 后续"></a><p align="left">四. 后续</p></h2><p>大学那会刚好暗黑3发布，无数老玩家们都十分期待，不过很多人却失望而归，不管是游戏设计还是艺术风格问题，还是人们早已对Diablolike这类游戏失去兴趣，这款游戏并没有造成暗黑2那样的轰动，我也是草草打完了单人剧情内容，就再也没玩过。</p>
-<p>后来我还考古了1996年的暗黑破坏神1代，1代里还没有2代那样复杂的装备系统、符文之语以及成熟的互联网联机功能（战网），这个几乎可以叫做“是男人就下十五层”的简单粗暴的游戏内容给我最大的感觉是：2代继承了1代的风格，而3代却扔掉了这些。2代的第一幕几乎就是一代大部分内容的复刻致敬，那些灰暗的教堂和墓地、阴暗狭窄的地牢角落、小的可怜的照明范围、纯黑的探索迷雾、简单的黑白红色调形成强烈对比、甚至是一些近乎猎奇的邪典场景，其实是北暴时期Diablo的核心艺术基调：哥特式悲剧/恐怖。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/c.jpg" title="c">
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/d.jpg" title="d">
-<center>考古暗黑1时截的图</center>
-
-<p>举个例子，Diablo2没有天堂场景，但我认为如果Diablo2里面出现天堂场景，应该看起来类似于神秘避难所或者混沌要塞的样子，白色大理石地板、石柱配上白色的天空和光芒、黑色的阴影，构成一座黑白相间的宫殿。给人的感觉应该是安静和严肃，就像今天走进那些古老的教堂里一般，大气不敢出一个，其实某种意义上这也是一种阴森恐怖的感觉。而3代里却是以金色为主色调，至高天之上金碧辉煌圣光普照。这也是为什么Diablo2里圣骑士发出的是纯白色的光芒，截然不同于暴雪其他游戏里的圣光系职业，因为它们完全不是一个主题思路，如果是魔兽里的正派骑士们，那就必须是主旋律式的伟光正，也应该做成这样才对。</p>
-<p>但暗黑系列不同，它的故事基调从来都是悲剧，在此类框架下的文学作品里，正义的实现几乎只能是残酷的、不通人情的、并且往往要付出得不偿失的代价，以至于主人公自我毁灭的。一切正义的形象也因此蒙上了残酷的阴影。所以Diablo世界观下对抗邪恶的结局只能是失败的，甚至造成更加严重的后果，但这一切又是那么的必须必要且不可避免，最终导致主人公义无反顾地走向毁灭，葬送一切。正如一句古老的拉丁语：Fiat iustitia et pereat mundus. 即使毁灭世界也要实现正义。便是此类悲剧所要表现的必然性之所在。</p>
-<p>其实我们也知道，一个游戏好玩与否并不直接取决于艺术表现手法，游戏没有剧情音乐画面不代表游戏就不好玩，说到底笔者也只是一个对艺术略有感知，而对机制设计一窍不通的普通玩家，所以我也只能从这个角度提出观点。而抛弃小众硬核的暗黑艺术，题材越来越偏向大众化，也是暴雪公司在功成名就、不断做大以后不得不选择的道路。如同现在看到的哔哩哔哩（B站）也再不是以前那个二次元爱好者的小圈子。有人说是因为画质进步导致再也做不出以前那种效果，其实很不然，从其他游戏——比如作为Diablolike后辈的《恐怖黎明》（Grim Dawn）的表现来看，这明显不是做不到，而是刻意而为之。暗黑变得不够“暗黑”了，正是那些硬核老玩家们最常提到的话，严格地说，就是我们今天看到的这个暗黑2重制版的美术风格，光从已经发布的实机演示上来看也多多少少有点向现代游戏市场妥协的意味。不过重制怀旧游戏本来就是为了怀旧，或者就说是单纯补票吧，甚至即使这次暴雪再重蹈War3重制版的覆辙，像我一样的情怀玩家也会义无反顾的买这个单。</p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/e.jpg" title="e">
-<center>太真实了</center>
-
-<h2 id="五-遗产"><a href="#五-遗产" class="headerlink" title="五. 遗产"></a><p align="left">五. 遗产</p></h2><p>合上那本厚厚的魔法书，神秘大叔站起身来，说道：“就这样，故事结束了”。<br>“嗯，谢谢你的故事…”<br>“我还有最后一个问题要问你…你觉得，如果英雄知道这一切都是一场悲剧，一切的反抗都是徒劳，庇护之地的一切都终将归于虚无，什么都留不下来。那么，他还会走上这条路吗？”<br>“会的。虚无或许是真的，但过程本身却是有意义的。”<br>“当我退缩到四下无人的虚拟世界的角落里，我会放上一首轻轻的吉他曲，它似乎描述了一个村庄的悲惨命运。我会给那些已经不存在的热心肠村民们讲故事…我讲到Diablo是西班牙语里‘魔鬼’的含义，在美国有很多以西班牙语命名的地名——那是西班牙征服者们的杰作。有一天西班牙士兵们将一群印第安人包围在了一座山上，当他们决定围歼印第安人时，印第安人却从一条无人知晓的小道脱逃了。西班牙人发现印第安人集体消失后，惊呼山中定有魔鬼相助，此山便得名魔鬼山（Mount Diablo）。”<br>“后来有一个经常去山底下玩的美国高中生，当他在高中课本里学到西班牙语的Diablo时，他顿时豁然开朗。后来他觉得这个名字实在是的太酷了，许多年后他做了一款游戏，里面那个最强大的魔鬼，就叫做Diablo。”<br>“这个英雄和他的世界，曾为人所敬仰，也曾为人所唾弃，它被贬斥为0和1的数字玩笑，被讥笑为痴人说梦的疯癫呓语…”<br>“但是，我看到了他的所作所为，我为他的命运所悲哀，为他的勇敢而热血沸腾，他的爱恨情仇，我都感同身受。我清楚的记录下他是如何从一个弱者变成扛起大盾战锤的骑士；如何从一个大字不识、没有智商可言的憨憨一步步通晓那些纷繁复杂的魔法奥秘；从众说纷纭的混沌里计算出自己的结果；在怀疑与恐惧的废墟中，建起一座属于自己的神密圣殿。”<br>“你不会被忘记…”<br>“因为…你的英勇长存人心。（<font color="#EA0000">YOUR DEEDS OF VALOR WILL BE REMEMBERED</font>）”<br>“这部历史就是我们的遗产。”</p>
-<pre><code>睁开眼睛，神秘大叔消失不见，一切似乎只是往日的幻影。</code></pre><hr>
-<p>最后附上一些关于本文的链接和扩展资料：</p>
-<p>暗黑2重制版实机演示：<br><a href="https://www.bilibili.com/video/BV1L5411N7Pd" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1L5411N7Pd</a></p>
-<p>暗黑系列经典音乐崔斯特瑞姆（Tristram）：<br><a href="https://music.163.com/#/song?id=1718051" target="_blank" rel="noopener">https://music.163.com/#/song?id=1718051</a></p>
-<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/f.png" title="f">
-<center>暗黑2所有场景的名称</center>
-
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
         <tag>文化</tag>
       </tags>
   </entry>
@@ -1468,70 +1471,67 @@
 <p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
 ]]></content>
       <tags>
+        <tag>服务器</tag>
         <tag>软件</tag>
         <tag>游戏</tag>
-        <tag>服务器</tag>
       </tags>
   </entry>
   <entry>
-    <title>对Warcraft、StarCraft以及Minecraft的原意的小考</title>
-    <url>/2023/01/24/%E5%AF%B9Warcraft%E3%80%81StarCraft%E4%BB%A5%E5%8F%8AMinecraft%E7%9A%84%E5%8E%9F%E6%84%8F%E7%9A%84%E5%B0%8F%E8%80%83/</url>
+    <title>你的英勇长存人心——Diablo2与往事</title>
+    <url>/2021/02/22/%E4%BD%A0%E7%9A%84%E8%8B%B1%E5%8B%87%E9%95%BF%E5%AD%98%E4%BA%BA%E5%BF%83%E2%80%94%E2%80%94Diablo2%E4%B8%8E%E5%BE%80%E4%BA%8B/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>从词源上简单分析一下这些某某craft的真实含义。在探讨词汇的本意的同时对一些命名和翻译作了评价。<a id="more"></a></p>
+<p>昨天在21年的BlizzCon上，《暗黑破坏神2》（Diablo 2，或简称暗黑2）出重制版的事已经是板上钉钉了，突然想起来很多关于暗黑2的往事，至于暗黑2给游戏界带来了的影响就不多说了，虽然它不是我玩的最多的游戏，它却像一个影子一般跟在我的游戏历程中，从未离开过。<a id="more"></a></p>
 </blockquote>
-<p>下表是这几个经典游戏的原名，以及简体中文和繁体中文的翻译：</p>
-<table>
-<thead>
-<tr>
-<th align="center">原文</th>
-<th align="center">简体中文（zh-CN）</th>
-<th align="center">繁体中文（zh-TW）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Warcraft</td>
-<td align="center">魔兽争霸</td>
-<td align="center">魔獸爭霸</td>
-</tr>
-<tr>
-<td align="center">StarCraft</td>
-<td align="center">星际争霸</td>
-<td align="center">星海爭霸</td>
-</tr>
-<tr>
-<td align="center">Minecraft</td>
-<td align="center">我的世界</td>
-<td align="center">當個創世神</td>
-</tr>
-<tr>
-<td align="center">World of Warcraft</td>
-<td align="center">魔兽世界</td>
-<td align="center">魔獸世界</td>
-</tr>
-</tbody></table>
-<h3 id="1-craft是什么意思？"><a href="#1-craft是什么意思？" class="headerlink" title="1. craft是什么意思？"></a>1. craft是什么意思？</h3><p>&emsp;&emsp;现代英语中，craft的直接词源是古英语（Old English）中的cræft或kreft。它们被认为是来自于原始日耳曼语（Proto-Germanic）中的kraf-，这些词汇最早的意思是指“力量”、“体力”、“能力”（见<a href="https://www.etymonline.com/word/craft" target="_blank" rel="noopener">https://www.etymonline.com/word/craft</a> ）。现代德语中，用kraft表示力量、力气、精力等。后来在古英语中演变成表示某种能力、技巧、艺术、才能等的含义。17世纪后出现表示船只的含义，再后来衍生到与某种特定功能或技能相关联的物品、装置、工具上。现代英语里带-craft的词汇基本上均可以对应到以上的一种解释，如：</p>
-<p>巫术（witchcraft），即女巫（witch）所拥有的某种能力或才能、技巧；<br>治才，治国方略（statecraft），即在管理国家（state）上的技术或能力；<br>手工艺、手工制品（handcraft或handicraft），即与手相关的技术，或与手工技术相关联的制品；<br>航空器/航天器/船舶（aircraft/spacecraft/watercraft），即能够在air/space/water中发挥特定功能的装置或设备；<br>气垫船（hovercraft），具有悬浮（hover）能力的一种特定装置；<br>职业技能（tradecraft），trade这个词本身最早有“行当、职业”的含义，类似于tools of the trade（这句话接近于我们说的“没有金刚钻不揽瓷器活”中的金刚钻）中的用法。故tradecraft即为从事某种职业所需的专业本领或能力。在二战中还派生出“谍报技术”的含义；</p>
-<h3 id="2-Warcraft和StarCraft"><a href="#2-Warcraft和StarCraft" class="headerlink" title="2. Warcraft和StarCraft"></a>2. Warcraft和StarCraft</h3><p>&emsp;&emsp;回到游戏话题上，先解释暴雪的Warcraft和StarCraft。（这里注意以下所有的大小写用法，在暴雪游戏中，StarCraft的C是大写的，而Warcraft与World of Warcraft都没有大写其中的C）。</p>
-<p>&emsp;&emsp;首先要说明的一点是，warcraft和starcraft都不是游戏作者自造的，而是英语里已经存在的词汇。warcraft的原意是指战争中所运用的技术或技巧，即skill in warfare，或是the Art of War的字面意思；而StarCraft（1998）发行在Warcraft I（1994）及Warcraft II（1995）之后，通常认为，StarCraft的命名在一定程度上是对Warcraft命名方式的承袭，而其大写了C，是因为starcraft本身并不是生造的词汇，其原本含义接近于占星术（astrology），即“与星星（star）相关的技术或才能（-craft）”。C的大写很明显是一种防止歧义避免混淆的措施，从这里也能看出StarCraft这个命名还是比较严谨的。但因为这并不是starcraft的原意，故严格来讲StarCraft是一个自造词。这也是为什么Warcraft没有做大写C这个处理，是因为它使用的就是原本的含义。根据之前说明的craft的用法和对Warcraft命名方式的承袭，我们可以将StarCraft理解为【在星河太空中（作战）的技艺】。</p>
-<h3 id="3-Minecraft"><a href="#3-Minecraft" class="headerlink" title="3. Minecraft"></a>3. Minecraft</h3><p>&emsp;&emsp;接下来是Minecraft，首先它确实是一个自造的词，这个词汇的本意应理解为【挖掘开矿的技艺】。Mine在这里既可理解为名词“矿物（显然不可能是其他含义）”，亦可理解为动词“开采、挖掘”，结合Minecraft的游戏内容，这两种解释都有符合前文的构词方式的理由，不过作动词解释的适配性更好一点，因为Minecraft中除了开采矿物以外还能够开采其他东西。但要说明的是这里的craft不是动词“制作、合成”，而只是一个词尾（-craft），否则不符合英语中常规的构词规则，若强行理解为动词，则Mine &amp; Craft才会是正确的命名方式。至于Minecraft的名称到底对暴雪的游戏有没有借鉴，有人认为创始人Notch可能参考了StarCraft，我个人也倾向于有，但Notch本人从来没有在正式场合说明过这点，故不得而知。</p>
-<h3 id="4-World-of-Warcraft"><a href="#4-World-of-Warcraft" class="headerlink" title="4. World of Warcraft"></a>4. World of Warcraft</h3><p>&emsp;&emsp;虽然Warcraft的游戏名称确实使用了“战争技术”的含义。但World of Warcraft显然不是World of warcraft，不应该被直接理解为“战争技艺的世界”。World of Warcraft发行于2004年。2003年的《魔兽争霸3冰封王座（WarcraftⅢ: Frozen Throne）》发行后，此时“Warcraft”这个IP已经具有了成熟的市场规模，应当认为Warcraft这个词也派生出了自己的含义。故World of Warcraft应理解为【于前作Warcraft系列的世界观基础上——所构建的世界】，即“Warcraft世界”。</p>
-<h3 id="5-对通行翻译的想法与评价"><a href="#5-对通行翻译的想法与评价" class="headerlink" title="5. 对通行翻译的想法与评价"></a>5. 对通行翻译的想法与评价</h3><p>&emsp;&emsp;必须强调的是，对于影视、游戏娱乐文化中一些关键名称的翻译，大部分情况下是无所谓对错的，只能说有优劣好坏之分。游戏或是影视作品的种种名称有时候通常更会选择去意译，而不是直译，也是考虑到很多词汇并不能很好地翻译成其他语言（如汉语），因为对于电子游戏或是影视作品这样的娱乐产品来说，一个响亮、简单易懂且朗朗上口的命名对于商业运作的重要程度是不言而喻的，甚至可以说做到这一点的重要程度已经远超过其原文本身的真实含义。故在这一特殊情况下，传统的“信达雅”框架不再生效，重点则其实移到了“宣传”上，这其中的一个优秀的翻译结果甚至可以彻底抛弃掉“信”。一直有些争议的“我的世界”是不能算作错误翻译的，我们不能拿本意去套意译，甚至我认为这个翻译还算可以。又如我们看到“Tracer”这个词本身既不“猎空”也不“闪光”，“Optimus Prime”里既不擎天，也没有柱子，但能说它们翻译错了或翻译的不好吗，是很难讲的。</p>
-<p>&emsp;&emsp;其实不仅翻译如此，游戏制作者在给游戏命名的时候，也会遵循某种潜在的“商业规律”：例如曾经我在机核网看过一个统计了Steam上所有游戏的名称的项目，然后将词汇的出镜率做一个排名，前五名分别是War、Space、World、Dark、Heros。他们说，要是将前五名综合起来，游戏名称就会变成——《黑暗太空世界：战争英雄》（World of Dark Space: War Heroes），听起来是很带劲，当然也很俗套，但电子游戏娱乐相关的产业命名确实很多情况下就是这么运作的。</p>
-<p>&emsp;&emsp;最后是我个人对本文开头列出的游戏原名、以及现在市面上通行的翻译结果的一个很主观的个人评价，会淡化游戏本身取得的成绩，更多从名称角度去考虑，满分按5分，首先是原文部分：</p>
-<p>Warcraft：3分。优势在于开头直接就是上面说的游戏名一哥“war”，晴天霹雳当头一棒；劣势在于带war的游戏数不胜数，这个名称也没能说明出是哪一类war，难以突出这款游戏独有的特点。其实Warcraft最早就是一个很简单的以人类战兽人为卖点的游戏，算是一种套了美洲印第安人背景的罗马vs蛮族的archetype，当然也直接参考了《魔戒》以及桌面游戏《战锤》等作品的设定。只是估计暴雪当初在命名的时候，也没想到这个IP将来能做那么久。</p>
-<p>StarCraft：3分。优势在于暴雪的前作Warcraft II已经在RTS上初露锋芒，继续使用-craft的命名方式很容易让玩家能联想到这是一款同公司制作的太空未来题材的全新RTS游戏，Star也点明了主题内容相关的元素；劣势在于，这让这个词汇变得比Warcraft更加难以理解了，相比起Star Wars这样简单明了的名字，很多人可能都不能看懂这个star和craft在这里究竟想要说什么。</p>
-<p>Minecraft：2分。虽然这是一款相当成功的游戏，但从命名上却很难吸引人，这个自造词实在是显得有些过于生硬、晦涩了，加上Mine这个词汇本身对玩家也没有特别强的吸引力；要说优点可能就是在于让人能联想到Warcraft和StarCraft（这两个游戏那个时候还相当出名）。</p>
-<p>World of Warcraft：5分。虽然Warcraft本身并不是那么易懂，但经过暴雪多年铺垫后Warcraft这个名字已经在玩家群体中深入人心。从来电子游戏和“世界”似乎都有着无限的亲和力，游戏名称中带着“世界”自然有着很好的吸引力，而这款游戏的目的正就是要带给玩家们一个Warcraft背景下的MMO世界。</p>
-<p>&emsp;&emsp;再是中文的翻译部分：</p>
-<p>魔兽争霸/魔獸爭霸：3分。优势在于“争霸”一词纳入了War所带来的特点，“魔兽”这个词汇从流行文化的角度看也有些冲击力，让人一看就觉得这是一款以奇幻题材的作品，算是对起到了对Warcraft世界观的一个扩展解释的作用；劣势在于，合在一起后的“魔兽争霸”略微有些偏离了游戏本身的内容，其实并不是“魔”和“兽”要争霸，而是“人”和“兽”在争夺生存空间。“魔兽”这个叫法也不太容易为大众所接受，如2008年著名的反互联网娱乐纪录片《战网魔》中更是以标题《谁把天才变成了魔兽》抓住了这一噱头。至于“魔兽”的翻译其实来自于台湾，最早1994年的Warcraft I中只有人类联盟（Humans）和兽人（Orcs）两个可以选择的势力，其中人类因为具有“牧师（cleric）”和“魔法师（Conjurer）”两个可以施放魔法技能的单位，因而人族被称作了“魔族”，加上与之敌对的兽人族，就变成了“魔兽争霸”；但事实上，兽人族亦拥有“死灵法师（Necrolyte）”和“邪术士（Warlock）”的法系单位，某种意义上说还要比人族更“魔”一些…</p>
-<p>星际争霸/星海爭霸：5分。这个翻译真的非常出色，首先它补全了原文中为了和Warcraft格式严格对齐从而缺失掉的“War”的这部分含义，星际/星海突出了游戏最大的主题，争霸本身也相当贴切：因为故事背景中的三个种族确实都有在这片星区中称王称霸的计划或倾向。而关于太空争霸题材多说一句，1997年正好上映了一部火爆的科幻电影《星河战队（Starship Troopers，原著小说通常称星船伞兵）》，内容也刚好是人类在外太空和异种虫族发生战争的故事，而《星际争霸》于1998年发行后，作为一款电子游戏当然立刻吸引到了大量原本对《星河战队》感兴趣的用户群体，导致甚至有激进的《星河战队》粉丝认为《星际争霸》抄袭了《星河战队》的一些设定。20世纪后半叶也正好是种种太空争霸文艺作品的黄金年代，此时翻译采用“星际争霸”，是相当适合的。</p>
-<p>我的世界：4分。优点在于这种表达方式点出了游戏的很大一块主题，这确实是一个玩家能够随意编辑掌控的沙盒世界。缺点在于光看名字的话很难想到进一步的玩法，“我”究竟要在“我的世界”里做些什么？</p>
-<p>當個創世神：5分。很优秀的名字，这个游戏在“创造模式”中，玩家扮演的就是“创世神”一般的人物，就算是在“生存模式”，世界上往往也只有玩家一个人能够改造世界，那不是神还是什么？这个用法不仅告诉玩家这个世界就是你的，你可以随意编辑、改造，祈使句的用法也更具吸引力，特别是对小孩子们来说，因为游戏本身十分子供向（Minecraft在ESRB中的评级是E10+，而Warcraft和StarCraft都是Teen）。</p>
-<p>魔兽世界/魔獸世界：5分。经过前作的铺垫后“魔兽”当然也在中文玩家圈子里成为了一个响亮的名字，于是到了World of Warcraft上，可以说是没有理由不翻译成“魔兽”的。世界也是直截了当地告诉玩家这就是一个游戏世界，而且相比于“魔兽争霸”，这回真的是既有“魔”又有“兽”了。</p>
+<p>我认为对于一个学习历史的人来说，其实有两部历史。第一部是这个世界的历史，它客观存在且“不以人的意志转移”；而第二部，则是“个人”的历史，虽不敢说这部历史是否就真的以个人的意志书写，但至少对于这部历史，以及两部历史的重叠状态即“我们这代人的历史”来说，每个人都是它的亲历者，都拥有真正的第一手资料。</p>
+<p>今天我就借着我和Diablo2之间的故事来回忆一下二十年的往事。</p>
+<h2 id="一-混沌初开"><a href="#一-混沌初开" class="headerlink" title="一. 混沌初开"></a><p align="left">一. 混沌初开</p></h2><p>小学一年级，就像漫画里的那样，一位神秘的大叔出现在小孩原本平静的生活里，手里拿着一本古代魔法书，向他展示了一个远古时期的景象：那是在人类文明和庇护之地诞生前，至高天堂和燃烧地狱之间的一场永无休止的终极决战……</p>
+<p>咳咳，扯多了。同学他爸拿着硬盘来到我家，带来了一系列当时国内最流行的单机大作，从此Windows 98那标准的800×600分辨率的绿屏桌面上多了一连串的快捷方式，其中有一个名字叫“毁灭之王”，图标是一个蓝色鬼头。当时的我就把这款游戏称作毁灭之王。</p>
+<p>2000年前后那会我年纪实在太小，不算真正经历过那时的生活，只是后来出于“考古”的目的才有所了解。互联网和计算机其实才刚刚在国内起步，一台个人PC的价格就能卡住很多人了，那会流行组装机，根据2000年前后热门杂志《电脑报》上的参考价格，凑合能用的电脑得5000元，而能跑得动热门大型游戏的至少也得七八千，一张正版游戏盘基本就是一两百块的样子，不过当时很少有什么正版观念，盗版游戏盘还是很便宜的；PS2首发价格3100元水平，能在那会玩上GBA或者后来的NDS的都是有点条件的大佬，甚至我感觉只要有一台90年代的小霸王“学习机”那你就是整个社区的小朋友里最靓的仔了。主机玩家更是少得可怜，因为主机只能玩游戏，所以很少有人会去投资这个，并且当时的电脑已经开始出现主机模拟器。根据信息，2000年城镇职工平均工资为每月780元，总的来说要攒出一台跑得动Diablo2的电脑实在是非常不容易的事。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/a.png" title="a">
+<center>老旧的《电脑报》合订本，差不多可以当历史书看了</center>
+
+<p>说到这就不得不提一下国内游戏的曲折历程，2000年5月光明日报发布了那篇著名的文章《电脑游戏是瞄准孩子的“电子海洛因”》，“电子海洛因论”此后在社会上引起广泛反响，不仅是电脑游戏变成了人人喊打的过街老鼠，国内一切跟电子娱乐有关的产业都遭到了打击，也直接促成了长达13年的“游戏机禁令”，06年央视的《战网魔》及之后的一系列相关事件更是该风波的延续，在此不必多述。这些东西虽说是老调重弹，但怎么也是我们这代人的历史烙印，国家每年还要纪念九一八呢，我相信“电子海洛因”就如同“计生办”、“下岗潮”一样，都是“我们这代人的历史”，也具有同样的分量。</p>
+<p>回到正题，暗黑2在国内流行的版本是台湾松岗公司进行汉化的，也就是我们后来看到的繁体中文版本。这造成一年级的我有近乎一大半的汉字文本看不懂，比如第一幕新手村的萝格营地（Rogue Encampment），屏幕上显示的是“踏入蘿格營地”几个大红字，我一直不认识那个“蘿”字。不过话说当时就算能认字，小学生的智商也不足以理解这个游戏里诸多西方传统宗教、奇幻、悲剧等内容元素，这也是导致我后来没有继续玩下去的原因。</p>
+<p>而且单从游戏性上来说，Diablo系列的一大特色就是每个角色都会生成自己的随机地图，我的智商哪认得到路啊，只记得不同角色的新手村大门一会向左开一会向右开，有时候还跑到上面去了，彻底懵逼，爱我的只有全部点亮的传送小站和回城卷轴，让我在各种风景各异的地图间不断穿行。因为不会打字输入角色名，我有段时间甚至不能创建角色，但是创建角色的那个画面在今天看来也做得也非常出色：七位勇士围在一个篝火前各显神通，我印象最深的就是中间野蛮人的那一声战吼，还有圣骑士的剑盾跪姿、浑身燃烧着蓝色火焰的死灵法师；最后还有亚马逊姐姐的白大腿，嗯，小学生的我毫无感觉。从这次重制版放出的视频看，这个经典场景也得到了重制。</p>
+<p>所幸的是，盗版游戏自带了一个强力角色：作弊的99级法师！而且是冰火电三系全满，属性点也全满，导致技能栏多得吓人，经过一个一个尝试后我发现冰环是最具效率的清怪手段。但角色没有装备，我就去第四幕的群魔堡垒（Pandemonium Fortress，混沌界要塞其实是最正确的翻译，就是3代里的混沌要塞），买了一套寒光闪闪的全身板甲和德式双手巨剑，因为属性全满，成功装备。这归功于Diablo2出色的装备造型设计，让我那时就迷上了盔甲冷兵器这样的元素。就这样我弄出了一个左键普攻右键冰环的“魔法骑士”，因为穿的过于厚实，导致我根本不知道这个角色是法师，连她是个女人都不知道。我一直以为我是一个头盔之下长发飘逸，既能挥舞大剑又能施放法术的魔法骑士。</p>
+<p>当时的玩那真是纯粹的玩，因为什么都看不懂，唯一的乐趣就是在不同的地图间旅游、打怪，那些场景过于黑暗、怪物长相太恐怖的地方我是不敢去的，比如皇宫地牢、神罚之城等，我甚至连群魔堡垒前面的那条长楼梯都不敢下；曾经有个同学告诉我第一幕大教堂底下有恐怖至极的怪物，导致我再也不敢踏进大教堂一步，完全不知道自己的“骑士”已经可以在普通难度秒天秒地，可见胆子是有多小。我最喜欢的地方是神秘避难所（Arcane Sanctuary），感觉那里神圣而又宁静，第一次去的时候，背景缓缓飘过的星空、以及脚下凭空出现的白色石板路让我惊艳不已，其实这张图还利用2D画面的特性做出了一些“三维不可能图形（Impossible figure）”的效果，可惜我那时理解不能；其次是火焰之河（River of Flame），我四处屠杀那种爆浆的虫子，也从未找到过大菠萝…<br>过了一段时间，家里来了个比我大几岁的哥哥，他发现桌面上的“毁灭之王”后非常激动，立刻开始玩。他管这个游戏叫“呆波（他也不会读）”，不叫毁灭之王，并且印象中他似乎还用一瓶可乐还是什么饮料贿赂我，让我允许他多玩一会，我当然也就答应了。我在一旁看，他好像也是跑跑刷刷乐在其中，我抓住机会问他，那个“踏入蘿格營地”的“蘿”字怎么读？他直接回答我读“霍”，我顿觉醍醐灌顶，原来是霍格营地啊，长久以来的谜团终于得到了解决，我当时很佩服那位哥哥，高年级的学生就是厉害多了，个个都是文化人。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/b.png" title="b">
+<center>传言说这个“召唤者”正是1代里的法师</center>
+
+<h2 id="二-转变之时"><a href="#二-转变之时" class="headerlink" title="二. 转变之时"></a><p align="left">二. 转变之时</p></h2><p>这样简单而又快乐的时光过了半年到一年吧，我四处旅游打怪，只为收集那些看起来帅气逼人的盔甲部件，直到有一天一个大学生来到家里，他打开了电脑上的“毁灭之王”，并向我展示了Diablo2中著名的“奶牛关（Cow Level）”：只记得他通过赫拉迪姆方块——那是我当做箱子的东西，和一个回城卷轴，点了一下转变按钮，就召唤出一个红色的传送门！之后在奶牛关中他又展示了一系列复杂的操作，说出了一串又一串我根本无法理解的专业游戏术语。我当时最大的感觉是，我跟他玩的完全不是一个游戏，我完全无法理解他在玩什么，我可能根本就不会玩。</p>
+<p>过了几天我决定亲自复制他的操作：我认为那传送门的配方应该是一个回城卷轴和红色药水，我把它们放进赫拉迪姆方块中点击转变，然而无论我放进去几瓶药水都没有任何回应，取出来的回城卷轴也只能开出蓝色的普通传送门。那时的电脑很多都没有互联网，想要解决问题只能靠自己。我绞尽脑汁的尝试，却还是只能开出蓝色传送门，努力尝试终得失败，这给当时的我很大的打击，我突然意识到这个游戏世界是多么的难以理解，比起这里的困境，一个能端起机关枪随便突突的CS1.5显得是那么的简单友善，后来的我渐渐离开这里开始去玩CS，再后来因为家人的工作原因，那台电脑也一块走了。等到那台电脑又回到家里时，我第一次看到XP系统的蓝天白云绿草地，老旧的那批游戏早已消失不见，更好玩的游戏也接踵而至。暗黑破坏神2，连同那些昏暗的地牢和胆小的魔法骑士，换成了另一个个更加光鲜亮丽的世界。他们被尘封在记忆深处很多年。</p>
+<h2 id="三-巡礼之路"><a href="#三-巡礼之路" class="headerlink" title="三. 巡礼之路"></a><p align="left">三. 巡礼之路</p></h2><p>中学时代在艾泽拉斯的多年经历让我对暴雪这个游戏公司敬佩有加，一个游戏中居然能构建起如此强大而又完善的世界体系，那些虚构的民族和王国居然也能有活灵活现的历史。我开始仔细研究暴雪公司的作品。了解到暗黑破坏神也是早期暴雪公司的作品后，我还是有点惊讶的，读了一些Diablo的背景故事，我又想起了十年前在那里的身影。那时我已经上高二，我决定认认真真的玩一遍Diablo2。我记得当时正是期末考试，因为教务安排，我们每天早上10点考到12点，要连续考一周。而父母基本7点多就出门上班了，我凭空多出了十几个小时的游戏时间。</p>
+<p>这回我是一名真正的圣骑士了，走的是白热路线，一路上战锤连敲带打。当我去寻找召唤者赫拉森，再一次穿越传送门来到神秘避难所，看到那片虚无缥缈的星空时，一种似曾相识又恍如隔世的感觉，我放下战锤和大盾，看了很久…</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/g.jpg" title="g">
+<center>高中时用Java手机拍的屏幕，这位堕落天使血量高得惊人</center>
+
+<p>后来我把存档文件带到了学校的计算机课上，和同学联机玩。下课后有个同学找我，他说看到有人在玩暗黑2他很激动，那是他小时候唯一在电脑上玩过的游戏。我有点小吃惊，因为他应该是我们整个学校里面成绩最好的几个学生之一。</p>
+<p>火焰之河的岩浆海倒是比我记忆中更加明亮刺眼（可能跟显示器有关系），在大菠萝的烈火前我倒了几次，最后还是在一天早上车翻了BOSS，到了哈洛加斯，不知当时是时间不够还是什么原因，我没有继续打下去。高三时更是什么都玩不了，不过我把存档文件带进了大学。大学期间我的圣骑士才打通了第五幕的简单难度，终于完成一周目剧情，同时也实现了“奶牛关”的开启。说来也是好笑，我用了十几年时间通关了一款暗黑2，而噩梦和地狱难度则基本没怎么玩过，这在暗黑玩家里应该算是不折不扣的菜鸟级选手（笑）。</p>
+<h2 id="四-后续"><a href="#四-后续" class="headerlink" title="四. 后续"></a><p align="left">四. 后续</p></h2><p>大学那会刚好暗黑3发布，无数老玩家们都十分期待，不过很多人却失望而归，不管是游戏设计还是艺术风格问题，还是人们早已对Diablolike这类游戏失去兴趣，这款游戏并没有造成暗黑2那样的轰动，我也是草草打完了单人剧情内容，就再也没玩过。</p>
+<p>后来我还考古了1996年的暗黑破坏神1代，1代里还没有2代那样复杂的装备系统、符文之语以及成熟的互联网联机功能（战网），这个几乎可以叫做“是男人就下十五层”的简单粗暴的游戏内容给我最大的感觉是：2代继承了1代的风格，而3代却扔掉了这些。2代的第一幕几乎就是一代大部分内容的复刻致敬，那些灰暗的教堂和墓地、阴暗狭窄的地牢角落、小的可怜的照明范围、纯黑的探索迷雾、简单的黑白红色调形成强烈对比、甚至是一些近乎猎奇的邪典场景，其实是北暴时期Diablo的核心艺术基调：哥特式悲剧/恐怖。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/c.jpg" title="c">
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/d.jpg" title="d">
+<center>考古暗黑1时截的图</center>
+
+<p>举个例子，Diablo2没有天堂场景，但我认为如果Diablo2里面出现天堂场景，应该看起来类似于神秘避难所或者混沌要塞的样子，白色大理石地板、石柱配上白色的天空和光芒、黑色的阴影，构成一座黑白相间的宫殿。给人的感觉应该是安静和严肃，就像今天走进那些古老的教堂里一般，大气不敢出一个，其实某种意义上这也是一种阴森恐怖的感觉。而3代里却是以金色为主色调，至高天之上金碧辉煌圣光普照。这也是为什么Diablo2里圣骑士发出的是纯白色的光芒，截然不同于暴雪其他游戏里的圣光系职业，因为它们完全不是一个主题思路，如果是魔兽里的正派骑士们，那就必须是主旋律式的伟光正，也应该做成这样才对。</p>
+<p>但暗黑系列不同，它的故事基调从来都是悲剧，在此类框架下的文学作品里，正义的实现几乎只能是残酷的、不通人情的、并且往往要付出得不偿失的代价，以至于主人公自我毁灭的。一切正义的形象也因此蒙上了残酷的阴影。所以Diablo世界观下对抗邪恶的结局只能是失败的，甚至造成更加严重的后果，但这一切又是那么的必须必要且不可避免，最终导致主人公义无反顾地走向毁灭，葬送一切。正如一句古老的拉丁语：Fiat iustitia et pereat mundus. 即使毁灭世界也要实现正义。便是此类悲剧所要表现的必然性之所在。</p>
+<p>其实我们也知道，一个游戏好玩与否并不直接取决于艺术表现手法，游戏没有剧情音乐画面不代表游戏就不好玩，说到底笔者也只是一个对艺术略有感知，而对机制设计一窍不通的普通玩家，所以我也只能从这个角度提出观点。而抛弃小众硬核的暗黑艺术，题材越来越偏向大众化，也是暴雪公司在功成名就、不断做大以后不得不选择的道路。如同现在看到的哔哩哔哩（B站）也再不是以前那个二次元爱好者的小圈子。有人说是因为画质进步导致再也做不出以前那种效果，其实很不然，从其他游戏——比如作为Diablolike后辈的《恐怖黎明》（Grim Dawn）的表现来看，这明显不是做不到，而是刻意而为之。暗黑变得不够“暗黑”了，正是那些硬核老玩家们最常提到的话，严格地说，就是我们今天看到的这个暗黑2重制版的美术风格，光从已经发布的实机演示上来看也多多少少有点向现代游戏市场妥协的意味。不过重制怀旧游戏本来就是为了怀旧，或者就说是单纯补票吧，甚至即使这次暴雪再重蹈War3重制版的覆辙，像我一样的情怀玩家也会义无反顾的买这个单。</p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/e.jpg" title="e">
+<center>太真实了</center>
+
+<h2 id="五-遗产"><a href="#五-遗产" class="headerlink" title="五. 遗产"></a><p align="left">五. 遗产</p></h2><p>合上那本厚厚的魔法书，神秘大叔站起身来，说道：“就这样，故事结束了”。<br>“嗯，谢谢你的故事…”<br>“我还有最后一个问题要问你…你觉得，如果英雄知道这一切都是一场悲剧，一切的反抗都是徒劳，庇护之地的一切都终将归于虚无，什么都留不下来。那么，他还会走上这条路吗？”<br>“会的。虚无或许是真的，但过程本身却是有意义的。”<br>“当我退缩到四下无人的虚拟世界的角落里，我会放上一首轻轻的吉他曲，它似乎描述了一个村庄的悲惨命运。我会给那些已经不存在的热心肠村民们讲故事…我讲到Diablo是西班牙语里‘魔鬼’的含义，在美国有很多以西班牙语命名的地名——那是西班牙征服者们的杰作。有一天西班牙士兵们将一群印第安人包围在了一座山上，当他们决定围歼印第安人时，印第安人却从一条无人知晓的小道脱逃了。西班牙人发现印第安人集体消失后，惊呼山中定有魔鬼相助，此山便得名魔鬼山（Mount Diablo）。”<br>“后来有一个经常去山底下玩的美国高中生，当他在高中课本里学到西班牙语的Diablo时，他顿时豁然开朗。后来他觉得这个名字实在是的太酷了，许多年后他做了一款游戏，里面那个最强大的魔鬼，就叫做Diablo。”<br>“这个英雄和他的世界，曾为人所敬仰，也曾为人所唾弃，它被贬斥为0和1的数字玩笑，被讥笑为痴人说梦的疯癫呓语…”<br>“但是，我看到了他的所作所为，我为他的命运所悲哀，为他的勇敢而热血沸腾，他的爱恨情仇，我都感同身受。我清楚的记录下他是如何从一个弱者变成扛起大盾战锤的骑士；如何从一个大字不识、没有智商可言的憨憨一步步通晓那些纷繁复杂的魔法奥秘；从众说纷纭的混沌里计算出自己的结果；在怀疑与恐惧的废墟中，建起一座属于自己的神密圣殿。”<br>“你不会被忘记…”<br>“因为…你的英勇长存人心。（<font color="#EA0000">YOUR DEEDS OF VALOR WILL BE REMEMBERED</font>）”<br>“这部历史就是我们的遗产。”</p>
+<pre><code>睁开眼睛，神秘大叔消失不见，一切似乎只是往日的幻影。</code></pre><hr>
+<p>最后附上一些关于本文的链接和扩展资料：</p>
+<p>暗黑2重制版实机演示：<br><a href="https://www.bilibili.com/video/BV1L5411N7Pd" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1L5411N7Pd</a></p>
+<p>暗黑系列经典音乐崔斯特瑞姆（Tristram）：<br><a href="https://music.163.com/#/song?id=1718051" target="_blank" rel="noopener">https://music.163.com/#/song?id=1718051</a></p>
+<img src="/2021/02/22/你的英勇长存人心——Diablo2与往事/f.png" title="f">
+<center>暗黑2所有场景的名称</center>
+
 ]]></content>
       <tags>
         <tag>游戏</tag>
-        <tag>翻译</tag>
+        <tag>生活</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1978,8 +1978,8 @@ table th:nth-of-type(3) {
 <p>并关掉网络代理程序，则可以解决问题。或手头有能正常工作的客户端的话，直接复制过来也行。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>服务器</tag>
+        <tag>游戏</tag>
       </tags>
   </entry>
   <entry>
@@ -2117,9 +2117,9 @@ table th:nth-of-type(3) {
 
 ]]></content>
       <tags>
+        <tag>服务器</tag>
         <tag>软件</tag>
         <tag>游戏</tag>
-        <tag>服务器</tag>
       </tags>
   </entry>
   <entry>
@@ -2147,18 +2147,16 @@ table th:nth-of-type(3) {
 <p>&emsp;&emsp;顺带说一下，时至今日，《世间最美丽的坟墓》这篇文章在我国的许多版本的中学语文教材中仍作为课文出现，然而大部分教材的课文甚至未能正确拼写这段拉丁语，也未能作正确解释，如下图。究其原因，其实这篇文章是在1983年才由翻译家张厚仁译成中文的，算是改开以来最早的茨威格作品翻译之一，80年代初期百废待兴，译者有失误也在所难免，但文章自从九十年代进入了高中课本，却没有仔细核对，众多版本的教材也都直接原封不动地照搬原文，要么就是直接作了删减，更离谱的是，三十年过去了，几乎从未有教材出面订正这个错误，造成了一句错误的句子和翻译被我国中学语文课本一直用到了今天的现象。</p>
 <img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/1.png" title="a">
 
-<p>&emsp;&emsp;虽然这个例子一定程度反映出拉丁语在我国的陌生程度。但可想而知的是，即使是正确拼写了这句话，正确作了翻译，解释它也并非是容易的事情——若在教育中始终避而不谈这背后涉及到的深层次历史、文化、宗教背景（据说现在的教材中已经严禁出现一切宗教术语和宗教形象、绘画等元素，如下图），我想，学生也就永远理解不了那坟墓为何简陋，为何像一个“不为人知的士兵一般不留名姓地被埋葬”，也就触及不到这篇文章的灵魂。</p>
-<img src="/2021/07/19/一些拉丁语谚语的含义考据与派生用法/7.jpg" title="x">
-
+<p>&emsp;&emsp;虽然这个例子一定程度可以反映出拉丁语在我国的陌生程度。但可想而知的是，即使是正确拼写了这句话，正确作了翻译，解释它也并非是容易的事情——若在教育中始终避而不谈这背后涉及到的深层次历史、文化、宗教背景（据说现在的教材中已经严禁出现一切宗教术语和宗教形象、绘画等元素），我想，学生也就永远理解不了那坟墓为何简陋，为何像一个“不为人知的士兵一般不留名姓地被埋葬”，也就触及不到这篇文章的灵魂。</p>
 <p>&emsp;&emsp;语言——说到底——只是一种表象，一个工具，而我更担心后面这些。</p>
 <p>&emsp;&emsp;茨威格原文为：Ein kleiner rechteckiger Hügel im Wald, von Blumen übergrünt – nulla crux, nulla corona – kein Kreuz, kein Grabstein, keine Inschrift, nicht einmal der Name Tolstoi. 完整原文见：<a href="https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/" target="_blank" rel="noopener">https://zweig.lernzettel.org/reiseberichte-ruland-das-schonste-grab-der-welt/</a></p>
 <h2 id="3-A-mari-usque-ad-mare"><a href="#3-A-mari-usque-ad-mare" class="headerlink" title="3. A mari usque ad mare."></a>3. A mari usque ad mare.</h2><p>&emsp;&emsp;字面意思为“从海到（另一个）海”，英语一般作“From sea to sea”。原文出自圣经武加大本（Vulgate，即拉丁语版圣经），诗篇 72:8 (Psalms 72:8): </p>
 <blockquote>
 <p>“…et dominabitur a mari usque ad mare et a flumine usque ad terminos orbis terrarum.”<br>“…他将统治大地，从这海到那海；由大河的流域，至地极的边界。”</p>
 </blockquote>
-<p>&emsp;&emsp;此处描述的是圣经中非常常见的说法：即上帝与圣君治下的、理想的人间天国。</p>
+<p>&emsp;&emsp;此处描述的是圣经中常见的意象：即上帝与圣君治下的、理想的人间天国。</p>
 <p>&emsp;&emsp;A mari usque ad mare现已成为加拿大的国家格言，来描述加拿大是一个从太平洋到大西洋的广阔国家。加拿大在建国之初是英国的自治领（Dominion），Dominion这个词一在加拿大的官方国号中直保留到了1950年，而Dominion从词源上讲有统治、主宰的含义，Dominus在宗教意义上更是直接成了上帝和基督的外号。诗篇 72:8中也有这样一个词汇，而A mari usque ad mare也正是从这一段里选的。</p>
-<p>&emsp;&emsp;但其实，早在古时候的欧洲，在更一般的意义上，A mari usque ad mare就已经被引申为描述一个强大而繁荣的国家或统治。例如波兰在16、17世纪的波兰立陶宛联邦时代的强盛时期，被时人称之为“从海到海的波兰（波兰语：Polska od morza do morza）”，即从黑海到波罗的海。据说，这个说法早在1564年就由波兰诗人扬·科哈诺夫斯基（Jan Kochanowski）在一首名为《野人萨提尔（Satyr albo Dziki mąż）》的诗中提出。在这个作品中，诗人借一位睿智的萨提尔（Satyr，源自古希腊传说中的一种羊头野生半神）之口表达爱国主义观念，讽刺当时波兰社会的堕落。他指责波兰人失去了先祖的高贵荣誉感和充沛的武德，农民只顾劳作、交易，没有了家国观念；贵族们品行败坏，为了财富相互倾轧，忘掉了古老的骑士精神。文中提到有：</p>
+<p>&emsp;&emsp;但其实，早在古时候的欧洲，在更一般的意义上，A mari usque ad mare就已经被引申为描述一个强大而繁荣的国家或统治。例如波兰在16、17世纪的波兰立陶宛联邦时代的强盛时期，被时人称之为“从海到海的波兰（波兰语：Polska od morza do morza）”，即从黑海到波罗的海。据说，这个概念早在1564年就由波兰诗人扬·科哈诺夫斯基（Jan Kochanowski）在一首名为《野人萨提尔（Satyr albo Dziki mąż）》的诗中提出。在这个作品中，诗人借一位睿智的萨提尔（Satyr，源自古希腊传说中的一种羊头野生半神）之口表达爱国主义观念，讽刺当时波兰社会的堕落。他指责波兰人失去了先祖的高贵荣誉感和充沛的武德，农民只顾劳作、交易，没有了家国观念；贵族们品行败坏，为了财富相互倾轧，忘掉了古老的骑士精神。文中提到有：</p>
 <blockquote>
 <p>…Pomnę ja przed laty,<br>Że w Polsce żaden nie był w pieniądze bogaty,<br>A szlachta się rycerskiem rzemiosłem bawiła.<br>Mróz i gorąco cierpiąc, głodu przymierając.<br>A to wszystko bogactwa, kto się sławy dobił.<br>Lepiej się tem, niż złotym łańcuchem ozdobił.<br>A jeśli ku pokoju kiedy myśl skłonili,<br>Nie już swoich żołnierskich zabaw odstąpili.<br>Ale jakoby jutro znowu wsiadać mieli,<br>Zbroje nigdy a konia puścić się nie chcieli.<br>Temci Polska urosła: a granice swoje<br>Rozciągnęła szeroko między morza dwoje.<br>Stąd prawa, stąd wolności, stąd Rzeczpospolitą<br>Prawda, że złota wasi przodkowie nie mieli,<br>A małobym tak nie rzekł, że go ani chcieli.<br>Jednak za swojem męztwem wielkie Państwa brali</p>
 </blockquote>
@@ -2166,7 +2164,7 @@ table th:nth-of-type(3) {
 <blockquote>
 <p>…我记得在很多年前<br>波兰没有人如此富有<br>贵族以骑士技艺为荣<br>艰苦比金饰更加贵重<br>人们即使在和平年代<br>也不愿丢掉战马铠甲<br>好似明天就要出征作战<br>这就是波兰，和它的边界<br>是如何在两片海洋之间不断成长<br>直到如今的模样<br>权利、自由、共和国，皆由此而生<br>你们的祖先没有金子，也不需要它<br>只是凭着英勇和无畏<br>就建立了伟大的国家</p>
 </blockquote>
-<p>虽然严格来讲，波兰在历史上的核心势力从未真正控制过黑海及其边界地带，即如今的乌克兰，但无论从科哈诺夫斯基的诗句，还是od morza do morza的句式，以及后世在这个历史基础上，毕苏斯基时期“海间联邦（Intermarum）”的假想，甚至是在波兰之外——在丘吉尔1946年“铁幕演说”中的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”，我们都不难瞥见A mari usque ad mare这个根深蒂固的原型在这些不同历史时期中的影子。</p>
+<p>&emsp;&emsp;虽然严格来讲，波兰在历史上的核心势力从未真正控制过黑海及其边界地带，这块区域大致就是如今的乌克兰。但无论从加拿大的国家格言，科哈诺夫斯基的诗句，还是od morza do morza的句式，以及后世在这个历史基础上，毕苏斯基时期“海间联邦（Intermarum）”的假想，甚至是在波兰之外——在丘吉尔1946年“铁幕演说”中的“从波罗的海的斯德丁到亚得里亚海边的特里雅斯特（From Stettin in the Baltic to Trieste in the Adriatic）”，我们都不难瞥见A mari usque ad mare这个根深蒂固的原型在这些不同历史时空中的影子。</p>
 <h2 id="4-Memento-mori"><a href="#4-Memento-mori" class="headerlink" title="4. Memento mori"></a>4. Memento mori</h2><p>&emsp;&emsp;字面意思是“记住死亡”，其汉译还有“记住你会死亡”、“记住人终有一死”等。</p>
 <p>&emsp;&emsp;这句话的具体起源已不可考。有说法称它起源于古罗马时期的传说：一位将军在凯旋式（Triumph）上作胜利游行时，有一个仆人会跟在将军身后念出这句话，以警醒他人性的局限性，以防止他在胜利之后变得骄傲自大，从而无视法律和习俗，无所顾忌地滥用他的权力。</p>
 <p>&emsp;&emsp;Memento mori的字面意思比较简单，它描述的是人的西方传统中常见的凡间性/必死性（mortality）的概念，即死亡的不可抗拒，生命的易逝与存在的虚无。古人认为身死后有灵，而灵魂是不朽的，这契合了中世纪基督教的观念，即鼓励信徒放弃尘世财富、将思想集中在天堂和来世上的类似的价值观。如圣经中以赛亚书 22:13中：“吃吧喝吧，因为我们明天就要死了。（let us eat and drink; for to morrow we shall die.）”等类似的主题，连海盗常用的“骷髅旗（Jolly Roger，意为快乐的罗杰）”也被认为是一个这样的例子。</p>
@@ -2218,34 +2216,6 @@ table th:nth-of-type(3) {
         <tag>文化</tag>
         <tag>翻译</tag>
         <tag>历史</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>记录一个梦境</title>
-    <url>/2021/10/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%AA%E6%A2%A6%E5%A2%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>据说人在一晚上会做多个梦，而能记起的梦通常是将醒的那一个，所以它应该发生于2021年10月28日6点左右。<a id="more"></a></p>
-</blockquote>
-<p>我预计这个文章会比较杂乱，就和梦境本身一样。</p>
-<h2 id="27日做了什么："><a href="#27日做了什么：" class="headerlink" title="27日做了什么："></a>27日做了什么：</h2><p>我已经想不起来27日的早上和中午都干了啥，但可以确定的是几乎整个白天都泡在互联网上游荡，近些年我似乎变得越来越“Cyber”。在下午玩了玩Discord，看到一个哥们在Diablo服务器群组下的一个空无一人的频道里玩，他似乎已经在那里呆了有几天了，出于好奇我进入频道和他聊了一阵子，是一个33岁的加拿大老哥，老哥贴心地把他的Diablo2重制版的电脑屏幕开了直播投给我看，我们从Diablo这个游戏聊到魔兽、暴雪，童年、文化等，他似乎是一个很好打交道的家伙，虽然我口语很烂，但对方很耐心，又或许刷装备本来就是很无聊的事情，他说他看到了中国限制未成年人周末每天玩一小时网络游戏的新闻，觉得很扯淡，直言这是dictatorship，临走时他还不忘向我炫耀他的台湾女朋友教了他几句中文，可惜我一句也没听懂，在对方再三解释下我终于明白那是一个“啤酒”，然而听上去更像是“必救”。这似乎算是我第一次和一个native speaker交流这么长的时间，并且谈论的东西也比较广泛，我确实是想把英语练好的，Discord似乎是一个不可多得的工具，前提是我得有足够的时间先去享受一些游戏才行，不然连话都没得说。</p>
-<p>晚上在家吃完饭父亲邀请我一同观看了索科洛夫于1998年拍摄的纪录片《对话索尔仁尼琴》，他想了解这个人，而我在大学期间读过不少索尔仁尼琴的书，从他的《古拉格群岛》、《癌症楼》到《牛犊顶橡树》等的一些小短篇，我当时就得知索尔仁尼琴已于2008年去世，享年89岁，也就是说，1998年拍摄这部影像时他已经几乎80岁了，虽然我读过他的书，但我还真没看过关于他的影像作品，我惊讶于一个80岁的老人仍能有敏捷的思维和判断力，而且明显能够看出他的观念不像很多老人那样顽固守旧，他是能够理解新世界的人，简直就像一个年轻人一般。期间和之后的时间里又和父亲聊了很多东西，传统音乐、俄罗斯和东正教、公共教育的落后、三十年战争，再到信息不灭和宇宙模拟论。父亲似乎在这些年变成了一个很好学的人，其实我认为他一贯如此，他确实是个普通人，但我后来才发现那是很不寻常的特点：一种对知识及探索未知的单纯的向往，而并非完全是由生存恐惧导致寻求物质利益的自保行为，抑或是寻求社会地位、名望所驱动的。它如同柴米油盐、刀俎鱼肉间的一股灵光，哪怕人的思想和灵魂里只有那么一点点也好，但从许多平凡的普通的劳动者到自命为知识分子的学术阶层里，我几乎从没见到多少人有过。</p>
-<p>这样晚上剩下的时间也不多了，我在电脑上又看了一遍<br>那个很专业的、由Tod’s Workshop于19年8月主导的“长弓穿甲”测试，以及一个日本漫画家的铅笔作画过程记录，看完几乎已经快凌晨1点了，我决定这一天就这么结束。</p>
-<h2 id="梦境的开始"><a href="#梦境的开始" class="headerlink" title="梦境的开始"></a>梦境的开始</h2><p>人确实是很奇特的生物，睡梦如同是得了精神分裂症一般，当你决定如同关闭一场游戏一般结束一天时，人的另一部分灵魂却又偷偷在一个虚拟世界以更加奇特的形式开始活动，就像一个独裁的官员政客正在向人民许诺自由和幸福，而同时他的一部分又回到了那个只有少数同僚的“烟雾缭绕的小房间（Smoke-filled room）”。几乎可以说梦中的东西都是真实的组合，比如很难在梦中见到陌生人，因为人的大脑难以生成一个完整的的陌生人的面孔的全部信息。所以说最常见的还是亲人熟人，不然只能是面部信息混乱不全的人，或干脆就是“无脸人”。我们经常听说有作家能在梦中构思、写作，音乐家在梦中作曲等，我不怀疑它的真实性，事实上我自己在狂热投入某些活动再加上没睡好的情况下也有着类似的经历。</p>
-<p>它开始于一个繁忙的街道，这是这个小城里的一个商业街，向来都是一个人流量很大的地方，它已经有些老旧了，拥有很多又黑又窄的未知小巷，我很少前去那里，只有父母去逛市场的时候才会带我钻进去。前段时间我还去那里转了一圈，人流量早已没有我小时候记忆中那么多了，可能人们都不爱上街了吧，所以那些当年开食物店摆摊、临街叫卖的，甚至是耍骗术的骗子也都消失不见了（我在那条街见识过好几回杂技型的骗术）。而楼上的超市和室内商场也显得有些衰败：一家在2000年曾经是城里最大的大型商场的运营方据说已经濒临破产，里面的店铺几乎倒闭了一半，在里面走了一圈，只有少数仍然开着的店铺还有那么一两个服务员在，她们仍要以一个较高的音量对顾客展示欢迎语，这个声音在这样一个人流稀少的商场里显得更加冷清。</p>
-<p>而梦境又向我呈现出二十年前的景象，内容似乎映射了一段我当服务员的日子。于是就在某一个人流熙攘、外面摆满了临街小吃店摊位的小巷口里，我在一个明显是由一层仓库改成的廉价服装商铺里工作。像那时很多的服装批发市场一样，这间仓库里在白天几乎不开灯，地上也扔满了包装拆下来的废旧硬纸板，衣架间穿行的服务员和想要试鞋子的顾客时不时互相交流，店里人们的声音都比较大，因为店面离巷口不远，街道上的嘈杂声很容易就能盖过这里的正常音量。我以前只做过餐饮服务员，的确没有当过服装店的服务员，我对自己的“工作”的想象也只能基于自己见到的场景：将一包包衣服从包装箱里拆出来，一件件整理好，再一件件将他们挂到墙上或衣架上去。和如今我能够睡个懒觉相比，当服务员只是看起来轻松，实际却是很累很耗时间的工作。我在梦里的全部时间似乎都要彻底消耗在这些重复体力劳动上了，但梦境并没有给我更多关于这项工作的具体内容，我似乎又变成了一个经理一般的角色，还是那家商铺，只不过我变成了管理者，像我以前的老板那样训斥员工们——他们的衣服叠的实在太乱了。</p>
-<p>我在服装商店老旧的的卷帘门前遇到了熟人，一个中学时代关系还算好的女同学，她似乎并不是某一个特定的我认识的人，而是由多个女孩的元素拼成的，但我很确定的是我在中学时代就喜欢过她，是很老套的情节。但她看起来不像中学时代那么富有魅力了，她标志性的黑色长头发被剪到很短很短，几乎和男生的头发差不多了。我这时应该是扔下了服装店的工作，跑出去和她聊天。她的头发几乎算是我见过的所有女生里发质最好、最密的那个，我问到她长头发为什么剪掉了，她不肯说话，我开玩笑说你的头发也太短了，比我在网上看到的乌克兰女兵都短（其实我想说“你像俄罗斯最凶狠的光头党女混混”，当然这太过分了，不会真这么干的xD）。和她分开后又遇到了熟人同学，他告诉我那个女孩其实把头发卖掉了，卖了500万，这个数字当然很离谱，但我的第一反应居然是嫉妒，就像人听说周围哪个朋友中了百万大奖一样产生嫉妒情绪，并且因为刚刚才嘲笑人家头发短，我不得不接受一位“富婆”很可能已经把我“拉黑”了的事实。醒来后我还很好奇地专门查了一下女生的头发到底能卖多少钱，大概得出结论后我觉得，假设那个现实中的女孩真的就把头发给卖了，卖到上千块钱是绝对没问题的，她的头发太好了，确实少见。而且我还查到了莫文蔚为头发投保1000万人民币，詹妮弗·洛佩兹为屁股投保2700万美元等信息，看来现实远比梦境离谱。</p>
-<p>于是我又得回到那个昏暗的库房里当我的服务员，似乎又不再是经理了，场景也变到了另一个同样拥有很多小商铺的邻近街道上，我找了好几家店却都不是我在的那个，我意识到我似乎并不想回去工作，这并不是因为那500万的铂铑钯铱神奇头发刺激到了我，我在梦中也压根没有工资的概念，单纯是因为我认为服装店服务员的工作实在太无聊、太辛苦，就像一个小学生不愿意进学校的门那样。梦境也随着我的失落变得模糊，也就无法找到后面的记忆了。</p>
-<h2 id="梦境的原像"><a href="#梦境的原像" class="headerlink" title="梦境的原像"></a>梦境的原像</h2><p>回想我真正做餐饮服务员的经历，以及和身边其他做过餐饮服务业的人交流得出的结论，它确实是很累的，比高三都累的多，因为在学校你起码可以选择“不学”，只要保证自己能考进大学门就行了。通过摆烂和不求上进，等到老师或家长眼睁睁看着你这个明晃晃的“业绩”蜕变成一个不仅不会再升值，反而还在慢慢掉价的“垃圾股”的时候，他们脑子里就只有尽快“抛售”，于是自由便降临了。这样即使是面临高考你也能轻松地过下去，事实上我在高中就是这么做的。从这个角度讲，所谓的“摸鱼哲学”、“躺平摆烂”等消极抵抗行为天然有其作用优势，因为业绩教师和鸡娃家长们其实就像是一个个股市投机者，他们凭借自己的能力参赌，却无法随意处置发生的后果，对于手中的“垃圾股”的处理手段十分有限，一旦学生/子女变成了摆烂咸鱼，他们就陷入了套牢散户的处境。这时的主场其实已经变成“股票”了。我着实要感谢高中时的两个不仅不鸡娃，甚至连自己上班上课都在摸鱼的语文老师，他们称得上是世外高人。感谢他们让我用他们所有的语文课，拿一个简易电子设备读完了E. B. Potter的《世界海军史（Sea Power: A Naval History）》、梭罗的《瓦尔登湖》，托尔斯泰的《复活》等对我影响深远的作品，当然也有《最后的莫西干人》、《麦田里的守望者》等经典小说，并在语文课本和练习册上画出我想象中“汉普顿锚地海战”里Monitor号和Merrimack号的正面对决，以及比克卡战役（Battle of Bicocca）中佩斯卡拉侯爵（Fernando d’Ávalos）的西班牙火枪队。我觉得我当时的同桌完全可以证实这些。</p>
-<p>但工作却往往不同，如果老板不愁招不到工人的话，他拥有随时踢出不合格者的权力，这里完全是老板的世界，他可以无视劳动法而把每周的高强度劳动时间提高到令人瞠目结舌的水平，50、60小时已是家常便饭，“高强度劳动”这个词是我自创的，目的是区别于一般的低强度劳动时间，例如学生上课睡觉、公务员闲时玩手机、管理人员带薪出差旅游等等，虽然也都算作一般意义上的劳动时间之内，但其对人精力的消耗明显没有全天加班的码农、一单接一单的外卖小哥或是体力活工人明显。反正韭菜割倒一批又一批，哪怕就是把你当成燃料消耗掉，黑心企业家们连眉头都不会皱一下的。</p>
-<p>如果一个社会的劳动福利够好、法制完善的话，即使丢了工作通常也是吃喝不愁的，也就不会对被解雇怀着那么明显的生存恐惧，这样往往还是有机会把握一些基本权利的，企业家们也不敢那么肆意妄为；但现实让我们看到，许多“社畜”连摆烂的机会都没有，完全就是脖子上上了套一般任人驱使，和封建时代的奴仆没有多少区别。</p>
-<p>很多年前我见过一家餐馆的一个服务员，那家餐馆菜价并不贵，厨师也挺有水平，所以每天人都特别多，当然一到饭点服务员也都忙飞了。其中一个服务员女孩看起来确实比较好看，身材又好个子也不矮，年龄看起来比我大不了几岁，总之是一个很好看的姐姐。要是碰巧是她来给我收拾餐桌的话，我一定会提前把饭菜吃干净（虽然我一直吃的都很干净），尽量减少桌子上的垃圾，好让她收拾起来方便。我时不时观察她，她从头到尾也没有表现出一点笑容，甚至就是在收拾一个脏乱不堪、黏糊糊的啤酒瓶跌的到处都是的大桌的时候也没有露出一点厌恶之情，只是在像执行程序一样不停地端盘擦桌，偶尔用本地方言和别的服务员沟通，她的声音也和普通的本地女孩一样没什么特别的，可能是因为成长环境或是长期劳动的原因，她的皮肤不像那些不用从事体力劳动的女性那样柔顺，衣服上也总是沾着好些油渍。类似的还有我在工厂里见到的一个年轻工人，他的年纪明显比别的工人小得多，和我差不多。那里的工人平均估计都在四五十岁了，长期的重体力劳动再加上年龄的因素，再换上一身脏兮兮的工作服，如果他们就这样走在街上，你是一定不愿意靠近的。而那个年轻工人的长相和皮肤确实比一般的年轻人都好得多，戴着一副金属边框的眼镜，文质彬彬的。而当工人下班后脱下工作服，我才发现他们一下子好看了许多，平常让人觉得最不想接近的老工人都变得像是一个可爱的邻家大叔一般，而我有幸在这时又见到了那个年轻工人，说实话有点“惊为天人”，他给人的感觉就是普朗克年轻时那个照片的翻版，要不是在工厂里，你一定会想到在哪个大学的数学/物理系的楼道里，那个手里抱着书，学习最好、教授最喜欢的优秀学生。这样的学生要是往图书馆一坐，该是要吸引多少女孩的目光了；同样的，那个餐厅里见到的姐姐要是坐在教室里上课，也一定会成为大家追捧的对象。</p>
-<p>我的审美似乎对人的外形有着一种执着的追求，有人可能会说我颜控了，而我个人却认为这是一种很自然、甚至可以说很古典的审美感，就和今天的人同样欣赏《米洛斯的阿芙洛蒂特》、《大卫》等作品一样，这种美不是吹出来的，而是实打实存在着的感觉。然而我和这些人的确没有什么交集，我不知道他们的名字，连一句话也没有说过，更让人觉得残酷的现实是：漂亮姐姐在餐馆做了起码三年以上的工，之后便不知去向了，她大概率还留在这个城市，我想她可能已经嫁给了某个男人，又或是换了一份服务工作；而那个年轻人，在我离开工厂的时候，那天早上领导刚训完话，我看到他仍在这个厂里最累最热、环境最差的岗位上——那是一个连车间里一个干了二十年农活的农村大爷都不愿意碰的苦差。他面无表情、慢慢地推着一个运载车朝车间的另一端走去。他很可能没有上过大学，我不知道他是什么时候、从哪里来这个工厂的，也不清楚现在他还在不在那。上帝啊，我真希望他赶快离开那个反人类的工作岗位，让那些领导们自个上；对于那个曾在餐馆里工作的姐姐，我也只能祝愿她生活幸福、工作顺利，少遇那些烂人破事。</p>
-<h2 id="现实的指引"><a href="#现实的指引" class="headerlink" title="现实的指引"></a>现实的指引</h2><p>梦境有它真实的一面，而我们的生活还有多少真实的东西呢，我们现在可真算是谎言遍地了：媒体不说真话、官员不说真话、就连一个个普通人也因为害怕说真话而给自己带来麻烦选择沉默：老师家长不说真话，领导员工不说真话，甚至有些夫妻之间都不肯掏心掏肺了，年轻人也一个个学会了尔虞我诈之本事，也难怪汉娜·阿伦特（Hannah Arendt）认为现代极权主义建立在谎言之上。这往往和很多人想的不一样，这架庞大的机器的运作核心并非是暴力，暴力只是一个成效低下、早已过时的、且在捉襟见肘时才被统治者们使用的下策，而这一代人所面对力量的却更为可怕：古老的奴隶主们在高科技手段和现代经济理论所加持下，用两百年以上的社会实践经验以及两次世界大战的所有残酷流血共同锻造了一副前所未有的武器装甲，其名为谎言与蒙昧。今年的离谱之事真可谓是铺天盖地，如7月的河南水灾，7月20日当晚我就看到了郑州地铁里传出的信息，从后续的结果看，河南那次的死伤人数绝对是一个不小的数字，我当时每天都在关注这个新闻，但官媒在那几天的时间里几乎天天报平安。最离谱的要属被全淹的京广北路隧道，可以说是这次事件最神秘的地方，这条全长1.8公里、挤满了车辆的隧道被彻底淹没，仅拖出来的泡水车就有上千辆之多，隧道随后被军管。而官方26日的通报显示隧道只有6人死亡。再加上更加传不出消息的郑州周边被淹没的广大农村地区，真相至今成谜。我想，任何一个有良心且不是傻子的人都不得不承认，我们的官方媒体已经彻底失去作用，这是一个危险的信号，你再也无法得知那些人的脑子里到底在盘算些什么了，“闷声发大财”这套已被他们玩到炉火纯青，而这种建立在谎言之上的阴谋与权术，却为街头巷尾在暗地里所推崇，被世人冠以“能人”之名号——人人皆以当镰刀为荣，对真理和智慧的信仰早已毁灭，自由之神不再眷顾我们——或许也根本不曾存在过。似乎这就是索尔仁尼琴言晚年所描述的——“21世纪的真面目”，一个世界问题，但对我们来说尤为严重。</p>
-<p>所以我经常对周围的人强调，我们被逼无奈可以考虑躺平摆烂，但躺平摆烂的要义是人要有一个强大的灵魂，要相信自己的判断，而不是镰刀们的贬损和诋毁。相信狼们镰刀们和你一样都是一个脑袋四条腿，无论是探索未知的悟性和效率，又或是战斗的意志与技巧，都不见得比你高明到哪里去。实在不行的话，只是活下去便是，不仅要健康地活着，而且是带着精神和思想健康地活着，思想和灵魂的成毁要远比物质的得失重要得多，将火种传给更多的年轻人，真理和智慧终将破除一切谎言与蒙昧，成功不必在我。</p>
-<p>以斯诺登（Edward Snowden）的一句话作为结尾吧，8月份斯诺登本人关注到了中国目前年轻人的状态，他写下了这么一句话，甚至同时使用了中英双语：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">“系统的目的不是帮助你，而是控制你。 无论您感到多么孤立，请永远不要忘记您并不孤单：对新兴世代的剥削是一场全球斗争。”(对不起，我可怜的中文。'-.-)。</span><br><span class="line"></span><br><span class="line">"The system was not designed to <span class="keyword">help</span> you, but <span class="keyword">to</span> control you. <span class="keyword">No</span> matter how isolated you feel, <span class="keyword">never</span> forget that you <span class="keyword">are</span> <span class="keyword">not</span> alone: the exploitation <span class="keyword">of</span> rising generations <span class="keyword">is</span> a <span class="keyword">global</span> issue.<span class="string">"</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
