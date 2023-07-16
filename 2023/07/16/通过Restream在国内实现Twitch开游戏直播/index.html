@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>✛VDERE⟡INVISI✛</title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="⋄ Videre Invisibilia ⋄" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-通过Restream在国内实现Twitch开游戏直播"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  通过Restream在国内实现Twitch游戏直播
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/" class="article-date">
+  <time datetime="2023-07-16T02:29:31.000Z" itemprop="datePublished">2023-07-16</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">4.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">14 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>在国内通过Restream的转发服务，以及推流软件OBS Studio，实现国在外直播平台开直播的一种方法。 <a id="more"></a></p>
+</blockquote>
+<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>&emsp;&emsp;虽然本文主要是讨论技术方面的问题，但我还是想借机先分析一下国外主流直播平台和国内主流游戏直播平台在游戏直播上的优缺点。本文主要讨论游戏直播方面的内容，如无特殊说明，不包含其他方面的直播内容。</p>
+<p>&emsp;&emsp;在游戏直播方面，国内直播平台（如虎牙、斗鱼、B站等）最大的劣势在于受到的限制太多，变数也非常大。首先就存在很多不能直播的游戏，如GTA系列、生化危机系列、黎明杀机等，虽然像什么GTA、钢4等游戏被封掉的理由比较显而易见，但其他一些游戏就只能用莫名其妙来形容。比如《黑暗之魂》，作为一个2016年的游戏，刚发售的时候还是能播的，直到2018年发布了一批名单后，给一大批游戏主播们打了个措手不及，黑魂也在各大平台陆续不能播了。但这件事最令人费解的却是，为何同厂家、同属“魂系列”的《血源诅咒》却一直可以播？去年大火的《艾尔登法环》和黑魂在游戏题材、内容上可以说几乎是相差无几，故游戏刚发售时就有人预测《艾尔登法环》的直播将会很快被封禁，不过意想不到的是，《艾尔登法环》直到今天亦可以在各大平台进行直播。其次的话，就是审查元素的泛滥导致很多游戏的直播受到影响（无论是有意还是无意），严重的甚至导致主播账号被封，典型例子就是今年1月的“鹅鸭杀”事件，很多主播被“炸房”。不得不说，这些种种变数确实让人难以预料。</p>
+<p>&emsp;&emsp;再者，因受限于政策原因，国内直播平台要想进行直播必须通过实名认证，主流平台经常还必须上传身份证、照片、刷脸等等内容。而这些实名认证信息一旦上传后都是无法解除的，并且通常情况下，通过实名认证的账号会更加难以被注销掉（国内平台账号难注销是个普遍问题，通常平台都会通过变相手段不给注销）。这给个人信息安全也造成了问题。</p>
+<p>&emsp;&emsp;国内直播平台的好处在于门槛较低，受众面广，容易积累人气，收益提现等等功能也方便不少。而且就游戏直播来说，国内直播平台因为对版权管理不严格，通常不会涉及到版权相关的审查问题。通俗点说，就是使用版权音乐，直播盗版游戏，甚至是直播游戏私服都不太会有人管。某一些小众平台甚至连主播开作弊外挂都不管的，这样的局面也给一些商人造就了可乘之机。</p>
+<p>&emsp;&emsp;然后再说国外的直播平台。这里以Twitch、Youtube等美国直播平台为例。相比于国内的直播平台，没有上述列举的对游戏的种种限制可以说是最大的优势。劣势在于，国外服务器的连接门槛较多，推流通常都不如国内平台那样稳定，并且国外的这些平台一直对版权问题抓得比较严，像上面说的那些内容在Twitch或Youtube上都是违反了用户协议的。最后是在这些平台上和观众互动的话，英语交流能力也是不可或缺的。</p>
+<p>&emsp;&emsp;总的来说，如果是国内的主播想做职业主播的话，在国内平台进行直播是更为靠谱的。笔者并不打算做职业主播，只是对新功能感兴趣，这里就介绍一下如何实现这个功能。</p>
+<h4 id="1-Twitch平台注册"><a href="#1-Twitch平台注册" class="headerlink" title="1. Twitch平台注册"></a>1. Twitch平台注册</h4><p>&emsp;&emsp;Twitch是美国亚马逊旗下的一个直播平台，主要提供电子游戏实况、电子竞技比赛等的直播内容，网址为：<a href="https://www.twitch.tv/" target="_blank" rel="noopener">https://www.twitch.tv/</a> 。登陆这个网站需要一个魔法。我们首先从右上角注册一个Twitch账号，注意在电话号码验证这一步选择“使用电子邮件”。推荐微软Outlook邮箱。能够登录进Twitch并看到自己的频道，且能进入“创作者仪表板”界面就算成功。</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/0.png" title="a">
+
+<h4 id="2-Restream注册和配置"><a href="#2-Restream注册和配置" class="headerlink" title="2. Restream注册和配置"></a>2. Restream注册和配置</h4><p>&emsp;&emsp;Restream是一个流媒体推流服务网站，网址是：<a href="https://app.restream.io/" target="_blank" rel="noopener">https://app.restream.io/</a> 。它的主要功能是可以把单个用户的直播推流同时推到多个直播平台去，实现一对多的散布宣传。我们这里只需要利用它的转发服务，将本地的直播推流“转推”到Twitch平台上。我们先不开启任何代理工具，直接在cmd里ping一下这个网址，在目前这个时间点上，我的测试结果是可以正常裸连的：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/1.png" title="b">
+
+<p>&emsp;&emsp;然后我们登入app.restream.io的页面，如果网站的响应速度并不是太慢（大约在5秒之内能够进入网页页面），就证明我们在裸连的情况下是能够正常使用Restream的。</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/2.png" title="c">
+
+<p>&emsp;&emsp;接下来在登陆页面上点击Sign Up注册一个新的账号，需要提供一个邮箱地址，这里还是使用Outlook邮箱。这一步应该必须使用一个魔法，因为该网站注册或登录时涉及到ReCaptcha的自动验证，而ReCaptcha的服务涉及到其他不能够直连的地址。如果遇到过不了ReCaptcha（显示Recaptcha didn’t load等）的问题，则开启魔法即可解决。进入Home主页面后，点击Connect to OBS, Zoom…这个按钮块：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/3.png" title="d">
+
+<p>&emsp;&emsp;在右边点击Add Channel，添加一个Twitch频道进去：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/4.png" title="e">
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/5.png" title="f">
+
+<p>&emsp;&emsp;这时因为我们已经在此计算机上登陆过Twitch的账号，通常会自动弹出一个Oauth的授权界面请求Twitch的授权，我们当然要给与这个授权。频道添加成功后我们就能在Add Channel下看到自己的Twitch频道的ID和头像。Restream的免费用户只能同时添加2个频道，不过我们目前还用不着更多的。</p>
+<p>&emsp;&emsp;接下来还是在这个面板上点Stream Settings（红圈位置），弹出的面板中，Restream Server建议选择香港位置，这样生成的服务器URL就是rtmp://hongkong.restream.io/live 。然后Reset一下Stream Key，即推流密钥，然后把新生成的Key复制保存下来。</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/6.png" title="g">
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/7.png" title="h">
+
+<p>&emsp;&emsp;有人可能会问，我直接把Twitch的流密钥输入直播软件，全程走一个强力魔法进行直播，难道不行么？实测这样的操作确实可能是可以的，但坏处在于，直播通常是一个持续性过程，所需的流量不是一星半点，魔法的流量通常也是收费的。而且魔法商家通常都对流媒体服务或多或少做了一些限制，稳定程度肯定不如正常渠道。所以这就是为什么我一开始要ping Restream看看是否能够直连Restream，能直连的当然要舒服得多。其他的方法比如国内常见的加速器等工具也都不太行，例如网易UU这种，如果用网易UU加速“魔兽世界”或者“暗黑破坏神IV”的话，你会发现Twitch平台居然也被同时加速了，此时可以正常观看Twitch上的直播内容，但聊天功能、涉及到账号与创作者设置等的功能都遭到了封锁，这可能是加速器厂商为国内那些电竞比赛服务商、直播转播服务用户等提供的渠道，总的来说，在开直播这块还是很废物的。</p>
+<h4 id="3-OBS配置"><a href="#3-OBS配置" class="headerlink" title="3. OBS配置"></a>3. OBS配置</h4><p>&emsp;&emsp;OBS Studio是一款强大实用的直播推流软件，关键是这个软件还是开源免费的，可以说在无论国内外的任何一个直播平台上都可以看到大量使用这个软件进行直播的主播。我也是强烈推荐这个软件，很容易上手。我们可以在OBS Studio官网下载这个软件并安装：<a href="https://obsproject.com/" target="_blank" rel="noopener">https://obsproject.com/</a></p>
+<p>&emsp;&emsp;我们在OBS的设置界面里的“流”中将服务选为“自定义”。注意到这里有一个Twitch选项，本来是可以直接对接Twitch平台的，因为我们不能直接对接Twitch，所以得走Restream。这里填入之前在Restream生成的服务器URL和Key。“设置”中的选项其实就可以就按图上进行配置。编码器我们选择软件编码x264，x264其实是靠CPU的编码，效果一般比较稳定，而硬件解码NVENC则是英伟达显卡的专用编码，吃GPU。考虑到游戏过程一般已经对GPU造成了很高的负载，所以我们一般都选择x264，效果一般比较稳定，如果你的显卡非常强大，或者运行的游戏非常吃CPU，也可以考虑使用NVENC硬件编码。不过，这里最重要的是得解释下“比特率”这个重要项目：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/8.png" title="i">
+
+<h5 id="开直播到底需要多少码率？"><a href="#开直播到底需要多少码率？" class="headerlink" title="开直播到底需要多少码率？"></a>开直播到底需要多少码率？</h5><p>&emsp;&emsp;<strong>这个“比特率”是直播中非常关键的参数，也就是主播们口中通常说的“码率”，即每秒钟上传推流的内容大小。码率的高低决定性限制了你直播物理质量的好坏（如画质、音质、帧率等等）</strong>。码率的单位一般是kbps，即千比特/秒。如有时候会听到主播说开到一万码率，即码率为10000 Kbps，这等于10 Mbps，说明上传速度为10 MB/s，这需要相当好的网络条件。所以码率当然是越高越好，但受条件限制，码率上限理论上直接取决于你的上传速度或网络带宽，以及你要推流直播的物理质量。根据国内直播平台的一般经验，我们将直播推荐码率值和推流物理参数的关系总结如下（该表只是推荐的理论值）：</p>
+<blockquote>
+<p>4K/2160p 60fps（分辨率：3840x2160）。码率范围：20000-51000 Kbps<br>4k/2160p 30fps（分辨率：3840x2160）。码率范围：13000-34000 Kbps<br>1440p 60fps（分辨率：2560x1440）。码率范围：9000-18000 Kbps<br>1440p 30fps（分辨率：2560x1440）。码率范围：6000-13000 Kbps<br>1080p 60fps（分辨率：1920x1080）。码率范围：4500-9000 Kbps<br>1080p 30fps（分辨率：1920x1080）。码率范围：3000-6000 Kbps<br>720p 60fps（分辨率：1280x720）。码率范围：2250-6000 Kbps<br>720p（分辨率：1280x720）。码率范围：1500-4000 Kbps<br>480p（分辨率：854x480）。码率范围：500-2000 Kbps</p>
+</blockquote>
+<p>&emsp;&emsp;而直播时真正需要考虑的问题在于，我们所说的直播服务的“码率”、和单纯观看网络上静态视频的“码率”，虽然在物理参数上可以等同，但在的概念上其实是有显著差异的，因为虽然理论上码率越高直播物理质量就越好，<strong>但直播还需要考虑到观众的观看效果</strong>。以下的例子可以显示出它们的区别：如在直播过程中，画面质量的抖动、一两帧甚至数帧画面的丢失，往往可能对直播流程的进行影响不大；而在静态视频中，这些情况可能都会成为难以妥协的缺陷。另外，超高的码率虽然能够运载极好的直播物理效果，但观众的下载速度却不一定能跟得上推流的速度，因为推流是实时进行的，这会对网速不佳的观众造成极其严重的卡顿，这个情况通常是难以妥协的。而在静态视频中则不同，理论上只要观众有足够多的加载时间，特别高的码率也不会对观看效果造成致命性影响。</p>
+<p>&emsp;&emsp;所以我们可以看到，即使是在国内平台，主播们的“码率”通常都不会开到特别高，一般来说6000 Kbps的码率已经非常足够了。且在目前这个时间点上，一般来说1920x1080分辨率、30帧的效果，基本就能够获得一个最基础的直播观感。考虑到我们的推流也并非是国内平台，网络条件受到更多的限制，故我们这里将直播码率设置为3000 Kbps、分辨率1920x1080、帧率为30fps。经测试，这个配置能够稳定实现推流，如果网络条件好的话，可以考虑将码率适当提高，但在这个框架下不建议超过5000 Kbps。</p>
+<h5 id="用Restream-Chat配置聊天框"><a href="#用Restream-Chat配置聊天框" class="headerlink" title="用Restream Chat配置聊天框"></a>用Restream Chat配置聊天框</h5><p>&emsp;&emsp;如果需要和观众进行互动的话，一个实时的聊天框是必不可少的。这里我们用Restream的另一个工具Restream Chat实现这个功能，下载地址为：<a href="https://restream.io/chat" target="_blank" rel="noopener">https://restream.io/chat</a> 。安装后我们在这个软件中登录之前注册的Restream账号（可能需要魔法），它会自动连接到Restream和Twitch，并且自带了一个聊天框，用它就可以实现聊天室实时聊天，可以从Settings中的Appaerance中设置这个聊天框的字体大小和风格等参数。如果我们想把这个聊天框添加到OBS作为一个内容块的话，需要打开Restream Chat的设置，找到Embed in Stream，复制下Embed in Chat的地址：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/9.png" title="j">
+
+<p>&emsp;&emsp;然后在OBS的来源里新建一个“浏览器”内容，将URL部分填入刚才Embed in Chat中的地址,其他涉及文字大小、位置等的参数可以依据偏好调整：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/10.png" title="k">
+
+<h4 id="4-开播"><a href="#4-开播" class="headerlink" title="4. 开播~"></a>4. 开播~</h4><p>&emsp;&emsp;OBS简单易用，有关它的教程也很多，故布局、细节操作等内容不再展开。一切都准备妥当后，我们就可以点击OBS右边的“开始推流”按钮开播。开播后，需要注意右下角的方框是不是绿色的，数据流量是否和你设置的码率相近（没有数量级上的差异），有无较高的丢帧现象。一般来说如果方框是绿色的则处于正常推流状态。也可以打开任务管理器看一下网络上传速度，如果比码率略高就是正确的。此时在Restream Chat中打字，可以看到配置好的直播间将会显示出展示给观众的对应文字，如下图所示：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/11.png" title="l">
+
+<p>&emsp;&emsp;最后，还需要在Twitch的“创作者仪表板&gt;设置&gt;直播”中配置几个关键的配置点：</p>
+<img src="/2023/07/16/通过Restream在国内实现Twitch开游戏直播/12.png" title="m">
+
+<ol>
+<li><p>低延迟选项建议开启，本来延迟就非常高，实测开启后仍有10秒左右的延迟；</p>
+</li>
+<li><p>版权音频警告建议关闭，等于用户声明自己承担责任；</p>
+</li>
+<li><p>存储过往直播强烈建议开启，这个选项默认是关闭的，开启后Twitch会自动对你的直播进行录像记录，然后你可以在“创作者仪表板&gt;内容&gt;视频创作室”看到自己的直播记录，并可以选择下载其中的内容，或是发布其中的内容到Twitch上。这对于游戏实况直播来说可以说是必不可少的功能。缺憾就是免费用户只能保存14天以内的记录，想要提高则需要升级账户，或是将直播记录发布为精选或剪辑。故更多人的选择是，直接从Twitch上下载到自己的直播录像，然后全丢到Youtube去就完事了xD</p>
+</li>
+<li><p>始终发布视频点播，这个选项在开启了3之后是默认开启的，即每次直播后的录像都会被自动发布，这里建议关闭，这样可以手动决定发布的内容。</p>
+</li>
+</ol>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章著作权归作者所有，禁止任何形式的转载。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/攻略/">攻略</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件/">软件</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/03/08/暴雪战网美区注册避税指南/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">暴雪战网美区注册避税指南</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2023
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="⋄ Videre Invisibilia ⋄"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="250" height="52"
+        src="//music.163.com/outchain/player?type=2&id=29572578&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 40px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>
