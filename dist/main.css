@@ -729,7 +729,7 @@ button {
         font-size: 5.8rem;
         font-weight: normal;
         letter-spacing: 3px;
-        margin: 0;
+        margin-bottom: 30px;
         opacity: .95
     }
 
