@@ -50,7 +50,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-博客建好了"
+  id="post-解决SSH报错ssh-connect-to-host-github-com-port-22-Connection-timed-out"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -61,7 +61,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  博客建好了~
+  解决SSH报错ssh: connect to host github.com port 22: Connection timed out
 </h1>
  
 
@@ -69,15 +69,15 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2019/09/01/博客建好了/" class="article-date">
-  <time datetime="2019-09-01T07:46:08.000Z" itemprop="datePublished">2019-09-01</time>
+      <a href="/2024/01/31/解决SSH报错ssh-connect-to-host-github-com-port-22-Connection-timed-out/" class="article-date">
+  <time datetime="2024-01-31T06:27:11.000Z" itemprop="datePublished">2024-01-31</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2k</span>
+            <span class="post-count">419</span>
         </span>
     </span>
 
@@ -86,15 +86,13 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">6 分钟</span>
+            <span class="post-count">1 分钟</span>
         </span>
     </span>
 </div>
  
     </div>
       
-    <div class="tocbot"></div>
-
 
 
 
@@ -102,21 +100,23 @@
     <div class="article-entry" itemprop="articleBody">
        
   <blockquote>
-<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
+<p>将SSH端口换到443，解决Git-deploy时22端口的报错timed out(或refused)的情况<a id="more"></a></p>
 </blockquote>
-<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
-<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
-<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
-<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
-<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
-<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
-<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
-<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
-<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
-<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
-<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
-<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
-<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写了，岂不是大大的丢人。</p>
+<p>不出意外这个SSH密钥在我几个月没用Github之后又出意外了。最近hexo deploy的时候发现报错，不过和之前那次需要输账号密码的情况不一样，而是提示端口错误：</p>
+<img src="/2024/01/31/解决SSH报错ssh-connect-to-host-github-com-port-22-Connection-timed-out/1.png" title="a">
+
+<p>和之前一样，同样第一反应是没魔法或者网络环境导致的，但是怎么换环境都一样timed out，Ping过了Github的服务器也检查了账号的SSH，服务端肯定是没问题了，防火墙也没开。然后看了一下之前写的东西，发现端口号不对劲，以前用的似乎是443端口，怎么现在又变成22了。于是搜索后发现SSH默认端口就是22,那么肯定就是这个22端口因为其他原因走不通导致的。测试ssh状态发现：</p>
+<img src="/2024/01/31/解决SSH报错ssh-connect-to-host-github-com-port-22-Connection-timed-out/2.png" title="b">
+
+<p>于是考虑将其再换回443端口：</p>
+<p>首先来到ssh的本地路径下，为<code>C:\Users\你的用户名\.ssh</code>，在.ssh的文件夹中创建一个名为Config的文本文档，内容为：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">  Hostname ssh.github.com</span><br><span class="line"> <span class="built_in"> Port </span>443</span><br></pre></td></tr></table></figure>
+
+<p>保存后，cmd中运行（Git Bash也可以）测试ssh状态:<br><code>$ ssh -T git@github.com          //注意这里的邮箱地址就是git@github.com</code></p>
+<img src="/2024/01/31/解决SSH报错ssh-connect-to-host-github-com-port-22-Connection-timed-out/3.png" title="c">
+
+<p>这个20.205.243.160的地址应为当前国内解析出的Github的服务器地址，位于新加坡。此时会有一行连接确认信息，直接输入yes，会看到：Hi &lt;你的用户名&gt;! You’ve successfully authenticated, but GitHub does not provide shell access.连接成功。</p>
+<p>然后再deploy的时候就没有任何问题了。</p>
  
       <!-- reward -->
       
@@ -139,21 +139,19 @@
     
     <footer class="article-footer">
        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/服务器/">服务器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件/">软件</a></li></ul>
+
     </footer>
   </div>
 
    
   <nav class="article-nav">
     
-      <a href="/2019/09/07/做一个普鲁斯特问卷/" class="article-nav-link">
-        <strong class="article-nav-caption">PrevText</strong>
-        <div class="article-nav-title">
-          
-            做一个普鲁斯特问卷
-          
-        </div>
-      </a>
     
+      <a href="/2024/01/31/绘画（1）/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">绘画（1）</div>
+      </a>
     
   </nav>
 

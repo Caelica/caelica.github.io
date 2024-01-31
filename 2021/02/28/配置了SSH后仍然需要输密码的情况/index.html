@@ -77,7 +77,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">950</span>
+            <span class="post-count">913</span>
         </span>
     </span>
 
@@ -100,18 +100,18 @@
     <div class="article-entry" itemprop="articleBody">
        
   <blockquote>
-<p>以及可能连带出现的Error: Spawn failed以及fatal: unable to access等一系列问题<a id="more"></a></p>
+<p>以及可能连带出现的fatal: unable to access等问题<a id="more"></a></p>
 </blockquote>
 <p>今天尝试hexo d失败（本地预览成功），报错为fatal: unable to access ‘https://<span><span>github.com/…，如下图所示。</span></span></p>
 <img src="/2021/02/28/配置了SSH后仍然需要输密码的情况/a.png" title="a">
-<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者网络波动导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。并且发现下面还有一个奇怪的错误，显示Error: Spawn failed，看不懂这个到底是什么问题。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
+<p>一开始看到Fatal to connect to github.com port 443: Time out以为是没用魔法或者防火墙屏蔽了端口之类的原因导致的，于是更换网络环境之后，此行报错消失，但仍旧无法deploy成功，并且还跳出一个“Open SSH”的对话框要求输入Github的用户名及密码，似乎SSH失效。不过我上次也遇到输密码的情况，但是输入密码之后deploy成功，就一直没管这个事，结果今天直接不能deploy了。</p>
 <p>先是按照Error: Spawn failed的条目在上网搜了一下，发现了<a href="https://blog.csdn.net/HTL2018/article/details/106876940" target="_blank" rel="noopener">https://blog.csdn.net/HTL2018/article/details/106876940</a> 中的方法即：</p>
 <ol>
 <li>删除<code>.deploy_git</code>文件夹;</li>
 <li>输入<code>git config --global core.autocrlf false</code></li>
 <li>然后，依次执行：<br><code>hexo clean</code><br><code>hexo g</code><br><code>hexo d</code></li>
 </ol>
-<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，同时含有Error: Spawn failed，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
+<p>该方法的确能够让hexo d成功，虽然最后还是要输一遍密码，但是经再次尝试，hexo d中故意输错一次github密码，出现fatal: Authentication failed for…的报错，再次尝试hexo d则回到图中的状态。更有文章指出，该方法似乎仅为一次性作用，可见该方法并不能够彻底解决该问题。因为每次都要输入烦人的密码，于是怀疑是SSH哪里出了问题。</p>
 <p>尝试重新部署SSH。重新给生成了一遍SSH并再次向Github的仓库添加了新的SSH，结果并没有太大改变，还是需要输密码，输入对的密码之后的确是可以上传成功，但是但凡输错一次密码之后，hexo clean、hexo g、hexo d之后便进入nothing to commit, working tree clean的状态，等待十几秒后又回到图中的情况，连输密码的框都不跳了。</p>
 <p>查找了有关SSH的问题后发现，hexo的配置文件 _config.yml中，deploy属性一栏，需要把https协议修改为为ssh协议，即从：</p>
 <figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># Deployment</span></span><br><span class="line"><span class="meta">## Docs: https:<span class="comment">//hexo.io/docs/deployment.html</span></span></span><br><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/yonghuming/yonghuming.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> master`</span><br></pre></td></tr></table></figure>
@@ -146,7 +146,7 @@
     
     <footer class="article-footer">
        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件/">软件</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/服务器/">服务器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件/">软件</a></li></ul>
 
     </footer>
   </div>
