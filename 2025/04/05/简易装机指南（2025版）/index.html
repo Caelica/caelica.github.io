@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>✛VDERE⟡INVISI✛</title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="⋄ Videre Invisibilia ⋄" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-简易装机指南（2025版）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  简易装机指南（2025版）
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2025/04/05/简易装机指南（2025版）/" class="article-date">
+  <time datetime="2025-04-05T09:22:11.000Z" itemprop="datePublished">2025-04-05</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">13 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>前段时间装了几个电脑，简单总结一下2025年装机的基本操作。<a id="more"></a></p>
+</blockquote>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>&emsp;&emsp;首先我们需要一些工具。一把5mm或6mm直径的大十字螺丝刀，这是我们装机的主力工具，绝大多数机箱螺丝都是用它安装，这把螺丝刀长度不能过短；一把3mm的小十字螺丝刀，可能会被用来安装M.2固态硬盘、SATA设备或其他用途，如果没有这些设备可以不要；一包扎带（至少100个，且其颜色和机箱主色调不冲突），主要用来固定走线；一把尖头的剪刀，主要用来剪扎带；一卷电工胶带，用来加固风扇的RGB串联线。</p>
+<p>&emsp;&emsp;选配件。这里我们不着重讨论性能问题，重点放在各配件之间在机械上是否能够正常装配，比如显卡长度，主板大小，电源大小，以及主机箱尺寸是否足够大以容纳这样的显卡或主板等。选购顺序建议如下（以下不列出包括显示器在内的外设）：</p>
+<ul>
+<li>CPU→主板→独立显卡→内存条（一般是2根）→M.2固态硬盘→机箱→散热器（风冷或水冷二选一）→电源→风扇若干。</li>
+</ul>
+<p>打开某东某宝或者某多，下单所需的配件。这里需要注意以下几点：</p>
+<ul>
+<li>如果你不打算购买独立显卡，那么必须确定选购的CPU有核心显卡功能，否则无法正常工作。</li>
+<li>购买风扇需要提前了解我们选购的这个机箱的风道，以及机箱本身是否自带风扇，从而购买对应数目的正反叶风扇。一般来说都会遵循“前进后出，底进上出”的原则。如何分辨正反叶风扇？我们一般将风扇【没有】加强筋结构和铭牌信息的那一面称为正面，观察风扇的叶片，叶片上尖锐的那个角如果更靠近正面，那么就是正叶风扇；反之，是反叶风扇。如果购买的是水冷冷排，一般会附带有冷排位置的风扇。</li>
+<li>关于风冷和水冷散热器的选择。我个人建议以整机配置为准：高端配置都建议用水冷，而且是质量好的水冷，水冷的极限散热能力是高过风冷的；中端配置风冷水冷均可，水冷更安静，风冷耐用、更便宜、安装也更方便；低端配置无脑选风冷，安全可靠性价比高，还能卖二手。如果选择的是“海景房”机箱，不建议选择风冷散热器，个人认为很难看。</li>
+</ul>
+<p>&emsp;&emsp;把配件运回家（注意，机箱可能会非常重！）。等配件到齐后就可以开始装配。如果你的主板、CPU以及显卡这些高价值配件不是从官方渠道或官方授权的线上商店购买的，拆盒子之前最好录一个拆箱视频；从官方渠道购买的也建议录上，胆子大的可以不录（比如说我）。</p>
+<h2 id="开始装机"><a href="#开始装机" class="headerlink" title="开始装机"></a>开始装机</h2><h3 id="1-拆箱"><a href="#1-拆箱" class="headerlink" title="1. 拆箱"></a>1. 拆箱</h3><p>&emsp;&emsp;打开机箱盒子，我们打开主板、机箱、电源、散热器这4个配件的包装盒后，务必将其说明书都摆在一个方便查看的位置上。按照说明书将机箱上能拆卸的部件（包括侧面、顶面或正面的挡板、风扇或冷排架、防尘网等等）全部拆下，将玻璃部件（如果有）放置在一个远离安装区域的安全的位置；取出机箱附带的螺钉盒，一般放在电源位置或机械硬盘仓附近。</p>
+<p>&emsp;&emsp;双手摸一摸金属水管、水龙头，不锈钢防盗窗或者大铁门也可以，以去除静电；安装时不要穿毛衣或其他容易起静电的衣服，不建议戴手套。打开主板盒子，把主板放在主板盒子上。</p>
+<h3 id="2-安装主板"><a href="#2-安装主板" class="headerlink" title="2. 安装主板"></a>2. 安装主板</h3><p>&emsp;&emsp;严格按照主板说明书的指示依次安装CPU、内存条、固态硬盘。需要特别注意内存条的安装位置，一般双通道内存（2根）优先插在第2和第4槽位。M.2固态硬盘有多种样式，安装到对应的M.2槽位上，不论是有1根还是多根M2固态，把将要作为系统盘的那个固态装在最靠近CPU的那个槽位上。如果主板有散热片，最后需要撕掉散热硅胶的保护膜，让散热片直接接触固态硬盘。</p>
+<p>&emsp;&emsp;把主板装进机箱里，按照机箱说明书，取出对应的螺丝将主板安装好。注意，某些螺丝孔可能藏在M.2硬盘位置的散热片之下。拧螺丝力道不能过大，否则有可能将主板电路板拧坏。</p>
+<h3 id="3-散热器和风扇"><a href="#3-散热器和风扇" class="headerlink" title="3. 散热器和风扇"></a>3. 散热器和风扇</h3><p>&emsp;&emsp;安装机箱后部单个风扇。这个风扇一般都是正叶风扇，安装时，将风扇正面尽可能朝向电脑正常使用时的用户的视线。这意味着这个风扇一般正面向里（从机箱侧面观察到的是正面）。风扇一般都具有两根线：控制线以及RGB线（灯光线），控制线一般插在主板的SYS_FAN_x上，而RGB线一般插在JARGB_V2_x上（即5V3针的RGB插口）。风扇之间的同类型线可以串联，建议把同一组（如顶部的2个或3个风扇）风扇的同类型线串联在一起，如RGB线串接RGB线、控制线串接控制线，然后只把最后那个端头再接到主板上就行。这些线相互串接的位置都不是很结实，控制线的对接处建议用扎带加固；RGB线对接位置建议用电工胶带加固。一般情况下，一个SYS_FAN接口最多串接3把风扇，超过这个数目可能导致接口过载；一个JARGB_V2接口上建议最多串接不超过10个5V的RGB灯，真实情况需要看主板和灯光的具体参数。我个人觉得机箱走线是有些讲究的，这里受制于文字限制，难以描述走线的细节，最好参考一些视频以获得直观认识。不过从我的经验看，除非你东西真的非常非常多，否则都不建议使用集线器，很难接，风扇线不够长的话就去再买一两根延长线。</p>
+<p>&emsp;&emsp;将机箱横躺（即主板朝上），按照散热器说明书安装散热器，一般来说需要根据CPU类型的不同（AMD还是Intel）安装对应的支架，才能装上散热器。如果是水冷散热器，先在机箱外部将水冷自带的风扇安装在冷排上，并将风扇线都走好，再将冷排装到机箱上，再按照说明书安装支架，并将冷头装在支架上。注意安装时不要让水冷头砸到主板。受制于风扇的走线，冷头的线我们可以放在最后再去接。如果是风冷散热器，风冷头的控制线一般会接在CPU_FAN上；水冷的话，水冷头的控制线一般是接在PUMP_FAN上，而将冷排的风扇组接在CPU_FAN上。水冷头或风冷头如果带有RGB线，按照说明书接到对应主板插口。</p>
+<p>&emsp;&emsp;安装机箱顶部风扇组。这些风扇一般是正叶风扇。控制线和RGB线接在主板右上角位置。如果是水冷散热，我们上一步已经执行过了这个内容。</p>
+<p>&emsp;&emsp;安装机箱底部风扇组。这些风扇一般是反叶风扇。控制线和RGB线都接在主板下方。</p>
+<p>&emsp;&emsp;安装机箱正面或侧面风扇组。注意，如果是“海景房”机箱，这些风扇一般装在侧面，且均为反叶风扇（使用者从机箱侧面透过玻璃看，观察到的是风扇正面）；如果是侧透机箱，这些风扇一般装在正面，且均为正叶风扇（使用者从机箱正面看，观察到的是风扇正面）。</p>
+<h3 id="4-接前面板IO线"><a href="#4-接前面板IO线" class="headerlink" title="4. 接前面板IO线"></a>4. 接前面板IO线</h3><p>&emsp;&emsp;安装机箱前面板IO线。将它们插在主板对应的位置上，这些接口很可能一个个都长得奇形怪状的，需要仔细阅读机箱说明书和主板说明书，相互比对，找到那些相互对应的接口，一些情况下，接口的名称可能因为机箱厂商和主板厂商对接口的命名方式不同而在说明书上看起来不一样，实际上可能就是一个接口，这种情况下需要向厂家客服确认清楚。</p>
+<h3 id="5-安装电源"><a href="#5-安装电源" class="headerlink" title="5. 安装电源"></a>5. 安装电源</h3><p>&emsp;&emsp;安装电源。我们先参考电源说明书，将【需要的所有供电线】都预先插在电源上（如果我们准备了如3.5寸机械硬盘等SATA设备，这里也要安装它们的供电线），注意这里不要接电源的供电线。每根电线的两端都不要搞反，观察电线两端上写的字，写有PSU的一端一定是接在电源上的，另外一端一般写的有CPU或者PCI-E等字样。电线都插好后，再将电源塞进机箱安装。根据机箱的不同，电源有可能被安置在机箱的各种位置。这里我们必须知道，电源的风扇那一面都是吸风的，而开关那一面通常是出风的。开关必定是朝外的，所以电源的风扇通常也必须朝外，即朝向机箱上有通风区域的那面。举例子如果电源是平躺在机箱底部的，那么风扇那一面通常要朝下，而开关那一面朝后；如果电源是侧置在机箱底部，那么风扇一面朝外而开关一面朝后；如果电源是顶置的，则风扇朝上开关朝外。将电源螺丝固定后，把CPU供电线（一般是8+8pin，或者单根8pin）和主板供电线（一般是一个大24pin）接好。显卡供电线的情况相当多，有可能是一个6pin，也可以是1至3个6+2pin线，或者类似的组合情况，最新出产的显卡一般是一根12+小4pin的特殊接口（即PCIe 5.0接口），总之，接多少线完全取决于显卡长啥样，一些老式显卡可能没有独立的供电线，那就不需要接。我们现在因为还没有安装显卡，所以先将显卡供电线从主板下方穿过，放置在机箱内即可。</p>
+<h3 id="6-SATA设备（如果有的话）"><a href="#6-SATA设备（如果有的话）" class="headerlink" title="6. SATA设备（如果有的话）"></a>6. SATA设备（如果有的话）</h3><p>&emsp;&emsp;如果我们还额外购置了SATA接口的设备，如3.5寸机械硬盘，或者是2.5寸SATA固态硬盘，需要在电源安装后也装好。这些硬盘一般每个都需要接两根线，一根是电源的SATA电源线，用来供电；第二根是硬盘SATA数据线，接在主板的SATA数据接口上。如果你的SATA电源线是1拖4的，但只有一个SATA硬盘设备，这里只用接一个接口即可；一根SATA供电线最多接4个SATA设备。</p>
+<h3 id="7-独立显卡"><a href="#7-独立显卡" class="headerlink" title="7. 独立显卡"></a>7. 独立显卡</h3><p>&emsp;&emsp;上述内容都做完后，就可以安装独立显卡。独显通常都是横着装的，即风扇朝下，PCIe长接口朝向主板；但也存在竖着装的情况，竖装的显卡应该使其风扇朝外，另外可能还需要使用到主板PCIe延长线。这里只描述显卡横装的情况：先移除显卡所有接口上的保护壳，先不要安装，先拿起显卡对准主板的PCIe插槽比划一下，看一下显卡会占用了机箱上哪几个PCIe金属挡板（通常有2个），记住这些挡板的位置。放下显卡后，拆掉记下的这些挡板，但保留螺钉。把机箱横躺（主板朝上），将显卡插到主板的PCIe插槽里，然后一只手稳住显卡，另一只手用刚才拆下的所有螺钉把显卡固定到挡板位置上，这里要用点力，尽量固定的结结实实。显卡固定住以后，我们就可以把刚才预留在机箱内部的显卡供电线接到显卡上。如果显卡非常长且沉重，我们可能还需要用一个显卡支架支撑在显卡远离挡板的那一端，显卡厂家通常会赠送一个支架，需要注意的是支架只能顶着显卡的外壳，而不能触及显卡的风扇。如果受制于机箱结构无法正常安装的话，我们可以先不用管它，后面有时间再考虑单独购买安装这个显卡支架。</p>
+<h3 id="8-收尾工作"><a href="#8-收尾工作" class="headerlink" title="8. 收尾工作"></a>8. 收尾工作</h3><p>&emsp;&emsp;把机箱的金属侧板、防尘网等外壳部件装回去，再把玻璃板也装上。接上显示器、鼠标、键盘等外设，如果安装了独立显卡，显示器的信号线应该接在独立显卡的位置，即PCIe挡板的那个位置。检查电源按钮是否关闭（按钮打到o上；o是关闭，-是开启），接上电源的供电线，开启电源按钮，按一下机箱前面板的开机电源键，电脑启动，观察所有风扇是否都正常运作，如果安装正常且配件都正常，一般都不会有什么问题，耐心等待至少5分钟不要关电，让主板和CPU初始化完毕，观察显示屏上的内容，如果M.2固态硬盘里面没有预装系统，则一般会自动进入BIOS界面，这就算安装成功了；如果没有自动进入BIOS界面，而是直接从硬盘去启动，则一般会在黑屏上显示No bootable device或者类似字样，要么就是显示一些配件参数，这些都是正常现象，我们可以手动进入BIOS，观察所有设备是否都正常显示在BIOS里。只要开机不显示一大串报错代码，都算是安装成功。</p>
+<p>&emsp;&emsp;如果显示器黑屏或显示无信号，一般是信号源没有选对，在显示器按钮上找到切换信号源的选项，将信号源切到我们已经连接的那个信号接口的名称上，如DP 1、DP 2、HDMI或VGA等。</p>
+<p>&emsp;&emsp;我们的电脑到此安装完成。接下来就是安装操作系统，然后就可以正常使用了。</p>
+<h2 id="⭐！晒机啦！⭐"><a href="#⭐！晒机啦！⭐" class="headerlink" title="⭐！晒机啦！⭐"></a>⭐！晒机啦！⭐</h2><p>&emsp;&emsp;最后，晒一下我自己机器的配置和装机效果：</p>
+<blockquote>
+<p>CPU：Ryzen R9 9950X<br>主板：微星 MPG x870E Carbon Wifi<br>显卡：七彩虹 5070 战斧豪华版<br>内存：宏碁掠夺者 6400 C32 冰刃（32Gx2）<br>硬盘：三星 990 pro 2T<br>电源：海韵 Focus GX-1000 ATX3<br>散热：瓦尔基里 GL360<br>机箱：骨伽 乘风MX600 黑色<br>显示器：戴尔 U2724D 27寸</p>
+</blockquote>
+<img src="/2025/04/05/简易装机指南（2025版）/1.jpg" title="A">
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章著作权归作者所有，禁止任何形式的转载。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/生活/">生活</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/硬件/">硬件</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2025/04/05/关于我和电脑操作系统的故事/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">关于我和电脑操作系统的故事</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2025
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="⋄ Videre Invisibilia ⋄"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="250" height="52"
+        src="//music.163.com/outchain/player?type=2&id=29572578&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 40px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>
