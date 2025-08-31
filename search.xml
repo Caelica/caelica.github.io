@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
+    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
+</blockquote>
+<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
+<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
+<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
+<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
+<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
+<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
+<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
+<hr>
+<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
+<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+        <tag>服务器</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Q版二头身第二弹</title>
     <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -71,36 +114,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Steam社区里利用高仿网站钓鱼的骗术</title>
-    <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>又是话题老毒瘤PUBG，虽然这个游戏我卸了很久了，但是不久前本人的一个朋友已经中招导致Steam账号被盗，早就听说过PUBG猖獗的盗号现象，比如网吧Steam客户端被动手脚之类的。不过这次居然是利用高仿网站进行的，花样确实层出不穷。<a id="more"></a></p>
-</blockquote>
-<p>Steam用户都明白，账号被盗后果还是比较严重的，不仅PUBG号难逃一劫，或是导致vac封禁，更严重的是如果账户上的财产比较多，那就危险了。该朋友的Steam账号财产较多，被盗后我也是第一时间在好友列表里监控该账号的动向，幸运的是，盗号似乎是由机器完成的，盗号者并没有在短时间内登录该账号，也没有机会亲自查看该账号拥有的库存，好在Steam的申诉够快，该账号在几个小时内就得以找回。</p>
-<p>中招过程和找回手段</p>
-<p>首先如果Steam用户浏览社区页面（特别是PUBG社区页面），就会发现一个由“PUBG社区管理”发布的页面，该页面往往是维护补偿等等赠送行为，勾引玩家前去查看。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/1.png" title="a">
-<p>细心的玩家也许已经看出，该网址并不正常，打开后是一个高仿的中文版PUBG网站页面。盗号者伪造了很多这种类似的网址，几天就换一次。点击领取后，又出来一个Steam账号的登录页面，和Steam的官网长得一模一样。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/2.png" title="b"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/3.png" title="c">
-<p>当Steam用户输入自己的账户密码后，又会要求用户输入令牌密码和手机验证码，据网上的信息反映，密码对错与否都会进入下一步，盗号者最想要的正是这两个关键的凭据，它使得盗号者拥有取得账户控制权限的能力。</p>
-<p>如果用户给出了这两个凭据，则账户邮箱立刻被替换，手机、令牌瞬间解绑，用户失去所有权限，密码也不攻自破了。这一切应该都是机器自动完成的。</p>
-<p>用户的应对手段只有申诉和锁定账户。Steam账户在更换邮箱后，会自动向旧邮箱发送邮箱被更换的信息，被盗的用户可以在其中找到锁定账户的按钮。也就是说，Steam账户是不能随便锁定的，只有通过被更改邮箱的那个按钮才能进入锁定页面。</p>
-<p>而账户申诉则要求提供正常的初始邮箱和一些交易记录凭证，因为很多用户的邮箱都是QQ邮箱，交易记录是盗号者基本无法得到的，QQ号的所有权也最终握在用户手里，也就是说，只要用户铁了心想找回Steam账号，是比较容易找回的。所以盗号者的战术就是实现短期占有并尽可能拖延找回时间，以完成账号交易和财产交易，最终给用户留下一个烂摊子。其中最重要的就是攻破用户的邮箱，这也是最严重的情况，一旦盗号者能够短时间登录邮箱，第一操作就是彻底删除用户的那些邮箱更改提醒信件，使得账户无法被锁定，也给申诉造成了困难。</p>
-<p>在众多案例中我一直很好奇邮箱是怎么被爆破的，我猜测有两种可能：第一种是撞库，也就是利用很多人将QQ密码和Steam密码相同的缺陷，对用户的qq号进行撞库，一旦正确就可以短时间占据qq邮箱；第二种可能就是利用网吧环境，让用户登录做过手脚的qq账户以获得qq密码。关于如何得到qq号其实很简单，因为Steam页面的个人账户里直接可以看到绑定邮箱的全文，自然也就暴露了qq号。我认为这是Steam个人账户的一个缺陷，给盗号者提供了有用的信息。</p>
-<p>可见，如果连邮箱的控制权都没了，危险就真的大了。这位朋友也是因为邮箱未被攻破，申诉才得以快速进行。所以建议Steam的用户不要使用qq邮箱作为绑定邮箱，qq邮箱其实并不安全。</p>
-<p>小号成群</p>
-<p>还有个问题，盗号的是如何做到将自己的假链接至于Steam社区顶端的？从下图可以看出，盗号者拥有海量Steam账号，估计Steam社区的热度计算方式很简单，并没有怎么考虑机器人的威胁。盗号者使用成千上万的小号对假链接页面进行“顶帖”，强行让它出现在PUBG社区首页，甚至是整个steam社区的首页（的确有这种现象）。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/4.png" title="d"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/5.png" title="e">
-<p>而作为发帖人的这个“PUBG社区管理”，也是利用了Steam账号本身改名毫无限制的特点，只要盗号者需要，他手下的任何一个小号都能立刻变成“XXX社区管理”。Steam社区凭空冒出的中文管理，现在想想感觉挺智障的，不过一开始我和朋友都没有意识到这一点，确实能骗到人呢。</p>
-<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/6.png" title="f">
-<p>查看某个“PUBG社区管理”的曾用名，该账号已经有红字，最原始的id是韩文，意思似乎是“深海”。推测该账号曾经是有过正常主人的PUBG账号，从改名“2sa”开始，已经变成了盗号者手中的“肉鸡号”。</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Flash被各大浏览器彻底停用后的处理办法</title>
     <url>/2021/04/19/Flash%E8%A2%AB%E5%90%84%E5%A4%A7%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BD%BB%E5%BA%95%E5%81%9C%E7%94%A8%E5%90%8E%E7%9A%84%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -139,6 +152,36 @@
       </tags>
   </entry>
   <entry>
+    <title>Steam社区里利用高仿网站钓鱼的骗术</title>
+    <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>又是话题老毒瘤PUBG，虽然这个游戏我卸了很久了，但是不久前本人的一个朋友已经中招导致Steam账号被盗，早就听说过PUBG猖獗的盗号现象，比如网吧Steam客户端被动手脚之类的。不过这次居然是利用高仿网站进行的，花样确实层出不穷。<a id="more"></a></p>
+</blockquote>
+<p>Steam用户都明白，账号被盗后果还是比较严重的，不仅PUBG号难逃一劫，或是导致vac封禁，更严重的是如果账户上的财产比较多，那就危险了。该朋友的Steam账号财产较多，被盗后我也是第一时间在好友列表里监控该账号的动向，幸运的是，盗号似乎是由机器完成的，盗号者并没有在短时间内登录该账号，也没有机会亲自查看该账号拥有的库存，好在Steam的申诉够快，该账号在几个小时内就得以找回。</p>
+<p>中招过程和找回手段</p>
+<p>首先如果Steam用户浏览社区页面（特别是PUBG社区页面），就会发现一个由“PUBG社区管理”发布的页面，该页面往往是维护补偿等等赠送行为，勾引玩家前去查看。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/1.png" title="a">
+<p>细心的玩家也许已经看出，该网址并不正常，打开后是一个高仿的中文版PUBG网站页面。盗号者伪造了很多这种类似的网址，几天就换一次。点击领取后，又出来一个Steam账号的登录页面，和Steam的官网长得一模一样。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/2.png" title="b"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/3.png" title="c">
+<p>当Steam用户输入自己的账户密码后，又会要求用户输入令牌密码和手机验证码，据网上的信息反映，密码对错与否都会进入下一步，盗号者最想要的正是这两个关键的凭据，它使得盗号者拥有取得账户控制权限的能力。</p>
+<p>如果用户给出了这两个凭据，则账户邮箱立刻被替换，手机、令牌瞬间解绑，用户失去所有权限，密码也不攻自破了。这一切应该都是机器自动完成的。</p>
+<p>用户的应对手段只有申诉和锁定账户。Steam账户在更换邮箱后，会自动向旧邮箱发送邮箱被更换的信息，被盗的用户可以在其中找到锁定账户的按钮。也就是说，Steam账户是不能随便锁定的，只有通过被更改邮箱的那个按钮才能进入锁定页面。</p>
+<p>而账户申诉则要求提供正常的初始邮箱和一些交易记录凭证，因为很多用户的邮箱都是QQ邮箱，交易记录是盗号者基本无法得到的，QQ号的所有权也最终握在用户手里，也就是说，只要用户铁了心想找回Steam账号，是比较容易找回的。所以盗号者的战术就是实现短期占有并尽可能拖延找回时间，以完成账号交易和财产交易，最终给用户留下一个烂摊子。其中最重要的就是攻破用户的邮箱，这也是最严重的情况，一旦盗号者能够短时间登录邮箱，第一操作就是彻底删除用户的那些邮箱更改提醒信件，使得账户无法被锁定，也给申诉造成了困难。</p>
+<p>在众多案例中我一直很好奇邮箱是怎么被爆破的，我猜测有两种可能：第一种是撞库，也就是利用很多人将QQ密码和Steam密码相同的缺陷，对用户的qq号进行撞库，一旦正确就可以短时间占据qq邮箱；第二种可能就是利用网吧环境，让用户登录做过手脚的qq账户以获得qq密码。关于如何得到qq号其实很简单，因为Steam页面的个人账户里直接可以看到绑定邮箱的全文，自然也就暴露了qq号。我认为这是Steam个人账户的一个缺陷，给盗号者提供了有用的信息。</p>
+<p>可见，如果连邮箱的控制权都没了，危险就真的大了。这位朋友也是因为邮箱未被攻破，申诉才得以快速进行。所以建议Steam的用户不要使用qq邮箱作为绑定邮箱，qq邮箱其实并不安全。</p>
+<p>小号成群</p>
+<p>还有个问题，盗号的是如何做到将自己的假链接至于Steam社区顶端的？从下图可以看出，盗号者拥有海量Steam账号，估计Steam社区的热度计算方式很简单，并没有怎么考虑机器人的威胁。盗号者使用成千上万的小号对假链接页面进行“顶帖”，强行让它出现在PUBG社区首页，甚至是整个steam社区的首页（的确有这种现象）。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/4.png" title="d"><img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/5.png" title="e">
+<p>而作为发帖人的这个“PUBG社区管理”，也是利用了Steam账号本身改名毫无限制的特点，只要盗号者需要，他手下的任何一个小号都能立刻变成“XXX社区管理”。Steam社区凭空冒出的中文管理，现在想想感觉挺智障的，不过一开始我和朋友都没有意识到这一点，确实能骗到人呢。</p>
+<img src="/2020/02/09/Steam社区里利用高仿网站钓鱼的骗术/6.png" title="f">
+<p>查看某个“PUBG社区管理”的曾用名，该账号已经有红字，最原始的id是韩文，意思似乎是“深海”。推测该账号曾经是有过正常主人的PUBG账号，从改名“2sa”开始，已经变成了盗号者手中的“肉鸡号”。</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>This is for the Record</title>
     <url>/2022/04/17/This-is-for-the-Record/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -146,49 +189,6 @@
 </blockquote>
 <p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E64207365766572616C206469637461746F72732C20616E6420746865697220617574686F726974617269616E20726567696D65732E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C20736F6F6E2077652077696C6C206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C7920647269766520776F726C6420696E746F2061206D6F7265206465766173746174696E676C79207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
-    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
-</blockquote>
-<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
-<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
-<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
-<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
-<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
-<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
-<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
-<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
-<hr>
-<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
-<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-        <tag>服务器</tag>
-      </tags>
   </entry>
   <entry>
     <title>Win10家庭版启用远程桌面&amp;启用组策略</title>
@@ -327,6 +327,57 @@
       </tags>
   </entry>
   <entry>
+    <title>《小李的选择》</title>
+    <url>/2024/10/27/%E3%80%8A%E5%B0%8F%E6%9D%8E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%8B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>从来没有在这里写过小说，今天写一个，重生之我在家里洗碗…<a id="more"></a></p>
+</blockquote>
+<p>星期六，累了一周的小李醒了，妻子已经给他和两岁大的女儿做好了早饭，小李走出卧室，秋日的阳光照进他那巴掌大点的租房，终于能有一个休息的日子，小李看着宝贝女儿和辛劳的妻子，就觉得连这些冰冷的水泥地板也看起来那么有温度。</p>
+<p>吃完饭妻子说，今天身体不太舒服，刚吃了药，得去再睡一会，让小李先把碗洗了，然后带着女儿出去玩。小李从来不觉得洗碗是麻烦事，他可喜欢洗碗了，在他看来每解决一个最脏的锅都能让妻子好好休息一下，每刷一个干净光亮的盘子都能保证宝贝女儿下顿饭的卫生，这些都是给自己的家添的一砖一瓦。</p>
+<p>小李才刚刚洗完了两只盘子，一旁的手机就响起那个刺耳的电话铃，是他的老板：</p>
+<p>“小李，怎么不回消息？给你发的那个XXX你看了吗？”</p>
+<p>“啊..这个，你说的那个，我正在看…”</p>
+<p>“没事的话现在就过来，这是今早上面刚公布的项目，任务很紧，我们现在都已经在公司了，就差你没来了。”</p>
+<p>小李顿时感觉血液直往头顶窜，就像被抽了一巴掌一样恼火，而恰好这时，倒霉的女儿又不小心碰碎了一个刚洗好的碗，碎片摔得到处都是，吓得她哇哇就哭。</p>
+<p>然后不知怎么就爆发了一顿大吵，小李最终扔下锅碗和一地狼藉，出门走了，家里只剩下哭泣的妻子和女儿。再后来，几乎每天都是这样。</p>
+<p>多少年的感情，一起走过的路，培养出来的信任，童年的阴影…装订出一个破碎家庭的故事。</p>
+<hr>
+<p>多年后，面对民政局门口的长队，不再年轻的小李却再也想不起那个温暖惬意的周末上午，他无处伸冤，只能反复问自己，这一切都是从哪里开始不对劲的？怎么就走到了这一步呢？他走在街对面的石板路上，又辣又烫的廉价白酒早已弄得他神志不清，这些年发生太多事，他想不起来，也不再愿意去想这了，中年人的吵闹声和快速驶过的汽车鸣笛声混杂在一起，混合得越来越均匀，直至无法分清，昏昏沉沉之间，他好像又听到了什么声音渐渐清晰了起来。</p>
+<p>好像是开水壶的声音。</p>
+<p>小李猛地睁开双眼。</p>
+<p>秋日的阳光从小窗户照进那个狭小的卧室，他爬起来走到门口，年轻的妻子和可爱的女儿正在一起吃早饭，他已经多少年没有见过这么温暖的景象了。</p>
+<p>“我..我这是穿越回过去了吗…？”小李愣在原地。</p>
+<p>“赶快来吃饭啊你，睡那么久，你一会把碗洗一下，我都连续洗了多少天了你也该洗一次碗了吧？”妻子在卧室门外喊道。</p>
+<p>“啊好好，我一定洗！”</p>
+<p>“洗完了带女儿出去转转呗，外面天气挺好的，我吃了药得再睡一会，你带她去玩。”</p>
+<p>“好，我带她去玩！”</p>
+<p>“你今天怎么这么听话了？”妻子的语气总是这么略带戏谑。</p>
+<p>那个电话果然还是响了，看着手机界面上老板山水画风格的大头像，小李没有犹豫，一只手死死地按住了电源键，刺耳的铃声音调在断电的一瞬间失真熄灭，像是一头野兽最后的嚎叫。</p>
+<p>然后是死一般的寂静。</p>
+<p>黑洞洞的手机屏幕上只剩下了自己的脸，小李紧骤眉头，冷冷说出几个字：</p>
+<p>“你吃屎去吧。”</p>
+<p>女儿同样也打碎了碗，小李不慌不忙地收拾完地上所有的碎碗片，就连那些最为细小的碎渣也没漏掉。安慰好受惊的女儿：“没关系啦，这个叫碎碎平安嘛！”</p>
+<p>看着草地上翻来翻去的宝贝女儿，听着孩子们的欢声笑语，小李在草坪上坐了下来，天空好像从来没有这么蓝过。</p>
+<p>周一的例行会议上，小李被老板和同事们骂的狗血淋头，说他是懒虫，说他不求上进，没有事业心，完全跟公司倡导的文化背道而驰，根本不像年轻人该有的样子。甚至连那些和他关系不错的人也开始数落他的种种不是。老板原来觉得，这回必须让小李丢尽脸面才行，结果小李不仅没有一丝悔改认错的意思，反而表情轻松，面带微笑。这让老板十分不爽，他下定决心要把小李赶走，到时候看他还怎么笑的出来！老板开始动用手段，暗自推动同事们孤立小李，事事专挑小李的毛病，扣小李的绩效钱。不出意外，一个月后，小李主动提出了辞职。这下老板大获全胜，他打开公司的监控屏幕，就想看看小李这个故意和他作对的刺头临走前的落魄模样，没想到，这小伙子从头到尾都开开心心的，昂首挺胸健步如飞，头都不回地走了。</p>
+<p>向来喜欢高谈阔论、指点江山的老板，那天吃晚饭的时候却异常地沉默。他知道事情变了，他败了，而这只是个开始。</p>
+<p>小李这下成了“灵活就业人员”，要么出门打打零工，不打零工了就只能运营运营自媒体弄出点饭钱，因为妻子也没有收入，小李家的日子过的十分窘迫，有时候夫妻俩每天就煮几根面条就算一顿饭了，但他在女儿的开销上却从不抠搜，毕竟亲眼看着女儿一天天长大，一想到她再也不用整天面对恐惧和泪水，再穷也都还算是幸福的。</p>
+<p>后来小李和妻子也都找到了工作，妻子就开始经常抱怨说，别人家的男人都赚了多少多少钱啦，房啊车的都买了几个了，谁谁又晋升到什么岗了，而小李总是在找工作——做上几个月——离职上不断循环，折腾多年下来啥都没弄到，简直是废物一个。每当提到这些，小李就会给妻子巴拉巴拉讲一个关于什么平行时空的离谱故事，还说，他是从另一个时间线穿越回来的。</p>
+<p>“得了吧你，一把年纪的人了还看这些东西，你这么牛，还能穿越，咋没见给咱透露一下彩票买几号？金价股票哪年大涨？”</p>
+<p>“这个我没法预测，因为关于未来那端，我不是所有事情都记得，更何况你说的这些东西属于叫二级混沌系统，本来就是没法预测的。”</p>
+<p>“去去去别扯了，洗碗去！”</p>
+<hr>
+<p>又是很多很多年过去了，小李真的老了，变成老李了，头发稀疏，疾病缠身。这期间发生了太多太多事情，女儿早已成家立业远走高飞，而妻子前些年就去世了，老李很想她，每天都在想，他很遗憾的是不能和她老了一起每天散步，如果是那样该多好，他每天就这么幻想着，随便到处走。</p>
+<p>孤身一人的老李不知怎么就走到了民政局的大门口，当年中年人排长队的景象再也没有了，现在只能偶尔看到前来领证的你侬我侬的小年轻们。老李看着看着，就想起了自己和妻子，他感谢妻子是个知足的人，她虽然总是爱叨叨这那，但即便他穷成那样，即便他被所有人看不起，她也从没想过真正抛弃这个家。而他这样一个微不足道的小人物，也总算是在命运的指引下看清了大是大非。正是这些对人性的坚守，让他们共同渡过一个又一个难关，叫那些暗中的黑手，精心设计的把戏，那些摧毁了一个个普通家庭的怪物们，全都在这个小人物这里栽了跟头。</p>
+<p>老李的路也走到头了，他胸口一紧，倒在了地上。</p>
+<p>只剩几口气的老李用力地睁开眼睛，他看到一缕熟悉的阳光透过小树林，照在面前的石板路上，他的脸就贴在路面上，他已经感觉不到石板的冰冷，却似乎能感觉到那阳光的温暖。他闭上眼睛，好像又听见妻子在喊他的名字，而他就像当年走出公司大门时一样开心。谁能定义他这样小人物的成功和失败呢，除了他自己恐怕没有人能。而在他的世界里，他永远都是那个大获全胜，笑到了最后的人。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>小说</tag>
+        <tag>随想</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo添加网易云音乐播放器</title>
     <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -388,211 +439,6 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>软件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>利用Youtube的版权审查功能来识别音乐或歌曲</title>
-    <url>/2022/10/02/%E5%88%A9%E7%94%A8Youtube%E7%9A%84%E7%89%88%E6%9D%83%E5%AE%A1%E6%9F%A5%E5%8A%9F%E8%83%BD%E6%9D%A5%E8%AF%86%E5%88%AB%E9%9F%B3%E4%B9%90%E6%88%96%E6%AD%8C%E6%9B%B2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>这个“邪门歪道”确实很令人吃惊，能准确有效地找到一些不为人知的罕见音乐的对应源。<a id="more"></a></p>
-</blockquote>
-<h3 id="方法简介"><a href="#方法简介" class="headerlink" title="方法简介"></a>方法简介</h3><p>首先我们将视频下载下来，获得视频文件。如果手里的是音频格式的话可以考虑通过录像软件等工具转成视频格式。只要是常见格式应该都是可以的。然后在Youtube频道上上传这个视频。YouTube这里默认上传成私享视频，因此不用担心侵权问题。上传过程中我们先简单填写视频信息，上传成功后，Youtube会自动进行有关的版权审查，此时发现红色叹号提示视频中音乐出现版权问题：</p>
-<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/1.png" title="a">
-
-<p>点击“查看详情”：</p>
-<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/2.png" title="b">
-
-<p>我们可以看到视频中所采用的所有音乐的名称和Youtube上对应的版权源。我们只需复制这些信息然后在YouTube上搜索即可找到源：</p>
-<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/3.png" title="c">
-
-<p>观察《Now may we singen》这首歌。可以看到，牛津卡梅拉塔合唱团（Oxford Camerata）的专辑发布于1993年，但视频是2018年的，2018年前是否有Youtube视频版本暂不清楚，不过《Now may we singen》实际上是一首15世纪的英国传统歌曲，它在YouTube上还存在其他同样版本的作品，所以到这一步可以说就已经找到了。</p>
-<p>Oxford Camerata版本的歌曲链接如下：<br><a href="https://www.youtube.com/watch?v=Loi4Dh9-KbA" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Loi4Dh9-KbA</a></p>
-<h3 id="它的优势在哪"><a href="#它的优势在哪" class="headerlink" title="它的优势在哪"></a>它的优势在哪</h3><p>一些歌曲/音乐可能会非常难找。如果你看完下面的文字，你就能体会到这个难度。如网易云之类的常规的听歌识曲软件对偏门歌曲的识别率不仅低，而且更是无法识别库存中没有的音乐（虽然这个音乐碰巧是有的）。而基于Youtube视频形式的音乐源其实更为广泛，因其可能并不仅仅有于官方账号发布的源，故其库存量更大，更容易找到音乐。</p>
-<p>如上面视频中的音乐《Now may we singen》，对我来说是一个整整十年级别的找歌难题。一切的起因是大约在2012年，优酷网上有人上传了一些关于欧洲长剑（longsword）相关的视频，推测是从Youtube搬运的，当时在优酷上关注度还挺高，至少在那时候中世纪相关的圈子里是这样。优酷网目前还有这个视频，但从上传时间（2014年）和叠加的水印来看可能已经被翻录了多次：<a href="https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html" target="_blank" rel="noopener">https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html</a></p>
-<p>视频中相关的音乐我一直都没找到，视频内容中也没有给出背景音乐的信息。当我也开始使用Youtube后，在Youtube甚至连这个视频源都找不到了（有点讽刺的是，优酷网居然还留着有）。根据视频开头的元素，这个视频实际上是一个美国纽约州的剑术团体Lake Ontario Fechtschule制作的教学演示，由Todd Sullivan表演。网址为：<a href="https://toddsullivan.webs.com" target="_blank" rel="noopener">https://toddsullivan.webs.com</a> 。Lake Ontario Fechtschule从属于美国一个名为Selohaar Fechtschule的HEMA剑术团体，以德式长剑为主。而Selohaar Fechtschule又从属于美国一个名为The Order of Selohaar的民间神秘学团体，似乎至今仍有活动。他们的网址为：<a href="http://www.selohaar.org" target="_blank" rel="noopener">www.selohaar.org</a></p>
-<p>了解这些是为了找到视频源或者上传者，以求获得音乐的相关信息，但这个Lake Ontario Fechtschule可能早已经停止活动了，故有可能是上传者自行下架了视频。并且在整个Google上也无法找到这个视频，这个方法就行不通了。</p>
-<p>鉴于得不到任何相关的信息，于是我先是尝试了原始的笨办法：尝试听出歌词并搜索。对于有歌词的歌曲，很多情况下这是一个行之有效的方案，我曾经这样找到了好些日语歌曲。但这回实在是被彻底难倒了：开始我从听感上判断它可能是拉丁语，但实际上，它的歌词的主体是中古英语（Middle English），但加入了少量拉丁语，并且其中的很多英语词汇没有使用现代英语的读法和发音，而是采用了类似拉丁语的中世纪读法。种种变数导致我听的一头雾水，导致这个方法也告吹了。（如果你看到这里，可以先试试在不看下面歌词的前提下能听出几个“英语”单词xD）</p>
-<p>最终通过文首的方法终于找到了这个歌曲。现在我们再来分析一下这个东西究竟是何方神物。下文的大多数结论均来自这个页面：<a href="https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm" target="_blank" rel="noopener">https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm</a></p>
-<p>根据说法，《Now may we singen》是一首15世纪的英国歌曲，属于一种Medieval Carol，最早的音乐和诗歌均记录在一张15世纪的羊皮纸卷轴上，作者已不可考。现存于英国剑桥三一学院图书馆（Library of Trinity College），18世纪后的作家记录了一些不同的版本副本。</p>
-<p>现代版本（19世纪版本）的歌词和乐谱如下，其中副歌（Refrain）中反复出现的拉丁语“Quod puer natus est nobis”意为“（因为）那个孩子是为我们而生”。：</p>
-<blockquote>
-<p>Now may we singen as it is,<br>Quod puer natus est nobis</p>
-<ol>
-<li>This babe to us that now is born,<br>Wonderful workës He hath ywrought,<br>He would not lose what was forlorn,<br>But boldly again it bought;<br> And thus it is<br> For sooth I wis,<br> He asketh nought but that is His.</li>
-<li>This bargain lovëd He right well,<br>The price was high and bought full dear,<br>Who would suffer and for us feel<br>As did that Prince withouten peer?<br> And thus it is, etc.</li>
-<li>His ransom for us hath ypaid.<br>Good reason have we to be His.<br>Be mercy asked and He be prayed<br>We may deserve the heavenly bliss.<br> And thus it is, etc.</li>
-<li>To some purpose God made man;<br>I trust well to salvation.<br>What was His blood that from Him ran.<br>But fence against damnation?<br> And thus it is, etc.</li>
-<li>Almighty God in Trinity,<br>Thy mercy we pray with whole heart<br>Thy mercy may all woe make flee<br>And dangerous dread from us to start.<br> And thus it is, etc.</li>
-</ol>
-</blockquote>
-<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/4.jpg" title="d">
-
-<p>而Oxford Camerata所演唱的版本（即视频中的音乐）用的是原汁原味的15世纪原版歌词，相当难懂，据说一些字符甚至不能在HTML下正确显示出来：</p>
-<blockquote>
-<p>Now may we syngyn as it is<br>Quod puer natus est nobis.</p>
-<ol>
-<li>This babe to us that now is bore.<br>Wundyrful werkys he hath i wrowt.<br>He wil not lese that was I lore.<br>But boldly aƺen it bowth.<br> And thus it is<br> ffor sothe I wys<br> he askyth nouth but that is hys.</li>
-<li>This chaffare fouyd he rith weel.<br>The prys was hey &amp; bowth ful dere<br>Qwo wold suffre and for us feele<br>As dede that prince was owtyn pere<br> And thus it is, (etc.)</li>
-<li>Hys raunsum for us hath I payd.<br>Of resoun than we owyn to ben hys<br>Be mercy askyd and he be prayd.<br>We may be rith kalange blys.<br> And thus it is, (etc.)</li>
-<li>To sum parpos god made man.<br>I leue weel to saluacyoun<br>Qwat was his blood that fro hym ran.<br>But defens aƺens dampnacyoun.<br> And thus it is, (etc.)</li>
-<li>Almythy god in trynyte.<br>Thy mercy we pray wyth hool herte<br>Thy mercy may all woo make fle.<br>And daungerous dreed fro us do sterte.<br> And thus it is, (etc.)</li>
-</ol>
-</blockquote>
-]]></content>
-      <tags>
-        <tag>音乐</tag>
-        <tag>艺术</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《小李的选择》</title>
-    <url>/2024/10/27/%E3%80%8A%E5%B0%8F%E6%9D%8E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%8B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>从来没有在这里写过小说，今天写一个，重生之我在家里洗碗…<a id="more"></a></p>
-</blockquote>
-<p>星期六，累了一周的小李醒了，妻子已经给他和两岁大的女儿做好了早饭，小李走出卧室，秋日的阳光照进他那巴掌大点的租房，终于能有一个休息的日子，小李看着宝贝女儿和辛劳的妻子，就觉得连这些冰冷的水泥地板也看起来那么有温度。</p>
-<p>吃完饭妻子说，今天身体不太舒服，刚吃了药，得去再睡一会，让小李先把碗洗了，然后带着女儿出去玩。小李从来不觉得洗碗是麻烦事，他可喜欢洗碗了，在他看来每解决一个最脏的锅都能让妻子好好休息一下，每刷一个干净光亮的盘子都能保证宝贝女儿下顿饭的卫生，这些都是给自己的家添的一砖一瓦。</p>
-<p>小李才刚刚洗完了两只盘子，一旁的手机就响起那个刺耳的电话铃，是他的老板：</p>
-<p>“小李，怎么不回消息？给你发的那个XXX你看了吗？”</p>
-<p>“啊..这个，你说的那个，我正在看…”</p>
-<p>“没事的话现在就过来，这是今早上面刚公布的项目，任务很紧，我们现在都已经在公司了，就差你没来了。”</p>
-<p>小李顿时感觉血液直往头顶窜，就像被抽了一巴掌一样恼火，而恰好这时，倒霉的女儿又不小心碰碎了一个刚洗好的碗，碎片摔得到处都是，吓得她哇哇就哭。</p>
-<p>然后不知怎么就爆发了一顿大吵，小李最终扔下锅碗和一地狼藉，出门走了，家里只剩下哭泣的妻子和女儿。再后来，几乎每天都是这样。</p>
-<p>多少年的感情，一起走过的路，培养出来的信任，童年的阴影…装订出一个破碎家庭的故事。</p>
-<hr>
-<p>多年后，面对民政局门口的长队，不再年轻的小李却再也想不起那个温暖惬意的周末上午，他无处伸冤，只能反复问自己，这一切都是从哪里开始不对劲的？怎么就走到了这一步呢？他走在街对面的石板路上，又辣又烫的廉价白酒早已弄得他神志不清，这些年发生太多事，他想不起来，也不再愿意去想这了，中年人的吵闹声和快速驶过的汽车鸣笛声混杂在一起，混合得越来越均匀，直至无法分清，昏昏沉沉之间，他好像又听到了什么声音渐渐清晰了起来。</p>
-<p>好像是开水壶的声音。</p>
-<p>小李猛地睁开双眼。</p>
-<p>秋日的阳光从小窗户照进那个狭小的卧室，他爬起来走到门口，年轻的妻子和可爱的女儿正在一起吃早饭，他已经多少年没有见过这么温暖的景象了。</p>
-<p>“我..我这是穿越回过去了吗…？”小李愣在原地。</p>
-<p>“赶快来吃饭啊你，睡那么久，你一会把碗洗一下，我都连续洗了多少天了你也该洗一次碗了吧？”妻子在卧室门外喊道。</p>
-<p>“啊好好，我一定洗！”</p>
-<p>“洗完了带女儿出去转转呗，外面天气挺好的，我吃了药得再睡一会，你带她去玩。”</p>
-<p>“好，我带她去玩！”</p>
-<p>“你今天怎么这么听话了？”妻子的语气总是这么略带戏谑。</p>
-<p>那个电话果然还是响了，看着手机界面上老板山水画风格的大头像，小李没有犹豫，一只手死死地按住了电源键，刺耳的铃声音调在断电的一瞬间失真熄灭，像是一头野兽最后的嚎叫。</p>
-<p>然后是死一般的寂静。</p>
-<p>黑洞洞的手机屏幕上只剩下了自己的脸，小李紧骤眉头，冷冷说出几个字：</p>
-<p>“你吃屎去吧。”</p>
-<p>女儿同样也打碎了碗，小李不慌不忙地收拾完地上所有的碎碗片，就连那些最为细小的碎渣也没漏掉。安慰好受惊的女儿：“没关系啦，这个叫碎碎平安嘛！”</p>
-<p>看着草地上翻来翻去的宝贝女儿，听着孩子们的欢声笑语，小李在草坪上坐了下来，天空好像从来没有这么蓝过。</p>
-<p>周一的例行会议上，小李被老板和同事们骂的狗血淋头，说他是懒虫，说他不求上进，没有事业心，完全跟公司倡导的文化背道而驰，根本不像年轻人该有的样子。甚至连那些和他关系不错的人也开始数落他的种种不是。老板原来觉得，这回必须让小李丢尽脸面才行，结果小李不仅没有一丝悔改认错的意思，反而表情轻松，面带微笑。这让老板十分不爽，他下定决心要把小李赶走，到时候看他还怎么笑的出来！老板开始动用手段，暗自推动同事们孤立小李，事事专挑小李的毛病，扣小李的绩效钱。不出意外，一个月后，小李主动提出了辞职。这下老板大获全胜，他打开公司的监控屏幕，就想看看小李这个故意和他作对的刺头临走前的落魄模样，没想到，这小伙子从头到尾都开开心心的，昂首挺胸健步如飞，头都不回地走了。</p>
-<p>向来喜欢高谈阔论、指点江山的老板，那天吃晚饭的时候却异常地沉默。他知道事情变了，他败了，而这只是个开始。</p>
-<p>小李这下成了“灵活就业人员”，要么出门打打零工，不打零工了就只能运营运营自媒体弄出点饭钱，因为妻子也没有收入，小李家的日子过的十分窘迫，有时候夫妻俩每天就煮几根面条就算一顿饭了，但他在女儿的开销上却从不抠搜，毕竟亲眼看着女儿一天天长大，一想到她再也不用整天面对恐惧和泪水，再穷也都还算是幸福的。</p>
-<p>后来小李和妻子也都找到了工作，妻子就开始经常抱怨说，别人家的男人都赚了多少多少钱啦，房啊车的都买了几个了，谁谁又晋升到什么岗了，而小李总是在找工作——做上几个月——离职上不断循环，折腾多年下来啥都没弄到，简直是废物一个。每当提到这些，小李就会给妻子巴拉巴拉讲一个关于什么平行时空的离谱故事，还说，他是从另一个时间线穿越回来的。</p>
-<p>“得了吧你，一把年纪的人了还看这些东西，你这么牛，还能穿越，咋没见给咱透露一下彩票买几号？金价股票哪年大涨？”</p>
-<p>“这个我没法预测，因为关于未来那端，我不是所有事情都记得，更何况你说的这些东西属于叫二级混沌系统，本来就是没法预测的。”</p>
-<p>“去去去别扯了，洗碗去！”</p>
-<hr>
-<p>又是很多很多年过去了，小李真的老了，变成老李了，头发稀疏，疾病缠身。这期间发生了太多太多事情，女儿早已成家立业远走高飞，而妻子前些年就去世了，老李很想她，每天都在想，他很遗憾的是不能和她老了一起每天散步，如果是那样该多好，他每天就这么幻想着，随便到处走。</p>
-<p>孤身一人的老李不知怎么就走到了民政局的大门口，当年中年人排长队的景象再也没有了，现在只能偶尔看到前来领证的你侬我侬的小年轻们。老李看着看着，就想起了自己和妻子，他感谢妻子是个知足的人，她虽然总是爱叨叨这那，但即便他穷成那样，即便他被所有人看不起，她也从没想过真正抛弃这个家。而他这样一个微不足道的小人物，也总算是在命运的指引下看清了大是大非。正是这些对人性的坚守，让他们共同渡过一个又一个难关，叫那些暗中的黑手，精心设计的把戏，那些摧毁了一个个普通家庭的怪物们，全都在这个小人物这里栽了跟头。</p>
-<p>老李的路也走到头了，他胸口一紧，倒在了地上。</p>
-<p>只剩几口气的老李用力地睁开眼睛，他看到一缕熟悉的阳光透过小树林，照在面前的石板路上，他的脸就贴在路面上，他已经感觉不到石板的冰冷，却似乎能感觉到那阳光的温暖。他闭上眼睛，好像又听见妻子在喊他的名字，而他就像当年走出公司大门时一样开心。谁能定义他这样小人物的成功和失败呢，除了他自己恐怕没有人能。而在他的世界里，他永远都是那个大获全胜，笑到了最后的人。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>小说</tag>
-        <tag>随想</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
-</blockquote>
-<a id="more"></a>
-
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客建好了~</title>
-    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
-</blockquote>
-<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
-<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
-<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
-<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
-<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
-<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
-<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
-<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
-<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
-<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
-<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
-<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
-<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写了，岂不是大大的丢人。</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>大型翻译计划：魔兽世界日记</title>
-    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
-</blockquote>
-<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
-<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
-<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
-<hr>
-<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何移植hexo到新的设备上</title>
-    <url>/2020/04/25/%E5%A6%82%E4%BD%95%E7%A7%BB%E6%A4%8Dhexo%E5%88%B0%E6%96%B0%E7%9A%84%E8%AE%BE%E5%A4%87%E4%B8%8A/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>关于更换机器后如何移植hexo的简述<a id="more"></a></p>
-</blockquote>
-<p>最近新入手一个电脑，想把整个博客都移植到新电脑上编辑操作，看了很多教程后大概明白了步骤，可能是因为都是静态文件的原因，搬起来还挺简单的，似乎即使新设备是mac系统一样可以这么操作。以下是具体步骤：</p>
-<p>1.给新设备安装Git和Node.js，这个是必须得有的。</p>
-<p>2.给新设备添加SSH密钥。打开Git Bash：<br>虽然新设备肯定是没有SSH了，不过这里为完备起见，可用下面的方法检测本机器已经拥有的的SSH：<br><code>$ ls -al ~/.ssh</code><br>如果终端输出的是：<br><code>cannot access ... No such file or directory</code><br>那么就说明本地没有SSH key<br>如果显示出一堆 id_rsa 和 id_rsa.pub文件的存在以及它们的创建日期，就说明此设备存在SSH，需要考虑移除该设备的SSH。简单来说就是直接把<code>C:\Users\机器用户名\</code> 下的.ssh文件夹里的id_rsa 和 id_rsa.pub给删了就行了。</p>
-<p>好的现在开始正式创建SSH key，Git Bash里输入：<br><code>$ ssh-keygen -t rsa -C &quot;你的GitHub邮箱地址&quot;</code><br>然后三次回车键（跳过passphrase口令，即给SSH本身设置一个保护密码，相当于二道锁，建议跳过），就在用户目录生成了一个名为.ssh的文件夹，里面有id_rsa和id_rsa.pub两个文件，用户目录就是C:\Users\XXX这里。ssh文件可以备份一下，登录Github的用户界面,找到Settings里面的SSH and GPG keys，里面可以看到旧的ssh密钥，点击new SSH key添加一个新的ssh密钥，Title可以自定义，内容填入记事本打开id_rsa.pub里的内容（开头为ssh-rsa后面跟着一大串字母）。点保存即可，旧的SSH也可以移除了。</p>
-<p>可以测试一下ssh，在Git Bash里输入<br><code>$ ssh -T git@github.com</code>（注意这里的邮箱地址就是<a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>，并不是注册邮箱地址）<br>此时可能跳出一行host确认信息，直接输入yes，此时会看到：Hi &lt;你的用户名&gt;! You’ve successfully authenticated, but GitHub does not provide shell access.则表示配置成功。</p>
-<p>接下来还需要配置<br><code>$ git config --global user.name 你的用户名</code>（格式为”xxxxxx” 即github的登陆用户名，非昵称）<br><code>$ git config --global user.email 你的github邮箱地址</code>（”<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>“ 即github注册邮箱）<br>这个不配置的话似乎会在hexo d的时候跳出”please tell me who are you”的问题。</p>
-<p>3.接下来就是装hexo，打开Git Bash，输入<br><code>$ npm install hexo-cli -g</code><br>这步其实非常慢，回车键发现没反应需要等，等了N久都没用或者出错怎么办？可以强关Git，在Git里执行npm uninstall hexo卸载hexo（没装上的话这步是没用的，以防万一），然后在C:\Users\用户名\AppData\Roaming里把npm和npm-cache文件夹都删掉，这样让新设备回到安装前的初始状态，再尝试安装hexo。</p>
-<p>有人说国内hexo的npm源有问题，经我测试是没有问题的，npm hexo的时候也没有挂梯子，正常安装即可。</p>
-<p>4.这里我们确认hexo已经安装好了，就可以开始创建本地仓库。建议自己建一个路径简单的文件夹，这里注意一下，最好和旧设备的路径是一样的，比如我的是D:\Blog\Aetherial，空文件夹建好后，将旧博客的一些文件复制进来，这些文件是：</p>
-<p>source/（博客文章内容）<br>theme/（博客主题）<br>scaffolds/（文章模板）<br>_config.yml（网站配置文件）<br>package.json（有关使用的包）<br>.gitignore（忽略选项）</p>
-<p>其他文件不要复制进来。</p>
-<p>上述文件都复制好以后，在git bash中cd到该目录：<br><code>$ cd /d/blog/aetherial</code>（这是我的目录）<br>然后<br><code>$ npm install</code>（注意，不是npm init）<br>这步安装完，大部工作就解决了。</p>
-<p>5.为了使用hexo d还需要执行<br><code>$ npm install hexo-deployer-git --save</code><br>若博客还设置有RSS订阅还需<br><code>$ npm install hexo-generator-feed --save</code>（这里认为config.yml里的配置都是正常的）</p>
-<p>6.这样就彻底完成了。可以用本地预览服务先看一下：<br><code>$ hexo s -p 5555</code><br>这里的5555是自己随便定的端口名称，不同的程序使用的端口五花八门，有可能会出现端口占用冲突的问题，建议就5555。</p>
-<p>7.本地预览能成功的话那基本就没啥问题了，可以尝试hexo clean、hexo g一遍，看看能否正常工作。最后新建一个测试用的博客文章，尝试hexo d，验证一下是否上传成功。刚移植完后第一次hexo d似乎要输入一遍Github的账号和密码确认，之后就不用了，因为已经添加了ssh密钥。</p>
-<p>本地预览失败？重新检查步骤4以后的内容，特别是_config.yml里的内容是不是正确。</p>
-]]></content>
-      <tags>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -679,6 +525,160 @@
       </tags>
   </entry>
   <entry>
+    <title>利用Youtube的版权审查功能来识别音乐或歌曲</title>
+    <url>/2022/10/02/%E5%88%A9%E7%94%A8Youtube%E7%9A%84%E7%89%88%E6%9D%83%E5%AE%A1%E6%9F%A5%E5%8A%9F%E8%83%BD%E6%9D%A5%E8%AF%86%E5%88%AB%E9%9F%B3%E4%B9%90%E6%88%96%E6%AD%8C%E6%9B%B2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>这个“邪门歪道”确实很令人吃惊，能准确有效地找到一些不为人知的罕见音乐的对应源。<a id="more"></a></p>
+</blockquote>
+<h3 id="方法简介"><a href="#方法简介" class="headerlink" title="方法简介"></a>方法简介</h3><p>首先我们将视频下载下来，获得视频文件。如果手里的是音频格式的话可以考虑通过录像软件等工具转成视频格式。只要是常见格式应该都是可以的。然后在Youtube频道上上传这个视频。YouTube这里默认上传成私享视频，因此不用担心侵权问题。上传过程中我们先简单填写视频信息，上传成功后，Youtube会自动进行有关的版权审查，此时发现红色叹号提示视频中音乐出现版权问题：</p>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/1.png" title="a">
+
+<p>点击“查看详情”：</p>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/2.png" title="b">
+
+<p>我们可以看到视频中所采用的所有音乐的名称和Youtube上对应的版权源。我们只需复制这些信息然后在YouTube上搜索即可找到源：</p>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/3.png" title="c">
+
+<p>观察《Now may we singen》这首歌。可以看到，牛津卡梅拉塔合唱团（Oxford Camerata）的专辑发布于1993年，但视频是2018年的，2018年前是否有Youtube视频版本暂不清楚，不过《Now may we singen》实际上是一首15世纪的英国传统歌曲，它在YouTube上还存在其他同样版本的作品，所以到这一步可以说就已经找到了。</p>
+<p>Oxford Camerata版本的歌曲链接如下：<br><a href="https://www.youtube.com/watch?v=Loi4Dh9-KbA" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Loi4Dh9-KbA</a></p>
+<h3 id="它的优势在哪"><a href="#它的优势在哪" class="headerlink" title="它的优势在哪"></a>它的优势在哪</h3><p>一些歌曲/音乐可能会非常难找。如果你看完下面的文字，你就能体会到这个难度。如网易云之类的常规的听歌识曲软件对偏门歌曲的识别率不仅低，而且更是无法识别库存中没有的音乐（虽然这个音乐碰巧是有的）。而基于Youtube视频形式的音乐源其实更为广泛，因其可能并不仅仅有于官方账号发布的源，故其库存量更大，更容易找到音乐。</p>
+<p>如上面视频中的音乐《Now may we singen》，对我来说是一个整整十年级别的找歌难题。一切的起因是大约在2012年，优酷网上有人上传了一些关于欧洲长剑（longsword）相关的视频，推测是从Youtube搬运的，当时在优酷上关注度还挺高，至少在那时候中世纪相关的圈子里是这样。优酷网目前还有这个视频，但从上传时间（2014年）和叠加的水印来看可能已经被翻录了多次：<a href="https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html" target="_blank" rel="noopener">https://v-wb.youku.com/v_show/id_XODE4NTE3MDY0.html</a></p>
+<p>视频中相关的音乐我一直都没找到，视频内容中也没有给出背景音乐的信息。当我也开始使用Youtube后，在Youtube甚至连这个视频源都找不到了（有点讽刺的是，优酷网居然还留着有）。根据视频开头的元素，这个视频实际上是一个美国纽约州的剑术团体Lake Ontario Fechtschule制作的教学演示，由Todd Sullivan表演。网址为：<a href="https://toddsullivan.webs.com" target="_blank" rel="noopener">https://toddsullivan.webs.com</a> 。Lake Ontario Fechtschule从属于美国一个名为Selohaar Fechtschule的HEMA剑术团体，以德式长剑为主。而Selohaar Fechtschule又从属于美国一个名为The Order of Selohaar的民间神秘学团体，似乎至今仍有活动。他们的网址为：<a href="http://www.selohaar.org" target="_blank" rel="noopener">www.selohaar.org</a></p>
+<p>了解这些是为了找到视频源或者上传者，以求获得音乐的相关信息，但这个Lake Ontario Fechtschule可能早已经停止活动了，故有可能是上传者自行下架了视频。并且在整个Google上也无法找到这个视频，这个方法就行不通了。</p>
+<p>鉴于得不到任何相关的信息，于是我先是尝试了原始的笨办法：尝试听出歌词并搜索。对于有歌词的歌曲，很多情况下这是一个行之有效的方案，我曾经这样找到了好些日语歌曲。但这回实在是被彻底难倒了：开始我从听感上判断它可能是拉丁语，但实际上，它的歌词的主体是中古英语（Middle English），但加入了少量拉丁语，并且其中的很多英语词汇没有使用现代英语的读法和发音，而是采用了类似拉丁语的中世纪读法。种种变数导致我听的一头雾水，导致这个方法也告吹了。（如果你看到这里，可以先试试在不看下面歌词的前提下能听出几个“英语”单词xD）</p>
+<p>最终通过文首的方法终于找到了这个歌曲。现在我们再来分析一下这个东西究竟是何方神物。下文的大多数结论均来自这个页面：<a href="https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm" target="_blank" rel="noopener">https://www.hymnsandcarolsofchristmas.com/Hymns_and_Carols/now_may_we_syngyn_as_it_is.htm</a></p>
+<p>根据说法，《Now may we singen》是一首15世纪的英国歌曲，属于一种Medieval Carol，最早的音乐和诗歌均记录在一张15世纪的羊皮纸卷轴上，作者已不可考。现存于英国剑桥三一学院图书馆（Library of Trinity College），18世纪后的作家记录了一些不同的版本副本。</p>
+<p>现代版本（19世纪版本）的歌词和乐谱如下，其中副歌（Refrain）中反复出现的拉丁语“Quod puer natus est nobis”意为“（因为）那个孩子是为我们而生”。：</p>
+<blockquote>
+<p>Now may we singen as it is,<br>Quod puer natus est nobis</p>
+<ol>
+<li>This babe to us that now is born,<br>Wonderful workës He hath ywrought,<br>He would not lose what was forlorn,<br>But boldly again it bought;<br> And thus it is<br> For sooth I wis,<br> He asketh nought but that is His.</li>
+<li>This bargain lovëd He right well,<br>The price was high and bought full dear,<br>Who would suffer and for us feel<br>As did that Prince withouten peer?<br> And thus it is, etc.</li>
+<li>His ransom for us hath ypaid.<br>Good reason have we to be His.<br>Be mercy asked and He be prayed<br>We may deserve the heavenly bliss.<br> And thus it is, etc.</li>
+<li>To some purpose God made man;<br>I trust well to salvation.<br>What was His blood that from Him ran.<br>But fence against damnation?<br> And thus it is, etc.</li>
+<li>Almighty God in Trinity,<br>Thy mercy we pray with whole heart<br>Thy mercy may all woe make flee<br>And dangerous dread from us to start.<br> And thus it is, etc.</li>
+</ol>
+</blockquote>
+<img src="/2022/10/02/利用Youtube的版权审查功能来识别音乐或歌曲/4.jpg" title="d">
+
+<p>而Oxford Camerata所演唱的版本（即视频中的音乐）用的是原汁原味的15世纪原版歌词，相当难懂，据说一些字符甚至不能在HTML下正确显示出来：</p>
+<blockquote>
+<p>Now may we syngyn as it is<br>Quod puer natus est nobis.</p>
+<ol>
+<li>This babe to us that now is bore.<br>Wundyrful werkys he hath i wrowt.<br>He wil not lese that was I lore.<br>But boldly aƺen it bowth.<br> And thus it is<br> ffor sothe I wys<br> he askyth nouth but that is hys.</li>
+<li>This chaffare fouyd he rith weel.<br>The prys was hey &amp; bowth ful dere<br>Qwo wold suffre and for us feele<br>As dede that prince was owtyn pere<br> And thus it is, (etc.)</li>
+<li>Hys raunsum for us hath I payd.<br>Of resoun than we owyn to ben hys<br>Be mercy askyd and he be prayd.<br>We may be rith kalange blys.<br> And thus it is, (etc.)</li>
+<li>To sum parpos god made man.<br>I leue weel to saluacyoun<br>Qwat was his blood that fro hym ran.<br>But defens aƺens dampnacyoun.<br> And thus it is, (etc.)</li>
+<li>Almythy god in trynyte.<br>Thy mercy we pray wyth hool herte<br>Thy mercy may all woo make fle.<br>And daungerous dreed fro us do sterte.<br> And thus it is, (etc.)</li>
+</ol>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>音乐</tag>
+        <tag>艺术</tag>
+        <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客建好了~</title>
+    <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>博客建好了，算下来前前后后也搞了一整天的时间，因为对计算机和网页技术可以说是一无所知，导致在搭建过程中踩了一个又一个的坑，但终归还是解决了大部分的问题，现在还有一些页面没有处理，之后有时间的话会慢慢补起来. <a id="more"></a></p>
+</blockquote>
+<h2 id="这个博客的作用？"><a href="#这个博客的作用？" class="headerlink" title="这个博客的作用？"></a>这个博客的作用？</h2><p>建立这个博客的主要想法有三个，记录、学习、创作。</p>
+<h2 id="For-the-Record"><a href="#For-the-Record" class="headerlink" title="For the Record"></a>For the Record</h2><p>人们说，人类因为掌握了语言和文字才拥有了历史，那么记录下自己的足迹似乎是每个人都会感兴趣的事。</p>
+<p>&emsp;&emsp;但是现在国内的网络环境不容乐观，没有言论自由，安全隐患多，而且极不稳定。自从2017年360云盘关闭，19年7月百度贴吧清空历史，各种站点审查加剧等等类似的事件出现后，已经清楚的显示出国内的网络有多么不可靠，贴吧还算是我经常去的地方，现在经过这么一出，多少大佬辛苦创作的东西都瞬间消失了，只能认栽。再者，国内的大环境也出现了微妙的变化，不多说，可以预见的是，只能让互联网环境的变动更加剧烈。</p>
+<p>种种迹象表明，本地第一，国外网络第二，国内网络第三。只要是想保存自己的东西就必须按照这个前提走。</p>
+<p>&emsp;&emsp;这个博客是基于Github的，而且本身是静态，怎么想都比国内的那些站点靠谱得多，还没有广告弹窗。而且最重要的一点就是可以自己DIY，是真正的“只要你技术好，想怎么来就怎么来”。那说着说着就哭了，因为咱正好就没有技术，所以只能从最简单的一步一步爬。要学的还非常多。</p>
+<h2 id="Keep-Exploring"><a href="#Keep-Exploring" class="headerlink" title="Keep Exploring"></a>Keep Exploring</h2><p>&emsp;&emsp;今天搭建这个博客，其实很大一部分也是因为好奇，因为接触到了身边一些IT专业的人搞的博客，觉得非常有意思，最后也是用了简单的Github+Hexo的组合，按照教程摸过来。一来二去总是学到了一点构建网页前端这块的皮毛，当然还有markdown，也算是从无知到脚指头入门了。</p>
+<p>&emsp;&emsp;这个博客不是一个计算机技术相关的博客，但我还是准备把它打造成一个以技术和知识为主体的博客。可能会涉及很多方面。如果读了我的文章您能有所收获，那将会是我的荣幸——我不敢说我的文字的价值是否称得上您阅读的时间——但至少应该比国内那些毒瘤媒体推送的内容强一点。</p>
+<p>&emsp;&emsp;我不太爱用“外行内行”这样的词语来形容技术和知识，因为如果按照专业的标准来看的话，那我在任何一个方面都是彻底的外行人，难道就因为自己是“外行人”就无法产生兴趣，就不去了解学习了吗？当然不是的，而且我认为人应该警惕自己走入这样的套路里，特别是对于我现在这种要快30的人。人老了就不爱学可真不是开玩笑，了解了一些身边四五十岁的人的故事，他们其实在年轻时期（20-30岁）都拥有着比同时代人强得多的敏锐和干劲，但是由于没有持续学习跟进，现在已经落后很多了。</p>
+<p>&emsp;&emsp;这里有人可能会说我年轻说话不腰疼，这话绝对没错，我要是真到了那个年纪八成也逃不过这种命运，要么是生活所迫，要么是把时间都花在了其他的什么地方。但是不代表我就这么向年纪投降，束手就擒了啊。毕竟我现在还算年轻，虽是不敢说自己掌握了什么样的技术和知识，以后能成什么样的事，但我希望通过不断的学习，至少能让自己的见识走在时代的靠前，不至于在大是大非面前手足无措。</p>
+<h2 id="From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul"><a href="#From-the-Chaos-of-the-World-and-the-Torment-of-the-Soul" class="headerlink" title="From the Chaos of the World and the Torment of the Soul"></a>From the Chaos of the World and the Torment of the Soul</h2><p>&emsp;&emsp;假设现在有一个古代的野蛮人，他来到了一个山洞中，用石头在洞壁上刻了一个“火柴人”，他心满意足，认为墙上的人就是他自己，火柴人举起手中的石矛去征服高山和丛林，这让他相信总有一天他的后代还将迈进大海和天空，这就是创作的力量，此时他已经不是一个简单的野蛮人了，而是一个勇敢而又高贵的野蛮人。</p>
+<p>&emsp;&emsp;创作——并不是只有出自作家和艺术家之手的作品才叫创作，它可以是任何一种形式：在大脑中构思一个巧妙的算法是创作，钉出一排漂亮的篱笆木墙是创作，编一个沙雕段子是创作，甚至我们现在就拿起笔，在纸上画一个火柴人，也不比自己的祖先逊色多少。如果一个工程能够反映出创作者独有的、无法随意替代的意志和色彩，带有强烈的个人印记，并能够实现他所认同的价值，那么工程也即为艺术创作。这样看来，任何实现个人所认同的价值的劳动都可以视为艺术创作，正是这些真正具有创造性的内容带给了人们劳动的热情，才不会让生活沉沦；反过来讲，永不见底的机械式重复从来都不是人所最终追求的生活状态，只有机器才这么做。现实中由于少部分人对生产率和物质力量的疯狂追求，将更多的人变做永不停歇的机器，甚至让他们的生活变得岌岌可危，这还谈什么创作呢？</p>
+<p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
+<p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写了，岂不是大大的丢人。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>如何移植hexo到新的设备上</title>
+    <url>/2020/04/25/%E5%A6%82%E4%BD%95%E7%A7%BB%E6%A4%8Dhexo%E5%88%B0%E6%96%B0%E7%9A%84%E8%AE%BE%E5%A4%87%E4%B8%8A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>关于更换机器后如何移植hexo的简述<a id="more"></a></p>
+</blockquote>
+<p>最近新入手一个电脑，想把整个博客都移植到新电脑上编辑操作，看了很多教程后大概明白了步骤，可能是因为都是静态文件的原因，搬起来还挺简单的，似乎即使新设备是mac系统一样可以这么操作。以下是具体步骤：</p>
+<p>1.给新设备安装Git和Node.js，这个是必须得有的。</p>
+<p>2.给新设备添加SSH密钥。打开Git Bash：<br>虽然新设备肯定是没有SSH了，不过这里为完备起见，可用下面的方法检测本机器已经拥有的的SSH：<br><code>$ ls -al ~/.ssh</code><br>如果终端输出的是：<br><code>cannot access ... No such file or directory</code><br>那么就说明本地没有SSH key<br>如果显示出一堆 id_rsa 和 id_rsa.pub文件的存在以及它们的创建日期，就说明此设备存在SSH，需要考虑移除该设备的SSH。简单来说就是直接把<code>C:\Users\机器用户名\</code> 下的.ssh文件夹里的id_rsa 和 id_rsa.pub给删了就行了。</p>
+<p>好的现在开始正式创建SSH key，Git Bash里输入：<br><code>$ ssh-keygen -t rsa -C &quot;你的GitHub邮箱地址&quot;</code><br>然后三次回车键（跳过passphrase口令，即给SSH本身设置一个保护密码，相当于二道锁，建议跳过），就在用户目录生成了一个名为.ssh的文件夹，里面有id_rsa和id_rsa.pub两个文件，用户目录就是C:\Users\XXX这里。ssh文件可以备份一下，登录Github的用户界面,找到Settings里面的SSH and GPG keys，里面可以看到旧的ssh密钥，点击new SSH key添加一个新的ssh密钥，Title可以自定义，内容填入记事本打开id_rsa.pub里的内容（开头为ssh-rsa后面跟着一大串字母）。点保存即可，旧的SSH也可以移除了。</p>
+<p>可以测试一下ssh，在Git Bash里输入<br><code>$ ssh -T git@github.com</code>（注意这里的邮箱地址就是<a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>，并不是注册邮箱地址）<br>此时可能跳出一行host确认信息，直接输入yes，此时会看到：Hi &lt;你的用户名&gt;! You’ve successfully authenticated, but GitHub does not provide shell access.则表示配置成功。</p>
+<p>接下来还需要配置<br><code>$ git config --global user.name 你的用户名</code>（格式为”xxxxxx” 即github的登陆用户名，非昵称）<br><code>$ git config --global user.email 你的github邮箱地址</code>（”<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>“ 即github注册邮箱）<br>这个不配置的话似乎会在hexo d的时候跳出”please tell me who are you”的问题。</p>
+<p>3.接下来就是装hexo，打开Git Bash，输入<br><code>$ npm install hexo-cli -g</code><br>这步其实非常慢，回车键发现没反应需要等，等了N久都没用或者出错怎么办？可以强关Git，在Git里执行npm uninstall hexo卸载hexo（没装上的话这步是没用的，以防万一），然后在C:\Users\用户名\AppData\Roaming里把npm和npm-cache文件夹都删掉，这样让新设备回到安装前的初始状态，再尝试安装hexo。</p>
+<p>有人说国内hexo的npm源有问题，经我测试是没有问题的，npm hexo的时候也没有挂梯子，正常安装即可。</p>
+<p>4.这里我们确认hexo已经安装好了，就可以开始创建本地仓库。建议自己建一个路径简单的文件夹，这里注意一下，最好和旧设备的路径是一样的，比如我的是D:\Blog\Aetherial，空文件夹建好后，将旧博客的一些文件复制进来，这些文件是：</p>
+<p>source/（博客文章内容）<br>theme/（博客主题）<br>scaffolds/（文章模板）<br>_config.yml（网站配置文件）<br>package.json（有关使用的包）<br>.gitignore（忽略选项）</p>
+<p>其他文件不要复制进来。</p>
+<p>上述文件都复制好以后，在git bash中cd到该目录：<br><code>$ cd /d/blog/aetherial</code>（这是我的目录）<br>然后<br><code>$ npm install</code>（注意，不是npm init）<br>这步安装完，大部工作就解决了。</p>
+<p>5.为了使用hexo d还需要执行<br><code>$ npm install hexo-deployer-git --save</code><br>若博客还设置有RSS订阅还需<br><code>$ npm install hexo-generator-feed --save</code>（这里认为config.yml里的配置都是正常的）</p>
+<p>6.这样就彻底完成了。可以用本地预览服务先看一下：<br><code>$ hexo s -p 5555</code><br>这里的5555是自己随便定的端口名称，不同的程序使用的端口五花八门，有可能会出现端口占用冲突的问题，建议就5555。</p>
+<p>7.本地预览能成功的话那基本就没啥问题了，可以尝试hexo clean、hexo g一遍，看看能否正常工作。最后新建一个测试用的博客文章，尝试hexo d，验证一下是否上传成功。刚移植完后第一次hexo d似乎要输入一遍Github的账号和密码确认，之后就不用了，因为已经添加了ssh密钥。</p>
+<p>本地预览失败？重新检查步骤4以后的内容，特别是_config.yml里的内容是不是正确。</p>
+]]></content>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>大型翻译计划：魔兽世界日记</title>
+    <url>/2022/03/23/%E5%A4%A7%E5%9E%8B%E7%BF%BB%E8%AF%91%E8%AE%A1%E5%88%92%EF%BC%9A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>一个大约100,000英文字符的翻译计划<a id="more"></a></p>
+</blockquote>
+<p>《魔兽世界日记：一部电脑游戏开发志（The WoW Diary：A Journal of Computer Game Development）》是约翰·斯塔茨（John Staats）所著的一本书，约翰·斯塔茨是暴雪早期团队的一位老成员，主要负责关卡设计方面的任务。该书在2018年于Kickstarter上发起众筹，并于2019年底发布。虽然约翰·斯塔茨早已不在暴雪公司工作，也不再参与游戏开发了，但他在《魔兽世界日记》中所提到的有关魔兽世界的早期开发内容以及相关信息，仍是我们能了解香草时代魔兽世界的前生后世，以及2000年前后的暴雪公司运作内幕细节的一个可靠来源。</p>
+<p>此书的众筹据说也是一波三折，因为暴雪公司（现在的）并不希望有人披露这些详细内容，但斯塔茨仍然完成了这项工作。虽然此书已经于2019年发布，但迄今为止，我还没有在中文互联网上看到有关此书的整体翻译工作。故打算在这段时间里将此书全文翻译，总共约100,000个英文字符，这个工作量也不算太恐怖，目前已经完成了大约1/5内容的初步汉化。</p>
+<p>约翰·斯塔茨的行文相当有趣，对很多专业术语也进行了详细解释，所以翻译难度并不是很高。我打算将分多个部分将初步翻译内容上传到博客里，之后进行润色修正后，博客也将一并更新。</p>
+<hr>
+<p>喔咯咯！5月10号终于翻译完了，10万英文字符居然有300多页（吐了），我也真是头铁…PDF版也做好了，之后会单独开个页面提供下载直链。我想顺便利用一下hexo的pdf功能…<br>译文文档下载页面见新发布的：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a></p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>翻译</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>测试一种新的画风</title>
     <url>/2019/10/18/%E6%B5%8B%E8%AF%95%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84%E7%94%BB%E9%A3%8E/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -731,37 +731,6 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个尖耳朵小姐姐</title>
-    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
-</blockquote>
-<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
-<hr>
-<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
-<p>接下来说一下设计思路：</p>
-<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
-<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
-<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
-<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
-<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
-<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
-<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
-<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
-<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
-<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
-<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
-<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
-<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
-<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
-<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>画一个Q版二头身</title>
     <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -776,36 +745,6 @@
 <p>所以我觉得既然我模仿不来韩国人那种萌幼型，倒不如整一个偏成熟一点的角色，不自然就画了一套制服，觉得只有制服也太单调了于是又给帽子上加了一个羽毛装饰 <del>列克星敦</del>，相对于头盔来说我确实不太熟悉各种制服帽、军帽的样式和结构，也就随便凑合了一下。</p>
 <p>右手参考了一些军用电脑，也就是俗称的“三防笔记本”。画完感觉有点变得像是个卖笔记本电脑的广告…</p>
 <p>因为一开始就做好了制作亚克力的打算，所以刻意加厚了最外层的轮廓线以提高外形辨识度，也没有对这部分做变色处理，从实际效果来看这是个正确的方法。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个罗斯贵族骑兵</title>
-    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
-</blockquote>
-<a id="more"></a>
-<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
-<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
-<p>大概描述一下几个部件的设计思路。</p>
-<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
-<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
-<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
-<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
-<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
-<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
-<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
-<hr>
-<p>接下来说一下画的过程中的想法。</p>
-<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
-<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
-<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
-<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
-<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
 ]]></content>
       <tags>
         <tag>绘画</tag>
@@ -856,6 +795,67 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个尖耳朵小姐姐</title>
+    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
+</blockquote>
+<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
+<hr>
+<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
+<p>接下来说一下设计思路：</p>
+<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
+<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
+<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
+<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
+<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
+<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
+<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
+<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
+<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
+<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
+<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
+<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
+<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
+<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
+<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>画一个罗斯贵族骑兵</title>
+    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
+</blockquote>
+<a id="more"></a>
+<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
+<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
+<p>大概描述一下几个部件的设计思路。</p>
+<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
+<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
+<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
+<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
+<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
+<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
+<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
+<hr>
+<p>接下来说一下画的过程中的想法。</p>
+<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
+<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
+<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
+<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
+<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>简单的手动批量下载网页图片的方法</title>
     <url>/2021/04/09/%E7%AE%80%E5%8D%95%E7%9A%84%E6%89%8B%E5%8A%A8%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -888,6 +888,50 @@
       <tags>
         <tag>网页</tag>
         <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>绘画（3）</title>
+    <url>/2025/08/31/%E7%BB%98%E7%94%BB%EF%BC%883%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>今年的几张插画作品<a id="more"></a></p>
+</blockquote>
+<img src="/2025/08/31/绘画（3）/1.png" title="a">
+<img src="/2025/08/31/绘画（3）/2.jpg" title="b">
+<img src="/2025/08/31/绘画（3）/3.jpg" title="c">
+<img src="/2025/08/31/绘画（3）/4.jpg" title="d">
+
+<hr>
+<p>我感觉我效率确实比以前高了，但整体看下来也就只是高了那么一丢丢，甚至还是没法做到平均一个月画一张图，而且最近换了电脑之后不知道是什么原因，脖子还出现了问题，坐电脑前面坐几个小时就脖子疼了，不仅影响了画画，连玩游戏也受影响了，吓得我赶紧买了几个可调式头枕、护脖什么的变身霍金，等明天东西到了试试效果看看能不能好转，希望这玩意不要成为我后面头疼的问题。</p>
+<p>我个人总体上挺满意第一张的效果，就是有点Galgame的CG图的感觉，有人可能会说，哎呀哎呀..你也终于要开始画本子了吗…事实上是，一方面我确实不怎么会画人体结构，兴趣也没有那么大；另一方面是，即使是在艺术上，我感觉我也算是观念比较保守的那类人。而且我个人一直认为，那些真正让人觉得具有顶级性吸引力的人物或者画面，无论是现实中还是作品里，往往和性本身的关系都没有那么直接，或者说，直截了当的性描写往往让人感觉很是俗套，难以让角色具有那种独特的吸引力。所以为了让角色不至于太过暴露，刻意地进行了一些“审查”，但是效果很不好，改了几遍后，甚至连胸部的方向都出了问题…于是只能就此停手。好在背景的月亮是这几张图里花时间最多的，效果还算令人满意。</p>
+<p>第二张是橙汁社（Orange_Juice）系列游戏中，角色Sora的同人作品。Sora这个角色是我刚开始学习漫画时就尝试过画的（下图），到现在差不多是整整6年了，这么一看好像区别也不是特别大…</p>
+<img src="/2025/08/31/绘画（3）/5.png" title="e">
+
+<p>第三张是想尝试一下具有一些赛博朋克（Cyberpunk）风格的上色，因为不是特别喜欢那种特别高的饱和度，所以没有选用那种常见的色卡，而是完全凭感觉，最初的目标是想画一个有点坏坏的大小姐，后来画成了精神小妹。这次的背景也不是纯粹敷衍了，做出了一点类似于摄影或者修图上的那种晕影效果，我完全没接触过摄影和修图，这些其实都是在玩《无限暖暖》的时候接触到的。</p>
+<p>最后是之前的原创角色Caelia的再一张2.5头身，花时间搞了一个略微具有运动感的姿势。很少画这种透视夸张的结构，武器也改了好久，从我画画开始我就发现武器单拉出来画还好，一旦和角色结合就立刻变成一个令人头疼的事情，特别是这种2.5头身，由于比例结构的原因，适配现实中的武器是个麻烦事，思来想去，还是把RPG-7火箭筒进行了“卡通化处理”。最后的结果也就是凑合能看，弹头的朝向似乎依然还是有点问题。</p>
+<p>到目前为止，还制作了两张比较简单一点的卡通风格的画，我另开一篇文章贴出来。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>随想</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>绘画（4）- 简单又可爱的两幅图</title>
+    <url>/2025/08/31/%E7%BB%98%E7%94%BB%EF%BC%884%EF%BC%89-%E7%AE%80%E5%8D%95%E5%8F%88%E5%8F%AF%E7%88%B1%E7%9A%84%E4%B8%A4%E5%B9%85%E5%9B%BE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>可爱风格的简单二创作品！<a id="more"></a></p>
+</blockquote>
+<img src="/2025/08/31/绘画（4）-简单又可爱的两幅图/1.png" title="a">
+<img src="/2025/08/31/绘画（4）-简单又可爱的两幅图/2.png" title="b">
+
+<hr>
+<p>比起之前那些很费力气的图，画这样的作品真是能让人轻松好多呢，画完感觉自己都变得可爱了！第一张很大程度上模仿了《无限暖暖（Infinity Nikki）》里游戏内置的表情包，鉴于这个游戏目前还没有出“滑稽脸”的表情，我就尝试做了一个，有效弥补了我们暖暖不能滑稽脸的问题。第二张图则还是经典的《冒险岛（Maplestory）》的怪物形象，参考了目前冒险岛官方的画风，本来还在中间放了个绿水灵，结果实在画不出想要的效果，就删掉了..</p>
+<p>之后有空还会制作类似风格的作品，因为画的真的很开心！</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>随想</tag>
       </tags>
   </entry>
   <entry>
@@ -948,8 +992,8 @@
 <p>重启Xshell6即可绕过更新。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -975,8 +1019,8 @@
 <p>然后再deploy的时候就没有任何问题了。</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
         <tag>hexo</tag>
       </tags>
   </entry>
@@ -1030,8 +1074,8 @@
 <p>算了我也懒得想太多了。今天还解决了一个小问题，即修改了网页标题名称。该条目由 themes/主题/layout/_head.pug 里的条目控制，发现这个主题的网页标题是优先显示为文章页面、次级栏目（如归档等等）的标题，如果是主页的话则显示为博客的title名。并且后面一律加上一个博客的subtitle名。觉得这样的标题实在太长，副标题出现在网页上也很麻烦，因为我不想让浏览器标签栏含有的信息太多（比如某个好事的家伙来偷窥你的屏幕）。修改见效，并且还仿照A站B站的做法加了一个卖萌向颜文字表情，然后发现竟然能加emoji？..最后反倒是变得更花哨了…</p>
 ]]></content>
       <tags>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
         <tag>hexo</tag>
       </tags>
   </entry>
@@ -1251,8 +1295,8 @@
 
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>软件</tag>
+        <tag>游戏</tag>
         <tag>攻略</tag>
       </tags>
   </entry>
@@ -1288,8 +1332,8 @@
 ]]></content>
       <tags>
         <tag>网页</tag>
-        <tag>文化</tag>
         <tag>随想</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1493,8 +1537,8 @@
 
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>软件</tag>
+        <tag>游戏</tag>
         <tag>攻略</tag>
       </tags>
   </entry>
@@ -1504,24 +1548,25 @@
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
 <p>前段时间装了几个电脑，简单总结一下2025年装机的基本操作。<a id="more"></a></p>
 </blockquote>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>&emsp;&emsp;首先我们需要一些工具。一把5mm或6mm直径的大十字螺丝刀，这是我们装机的主力工具，绝大多数机箱螺丝都是用它安装，这把螺丝刀长度不能过短；一把3mm的小十字螺丝刀，可能会被用来安装M.2固态硬盘、SATA设备或其他用途，如果没有这些设备可以不要；一包扎带（至少100个，且其颜色和机箱主色调不冲突），主要用来固定走线；一把尖头的剪刀，主要用来剪扎带；一卷电工胶带，用来加固风扇的RGB串联线。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>&emsp;&emsp;首先我们需要一些工具。一把5mm或6mm直径的大十字螺丝刀，这是我们装机的主力工具，绝大多数机箱螺丝都是用它安装的，这把螺丝刀的长度不能过短；一把3mm的小十字螺丝刀，可能会被用来安装M.2固态硬盘、SATA设备或其他用途，如果没有这些设备可以不要；一包扎带（至少100个，且其颜色和机箱主色调不冲突），主要用来固定走线；一把尖头的剪刀，主要用来剪扎带；一卷电工胶带，用来加固风扇的RGB串联线。</p>
 <p>&emsp;&emsp;选配件。这里我们不着重讨论性能问题，重点放在各配件之间在机械上是否能够正常装配，比如显卡长度，主板大小，电源大小，以及主机箱尺寸是否足够大以容纳这样的显卡或主板等。选购顺序建议如下（以下不列出包括显示器在内的外设）：</p>
 <ul>
-<li>CPU→主板→独立显卡→内存条（一般是2根）→M.2固态硬盘→机箱→散热器（风冷或水冷二选一）→电源→风扇若干。</li>
+<li>CPU→主板→独立显卡→内存条（一般是2根）→M.2固态硬盘→机箱→电源→散热器（风冷或水冷二选一）→风扇若干。</li>
 </ul>
 <p>打开某东某宝或者某多，下单所需的配件。这里需要注意以下几点：</p>
 <ul>
 <li>如果你不打算购买独立显卡，那么必须确定选购的CPU有核心显卡功能，否则无法正常工作。</li>
 <li>购买风扇需要提前了解我们选购的这个机箱的风道，以及机箱本身是否自带风扇，从而购买对应数目的正反叶风扇。一般来说都会遵循“前进后出，底进上出”的原则。如何分辨正反叶风扇？我们一般将风扇【没有】加强筋结构和铭牌信息的那一面称为正面，观察风扇的叶片，叶片上尖锐的那个角如果更靠近正面，那么就是正叶风扇；反之，是反叶风扇。如果购买的是水冷冷排，一般会附带有冷排位置的风扇。</li>
-<li>关于风冷和水冷散热器的选择。我个人建议以整机配置为准：高端配置都建议用水冷，而且是质量好的水冷，水冷的极限散热能力是高过风冷的；中端配置风冷水冷均可，水冷更安静，风冷耐用、更便宜、安装也更方便；低端配置无脑选风冷，安全可靠性价比高，还能卖二手。如果选择的是“海景房”机箱，不建议选择风冷散热器，个人认为很难看。</li>
+<li>关于风冷和水冷散热器的选择。我个人建议以整机配置为准：高端配置都建议用360水冷，而且是质量好的360水冷，水冷的极限散热能力是高过风冷的；中端配置风冷水冷均可，水冷更安静，风冷耐用、更便宜、安装也更方便；低端配置无脑选风冷，安全可靠性价比高，还能卖二手。</li>
+<li>如果你的主板、CPU以及显卡这些高价值配件不是从官方渠道或官方授权的线上商店购买的，拆盒子之前最好录一个拆箱视频；从官方渠道购买的当然也建议录上，从官方渠道购买且胆子大的可以不录（比如说我）。但要注意，如果你的配件是从二手渠道购买的（比如某鱼），一定要做万全的证据收集，建议从拆快递盒子开始就录视频，骗子真的很多。</li>
 </ul>
-<p>&emsp;&emsp;把配件运回家（注意，机箱可能会非常重！）。等配件到齐后就可以开始装配。如果你的主板、CPU以及显卡这些高价值配件不是从官方渠道或官方授权的线上商店购买的，拆盒子之前最好录一个拆箱视频；从官方渠道购买的也建议录上，胆子大的可以不录（比如说我）。</p>
+<p>&emsp;&emsp;把配件运回家（注意，机箱可能会非常大且沉重！）。等配件到齐后就可以开始装配。</p>
 <h2 id="开始装机"><a href="#开始装机" class="headerlink" title="开始装机"></a>开始装机</h2><h3 id="1-拆箱"><a href="#1-拆箱" class="headerlink" title="1. 拆箱"></a>1. 拆箱</h3><p>&emsp;&emsp;打开机箱盒子，我们打开主板、机箱、电源、散热器这4个配件的包装盒后，务必将其说明书都摆在一个方便查看的位置上。按照说明书将机箱上能拆卸的部件（包括侧面、顶面或正面的挡板、风扇或冷排架、防尘网等等）全部拆下，将玻璃部件（如果有）放置在一个远离安装区域的安全的位置；取出机箱附带的螺钉盒，一般放在电源位置或机械硬盘仓附近。</p>
-<p>&emsp;&emsp;双手摸一摸金属水管、水龙头，不锈钢防盗窗或者大铁门也可以，以去除静电；安装时不要穿毛衣或其他容易起静电的衣服，不建议戴手套。打开主板盒子，把主板放在主板盒子上。</p>
+<p>&emsp;&emsp;双手摸一摸金属水管、水龙头，不锈钢防盗窗或者大铁门也可以，以去除静电；安装时不要穿毛衣或其他容易起静电的衣服，不建议戴手套。打开主板盒子，把主板正面朝上放在主板盒子上。</p>
 <h3 id="2-安装主板"><a href="#2-安装主板" class="headerlink" title="2. 安装主板"></a>2. 安装主板</h3><p>&emsp;&emsp;严格按照主板说明书的指示依次安装CPU、内存条、固态硬盘。需要特别注意内存条的安装位置，一般双通道内存（2根）优先插在第2和第4槽位。M.2固态硬盘有多种样式，安装到对应的M.2槽位上，不论是有1根还是多根M2固态，把将要作为系统盘的那个固态装在最靠近CPU的那个槽位上。如果主板有散热片，最后需要撕掉散热硅胶的保护膜，让散热片直接接触固态硬盘。</p>
 <p>&emsp;&emsp;把主板装进机箱里，按照机箱说明书，取出对应的螺丝将主板安装好。注意，某些螺丝孔可能藏在M.2硬盘位置的散热片之下。拧螺丝力道不能过大，否则有可能将主板电路板拧坏。</p>
-<h3 id="3-散热器和风扇"><a href="#3-散热器和风扇" class="headerlink" title="3. 散热器和风扇"></a>3. 散热器和风扇</h3><p>&emsp;&emsp;安装机箱后部单个风扇。这个风扇一般都是正叶风扇，安装时，将风扇正面尽可能朝向电脑正常使用时的用户的视线。这意味着这个风扇一般正面向里（从机箱侧面观察到的是正面）。风扇一般都具有两根线：控制线以及RGB线（灯光线），控制线一般插在主板的SYS_FAN_x上，而RGB线一般插在JARGB_V2_x上（即5V3针的RGB插口）。风扇之间的同类型线可以串联，建议把同一组（如顶部的2个或3个风扇）风扇的同类型线串联在一起，如RGB线串接RGB线、控制线串接控制线，然后只把最后那个端头再接到主板上就行。这些线相互串接的位置都不是很结实，控制线的对接处建议用扎带加固；RGB线对接位置建议用电工胶带加固。一般情况下，一个SYS_FAN接口最多串接3把风扇，超过这个数目可能导致接口过载；一个JARGB_V2接口上建议最多串接不超过10个5V的RGB灯，真实情况需要看主板和灯光的具体参数。我个人觉得机箱走线是有些讲究的，这里受制于文字限制，难以描述走线的细节，最好参考一些视频以获得直观认识。不过从我的经验看，除非你东西真的非常非常多，否则都不建议使用集线器，很难接，风扇线不够长的话就去再买一两根延长线。</p>
-<p>&emsp;&emsp;将机箱横躺（即主板朝上），按照散热器说明书安装散热器，一般来说需要根据CPU类型的不同（AMD还是Intel）安装对应的支架，才能装上散热器。如果是水冷散热器，先在机箱外部将水冷自带的风扇安装在冷排上，并将风扇线都走好，再将冷排装到机箱上，再按照说明书安装支架，并将冷头装在支架上。注意安装时不要让水冷头砸到主板。受制于风扇的走线，冷头的线我们可以放在最后再去接。如果是风冷散热器，风冷头的控制线一般会接在CPU_FAN上；水冷的话，水冷头的控制线一般是接在PUMP_FAN上，而将冷排的风扇组接在CPU_FAN上。水冷头或风冷头如果带有RGB线，按照说明书接到对应主板插口。</p>
+<h3 id="3-散热器和风扇"><a href="#3-散热器和风扇" class="headerlink" title="3. 散热器和风扇"></a>3. 散热器和风扇</h3><p>&emsp;&emsp;安装机箱后部单个风扇。这个风扇一般都是正叶风扇，安装时，将风扇正面尽可能朝向电脑正常使用时的用户的视线。这意味着这个风扇一般正面向里（从机箱侧面观察到的是正面）。风扇一般都具有两根线：控制线以及RGB线（也就是灯光线，不发光的风扇没有RGB线）。控制线一般插在主板的SYS_FAN_x上（一些老主板可能叫CHA_FAN），而RGB线一般插在JARGB_V2_x上（即5V3针的RGB插口）。风扇之间的同类型线可以串联，建议把同一组（如顶部的2个或3个风扇）风扇的同类型线串联在一起，如RGB线串接RGB线、控制线串接控制线，然后只把最后那个端头再接到主板上就行。这些线相互串接的位置都不是很结实，控制线的对接处建议用扎带加固；RGB线对接位置建议用电工胶带加固。一般情况下，一个SYS_FAN接口最多串接3把风扇，超过这个数目可能导致接口过载；一个JARGB_V2接口上建议最多串接不超过10个5V的RGB灯，真实情况需要看主板和灯光的具体参数。我个人觉得机箱走线是有些讲究的，这里受制于文字限制，难以描述走线的细节，最好参考一些视频以获得直观认识。不过从我的经验看，除非你东西真的非常非常多，否则都不建议使用集线器，很难接，风扇线不够长的话就去再买一两根延长线。</p>
+<p>&emsp;&emsp;将机箱横躺（即主板朝上），按照散热器说明书安装散热器。首先先说硅脂问题，装散热器之前要先观察散热器有没有预涂散热硅脂，如果有的话，撕开保护盖直接扣在CPU上即可；如果没有预涂硅脂，则需要自己手动给CPU上涂抹硅脂，涂硅脂的操作比较细节，建议参考一些视频。散热器本身的安装如下，一般来说需要根据CPU类型的不同（AMD还是Intel）安装对应的支架，才能装上散热器。如果是水冷散热器，先在机箱外部将水冷自带的风扇安装在冷排上，并将风扇线都走好，再将冷排装到机箱上，再按照说明书安装支架，并将冷头装在支架上。注意安装时不要让水冷头砸到主板。受制于风扇的走线，冷头的线我们可以放在最后再去接。如果是风冷散热器，风冷头的控制线一般会接在CPU_FAN上；水冷的话，水冷头的控制线一般是接在PUMP_FAN上，而将冷排的风扇组接在CPU_FAN上。水冷头或风冷头如果带有RGB线，按照说明书接到对应主板插口。</p>
 <p>&emsp;&emsp;安装机箱顶部风扇组。这些风扇一般是正叶风扇。控制线和RGB线接在主板右上角位置。如果是水冷散热，我们上一步已经执行过了这个内容。</p>
 <p>&emsp;&emsp;安装机箱底部风扇组。这些风扇一般是反叶风扇。控制线和RGB线都接在主板下方。</p>
 <p>&emsp;&emsp;安装机箱正面或侧面风扇组。注意，如果是“海景房”机箱，这些风扇一般装在侧面，且均为反叶风扇（使用者从机箱侧面透过玻璃看，观察到的是风扇正面）；如果是侧透机箱，这些风扇一般装在正面，且均为正叶风扇（使用者从机箱正面看，观察到的是风扇正面）。</p>
@@ -1606,8 +1651,8 @@
 <p>&emsp;&emsp;这下算是说清楚了为什么一百年都没做到的原因，是人出了大问题：<strong>他目光太短浅，太急功近利，没有意识到那些不能直接给他带来物质利益的、看不见摸不着的东西的重要和伟大之所在</strong>；就算是有幸意识到了，却放不下那个架子，不肯改变自身的形象；他害怕新东西，不适应事情的变化，怕新事物超出了他的控制范围，最终却要去主动抵制这些新事物带来的变革。甚至我敢说，只要再有人认识不到、或是不承认这样的落后，这个国家就还要继续在这个荒唐的迷宫中兜兜转转下去，一百年都不止。</p>
 ]]></content>
       <tags>
-        <tag>文化</tag>
         <tag>随想</tag>
+        <tag>文化</tag>
       </tags>
   </entry>
   <entry>
@@ -1750,99 +1795,6 @@
       </tags>
   </entry>
   <entry>
-    <title>《魔兽世界日记》译文与译后感想</title>
-    <url>/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>由约翰·斯塔茨所著的《魔兽世界日记》我已经翻译完毕了，本文是翻译过程的总结与感想，对MMO游戏的想法与未来展望，以及翻译过程中的一些注释等。 <a id="more"></a></p>
-</blockquote>
-<embed src="./魔兽世界日记：一部电脑游戏开发志 汉化v1.1.pdf" width="100%" height="700" type="application/pdf">
-
-<p><strong>如果上面那个玩意失效了也可以点击下面这个MEGA盘链接来获取pdf文件（内附原文）：</strong><br><strong><a href="https://mega.nz/file/MpsCGDBa#-nWVzvnUREbArpYIcv2T1OQE8FFK6IBDrFfdUm_h9QY" target="_blank" rel="noopener"><font color="blue">→点这里获取MEGA盘下载链接←</font></a></strong></p>
-<hr>
-<p>&emsp;&emsp;经过一个多月断断续续的进展，这部《魔兽世界日记》终于被我翻译完毕了，没想到10万字英文字符居然翻译成汉语有250页之多！我本以为这会像之前那个《1994年暗黑1开发文档》一样会是个小册子之类的玩意，结果整出来一本书…可以说我还从来没翻译过这么多的文本量。就像作者这部书中说的——“再也不想参与开发另一个MMO了”，而我也“再也不想翻译另一个10万字了”。</p>
-<p>&emsp;&emsp;翻译工作实在是挺耗时间精力的，虽然翻译本身肯定是有用的，好的翻译比烂的翻译当然要出色很多，我自己买名著的时候都要先挑译者，没人愿意读烂的翻译的。但我总感觉它的“原创性”相对于写文章写代码或者设计制造等等工作来说，又好像没那么强，毕竟到头来还是在“翻译”别人的作品，所以说从原创性带来的动力也似乎没有那么高，这样的过程一天可能要消耗十个小时以上，难免枯燥乏味。好在这回还是我自己选了一个感兴趣的目标在翻译，但想想看，要是职业翻译人员去翻译一本和自己的专业完全不搭界的作品，那这折磨程度起码对我来说是难以想象的…可能甚于搬砖…</p>
-<p>&emsp;&emsp;我不是语言专业人士，翻译的也并不是很好，如果有人对我的翻译有任何不满，我当然也全盘接受。毕竟我已经将这个翻译结果公开，纯属“用爱发电”了。但几年前一个特殊的机会下，我对国内的翻译行业也稍微做过一些了解。起码在英译汉这行，待遇是真的不行，不仅翻译本身是苦力活不说，出版公司坑、骗译者的现象也比比皆是，甚至前段时间还出现过译者去世三年还没拿到翻译费的离谱事件。所以我真心希望以后的智能机器能取代这样的工作，把人解放到更具创造性的岗位上去。</p>
-<p>&emsp;&emsp;好了吐槽到此为止，接下来是正经内容。除了WoW上的工程问题之外，约翰·斯塔茨在本书中给出的最有价值的东西，无疑是他对于游戏市场和游戏开发的个人看法，以及暴雪早期的公司运作理念了。根据约翰·斯塔茨的描述，暴雪在早期的行事理念是“重技术、重实力、轻营销”的，他不止一次提到了暴雪对它当前市场运作模式的蔑视。并回答了为什么暴雪能够脱颖而出——因为它“不走寻常路”。暴雪能够做出成绩，很大一部分归功于暴雪的制作人拥有相当的自由度，他们不太受制于资金与市场的按部就班的规则，从而可以进行自由开发。这样也最大程度上避免了工作室、高管和投资方相互欺骗的恶性情况。</p>
-<p>&emsp;&emsp;而对于游戏开发来说，好玩是胜过一切的，游戏开发看上去很大一部分是工程问题，而核心实则是艺术，有点像是建筑艺术之于盖民房，游戏要能玩没有恶性bug是工程问题，民房结构坚固不漏水是工程问题，但房子要好看，游戏要好玩就是艺术问题了。这涉及到对“范式”的理解和对“创新”的把握，书中提到，有两类开发者犯了这样的错误：第一种就是按部就班地照搬现成的流行玩法，简单来说就是“谁火抄谁”。诚然，我们知道暴雪自己也是“谁火抄谁”，但区别就在于暴雪能够做到“青出于蓝而胜于蓝”，它深刻剖析现有范式中谁好玩，谁不好玩，好玩在哪里，不好玩在哪里，并从中吸取教训，吸收那些优秀的设计，摒弃那些不好的设计。最终能够在现有的范式的基础之上做出创新，创造出前所未有的玩法。而第二类错误就是“无脑创新”。没有考虑创新的内容是否就好玩，是否就比现成的要高明很多。这样的创新实际上是负作用。事实上我们也可以看到，很多游戏给出的新玩法并不有趣，这样的工作只能骗骗不懂游戏的投资商人，而很多工作室靠此为生，也给市场带来了很多良莠不齐的产品。所以说，游戏开发者要做到“兵形象水”，不仅要是严谨高效的工程师，还要是善于变通的艺术家。</p>
-<p>&emsp;&emsp;已经有很多证据能说明暴雪早期的游戏开发者精通此道，之前最广为流传的就是说他们人均游戏高手，这确实也在书中得到了证实，参与开发MMO的人员玩遍了市面上的MMO游戏，在EQ这样的游戏中甚至有一支成熟的公会队伍。斯塔茨说，他们还拒绝过一点都不玩游戏的程序员的应聘。开发游戏的人到底玩不玩游戏呢？我想答案已经有了，优秀的游戏开发者肯定是玩游戏的，而今天我们却看到这样的状态已经时过境迁：拿暗黑破坏神4来说，在刚发售不久后，暴雪的官方频道做了一个“设计师玩暗黑4”的视频，结果彻底成了大家的笑柄，视频中的两个设计师完全不熟悉游戏，其中一人甚至全程平A，也没有对角色应该怎么玩做任何尝试和摸索，虽然事后暴雪称视频中的两个“开发者”是美工人员，但我们还是能从他们的操作意识看出，这些人确实是不玩游戏的。暴雪早就不是以前那个暴雪了。</p>
-<p>&emsp;&emsp;如同在《魔兽》中一句人尽皆知的话一样——“王权没有永恒（No king rules forever）”，那个由约翰·斯塔茨看作是梦想的舞台，而不仅是一份工作的雇主的暴雪，它那曾经行业顶尖的创造力确实已经衰落了。本书中所提到的那些核心人物，诸如亚伦·亚德汉（Allen Adham）、马克·科恩（Mark Kern）、杰夫·卡普兰（Jeff Kaplan）等都已经先后离职，“魔兽宇宙”的创造者克里斯·梅森（Chris Metzen）也于2016年退休。曾参与《魔兽世界》制作的“二队”的开发人员在如今的暴雪公司已所剩无几，连作者本人也在“泰坦”项目失败后离职。更不要说暴雪公司前些日子还爆出了对员工进行欺压和性骚扰的事件，一切最终导致了暴雪于2022年1月被微软整个收购。暴雪曾经引以为傲的星际、暗黑、魔兽，随着RTS、Diablo-like和MMORPG辉煌时代的过去也不再闪耀。约翰在书中说过，自己对《魔兽》做出了二十年的寿命估计，今天来看似乎要成为现实。可能数年之后我们就会看到这款游戏步入“生命维持”的状态。最终，《魔兽》，这个曾经的王者，<strong>也会亲身见证那些曾经被它无情击败的前辈与对手们的残酷命运</strong>——那是《无尽的任务》、《卡米洛的黑暗时代》、《网络创世纪》等MMORPG、以及它们背后那些付出了同样汗水的工作室们——并和它们一起被人所遗忘。现在已经几乎没有厂商愿意斥巨资打造一款MMORPG了，如果现有的技术水平不发生革命性的突变，新一代的玩家们几乎很难拥有MMORPG方面的记忆了——这种曾经全球流行的游戏模式似乎大有进入休眠状态的趋势。</p>
-<p>&emsp;&emsp;但MMORPG真的就行将就木、成为历史了吗？我认为远远不是。因为在“虚拟世界”的概念上，从来都是没有任何游戏能和MMORPG相提并论的。熟悉我的人都知道，我永远无法忘记我第一次接触MMORPG世界时的记忆：我在小学时沉浸在《冒险岛（Maplestory）》的游戏世界中，对于这样一个在2D平面逻辑下运行的空间，我却把那里的一切当作是活生生的世界——我觉得在生命和非生命的概念日趋模糊的现在看来，这并不滑稽。Fairyland——我这样形容我在那里的生活，它是我真正的童话世界，进入了我童年的每一个梦境里。直到现在我还在经常听这个游戏的背景音乐，并不时模仿着它的艺术风格。而魔兽玩家们也有这样的情结，他们在怀念起这款游戏的时候，最常说的话就是——“我们比你们多一个世界”，这和埃里克·道兹（Eric Dodds）所言的“MMOs are everything to everybody”可谓异曲同工。而我认为，《无尽的任务》、《魔兽世界》这类MMO提供的设身处地般的虚拟沉浸感和其他游戏（甚至是同为MMO的游戏）有着本质上的不同：这类MMO游戏并不仅仅是将许多玩家聚在一起，提供一个便于社交的虚拟社区这么简单，如现在近几年被炒来炒去的“元宇宙”，其实只要玩过魔兽就会发现这完全是炒作概念，早就不是什么新东西了；而魔兽这类MMO游戏也并非仅仅是让玩家当一个故事阅读者，它对背景历史故事的不断完善、对世界物理细节的不断加深、其目标显然已经有着“创世”的概念雏形。在人类的文化历史上我们可以看到，创世的概念无论是在哪个宗教或传说中几乎都是神力所为，非人力所能为也。但就如同神话中所描述的，亚当想成为上帝，但最后还是没能当成，结果变成了人类祖先。在中国古代以及其他民族的传说中也有着很多凡人追寻仙道的传说故事。甚至我们可以这么说：<strong>没有一个“亚当”是不想成为上帝、不想和上帝一样拥有无尽的智慧的，</strong>创世的伟业也就成为了人类的一个终极目标之一。人类能否创造出只有神话中的神才能创造的世界呢？对于这样的终极问题，我们无法回答，至少在目前来看这距离还是太远了。但这不是说就完全否决了人类的创造权力，或许像亚当一样，人类永远无法成为这个世界的上帝——或达到和创世者平起平坐的境界，但人类可能有能力（或有资格）创造出“亚级别”的世界或造物——就像上帝创造亚当那样。</p>
-<p>&emsp;&emsp;近年来的人工智能技术和虚拟现实等等技术，让很多人看到了这种“人类创造亚当”的可能性，我们不知道人类创造人工智能生命或虚拟智能生命后会导致什么样的后果，这最终将人类社会带向何方？是一个真正的乌托邦，抑或是末日的战场？我们都无法预知。而且如果从人类之外更一般的角度考虑，这可能还涉及到另一个超验性的终极问题——即人类是否真的有创世的权利？自封为上帝的我们会不会最终变成那个古代诺斯替主义（Gnostism）思想中所描述的德穆革（Demiurge）——一个创造出囚禁其他生命的牢笼世界的邪恶神呢？</p>
-<p>&emsp;&emsp;这一连串的问题，我们现在都无法回答。但可以确定的是，这几百年来智能和生命的秘密正在被一步步探明，这样的科技进一步发展下去，按照我们对人性的理解，则大概率可以认为，必定会有人在未来的某一天创造出那种亦幻亦真的虚拟现实世界——一个拥有供给虚拟智能生命活动的真实社区和脑机接口的、梦境般的MMO世界。而21世纪初的这批如今已经略显简陋的MMO游戏鼻祖，将成为这个梦幻旅程中的一个里程碑。这项工作确实伟大，但却又让人隐约感觉到一种不亚于核危机的严肃性，我们只能祈祷未来的人类能够足够明智地对待这一切：普罗米修斯的天火究竟是祝福还是毁灭，一切最终都取决于人类自己的造化了。</p>
-<p>&emsp;&emsp;最后，我从这本《魔兽世界日记》中学到的一个很实用的设计技巧（可以用在很多方面），也就是本书中普遍提到的：“占位符（placeholder）”的概念或思想。其实仔细想想我也经常会不自觉地使用这种方法，举例子来说，现在要画一个双持左轮手枪的西部牛仔，但左轮手枪的细节太多了，实在难画，我们不妨让牛仔先拿两把“香蕉”，棍子也行，甚至连手都可以不处理了。这里的香蕉或棍子就是“占位符”，这样就简单多了，我们就可以跳过手枪的难题。这并非是自欺欺人，而是可以让设计者在初期更多地关注对全局的把握，而不是一开始就把大部分精力都投入到一个局部问题上面。</p>
-<p><strong><p align="right">本文写于2022年5月16日，修改于2024年8月</p></strong></p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="450" height="86" src="//music.163.com/outchain/player?type=2&id=2060264&auto=0&height=66"></iframe>
-
-
-<hr>
-<p>下面是英语学习部分…一些翻译的时候写的译注：</p>
-<p>Vanilla WoW：“香草时代”，通常指的是不含扩展包的、最初发行的《魔兽世界》版本，即通常玩家所说的“60年代”版本，因其游戏内玩家最高等级为60级。</p>
-<p>ownership：这个词通常被翻译为“主人翁精神”，它指的是企业中的个人/团队拥有一定的自主意识和责任感，能够自发地运作或负责的精神。</p>
-<p>musical chairs：指一种抢座位的游戏，参与者在播放音乐的同时绕着一些座位转圈，音乐一停下就抢座位。因参与者比座位要多且一个座位只能坐一人，所以剩下的人就变成输家。</p>
-<p>peanut gallery：本意是指剧院观众席中的最后一排，因最后一排观赏效果非常差，故引申为“无足轻重的看客”。</p>
-<p>slam dunk：原意为灌篮，但引申为“精彩的一手”或“漂亮的成功”。</p>
-<p>smoke and mirrors：字面意思是“烟雾和镜子”，但其实指的是舞台上表演时用于迷惑观众的光影手法，故泛指障眼手段。</p>
-<p>stack the deck：或stack the cards，指的是在牌局中事先对洗好的牌堆（deck）做手脚，引申为一种事先安排好的暗中布局。</p>
-<p>canned：字面意思为装罐，但在影视业指的是“录制好的、制成后的”东西，通常是指预先录制好的音乐或音效等。</p>
-<p>more/most bang for the buck：bang有“猛砸”、“巨响”的意思，buck则是“美元”。故字面意思类似于中文的“把钱撂响”，即指投资者精打细算，将每一分钱都有效利用。</p>
-<p>watching the game, Having a Bud：美国百威（Budweisser）啤酒的一句广告词，Bud指百威啤酒。意为“看比赛，喝百威”。</p>
-<p>down the tubes：指完蛋，彻底失败。</p>
-<p>blunt-instrument：本意指钝器或不好用的设备，引申为故事中情节粗暴的转折。</p>
-<p>deal-breaker：字面意思是“交易破坏者”，但实际上指“无法通融的条件”、“不可调和的事物”，即缺少这些条件会立刻导致合作终止。</p>
-<p>hole-in-the-wall：字面意思是“墙上的洞”，一般指的是街上的小店面或自动提款机等，并引申为“简陋的、不起眼的”。</p>
-<p>have a full plate/plate is full：指日程安排满满的状态。</p>
-<p>mum’s the word：这里mum是悄声说话的拟声词，指的是“保守秘密”。</p>
-<p>cat out of the bag：指秘密被泄露，或秘密被曝光。欧洲古时候一些不诚信的卖猪人把猫充当小猪装在袋子里卖，如果不检查就很难发现。但是如果猫自己从口袋里钻了出来，骗局就暴露了。</p>
-<p>stick out the sore thumb：指引人注目、显得不自然的东西。字面意思是“伸着受伤的拇指”，意思是如果人的指头受伤了，就会把包扎好的手指单独伸在一个安全的地方，当然会引人注意。</p>
-<p>propeller-head：字面意思是“头戴着螺旋桨的人”，但引申为“行为古怪、沉迷钻研技术或知识的人”，</p>
-<p>playing for keeps：指严肃认真地对待某事，动真格的。</p>
-<hr>
-<p>整个活：（觉得我译的不好的话就看看这位）</p>
-<img src="/2022/05/16/《魔兽世界日记》译文与译后感想/1.png" title="你们这是自寻死路！">
-<p><del>（哈哈哈哈哈哈）</del></p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>随想</tag>
-        <tag>翻译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《黑暗之魂3》背后的艺术理念和风格</title>
-    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
-</blockquote>
-<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
-<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
-<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
-<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
-<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
-<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
-<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
-<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
-<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
-<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
-<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
-<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
-<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
-<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
-<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
-<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
-<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
-<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
-<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
-<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
-<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
-<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>云服务器搭建游戏服务端实战</title>
     <url>/2021/09/01/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E6%B8%B8%E6%88%8F%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E6%88%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1936,9 +1888,102 @@
 <p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
+        <tag>游戏</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《黑暗之魂3》背后的艺术理念和风格</title>
+    <url>/2019/09/17/%E3%80%8A%E9%BB%91%E6%9A%97%E4%B9%8B%E9%AD%823%E3%80%8B%E8%83%8C%E5%90%8E%E7%9A%84%E8%89%BA%E6%9C%AF%E7%90%86%E5%BF%B5%E5%92%8C%E9%A3%8E%E6%A0%BC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>今天翻了翻自己以前写的一些游戏评测，很多都是以一句话搞笑这样的形式凑合完事，但是对于黑暗之魂3——这个在我steam列表里排行第一的游戏居然连一点像样的文字都没有，实在是看不过去，更不能一笔带过，于是就花点时间认真写一下自己的想法。<a id="more"></a>当然也借此机会说很多黑魂3之外的事，这就想到了机核网有句招牌词——不止游戏。便是如此吧。我尽量从概念上切入，而不去描述游戏的具体细节，所以即便你没有玩过游戏，也应该能够理解。</p>
+</blockquote>
+<p>&emsp;&emsp;很多年来被我不断推崇、冠以“艺术品”之名的游戏有不少，比如暗黑2、太阁5、我的世界等等，但我相信有三个游戏对我来说有着无可取代的意义：第一个是冒险岛，第二个是魔兽世界，第三个就是黑魂3。没错，三个都是角色扮演类（RPG），可见我对此类游戏的执念之深。单独把这三个游戏列出来，不仅是因为它们本身是非常优秀的作品，曾经让我为之狂热地对待它们，更是因为这些名字最能代表我在游戏世界里探索的时光，串起了一个个生活中过往的记忆。</p>
+<h2 id="买游戏？"><a href="#买游戏？" class="headerlink" title="买游戏？"></a>买游戏？</h2><p>&emsp;&emsp;没错，如果说暴雪的点卡是我在游戏里花的第一块钱，那黑魂3就是我人生中主动购买的第一个游戏。</p>
+<p>&emsp;&emsp;早年的我也是一个标准的白嫖玩家：“玩游戏而已不就是图个开心吗，能下载盗版玩就行了。”虽然这其中不乏现实因素，年纪小不懂事，也没有任何经济能力。但从大方面客观来讲，这是长久的历史原因造成的、人们思想上的缺失与动荡：国人版权意识为零是个历史原因，并不只是在游戏行业发生；零几年网络游戏这个新兴概念给人们日常观念造成的冲击，产生了一系列反作用；国家对外来事物的封锁政策让游戏行业起步极晚并难以发展；再就是国人本身文化水平的落后，导致大部分玩家只关心网络游戏里简单粗暴的玩家对打和攀比，也一定程度导致了国内游戏行业的歪曲发展，竞技化、氪金化现象严重。以上一切原因都不是孤立的，它们互相关联影响，但归根结底，还是我们贫穷落后的问题。我相信这些原因大家都心知肚明，大白话就不多说。</p>
+<p>&emsp;&emsp;不过情况也在变好。不得不承认的是，现在的孩子们玩游戏算什么啊，啥都能给你玩出花样来，玩得有模有样。这是必然的，因为我们即便是再慢、再曲折，好歹也是慢慢富起来了、眼光更开阔了。这不是一道防火墙、哪个人、哪个利益集团能阻挡得了的。他们必然会有更开明的父母，更高的素质，更好的经济条件。我相信他们当中会出现比我们这代人多得多的、更有知识、更有活力的人才，那将会是时代的进步。“电子海洛因”这种说法不知道谁还记不记得，以前那会游戏居然能和吸毒画上等号。</p>
+<p>&emsp;&emsp;“打开了新世界的大门”，估计是我们这代人几乎每个人都有过的独特经历吧，因为环境变化太快，不得不接收很多新事物。要说我接触到steam平台就得从黑魂3开始算起，虽然我似乎在2013年就注册了steam账号（我也记不得当时的动机），购买黑魂3却是2017年的事，还是赶上了年度版的打折，当时是258块，由此变成了光荣的正版玩家。但是就像更早一辈人的“大表哥带你去打拳皇星际”一样，真正能被称作“打开新世界大门”的人却是我的大学舍友，一个上海来的“土豪”，有一天他在宿舍的电脑上玩着黑暗之魂3，我抱着好奇的态度观察了一会，当时并没有被吸引多少，因为在我的概念里，所谓的“单机大作”也只是给有闲钱有时间的人玩的东西，没必要过分深究，我只是记住了游戏的名字，而他后来也只是草草通关。后来他也十分好奇，这游戏为何会如此吸引我。于是我就这样被“小资本主义腐朽的娱乐方式”给“腐蚀”了。</p>
+<p>&emsp;&emsp;不过也能隐约看出，经济发达地区的学生的确比我们内地的学生“会玩”一点，我不知道现在或者以后是什么样的，反正在我上学期间，我的很多同学都整日沉迷于英雄联盟这样的游戏里，玩了几千局的比比皆是。虽然“土豪”本人混是混了点，也因为玩英雄联盟挂了好些科目，但是反过来想，那些经济发达地区的优秀学生一定不可小觑，如果有幸遇到这些人，应该主动了解一下他们都在研究些什么。</p>
+<p>&emsp;&emsp;我接触这款游戏的背景就说到这里。我力求客观的分析种种现象，但是就像网上出现的那些花里胡哨的“游戏玩家鄙视链”一样，个人立场和偏见也是避免不了的存在。比如我个人就对电竞圈明星啊、一刀999之类的东西就没有一点兴趣，所以哪些文字要是不讨人喜欢，跳过不看便是。</p>
+<h2 id="魂系列究竟难不难"><a href="#魂系列究竟难不难" class="headerlink" title="魂系列究竟难不难"></a>魂系列究竟难不难</h2><p>&emsp;&emsp;有人称这款游戏“硬核”，这倒没问题。但是甚至有人称它为“史上最难”、“抖M游戏”，它真的就难破天了吗？很显然并不是，论对反应速度的考验，它远不及任何一款玩家对战的第一人称射击（FPS）游戏；论操作难度，合金弹头我觉得都要难得多；论上手门槛，不及即时战略（RTS）甚至是Dota这样的MOBA类；最后论肝度练度，不及各类网游手游。</p>
+<p>&emsp;&emsp;但为什么还是有人觉得它难，事实上的确也难，有人可能会归咎于黑魂3无处不在的陷阱，以及死亡后刷新地图的失败惩罚机制。这些的确是黑魂3难度的直观体现，但是我们发现，玩家不会因为角色死亡失去任何道具或者属性，而只是回到了上一个存档点，怪物也不会因为玩家的一次失败就变得更强，就这点来看，隔壁的舰娘那才叫失败惩罚呢。“不死人”——这个主角完全就是光脚不怕穿鞋的，死了立马就能复活。反倒是玩家本人在失败中总结了很多经验，记住了那些陷阱的位置和怪物的分布。事实上这个游戏的所有地图和怪物以及物品分布全是固定死的，玩家面对的并不是Rougelike式的随机挑战，而是一套早已设计好、几乎没有什么变数的“局”。从这点上来说，黑暗之魂3的地图模式更加接近于早年的那些街机闯关游戏，而且更简单，因为街机游戏往往为了坑玩家的硬币，给玩家的容错率很小，尝试次数十分有限；而游戏的上手模式类似于弹幕射击（STG）类或者是音游类，以玩家的记忆总结为主，也就是俗称的“背板”。而真实情况也的确如此，总是存在一种或几种相对固定的套路允许玩家轻松解决各种机关与强敌，如果你掌握了这些套路，即便是“手残中的手残”也能够轻松应对。但是秘密的发现是以各种各样的尝试为代价的，玩家要做的就是在不断的失败中找到这些秘密所在。所以如果玩家对这种游戏模式感到为难，那么看一下别人的游戏攻略还是非常有必要的，会大大降低游戏的难度。</p>
+<p>&emsp;&emsp;如果单单只有这些内容，那么黑魂3就应该是iwanna或者猫版马里奥这样的模式，事实上近年来众多对黑暗之魂的模仿作品也仅仅只做到了这一点，这也是为什么这些所谓的“魂like”游戏虽然看起来像魂，却总是感觉少些了什么。而我接下来要重点描述的，则是那些专门服务于魂系列难度的，别人轻易学不来的独特特点。</p>
+<h2 id="残酷的生存哲学"><a href="#残酷的生存哲学" class="headerlink" title="残酷的生存哲学"></a>残酷的生存哲学</h2><p>&emsp;&emsp;黑魂3是这样一款特立独行的游戏：</p>
+<p>&emsp;&emsp;一般的游戏会给新上手的玩家一套非常详细的指导说明以及新手任务，好让玩家熟悉游戏。但黑魂3截然不同，它几乎将新手教程削减为简单的几行字，并且强迫刚上手的玩家就去挑战一个强大无比，招式虎虎生风的boss“灰烬审判者”，无异于让一个小孩去和猛兽搏斗。如果玩家过不了这关，就无法抵达基地“传火祭祀场”，也就无法提升属性，俨然让之前的路段变得如考试一般严苛。就算玩家侥幸通过了boss战，官方居然还在传火祭祀场——这个全游戏唯一的落脚点里安排了一个NPC“劝退哥”，每当玩家上前与其对话，他便会说出“没希望啦”、“像我一样待在这里等死吧”这样的话来嘲讽想要继续前进的玩家，而且在历代黑魂中都有这么一个角色的存在。好玩的是，若是玩家不小心或者故意攻击了他，他便会立刻还以颜色——这个看起来像个废宅一样的劝退哥其实极其能打，玩家多半又会死掉。</p>
+<p>&emsp;&emsp;而当玩家好不容易到达游戏的第一个流程地图“洛斯里克的高墙”，才真正是噩梦的开始，可以看出Fromsoftware在这张地图上花费了不小的心思，本地图拥有全游戏最多的陷阱埋伏、转角杀、背后偷袭以及各路形单影只却威力十足的强敌，足以让玩家黑白两道都寸步难行。如果玩家开启了联机模式的话，还有可能遭遇敌对玩家的入侵，而事实上这也根本会不是一场公平的玩家对决，这里的敌对玩家很多都是10级就打通了游戏，熟知各种套路，披坚执锐，有备而来的老油条，人生地不熟的新玩家是毫无胜算的，并且官方多次更新补丁调整武器属性和联机匹配机制都没有修改这一点，可见官方对这种“迎新”的暗中默许，把本应是新手村的高墙变成了新玩家的坟场。官方劝退，这条理念在游戏的第一关就发挥到了极致，将几乎所有的压力都施给了刚上手的新玩家。</p>
+<p>&emsp;&emsp;结果就是很多玩家真的就被劝退了！从steam的成就数据上看，80%以上的玩家做到了击败“灰烬审判者”，到达了洛斯里克的高墙，但是击败第一关关尾的boss“冷冽谷的玻尔多”的玩家却骤跌到60%，让成就列表产生了一个明显的断层。也就是说大概20%的玩家都在第一关的城墙上放弃了，而且游戏玩到这里玩家基本上也没法退款了，只能认怂。</p>
+<p>&emsp;&emsp;而黑魂3后续的内容正是准备给那些死不认输的玩家的，当玩家真正通过了游戏前段的考验，慢慢吃透了游戏的机制，便会真正融入游戏里。讽刺的是，制作方将那些入侵其它玩家的条件道具放置在一些地图流程的末尾和隐藏地区，一定程度是让玩家以过来人的身份去欺负新人，并给与一定奖励，怂恿玩家从勇士变成恶龙；而一开始对玩家冷嘲热讽的NPC“劝退哥”，事实上除了取笑玩家以外，也给了玩家一些有用的信息。随着玩家不断的前进，他的内心居然死灰复燃，再也坐不住了，也和玩家一样踏上冒险，并在最终成为玩家的敌人。</p>
+<p>&emsp;&emsp;可以确定的是，这套“残酷的生存哲学”很大程度来自于Fromsoftware的社长宫崎英高先生本人，早在黑暗之魂系列之前的2009年，他就曾主创了一款名为《恶魔之魂》的PS3主机游戏，今天看来，这款游戏虽然远远谈不上成熟，但无论是从游戏模式、剧情叙述还是游戏风格上都已经具备了《黑暗之魂》系列的一切特点，可以被认为是“魂系列”真正的预演之作、开山之作。魂系列这种独特的设计在当年看来是如此的“反人类”，而且《恶魔之魂》一定程度上存在着“越死越难”的设定，这比黑魂有过之而无不及，以至于这款游戏被日本的一些游戏评测杂志给打了低分，而且由于当时的Fromsoftware还是个名不见经传的小公司，宣传力度也不够，结果就是发售初期销量一直不行。但是是金子总会发光，这款游戏蕴藏着的深度逐渐被玩家们发掘，经过玩家们的口口相传，最终给了《恶魔之魂》成就了像样的人气和销量，也给了宫崎英高开发真正的魂系列游戏的机会。</p>
+<p>&emsp;&emsp;而这再往深里说，就不得不提到宫崎英高这个人。这是一个大学读的是社会科学专业，干着甲骨文（Oracle）公司的一个客户经理，结果在29岁辞职改行游戏进入Fromsoftware的小程序员。宫崎英高虽然现在已经小有名气，但是他似乎一直十分低调，并不像宫本茂、小岛秀夫这样的游戏制作人一样经常在媒体前抛头露面，有关他的信息自然也是比较少。但是从零零碎碎的信息来看，宫崎英高绝对是一个有着广泛阅读量，勤于思考并有着独到见解的人。从《恶魔之魂》到今天的《只狼》，他的作品里的主人公形象无一例外都是那些在死亡线上挣扎反抗的底层小人物，生来就背负着本不应有的使命和负担。黑暗之魂的主角，曾经是一位高贵的骑士，如今已经变成行尸走肉，他没有名字，没有长相，整个游戏里的称呼只有抽象化的“英雄”或者“勇敢的不死人”，游戏在形象宣传上也刻意将主角具象为一副破旧的铠甲，戴着密不透风的封闭式头盔，而不是一个有着英俊面孔的男主角。《只狼》里活在黑暗中的忍者，《血源》里与神明对抗的猎人，无不反映着游戏沉重压抑的主题氛围。而主角的敌人——那些王和英雄们，同样也不好过，他们很多都面对着和主角一样的局面，同样也是被捆在了历史的车轮上的棋子。作者正是想通过这样的境况来显示出主角残酷的命运以及“知不可为而为之”的无畏，同时，当玩家探索了游戏的一切，洞悉世界真相之时，便有条件触发隐藏剧情，从而能够摆脱原有的诅咒和使命以获得自由意志，实现“我命由我不由天”。</p>
+<p>&emsp;&emsp;有足够的证据证明，宫崎英高先生在游戏的剧情设定上一定程度上借鉴了“克苏鲁”式的理念和叙事手法，以及《剑风传奇》（又译烙印勇士）这部漫画——这是一部从90年代连载至今，主题却更加残酷深刻的作品，讲述了主角格斯（Guts）是一位身处兵荒马乱的中世纪世界的雇佣兵战士，过着刀口舔血的危险生活，却不断遭到命运的毒打和剥夺，又不屈不挠奋起反抗的故事。而宫崎英高本人也承认自己是《剑风传奇》的忠实粉丝。事实上的确有很多非常相似的地方，比如格斯初战的对手“骑士巴兹索”一定程度就是游戏中“羽翼骑士”铠甲风格的原型，而游戏在第一张地图“洛斯里克的高墙”里还真就给这位可怕的对手做了一个单独的场景，好让玩家和他进行一场一对一的单挑。他绕着一个圆形场地不断走动，四周遍布着战死的洛斯里克骑士以突显它的强大。别的一些大家都知道的我就不多说，总之，这部作品对宫崎英高有着明显的影响。</p>
+<h2 id="残破之美"><a href="#残破之美" class="headerlink" title="残破之美"></a>残破之美</h2><p>&emsp;&emsp;再来说说魂系列游戏的艺术风格，可以肯定的是，早些年里Fromsoftware最惯用的无疑是那些我们司空见惯的中世纪场景，即高耸的城墙和塔楼、狭窄的过道、阴暗的地牢等等，但真正让魂系列的艺术风格凸显特点的，却是从黑暗之魂开始，对于残破这个属性的运用。四处攀爬着藤蔓和树根的残垣断壁，积累着厚厚灰尘的墓穴大门，还有地底下那些废弃千年的古老遗迹，不断诉说着这个世界的破败和衰落。其中更让人触景生情的却是那些地表之上的辉煌文明的没落：王城的庭院和花园如今遍布枯枝烂叶，高耸入云的哥特式大教堂堆起了厚厚的积雪；强大的要塞满是攻城武器造成的伤痕，塔楼上也只剩下猎猎作响的残破大旗；正是“国破山河在，城春草木深”。然而最让人惋惜的却是那些仍然还居住在城堡里的敌人们——这也将残破之属性运用在了人的身上：士兵和骑士变成了没有心智的行尸走肉，那些固守城池、一意孤行的贵族们也没有一个是正常人了，他们疯了、残了，眼睁睁地看着自己和四分五裂的王国一起慢慢完蛋，而直到和主角拼死一战之时，才会用自己最后的全部力量施展出招牌性的战技和魔法，完成命运的绝唱。值得一提的是，本作由北村友香创作、Kokia献唱的背景音乐真的太优秀了，以人声的悲歌和小提琴的哀乐为主体，一改前作背景音乐不出彩的缺陷，给每个宿命中的对手都赋予了震撼一曲，极具感染力。</p>
+<p>&emsp;&emsp;为了向玩家更好的展现出这种“落差感”，魂系列从二代开始制作了很多具有艺术特色的场景，并注重对原画式的场景镜头的运用，即将一些特定角度的美景放置在玩家的必经之路上，同时也得益于血源诅咒优秀的游戏引擎，让玩家欣赏到有如原画壁纸一般的美景。。猎人梦境的月下花海、飘雪的伊鲁席尔大桥，洛斯里克城堡，无不让人叹为观止，却又隐约在暗示玩家：这美景要么是行将就木的国度，要么就是虚幻的梦境。让人想起日本人独特的“物哀”、“侘寂”之理，这种瞬间的美感，也在此可见一斑。</p>
+<p>&emsp;&emsp;最后作为一个中世纪盔甲冷兵器爱好者，黑暗之魂3里的武器盔甲设计真是我见过游戏里做得最historical的，展现出强烈的真实感，再加上做旧的材质，总有一种像是从博物馆里直接拿出来的一样，使得游戏中各种骑士战士们的形象严肃了不少。而对那些英雄级武器则是从其历史原型出发，显得奇幻而又不失真实感，让人产生一种“也许历史上真有这样的武器”的错觉。而当玩家在真正拿到了那些英雄级武器时则会发现，武器本身已经破旧不堪，甚至可能还没有自己手里的一把坚固厚实的铁剑好用。在游戏惜字如金的物品描述里经常性地使用“据说”、“可能会”、“唤起”、“重现往日的…”之类的词语，似乎又在向玩家勾画起那些逝去的荣耀。</p>
+<p>&emsp;&emsp;说了这么多就以一段游戏结尾的音乐作为结束吧，希望我有生之年还能遇到如此优秀的作品。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=407677593&auto=0&height=66"></iframe>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>文化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《魔兽世界日记》译文与译后感想</title>
+    <url>/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>由约翰·斯塔茨所著的《魔兽世界日记》我已经翻译完毕了，本文是翻译过程的总结与感想，对MMO游戏的想法与未来展望，以及翻译过程中的一些注释等。 <a id="more"></a></p>
+</blockquote>
+<embed src="./魔兽世界日记：一部电脑游戏开发志 汉化v1.1.pdf" width="100%" height="700" type="application/pdf">
+
+<p><strong>如果上面那个玩意失效了也可以点击下面这个MEGA盘链接来获取pdf文件（内附原文）：</strong><br><strong><a href="https://mega.nz/file/MpsCGDBa#-nWVzvnUREbArpYIcv2T1OQE8FFK6IBDrFfdUm_h9QY" target="_blank" rel="noopener"><font color="blue">→点这里获取MEGA盘下载链接←</font></a></strong></p>
+<hr>
+<p>&emsp;&emsp;经过一个多月断断续续的进展，这部《魔兽世界日记》终于被我翻译完毕了，没想到10万字英文字符居然翻译成汉语有250页之多！我本以为这会像之前那个《1994年暗黑1开发文档》一样会是个小册子之类的玩意，结果整出来一本书…可以说我还从来没翻译过这么多的文本量。就像作者这部书中说的——“再也不想参与开发另一个MMO了”，而我也“再也不想翻译另一个10万字了”。</p>
+<p>&emsp;&emsp;翻译工作实在是挺耗时间精力的，虽然翻译本身肯定是有用的，好的翻译比烂的翻译当然要出色很多，我自己买名著的时候都要先挑译者，没人愿意读烂的翻译的。但我总感觉它的“原创性”相对于写文章写代码或者设计制造等等工作来说，又好像没那么强，毕竟到头来还是在“翻译”别人的作品，所以说从原创性带来的动力也似乎没有那么高，这样的过程一天可能要消耗十个小时以上，难免枯燥乏味。好在这回还是我自己选了一个感兴趣的目标在翻译，但想想看，要是职业翻译人员去翻译一本和自己的专业完全不搭界的作品，那这折磨程度起码对我来说是难以想象的…可能甚于搬砖…</p>
+<p>&emsp;&emsp;我不是语言专业人士，翻译的也并不是很好，如果有人对我的翻译有任何不满，我当然也全盘接受。毕竟我已经将这个翻译结果公开，纯属“用爱发电”了。但几年前一个特殊的机会下，我对国内的翻译行业也稍微做过一些了解。起码在英译汉这行，待遇是真的不行，不仅翻译本身是苦力活不说，出版公司坑、骗译者的现象也比比皆是，甚至前段时间还出现过译者去世三年还没拿到翻译费的离谱事件。所以我真心希望以后的智能机器能取代这样的工作，把人解放到更具创造性的岗位上去。</p>
+<p>&emsp;&emsp;好了吐槽到此为止，接下来是正经内容。除了WoW上的工程问题之外，约翰·斯塔茨在本书中给出的最有价值的东西，无疑是他对于游戏市场和游戏开发的个人看法，以及暴雪早期的公司运作理念了。根据约翰·斯塔茨的描述，暴雪在早期的行事理念是“重技术、重实力、轻营销”的，他不止一次提到了暴雪对它当前市场运作模式的蔑视。并回答了为什么暴雪能够脱颖而出——因为它“不走寻常路”。暴雪能够做出成绩，很大一部分归功于暴雪的制作人拥有相当的自由度，他们不太受制于资金与市场的按部就班的规则，从而可以进行自由开发。这样也最大程度上避免了工作室、高管和投资方相互欺骗的恶性情况。</p>
+<p>&emsp;&emsp;而对于游戏开发来说，好玩是胜过一切的，游戏开发看上去很大一部分是工程问题，而核心实则是艺术，有点像是建筑艺术之于盖民房，游戏要能玩没有恶性bug是工程问题，民房结构坚固不漏水是工程问题，但房子要好看，游戏要好玩就是艺术问题了。这涉及到对“范式”的理解和对“创新”的把握，书中提到，有两类开发者犯了这样的错误：第一种就是按部就班地照搬现成的流行玩法，简单来说就是“谁火抄谁”。诚然，我们知道暴雪自己也是“谁火抄谁”，但区别就在于暴雪能够做到“青出于蓝而胜于蓝”，它深刻剖析现有范式中谁好玩，谁不好玩，好玩在哪里，不好玩在哪里，并从中吸取教训，吸收那些优秀的设计，摒弃那些不好的设计。最终能够在现有的范式的基础之上做出创新，创造出前所未有的玩法。而第二类错误就是“无脑创新”。没有考虑创新的内容是否就好玩，是否就比现成的要高明很多。这样的创新实际上是负作用。事实上我们也可以看到，很多游戏给出的新玩法并不有趣，这样的工作只能骗骗不懂游戏的投资商人，而很多工作室靠此为生，也给市场带来了很多良莠不齐的产品。所以说，游戏开发者要做到“兵形象水”，不仅要是严谨高效的工程师，还要是善于变通的艺术家。</p>
+<p>&emsp;&emsp;已经有很多证据能说明暴雪早期的游戏开发者精通此道，之前最广为流传的就是说他们人均游戏高手，这确实也在书中得到了证实，参与开发MMO的人员玩遍了市面上的MMO游戏，在EQ这样的游戏中甚至有一支成熟的公会队伍。斯塔茨说，他们还拒绝过一点都不玩游戏的程序员的应聘。开发游戏的人到底玩不玩游戏呢？我想答案已经有了，优秀的游戏开发者肯定是玩游戏的，而今天我们却看到这样的状态已经时过境迁：拿暗黑破坏神4来说，在刚发售不久后，暴雪的官方频道做了一个“设计师玩暗黑4”的视频，结果彻底成了大家的笑柄，视频中的两个设计师完全不熟悉游戏，其中一人甚至全程平A，也没有对角色应该怎么玩做任何尝试和摸索，虽然事后暴雪称视频中的两个“开发者”是美工人员，但我们还是能从他们的操作意识看出，这些人确实是不玩游戏的。暴雪早就不是以前那个暴雪了。</p>
+<p>&emsp;&emsp;如同在《魔兽》中一句人尽皆知的话一样——“王权没有永恒（No king rules forever）”，那个由约翰·斯塔茨看作是梦想的舞台，而不仅是一份工作的雇主的暴雪，它那曾经行业顶尖的创造力确实已经衰落了。本书中所提到的那些核心人物，诸如亚伦·亚德汉（Allen Adham）、马克·科恩（Mark Kern）、杰夫·卡普兰（Jeff Kaplan）等都已经先后离职，“魔兽宇宙”的创造者克里斯·梅森（Chris Metzen）也于2016年退休。曾参与《魔兽世界》制作的“二队”的开发人员在如今的暴雪公司已所剩无几，连作者本人也在“泰坦”项目失败后离职。更不要说暴雪公司前些日子还爆出了对员工进行欺压和性骚扰的事件，一切最终导致了暴雪于2022年1月被微软整个收购。暴雪曾经引以为傲的星际、暗黑、魔兽，随着RTS、Diablo-like和MMORPG辉煌时代的过去也不再闪耀。约翰在书中说过，自己对《魔兽》做出了二十年的寿命估计，今天来看似乎要成为现实。可能数年之后我们就会看到这款游戏步入“生命维持”的状态。最终，《魔兽》，这个曾经的王者，<strong>也会亲身见证那些曾经被它无情击败的前辈与对手们的残酷命运</strong>——那是《无尽的任务》、《卡米洛的黑暗时代》、《网络创世纪》等MMORPG、以及它们背后那些付出了同样汗水的工作室们——并和它们一起被人所遗忘。现在已经几乎没有厂商愿意斥巨资打造一款MMORPG了，如果现有的技术水平不发生革命性的突变，新一代的玩家们几乎很难拥有MMORPG方面的记忆了——这种曾经全球流行的游戏模式似乎大有进入休眠状态的趋势。</p>
+<p>&emsp;&emsp;但MMORPG真的就行将就木、成为历史了吗？我认为远远不是。因为在“虚拟世界”的概念上，从来都是没有任何游戏能和MMORPG相提并论的。熟悉我的人都知道，我永远无法忘记我第一次接触MMORPG世界时的记忆：我在小学时沉浸在《冒险岛（Maplestory）》的游戏世界中，对于这样一个在2D平面逻辑下运行的空间，我却把那里的一切当作是活生生的世界——我觉得在生命和非生命的概念日趋模糊的现在看来，这并不滑稽。Fairyland——我这样形容我在那里的生活，它是我真正的童话世界，进入了我童年的每一个梦境里。直到现在我还在经常听这个游戏的背景音乐，并不时模仿着它的艺术风格。而魔兽玩家们也有这样的情结，他们在怀念起这款游戏的时候，最常说的话就是——“我们比你们多一个世界”，这和埃里克·道兹（Eric Dodds）所言的“MMOs are everything to everybody”可谓异曲同工。而我认为，《无尽的任务》、《魔兽世界》这类MMO提供的设身处地般的虚拟沉浸感和其他游戏（甚至是同为MMO的游戏）有着本质上的不同：这类MMO游戏并不仅仅是将许多玩家聚在一起，提供一个便于社交的虚拟社区这么简单，如现在近几年被炒来炒去的“元宇宙”，其实只要玩过魔兽就会发现这完全是炒作概念，早就不是什么新东西了；而魔兽这类MMO游戏也并非仅仅是让玩家当一个故事阅读者，它对背景历史故事的不断完善、对世界物理细节的不断加深、其目标显然已经有着“创世”的概念雏形。在人类的文化历史上我们可以看到，创世的概念无论是在哪个宗教或传说中几乎都是神力所为，非人力所能为也。但就如同神话中所描述的，亚当想成为上帝，但最后还是没能当成，结果变成了人类祖先。在中国古代以及其他民族的传说中也有着很多凡人追寻仙道的传说故事。甚至我们可以这么说：<strong>没有一个“亚当”是不想成为上帝、不想和上帝一样拥有无尽的智慧的，</strong>创世的伟业也就成为了人类的一个终极目标之一。人类能否创造出只有神话中的神才能创造的世界呢？对于这样的终极问题，我们无法回答，至少在目前来看这距离还是太远了。但这不是说就完全否决了人类的创造权力，或许像亚当一样，人类永远无法成为这个世界的上帝——或达到和创世者平起平坐的境界，但人类可能有能力（或有资格）创造出“亚级别”的世界或造物——就像上帝创造亚当那样。</p>
+<p>&emsp;&emsp;近年来的人工智能技术和虚拟现实等等技术，让很多人看到了这种“人类创造亚当”的可能性，我们不知道人类创造人工智能生命或虚拟智能生命后会导致什么样的后果，这最终将人类社会带向何方？是一个真正的乌托邦，抑或是末日的战场？我们都无法预知。而且如果从人类之外更一般的角度考虑，这可能还涉及到另一个超验性的终极问题——即人类是否真的有创世的权利？自封为上帝的我们会不会最终变成那个古代诺斯替主义（Gnostism）思想中所描述的德穆革（Demiurge）——一个创造出囚禁其他生命的牢笼世界的邪恶神呢？</p>
+<p>&emsp;&emsp;这一连串的问题，我们现在都无法回答。但可以确定的是，这几百年来智能和生命的秘密正在被一步步探明，这样的科技进一步发展下去，按照我们对人性的理解，则大概率可以认为，必定会有人在未来的某一天创造出那种亦幻亦真的虚拟现实世界——一个拥有供给虚拟智能生命活动的真实社区和脑机接口的、梦境般的MMO世界。而21世纪初的这批如今已经略显简陋的MMO游戏鼻祖，将成为这个梦幻旅程中的一个里程碑。这项工作确实伟大，但却又让人隐约感觉到一种不亚于核危机的严肃性，我们只能祈祷未来的人类能够足够明智地对待这一切：普罗米修斯的天火究竟是祝福还是毁灭，一切最终都取决于人类自己的造化了。</p>
+<p>&emsp;&emsp;最后，我从这本《魔兽世界日记》中学到的一个很实用的设计技巧（可以用在很多方面），也就是本书中普遍提到的：“占位符（placeholder）”的概念或思想。其实仔细想想我也经常会不自觉地使用这种方法，举例子来说，现在要画一个双持左轮手枪的西部牛仔，但左轮手枪的细节太多了，实在难画，我们不妨让牛仔先拿两把“香蕉”，棍子也行，甚至连手都可以不处理了。这里的香蕉或棍子就是“占位符”，这样就简单多了，我们就可以跳过手枪的难题。这并非是自欺欺人，而是可以让设计者在初期更多地关注对全局的把握，而不是一开始就把大部分精力都投入到一个局部问题上面。</p>
+<p><strong><p align="right">本文写于2022年5月16日，修改于2024年8月</p></strong></p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="450" height="86" src="//music.163.com/outchain/player?type=2&id=2060264&auto=0&height=66"></iframe>
+
+
+<hr>
+<p>下面是英语学习部分…一些翻译的时候写的译注：</p>
+<p>Vanilla WoW：“香草时代”，通常指的是不含扩展包的、最初发行的《魔兽世界》版本，即通常玩家所说的“60年代”版本，因其游戏内玩家最高等级为60级。</p>
+<p>ownership：这个词通常被翻译为“主人翁精神”，它指的是企业中的个人/团队拥有一定的自主意识和责任感，能够自发地运作或负责的精神。</p>
+<p>musical chairs：指一种抢座位的游戏，参与者在播放音乐的同时绕着一些座位转圈，音乐一停下就抢座位。因参与者比座位要多且一个座位只能坐一人，所以剩下的人就变成输家。</p>
+<p>peanut gallery：本意是指剧院观众席中的最后一排，因最后一排观赏效果非常差，故引申为“无足轻重的看客”。</p>
+<p>slam dunk：原意为灌篮，但引申为“精彩的一手”或“漂亮的成功”。</p>
+<p>smoke and mirrors：字面意思是“烟雾和镜子”，但其实指的是舞台上表演时用于迷惑观众的光影手法，故泛指障眼手段。</p>
+<p>stack the deck：或stack the cards，指的是在牌局中事先对洗好的牌堆（deck）做手脚，引申为一种事先安排好的暗中布局。</p>
+<p>canned：字面意思为装罐，但在影视业指的是“录制好的、制成后的”东西，通常是指预先录制好的音乐或音效等。</p>
+<p>more/most bang for the buck：bang有“猛砸”、“巨响”的意思，buck则是“美元”。故字面意思类似于中文的“把钱撂响”，即指投资者精打细算，将每一分钱都有效利用。</p>
+<p>watching the game, Having a Bud：美国百威（Budweisser）啤酒的一句广告词，Bud指百威啤酒。意为“看比赛，喝百威”。</p>
+<p>down the tubes：指完蛋，彻底失败。</p>
+<p>blunt-instrument：本意指钝器或不好用的设备，引申为故事中情节粗暴的转折。</p>
+<p>deal-breaker：字面意思是“交易破坏者”，但实际上指“无法通融的条件”、“不可调和的事物”，即缺少这些条件会立刻导致合作终止。</p>
+<p>hole-in-the-wall：字面意思是“墙上的洞”，一般指的是街上的小店面或自动提款机等，并引申为“简陋的、不起眼的”。</p>
+<p>have a full plate/plate is full：指日程安排满满的状态。</p>
+<p>mum’s the word：这里mum是悄声说话的拟声词，指的是“保守秘密”。</p>
+<p>cat out of the bag：指秘密被泄露，或秘密被曝光。欧洲古时候一些不诚信的卖猪人把猫充当小猪装在袋子里卖，如果不检查就很难发现。但是如果猫自己从口袋里钻了出来，骗局就暴露了。</p>
+<p>stick out the sore thumb：指引人注目、显得不自然的东西。字面意思是“伸着受伤的拇指”，意思是如果人的指头受伤了，就会把包扎好的手指单独伸在一个安全的地方，当然会引人注意。</p>
+<p>propeller-head：字面意思是“头戴着螺旋桨的人”，但引申为“行为古怪、沉迷钻研技术或知识的人”，</p>
+<p>playing for keeps：指严肃认真地对待某事，动真格的。</p>
+<hr>
+<p>整个活：（觉得我译的不好的话就看看这位）</p>
+<img src="/2022/05/16/《魔兽世界日记》译文与译后感想/1.png" title="你们这是自寻死路！">
+<p><del>（哈哈哈哈哈哈）</del></p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>随想</tag>
+        <tag>翻译</tag>
       </tags>
   </entry>
   <entry>
@@ -2337,8 +2382,8 @@ table th:nth-of-type(3) {
 <p>并关掉网络代理程序，则可以解决问题。或手头有能正常工作的客户端的话，直接复制过来也行。</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>服务器</tag>
+        <tag>游戏</tag>
       </tags>
   </entry>
   <entry>
@@ -2476,9 +2521,9 @@ table th:nth-of-type(3) {
 
 ]]></content>
       <tags>
-        <tag>游戏</tag>
-        <tag>软件</tag>
         <tag>服务器</tag>
+        <tag>软件</tag>
+        <tag>游戏</tag>
       </tags>
   </entry>
   <entry>
@@ -2634,8 +2679,8 @@ table th:nth-of-type(3) {
 <p>如今快20年过去了，天天刷着手机的老一辈父母可能再也想不起来什么是“电子海洛因”，新生一辈的记忆里也没有了什么黑客什么熊猫烧香，我看着我攒出来的电脑，再想想当年那场“决战”，仍然不免感到心跳加速，这种紧张感不是成就，而是对荒谬的过去的一种严肃的荒谬感，我可以举一个例子来形容：如果今天有人告诉你地球是平的，这个平面上有天堂下有地狱，你一定会笑笑觉得这很扯淡；但如果你以前真的深信过这种观念多年，或是在周围相当多的人都相信这种观念的环境里生活过思考过，甚至斗争过（无论你站在了哪一方），到几十年后即使早已真相大白，这对你来说也绝对不是一个笑话那么简单，那么容易轻描淡写地就带过。其实当年只要有一台正常的且能上网的设备，用USB盘甚至是3.5寸软盘，将专杀工具复制到染毒的机器上（病毒拿专杀工具毫无办法），应该很快就能让这个所谓的“毒王”灰飞烟灭。但差就差在了信息闭塞上，首先那时真的只有极少数人会重装系统，很多手机是不能上网的，电脑也没有第二台，更严重的是，不仅自家的手机不能上网，你周围人的手机也不能上网，导致信息闭塞是普遍存在的，周围拥有电脑的人或许可以使用网络，但如果不是关系极其亲密的人，谁又愿意把那时还相当昂贵的电脑借给你去解决这些问题呢？只要嘻嘻tv不专门弄个报道告诉你计算机行业到底发生了什么事情，你就很难知道真实情况；而反过来也是讲得通的，在信息相当闭塞的环境下，一旦它某一天开始说什么是海洛因，那它就会变成“钉了马掌的兔子”——真的变成了海洛因了，因为你几乎没有第二个渠道获得的信息去质疑它，如此一来，你只能靠自己的常识去作为最后的防线，而当你甚至开始怀疑自己的常识时，一切就都黑白颠倒。可以说无论是我，还是父母，还是那些计算机专业的大学生和教授，在这个事件中其实某种程度上都是那个在洞穴里观察影子的人。那么，我们最上面提到的那个众说纷纭的问题的答案，即电脑病毒为什么现在远远没那么猖獗了，我想我也可以给出自己的一个解释——那就是信息发达了，至少是比20年前发达了，在计算机上蒙蔽、损害人们的手段仍然存在，但难度更大，即使是一个不懂电脑的普通人，他离真相以及真正能解决问题的道路的距离，也比那个时候要更近。</p>
 ]]></content>
       <tags>
-        <tag>生活</tag>
         <tag>软件</tag>
+        <tag>生活</tag>
         <tag>系统</tag>
         <tag>随想</tag>
       </tags>
@@ -2734,8 +2779,8 @@ table th:nth-of-type(3) {
 <p>byb： be right back 马上回来，比如我要去喝口水上个厕所，可以说brb 1min<br>omw： on my way 我在路上了，告诉对方我正在跑路<br>mb: mana break，回蓝，打完一波怪后要休息回蓝可以用mb提醒队友</p>
 ]]></content>
       <tags>
-        <tag>游戏</tag>
         <tag>软件</tag>
+        <tag>游戏</tag>
         <tag>攻略</tag>
       </tags>
   </entry>
