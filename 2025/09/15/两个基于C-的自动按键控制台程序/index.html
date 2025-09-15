@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>✛VDERE⟡INVISI✛</title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="⋄ Videre Invisibilia ⋄" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-两个基于C-的自动按键控制台程序"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  两个基于C#的自动按键控制台程序
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2025/09/15/两个基于C-的自动按键控制台程序/" class="article-date">
+  <time datetime="2025-09-15T11:39:35.000Z" itemprop="datePublished">2025-09-15</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">6.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">28 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>C#写的几个控制台程序，用来执行电脑的自动按键，另外还使用到了Windows API解决了使用DirectX键盘接口的游戏的问题<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;从2024年初开始说学C#编程以来已经过了一年多了，虽最早只是想当成一个业余爱好来玩的，不过还是切切实实解决了一些实际的问题。也稍微学了下Winform，做出了几个非常小的窗体应用程序。不过我因为需求都比较简单，总的来说还是比较爱写控制台应用程序，也就是“黑框”那种。目前写的比较完善的是几个自动按键程序，用来在电脑上自动执行按键任务。</p>
+<h2 id="1-自动按键发生器（AutoKeyGenerator）"><a href="#1-自动按键发生器（AutoKeyGenerator）" class="headerlink" title="1. 自动按键发生器（AutoKeyGenerator）"></a>1. 自动按键发生器（AutoKeyGenerator）</h2><p>&emsp;&emsp;第一个程序AutoKeyGenerator，是基于SendKeys.SendWait方法，以及Timer定时器的委托事件，从而重复周期性地向Windows窗口发送某些特定的键盘按键的控制台应用程序。开发这个应用的初衷是为了作为一个工控软件的辅助程序使用。之前工作中遇到了一种设备附带有一个工控软件，因为这个工控软件本身在流程控制上的功能非常简陋，除了工艺相关的参数外，就几乎只有启动和停止了，而在实际使用中，该设备需要周期性反复启动10-20次，每次间隔时间往往在5-10min不等。也就是说必须有人专门看守这个工控软件将近3个小时，每隔几分钟就必须对它进行启动操作。当然，在那时这个人就是我，而且除了这个任务之外我还有别的主要任务要做，造成我必须每隔几分钟就去那个烦人的设备面前用鼠标点一下那个工控软件的启动按键。于是我写了个这样的程序来自动完成这个工作，这个程序经过我后续不断改进，现在已经能支持更多的功能，也更加稳定。程序完整的代码如下：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Net;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> System.Timers;</span><br><span class="line"><span class="keyword">using</span> System.Windows.Forms;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> AutoKeyGenerator</span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Program</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">int</span> generatorMode;               <span class="comment">// Record the mode of the program, will be selected by user.</span></span><br><span class="line">        <span class="keyword">static</span> <span class="built_in">string</span> keyName = <span class="string">""</span>;             <span class="comment">// The key which was finally executed in each loops.</span></span><br><span class="line">        <span class="keyword">static</span> <span class="built_in">string</span> keyName1 = <span class="string">""</span>;            <span class="comment">// In mode 1, this variable is the single key, and in mode 2 means the first key (Mode 2A).</span></span><br><span class="line">        <span class="keyword">static</span> <span class="built_in">string</span> keyName2 = <span class="string">""</span>;            <span class="comment">// The second key in mode 2 (Mode 2B).</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">bool</span> isKey_2A = <span class="literal">true</span>;            <span class="comment">// In mode 2, it distinguishes the current execution is the first key or the second key.</span></span><br><span class="line">        <span class="keyword">static</span> <span class="built_in">string</span> realLocalTime;            <span class="comment">// Show the localtime of each executions.</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">double</span> timerIntervalInSecond;    <span class="comment">// Transform milliseconds into seconds.</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span><span class="params">(<span class="built_in">string</span>[] args)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="comment">// Title of this console .</span></span><br><span class="line">            <span class="built_in">Console</span>.Title = <span class="string">"AutoKeyGenerator V0.5"</span>;</span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Cyan;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n*******************【自动按键发生器 V0.5】*******************\n"</span>);</span><br><span class="line">            <span class="comment">// An ASCII art for AUTOKEY with colors</span></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkCyan;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"   █████╗ ██╗  ██╗████████╗ ██████╗ ██╗  ██╗███████╗██╗  ██╗\n  ██╔══██╗██║  ██║╚══██╔══╝██╔═══██╗██║██╔═╝██╔════╝██║  ██║\n  ███████║██║  ██║   ██║   ██║   ██║████╔╝  █████╗  ╚█████╔╝\n  ██╔══██║██║  ██║   ██║   ██║   ██║██║██═╗ ██╔══╝   ╚██╔═╝\n  ██║  ██║╚█████╔╝   ██║   ╚██████╔╝██║ ╚██╗███████╗  ██║\n  ╚═╝  ╚═╝ ╚════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝  ╚═╝\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Cyan;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"*************************************************************\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ResetColor();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Auto task by a timer triggered event.</span></span><br><span class="line">            System.Timers.Timer aTimer = <span class="keyword">new</span> System.Timers.Timer();</span><br><span class="line">            aTimer.Elapsed += <span class="keyword">new</span> ElapsedEventHandler(ModeOption);</span><br><span class="line"></span><br><span class="line">            UserInputing_Mode:          <span class="comment">// Target of the program reset Goto command.</span></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Green;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"请选择模式：\n\n【1】单一指令\n\n【2】双指令交替\n\n【3】显示规则说明\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ResetColor();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// User must input a key for mode selection in 1,2 and 3</span></span><br><span class="line">            <span class="comment">// 1 is the single key mode(mode 1), 2 is a 2-commands alternating mode(mode 2), 3 will just show the guide information.</span></span><br><span class="line">            ConsoleKeyInfo keyInfo1;    </span><br><span class="line">            <span class="keyword">do</span></span><br><span class="line">            &#123;</span><br><span class="line">                keyInfo1 = <span class="built_in">Console</span>.ReadKey(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">while</span> (keyInfo1.Key != ConsoleKey.D1 &amp;&amp; keyInfo1.Key != ConsoleKey.NumPad1 &amp;&amp; keyInfo1.Key != ConsoleKey.D2 &amp;&amp; keyInfo1.Key != ConsoleKey.NumPad2 &amp;&amp; keyInfo1.Key != ConsoleKey.D3 &amp;&amp; keyInfo1.Key != ConsoleKey.NumPad3);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// User selected Mode 1:</span></span><br><span class="line">            <span class="keyword">if</span> (keyInfo1.Key == ConsoleKey.D1 || keyInfo1.Key == ConsoleKey.NumPad1)</span><br><span class="line">            &#123;</span><br><span class="line">                generatorMode = <span class="number">1</span>;      <span class="comment">// Marked the mode, here 1 refer to mode 1</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// If user input a key in one of the +, ^, %, &#123;, &#125;, (, ), it will ask user to input with correct syntax.</span></span><br><span class="line">                <span class="comment">// If user's input is a real valid key command, then program will go on.</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">bool</span> isKeyValid;</span><br><span class="line">                <span class="built_in">string</span> key_Mode1;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"\n-------- 单一指令模式:将循环输出同一个或同一组按键 ---------\n"</span>);</span><br><span class="line">                <span class="keyword">do</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Console</span>.WriteLine(<span class="string">"输入要循环的按键或指令:\n"</span>);</span><br><span class="line">                    key_Mode1 = Convert.ToString(<span class="built_in">Console</span>.ReadLine());</span><br><span class="line"></span><br><span class="line">                    isKeyValid = (key_Mode1 == <span class="string">"+"</span> || key_Mode1 == <span class="string">"^"</span> || key_Mode1 == <span class="string">"%"</span> || key_Mode1 == <span class="string">"("</span> || key_Mode1 == <span class="string">")"</span> || key_Mode1 == <span class="string">"&#123;"</span> || key_Mode1 == <span class="string">"&#125;"</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (isKeyValid)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkYellow;</span><br><span class="line">                        <span class="built_in">Console</span>.WriteLine(<span class="string">"键入的指令为 +, ^, %, &#123; &#125;, ()时，必须用&#123;&#125;括起，请重新输入：\n\n"</span>);</span><br><span class="line">                        <span class="built_in">Console</span>.ResetColor();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        keyName1 = key_Mode1;</span><br><span class="line">                    &#125;                                </span><br><span class="line">                &#125; <span class="keyword">while</span> (isKeyValid);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// User selected Mode 2:</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (keyInfo1.Key == ConsoleKey.D2 || keyInfo1.Key == ConsoleKey.NumPad2)</span><br><span class="line">            &#123;</span><br><span class="line">                generatorMode = <span class="number">2</span>;      <span class="comment">// Marked mode was 2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                <span class="built_in">string</span> key_Mode2_A;     <span class="comment">// the first key argument for user inputing</span></span><br><span class="line">                <span class="built_in">string</span> key_Mode2_B;     <span class="comment">// the second key argument for user inputing</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">bool</span> isKeyInvalid_A;    <span class="comment">// For check the validity of command.</span></span><br><span class="line">                <span class="keyword">bool</span> isKeyInvalid_B;    <span class="comment">// -</span></span><br><span class="line">                <span class="keyword">bool</span> isKeyInvalid_A_B;  <span class="comment">// -</span></span><br><span class="line"></span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"\n----- 双指令交替模式:两个指令将以A-B-A-B-的形式交替输出 -----\n"</span>);</span><br><span class="line">                <span class="keyword">do</span></span><br><span class="line">                &#123;                    </span><br><span class="line">                    <span class="built_in">Console</span>.WriteLine(<span class="string">"输入第一个指令:\n"</span>);</span><br><span class="line">                    key_Mode2_A = Convert.ToString(<span class="built_in">Console</span>.ReadLine());</span><br><span class="line">                    isKeyInvalid_A = (key_Mode2_A == <span class="string">"+"</span> || key_Mode2_A == <span class="string">"^"</span> || key_Mode2_A == <span class="string">"%"</span> || key_Mode2_A == <span class="string">"("</span> || key_Mode2_A == <span class="string">")"</span> || key_Mode2_A == <span class="string">"&#123;"</span> || key_Mode2_A == <span class="string">"&#125;"</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="built_in">Console</span>.WriteLine(<span class="string">"\n输入第二个指令:\n"</span>);</span><br><span class="line">                    key_Mode2_B = Convert.ToString(<span class="built_in">Console</span>.ReadLine());</span><br><span class="line">                    isKeyInvalid_B = (key_Mode2_B == <span class="string">"+"</span> || key_Mode2_B == <span class="string">"^"</span> || key_Mode2_B == <span class="string">"%"</span> || key_Mode2_B == <span class="string">"("</span> || key_Mode2_B == <span class="string">")"</span> || key_Mode2_B == <span class="string">"&#123;"</span> || key_Mode2_B == <span class="string">"&#125;"</span>);</span><br><span class="line"></span><br><span class="line">                    isKeyInvalid_A_B = (isKeyInvalid_A || isKeyInvalid_B);      <span class="comment">// if one of the 2 keys is invalid the command will be regarded as invalid</span></span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (isKeyInvalid_A_B)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkYellow;</span><br><span class="line">                        <span class="built_in">Console</span>.WriteLine(<span class="string">"键入的指令为 +, ^, %, &#123; &#125;, ()时，必须用&#123;&#125;括起，请重新输入：\n\n"</span>);</span><br><span class="line">                        <span class="built_in">Console</span>.ResetColor();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        keyName1 = key_Mode2_A;</span><br><span class="line">                        keyName2 = key_Mode2_B;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">while</span> (isKeyInvalid_A_B);</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (keyInfo1.Key == ConsoleKey.D3 || keyInfo1.Key == ConsoleKey.NumPad3)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"\n--------------------【按键命令规则如下】--------------------\n"</span>);</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"数字、英文字母、汉字直接输入即可\n\n多个按键直接组合即可，例如abcdef\n\n除 +, ^, %, &#123;&#125;, ()以外的符号直接输入即可\n\n空格键（Space）键入空格即可\n\n以下是一些特殊按键的命令：\n\nEnter        &#123;ENTER&#125; 或 ~\nESC          &#123;ESC&#125;\nTab          &#123;TAB&#125;\nF1 - F12     &#123;F1&#125; - &#123;F12&#125;\n向上键       &#123;UP&#125;\n向下键       &#123;DOWN&#125;\n向左键       &#123;LEFT&#125;\n向右键       &#123;RIGHT&#125;\nPage Down    &#123;PGDN&#125;\nPage Up      &#123;PGUP&#125;\nBackspace    &#123;BACKSPACE&#125;、&#123;BS&#125; 或 &#123;BKSP&#125;\nDelete       &#123;DELETE&#125; 或 &#123;DEL&#125;\nBreak        &#123;BREAK&#125;\nCaps Lock    &#123;CAPSLOCK&#125; (受键盘物理按键状态影响)\nEnd          &#123;END&#125;\nHome         &#123;HOME&#125;\nInsert       &#123;INSERT&#125; 或 &#123;INS&#125;\nScroll Lock  &#123;SCROLLLOCK&#125; (受键盘物理按键状态影响)\nNum Lock     &#123;NUMLOCK&#125; (受键盘物理按键状态影响)\n小键盘加     &#123;ADD&#125;\n小键盘减     &#123;SUBTRACT&#125;\n小键盘乘     &#123;MULTIPLY&#125;\n小键盘除     &#123;DIVIDE&#125;\n截屏键       &#123;PRTSC&#125;\n\n大小写控制规则：\n\n命令&#123;CAPSLOCK&#125;为在命令中模拟按下一次CapsLock键，只能用于自动命令的输出，无法控制键盘物理按键的状态，并受其影响。\n例如键入命令&#123;CAPSLOCK&#125;abc&#123;CAPSLOCK&#125;def，在CapsLock键为关闭状态时执行，得到的输出结果为ABCdef\n\n+, ^, %, &#123;&#125;, ()或其组合均须用括号&#123;&#125;括起，否则会造成程序代码解析错误。例如当自动按键为(时，则命令应为&#123;(&#125;\n\n若要指定按键与 SHIFT、Ctrl 和 ALT 键的组合，请在键代码前面加上以下一个或多个代码:\n\nSHIFT        +\nCtrl         ^\nALT          %\n\n执行自动循环前请切换至英文输入法，否则可能会造成指令输出不正常\n\n自动循环开始后，可通过按【Ctrl+Alt+空格】组合键重置程序，或关闭控制台窗口结束程序\n"</span>);</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"------------------------------------------------------------\n\n"</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">goto</span> UserInputing_Mode;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">// Here user will be allowed to input a time interval.</span></span><br><span class="line">            <span class="comment">// The try-catch block will prevent the exceptions when user send non-number characters to timer interval. And then back to beginning of time inputing through a Goto command.</span></span><br><span class="line">            UserInputing_Time:</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"\n输入每次执行的时间间隔（秒，可以是小数）:\n"</span>);</span><br><span class="line">                <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Yellow;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"(输入数字后请切换至英文输入法，按Enter键执行程序)\n"</span>);</span><br><span class="line">                <span class="built_in">Console</span>.ResetColor();</span><br><span class="line">                Program.timerIntervalInSecond = Convert.ToDouble(<span class="built_in">Console</span>.ReadLine());</span><br><span class="line">                aTimer.Interval = Program.timerIntervalInSecond * <span class="number">1000</span>;     <span class="comment">// Transform milliseconds into seconds.</span></span><br><span class="line">                aTimer.Enabled = <span class="literal">true</span>;       <span class="comment">// Timer event started</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">catch</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkYellow;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"请重新输入一个正确的秒数！\n"</span>);</span><br><span class="line">                <span class="built_in">Console</span>.ResetColor();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">goto</span> UserInputing_Time;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Green;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n************ !自动按键任务已经开始! ************\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"****** 请切换至需要执行按键的窗口或位置上 ******\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine($<span class="string">"设定的间隔时间为 &#123;Program.timerIntervalInSecond&#125; 秒..."</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ResetColor();</span><br><span class="line">            <span class="built_in">Console</span>.Title = <span class="string">"* -Task Started- *"</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// This would prevent the auto close of the console when generated autokey or followed user's typing was send to console itself.</span></span><br><span class="line">            <span class="comment">// If user put combination key of [Ctrl+Alt+Spacebar], the event will stop and program will be reset.</span></span><br><span class="line">            <span class="keyword">do</span></span><br><span class="line">            &#123;</span><br><span class="line">                ConsoleKeyInfo keyInfo2 = <span class="built_in">Console</span>.ReadKey();</span><br><span class="line">                <span class="keyword">if</span> ((keyInfo2.Modifiers &amp; ConsoleModifiers.Control) != <span class="number">0</span> &amp;&amp; (keyInfo2.Modifiers &amp; ConsoleModifiers.Alt) != <span class="number">0</span> &amp;&amp; keyInfo2.Key == ConsoleKey.Spacebar)</span><br><span class="line">                &#123;</span><br><span class="line">                    aTimer.Enabled = <span class="literal">false</span>;       <span class="comment">// Timer event stop.</span></span><br><span class="line">                    isKey_2A = <span class="literal">true</span>;              <span class="comment">// Reset the key distinguish argument for mode 2 while program was reseted.</span></span><br><span class="line"></span><br><span class="line">                    <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Red;</span><br><span class="line">                    <span class="built_in">Console</span>.WriteLine(<span class="string">"\n\n********* 程序已重置，自动按键任务停止 *********\n\n"</span>);</span><br><span class="line">                    <span class="built_in">Console</span>.ResetColor();</span><br><span class="line">                    <span class="built_in">Console</span>.Title = <span class="string">"AutoKeyGenerator V0.5"</span>;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">goto</span> UserInputing_Mode;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkYellow;</span><br><span class="line">                    <span class="built_in">Console</span>.WriteLine(<span class="string">"\n检测到对此窗口的按键输入，请切换至目标窗口上\n"</span>);</span><br><span class="line">                    <span class="built_in">Console</span>.ResetColor();                    </span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">while</span> (<span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Event executor function</span></span><br><span class="line">        <span class="comment">// If is mode 1, will only execute a single key(keyName1).</span></span><br><span class="line">        <span class="comment">// If is mode 2, the first key(keyName1) and the second key(keyName2) will be executed alternately.</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ModeOption</span><span class="params">(object source, ElapsedEventArgs e)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="comment">// mode 1 method:</span></span><br><span class="line">            <span class="keyword">if</span> (generatorMode == <span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                keyName = keyName1;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// mode 2 method (Will always execute keyName1 first):</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (isKey_2A)               </span><br><span class="line">                &#123;</span><br><span class="line">                    keyName = keyName1;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    keyName = keyName2;</span><br><span class="line">                &#125;</span><br><span class="line">                isKey_2A = !isKey_2A;   <span class="comment">// Reverse the value(a boolean) of distinguish argument after each executions.</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                SendKeys.SendWait($<span class="string">"&#123;keyName&#125;"</span>);                        <span class="comment">// Executing the autokey command</span></span><br><span class="line">                realLocalTime = Convert.ToString(DateTime.Now);         <span class="comment">// Show the localtime of each executions</span></span><br><span class="line">                <span class="built_in">Console</span>.WriteLine($<span class="string">"&#123;realLocalTime&#125;"</span> + <span class="string">" - 执行完成"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// If the key command still cannot be parsed whatever, this will ask user to reset the program by a key combination.</span></span><br><span class="line">            <span class="keyword">catch</span> (ArgumentException)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkRed;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"程序错误，请按【Ctrl+Alt+空格】重置程序..."</span>);</span><br><span class="line">            &#125;                </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个程序的使用说明基本上已经在代码里写出，也较为详细地列出了SendKeys类的按键表，可在使用时通过按键直接调出，注释也写的比较详细。相比于最早的只能执行单一指令的程序，我还加上了一个执行双指令交替的功能，即两个（组）指令将以A-B-A-B-的形式交替输出，但目前还未得到实际应用，现在两组指令之间的时间间隔也是完全相同的，而在我能想到的实际使用中，很可能会遇到A-B的时间要远小于B-A的时间的情况，即较为迅速地执行A-B后需要等待较长时间，再迅速执行下一次A-B，如此循环。鉴于我目前还没有遇到类似的需求，这个功能就暂且这样。</p>
+<p>&emsp;&emsp;在判断用户的输入有效性上，这个程序还要面临比平常更复杂的情况。因为程序本身可能必须去执行一些特殊的按键，如+, ^, %, {}, ()或其组合，这些按键对应的字符串因为本身就可能构成一些运算操作符或者代码结构，一旦将其注入进代码后，就会破坏正常的代码结构，从而造成错误。我的方法是加了一层筛选用户的输入内容的块，用来专门对付这些特殊的按键，虽然并不是所有的情况都能被完美应对，但至少在大部分情况下防止了程序出现错误。</p>
+<p>&emsp;&emsp;程序还可以通过向控制台本身发送一个【Ctrl+Alt+空格】的组合键来重置程序事件以及所有关键变量，这也增加了程序的可操作性。</p>
+<p>&emsp;&emsp;像是在上文提到的那个工控软件上，因为“启动”按键的快捷键是F2，就可以将指令输入为{F2}，便可实现自动循环启动。这个程序还被我用来玩一个叫《Zombidle》的放置类小游戏，这个游戏的特点是敲键盘越快伤害越高，显然我们并不愿意一直去物理敲击键盘，于是可以将这个程序里的间隔时间设定到很短（如10 ms），便可实现超高伤害输出。此外，还被用来挂一种网络课程，这个课程的页面会记录观看者的观看情况，如果观看者长时间没有操作则会自动中断，我当时是设置了{PGDN}和{PGUP}，让网页每隔几分钟就自动来回翻一次页面，从而打断网页中断的计时。</p>
+<h2 id="2-暖暖的自动种植工具（NikkiHarvester）"><a href="#2-暖暖的自动种植工具（NikkiHarvester）" class="headerlink" title="2. 暖暖的自动种植工具（NikkiHarvester）"></a>2. 暖暖的自动种植工具（NikkiHarvester）</h2><p>&emsp;&emsp;这个程序就是纯粹的游戏辅助了，因为《无限暖暖》这个游戏最近出了一个家园系统，玩法和传统的家园经营类游戏差不多，需要不断地执行播种、浇水、收获等等操作，当然很容易想到去用程序自动执行这一过程。首先我们必须明确的一个重要的前提环境是，该游戏不能自带有任何的反作弊机制。像《无限暖暖》的游戏内容几乎可以算是单机游戏，是没有这些东西的。如果想要在拥有强大反作弊机制的游戏里实现类似的自动按键功能，那就完全是另一个话题了。</p>
+<p>&emsp;&emsp;首先我遇到最大的问题是，像是《无限暖暖》这样的游戏，和一般的网页或Windows程序不同，大多数这种具有一定体量的游戏，<strong>其键盘都使用DirectX的DirectInput接口，而不是标准windows消息会话机制，所以通常的方法——如上文提到的SendKeys类等等的方法，都不能起作用</strong>，这一度难住了我。后来发现，Windows API一定程度上可以解决这个问题，即利用Keybd_event()方法。我们这里先放完整的程序代码：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Runtime.InteropServices;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> System.Windows.Forms;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">static</span> System.Runtime.CompilerServices.RuntimeHelpers;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> NikkiHarvester</span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Program</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> TurnsCounter = <span class="number">0</span>;                 <span class="comment">// 运行轮数计时器，每运行一轮加1，用于记录和终止程序</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> TotalTurns;                       <span class="comment">// 用户指定的运行轮数</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> NikkiPlantingTime = <span class="number">46000</span>;        <span class="comment">// 暖暖种植运动的时间</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> NikkiHarvestingTime = <span class="number">5200</span>;       <span class="comment">// 暖暖收获运动的时间</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> WaitingTime = <span class="number">603000</span>;             <span class="comment">// 生长等待时间 (10min = 600000)，多加了3秒钟考虑容错</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> WaitingTimeClock = <span class="number">600000</span>;        <span class="comment">// 生长等待时间的报时器时间</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> ClickIntervalTime = <span class="number">100</span>;          <span class="comment">// 点击间隔</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span><span class="params">(<span class="built_in">string</span>[] args)</span></span></span><br><span class="line"><span class="function">        </span>&#123;          </span><br><span class="line"></span><br><span class="line">            <span class="comment">//Console.Title = "NikkiHarvester V0.1";</span></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Cyan;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n     **************************************\n     *                                    *\n     *                                    *\n     *      暖暖的自动种植工具 V0.1       *\n     *                                    *\n     *                                    *\n     **************************************\n"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.White;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            UserInputing_Turns:</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"请设定需要种植的轮数，并按Enter键执行程序（输入0，程序将无限次运行）：\n"</span>);</span><br><span class="line">                TotalTurns = Convert.ToInt32(<span class="built_in">Console</span>.ReadLine());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">catch</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.DarkYellow;</span><br><span class="line">                <span class="built_in">Console</span>.WriteLine(<span class="string">"请重新输入一个正确的整数数字！\n"</span>);</span><br><span class="line">                <span class="built_in">Console</span>.ResetColor();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">goto</span> UserInputing_Turns;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Green;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n************ !自动工作任务已经开始! ************\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"* 请在 5 秒内切换至需要执行按键的窗口或位置上 *\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ResetColor();</span><br><span class="line"></span><br><span class="line">            <span class="built_in">Keyboard</span>.Delay(<span class="number">5000</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">// 如果用户输入一个轮数，程序运行运行到指定次数后将自动停止</span></span><br><span class="line">            <span class="comment">// 如果用户输入的轮数是0，则程序将无限次运行</span></span><br><span class="line">            <span class="keyword">if</span> (TotalTurns == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Keyboard</span>.Thread_Keyboard_W();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">while</span> (TurnsCounter != TotalTurns)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Keyboard</span>.Thread_Keyboard_W();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;                    </span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Red;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n************ 程序已经结束，关闭程序窗体退出 ************\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ReadKey(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Keyboard</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line"></span><br><span class="line">        [DllImport(<span class="string">"user32.dll"</span>, SetLastError = <span class="literal">true</span>)]</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">keybd_event</span><span class="params">(<span class="keyword">byte</span> bVk, <span class="keyword">byte</span> bScan, <span class="keyword">int</span> dwFlags, <span class="keyword">int</span> dwExtraInfo)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 进程睡眠方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Delay</span><span class="params">(<span class="keyword">int</span> <span class="built_in">delay</span>)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.Threading.Thread.Sleep(<span class="built_in">delay</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟按键按下的方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">KeyDown</span><span class="params">(KEYCODE keycode)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            keybd_event((<span class="keyword">byte</span>)keycode, <span class="number">0x0</span>, <span class="number">0</span>, <span class="number">0</span>);<span class="comment">// 按下</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟一次按下和松开的方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">KeyPress</span><span class="params">(KEYCODE keycode, SCANCODE scancode, <span class="keyword">int</span> <span class="built_in">delay</span> = <span class="number">0</span>)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            keybd_event((<span class="keyword">byte</span>)keycode, (<span class="keyword">byte</span>)scancode, <span class="number">0</span>, <span class="number">0</span>);<span class="comment">// 按下</span></span><br><span class="line">            System.Threading.Thread.Sleep(<span class="built_in">delay</span>);</span><br><span class="line">            keybd_event((<span class="keyword">byte</span>)keycode, (<span class="keyword">byte</span>)scancode, <span class="number">2</span>, <span class="number">0</span>); <span class="comment">// 释放</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟按键松开的方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">KeyUp</span><span class="params">(KEYCODE keycode)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            keybd_event((<span class="keyword">byte</span>)keycode, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>); <span class="comment">// 释放</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// SendKeys方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Type</span><span class="params">(<span class="built_in">string</span> message)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            System.Windows.Forms.SendKeys.SendWait(message);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 一次完整的种植方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Thread_Keyboard_W</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Yellow;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n正在进行种植和浇水...\n"</span>);</span><br><span class="line"></span><br><span class="line">            Thread tr_1 = <span class="keyword">new</span> Thread(<span class="built_in">Keyboard</span>.Thread_RightClick_0);                         <span class="comment">// 右键种植-浇水线程</span></span><br><span class="line">            tr_1.Start();</span><br><span class="line"></span><br><span class="line">            <span class="built_in">Keyboard</span>.KeyPress(KEYCODE.VK_W, SCANCODE.SK_W, Program.NikkiPlantingTime);      <span class="comment">// W键前进线程</span></span><br><span class="line"></span><br><span class="line">            tr_1.Abort();                                                                   <span class="comment">// 前进到底后，停止右键线程</span></span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.White;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine($<span class="string">"\n等待植物生长中...设定的等待时间为 &#123;(Program.WaitingTimeClock) / 1000&#125; 秒\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine($<span class="string">"等待期间请不要移动人物的镜头视角！\n"</span>);</span><br><span class="line"></span><br><span class="line">            Thread tr_2 = <span class="keyword">new</span> Thread(<span class="built_in">Keyboard</span>.Thread_WaitingClock);                         <span class="comment">// 开始等待报时器</span></span><br><span class="line">            tr_2.Start();</span><br><span class="line"></span><br><span class="line">            Thread.Sleep(Program.WaitingTime);                                              <span class="comment">// 主线程睡眠，等待植物生长</span></span><br><span class="line"></span><br><span class="line">            tr_2.Abort();                                                                   <span class="comment">// 结束等待报时器</span></span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Magenta;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">"\n!! 开始收割植物 !!\n"</span>);</span><br><span class="line"></span><br><span class="line">            Thread tr_3 = <span class="keyword">new</span> Thread(<span class="built_in">Keyboard</span>.Thread_E);                                    <span class="comment">// E键收割线程</span></span><br><span class="line">            tr_3.Start();</span><br><span class="line"></span><br><span class="line">            <span class="built_in">Keyboard</span>.KeyPress(KEYCODE.VK_S, SCANCODE.SK_S, Program.NikkiHarvestingTime);    <span class="comment">// S键倒退线程</span></span><br><span class="line"></span><br><span class="line">            tr_3.Abort();                                                                   <span class="comment">// 收割完毕后，停止E键线程</span></span><br><span class="line"></span><br><span class="line">            Program.TurnsCounter++;                                                         <span class="comment">// 程序轮数自加</span></span><br><span class="line"></span><br><span class="line">            Program.WaitingTimeClock = <span class="number">600000</span>;                                              <span class="comment">// 重置报时器时间</span></span><br><span class="line"></span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.Green;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine($<span class="string">"\n********** 已完成了 &#123;Program.TurnsCounter&#125; 轮种植 **********\n"</span>);</span><br><span class="line">            <span class="built_in">Console</span>.ForegroundColor = ConsoleColor.White;</span><br><span class="line">            <span class="built_in">Console</span>.WriteLine(<span class="string">" 5 秒后将进行下一轮种植...\n"</span>);</span><br><span class="line"></span><br><span class="line">            Thread.Sleep(<span class="number">5000</span>);                                                             <span class="comment">// 等待5秒，准备下一轮种植</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 右键不断点击的方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Thread_RightClick_0</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Keyboard</span>.KeyPress(KEYCODE.VK_RBUTTON, SCANCODE.SK_RBUTTON, <span class="number">25</span>);</span><br><span class="line"></span><br><span class="line">                Thread.Sleep(Program.ClickIntervalTime);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// E键不断点击的方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Thread_E</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Keyboard</span>.KeyPress(KEYCODE.VK_E, SCANCODE.SK_E, <span class="number">25</span>);</span><br><span class="line"></span><br><span class="line">                Thread.Sleep(Program.ClickIntervalTime);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 报时器时钟</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Thread_WaitingClock</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                Thread.Sleep(<span class="number">30000</span>);</span><br><span class="line">                Program.WaitingTimeClock = Program.WaitingTimeClock - <span class="number">30000</span>;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">Console</span>.WriteLine($<span class="string">"距植物成熟还剩余 &#123;Program.WaitingTimeClock / 1000&#125; 秒..."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 虚拟按键码表</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">enum</span> KEYCODE</span><br><span class="line">    &#123;</span><br><span class="line">        VK_A = <span class="number">0x41</span>, VK_B = <span class="number">0x42</span>, VK_C = <span class="number">0x43</span>, VK_D = <span class="number">0x44</span>, VK_E = <span class="number">0x45</span>, VK_F = <span class="number">0x46</span>, VK_G = <span class="number">0x47</span>,</span><br><span class="line">        VK_H = <span class="number">0x48</span>, VK_I = <span class="number">0x49</span>, VK_J = <span class="number">0x4A</span>, VK_K = <span class="number">0x4B</span>, VK_L = <span class="number">0x4C</span>, VK_M = <span class="number">0x4D</span>, VK_N = <span class="number">0x4E</span>, VK_O = <span class="number">0x4F</span>,</span><br><span class="line">        VK_P = <span class="number">0x50</span>, VK_Q = <span class="number">0x51</span>, VK_R = <span class="number">0x52</span>, VK_S = <span class="number">0x53</span>, VK_T = <span class="number">0x54</span>, VK_U = <span class="number">0x55</span>, VK_V = <span class="number">0x56</span>, VK_W = <span class="number">0x57</span>,</span><br><span class="line">        VK_X = <span class="number">0x58</span>, VK_Y = <span class="number">0x59</span>, VK_Z = <span class="number">0x5A</span>, VK_LSHIFT = <span class="number">0xA0</span>, VK_RSHIFT = <span class="number">0xA1</span>, VK_LCONTROL = <span class="number">0xA2</span>, VK_RCONTROL = <span class="number">0xA3</span>,</span><br><span class="line">        VK_ENTER = <span class="number">0x0D</span>, VK_LBUTTON = <span class="number">0x01</span>, VK_RBUTTON = <span class="number">0x02</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 扫描按键码表</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">enum</span> SCANCODE</span><br><span class="line">    &#123;</span><br><span class="line">        SK_A = <span class="number">0x1E</span>, SK_B = <span class="number">0x30</span>, SK_C = <span class="number">0x2e</span>, SK_D = <span class="number">0x20</span>, SK_E = <span class="number">0x12</span>, SK_F = <span class="number">0x21</span>, SK_G = <span class="number">0x22</span>,</span><br><span class="line">        SK_H = <span class="number">0x23</span>, SK_I = <span class="number">0x14</span>, SK_J = <span class="number">0x24</span>, SK_K = <span class="number">0x25</span>, SK_L = <span class="number">0x26</span>, SK_M = <span class="number">0x32</span>, SK_N = <span class="number">0x31</span>, SK_O = <span class="number">0x18</span>,</span><br><span class="line">        SK_P = <span class="number">0x19</span>, SK_Q = <span class="number">0x10</span>, SK_R = <span class="number">0x13</span>, SK_S = <span class="number">0x1F</span>, SK_T = <span class="number">0x14</span>, SK_U = <span class="number">0x16</span>, SK_V = <span class="number">0x2F</span>, SK_W = <span class="number">0x11</span>,</span><br><span class="line">        SK_X = <span class="number">0x2D</span>, SK_Y = <span class="number">0x15</span>, SK_Z = <span class="number">0x2C</span>, SK_LSHIFT = <span class="number">0x2A</span>, SK_RSHIFT = <span class="number">0x36</span>, SK_LCONTROL = <span class="number">0x1D</span>, SK_RCONTROL = <span class="number">0x1D</span>,</span><br><span class="line">        SK_ENTER = <span class="number">0X1C</span>, SK_LBUTTON = <span class="number">0x100</span>, SK_RBUTTON = <span class="number">0x101</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;的如果在互联网上搜索Keybd_event()方法的话，会发现很多人写的Keybd_event照样无法在DirectX输入的游戏中生效，这是因为很多人的程序并没有写全该方法中的关键内容。这个方法的结构如下文，当然，想要调用这个方法，首先得先声明Windows用户界面的API，即user32.dll：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DllImport(<span class="string">"user32.dll"</span>, SetLastError = <span class="literal">true</span>)]</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;然后我们再逐字分析Keybd_event()这个方法：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void keybd<span class="constructor">_event(<span class="params">byte</span> <span class="params">bVk</span>, <span class="params">byte</span> <span class="params">bScan</span>, <span class="params">int</span> <span class="params">dwFlags</span>, <span class="params">int</span> <span class="params">dwExtraInfo</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这其中，<code>bVK</code>指的是虚拟按键码，即Virtual-Key，代码必须是1-254范围内的值，通常用16进制表示。我在程序代码里写了常用按键的虚拟按键码码表，完整的码表见微软官方文档：<a href="https://learn.microsoft.com/zh-cn/windows/win32/inputdev/virtual-key-codes" target="_blank" rel="noopener">https://learn.microsoft.com/zh-cn/windows/win32/inputdev/virtual-key-codes</a> </p>
+<p>&emsp;&emsp;<code>bScan</code>指的是键盘的硬件驱动扫描码，即Scan code，简称“扫描码”。通常也用16进制表示。我的程序代码里也写了常用按键的扫描码，但要注意的是扫描码拥有多个版本的码表，目前最常用键盘的码表即Set2扫描码表，可自行查询，也可参考文末附表给出的扫描码键值。若是将bScan的值写成0，即表示忽略这个扫描码，同理bVK的值也可以为0，表示忽略。</p>
+<p>&emsp;&emsp;<code>dwFlags</code>控制函数的动作状态。其值只能是整数：值为0时表示忽略，即按键按下；而将其值设为2时，则表示按键弹起。</p>
+<p>&emsp;&emsp;<code>dwExtraInfo</code>是附加的辅助信息，这个是没有用的，至少我现在没有用到这个，设置为0即可。</p>
+<p>&emsp;&emsp;<strong>这其中最关键的就是bScan，也就是键盘驱动扫描码，因为它是硬件驱动级别的，所以即便是DirectInput也无法绕开它。网上很多人写的程序里都完全忽略了bScan，而将其写成了0，故而无法生效，我们这里只需要将虚拟按键码和扫描码写成同一个按键，即可让自动按键程序在应用DirectX键盘接口的游戏里工作。</strong></p>
+<p>&emsp;&emsp;虽然到这里我们已经解决了键盘自动按键不生效的问题，但要想在《无限暖暖》游戏里实现自动种植，还需要攻克另一个关键的问题，即如何实现鼠标的自动点击。《无限暖暖》这个游戏因为是所谓的“三端互通”游戏，而我们都知道，这种游戏本质上更接近手游，其PC端游更多意义上只是手游的一个“官方模拟器”，故游戏里很多按键都是靠鼠标去点击，从而模拟移动端点击屏幕的效果。这款游戏里的鼠标左右键是不能被更改的，占据了大量的操作，如在种地、浇水这两个任务上完全依赖鼠标右键的点击，并且还没有快捷键。所以必须找到一个能够自动执行鼠标按键的途径，否则整套流程还是无法顺利进行。</p>
+<p>&emsp;&emsp;我第一个尝试的是Windows API的mouse_event方法，但很遗憾，这个方法虽然能够在Windows会话中起作用，但仍然无法在DirectInput下工作。不断研究尝试不同方法的时候，我发现了一篇扫描码的码表，其中里居然包含LEFT_BUTTON和RIGHT_BUTTON的字样，难道说扫描码还包含有鼠标按键？经过我的验证，确实是这样，<strong>Keybd_event方法在使用特定的Scan code后，是能够模拟鼠标按键的。</strong>从代码中可以看到，例如鼠标左键，其扫描码为0x100，而鼠标右键为0x101，有点奇怪的是，这些值都超过了255，看来扫描码并不一定局限在255之内。更多的鼠标按键详见文末的附表，并不是每个按键我都验证过。</p>
+<p>&emsp;&emsp;最终，在配合上多线程后，这个问题终于得到了解决。现在游戏里的人物可以反复进行种植、浇水、等待以及最后的收获动作。多次调试后再配合上游戏里的一些机制，仅仅用一个十几KB的程序就完美实现了全自动无人值守的挂机种地。但更多的收获在于对Keybd_event方法的不断探索上，现在看来，这个函数其实还是相当强力的，只不过目前互联网上确实很难找到把这个函数的使用和操作都讲很透彻的信息，就连谷歌上搜一圈，同样也是几乎没几个人把这些搞的很明白的，不得不说，还是有点成就感的啦！</p>
+<h2 id="3-Visual-Studio以管理员权限调试、运行代码程序的方法"><a href="#3-Visual-Studio以管理员权限调试、运行代码程序的方法" class="headerlink" title="3. Visual Studio以管理员权限调试、运行代码程序的方法"></a>3. Visual Studio以管理员权限调试、运行代码程序的方法</h2><p>&emsp;&emsp;最后还有一个小问题，就是以上的这些程序都只有在管理员权限下运行才能正常工作。然而这些程序在VS里调试的时候，默认情况是没有管理员权限的，这很是麻烦。于是这是以管理员权限调试代码的方法（测试过VS 2019和VS 2022）：</p>
+<p>&emsp;&emsp;右键【解决方案资源管理器】里的解决方案 - 安全性 - 将启用ClickOnce安全设置的勾打上再取消，我们就可以看到在Properties里出现了一个新的文件，即app.manifest。打开这个文件，找到“UAC 清单选项”的代码块：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">requestedPrivileges</span> <span class="attr">xmlns</span>=<span class="string">"urn:schemas-microsoft-com:asm.v3"</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- UAC 清单选项</span></span><br><span class="line"><span class="comment">     如果想要更改 Windows 用户帐户控制级别，请使用</span></span><br><span class="line"><span class="comment">     以下节点之一替换 requestedExecutionLevel 节点。n</span></span><br><span class="line"><span class="comment">&lt;requestedExecutionLevel  level="asInvoker" uiAccess="false" /&gt;</span></span><br><span class="line"><span class="comment">&lt;requestedExecutionLevel  level="requireAdministrator" uiAccess="false" /&gt;</span></span><br><span class="line"><span class="comment">&lt;requestedExecutionLevel  level="highestAvailable" uiAccess="false" /&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    指定 requestedExecutionLevel 元素将禁用文件和注册表虚拟化。</span></span><br><span class="line"><span class="comment">    如果你的应用程序需要此虚拟化来实现向后兼容性，则删除此</span></span><br><span class="line"><span class="comment">    元素。</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">requestedExecutionLevel</span> <span class="attr">level</span>=<span class="string">"asInvoker"</span> <span class="attr">uiAccess</span>=<span class="string">"false"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">requestedPrivileges</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;通常在默认的情况下，代码就像上面这样，requestedExecutionLevel的级别是”asInvoker”。这里我们需要将”asInvoker”改为”requireAdministrator”或者”highestAvailable”，我一般都是改成”highestAvailable”，嫌麻烦的可以直接复制我修改后的块：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;requestedExecutionLevel <span class="attribute">level</span>=<span class="string">"highestAvailable"</span> <span class="attribute">uiAccess</span>=<span class="string">"false"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;保存后，对我们的程序点击【启动】，会弹出一个“此任务要求应用程序具有提升的权限”的框，这里选择【使用其他凭据重新启动】，将再次重启VS，重启后，再次点【启动】，此时启动的程序已经具有管理员权限。</p>
+<h2 id="附表：扫描码（Scan-code）代码表"><a href="#附表：扫描码（Scan-code）代码表" class="headerlink" title="附表：扫描码（Scan code）代码表"></a>附表：扫描码（Scan code）代码表</h2><p> Hex  Dec  Button<br>0x01     1  Escape<br>0x02     2  1<br>0x03     3  2<br>0x04     4  3<br>0x05     5  4<br>0x06     6  5<br>0x07     7  6<br>0x08     8  7<br>0x09     9  8<br>0x0A    10  9<br>0x0B    11  0<br>0x0C    12  Minus<br>0x0D    13  Equals<br>0x0E    14  Backspace<br>0x0F    15  Tab<br>0x10    16  Q<br>0x11    17  W<br>0x12    18  E<br>0x13    19  R<br>0x14    20  T<br>0x15    21  Y<br>0x16    22  U<br>0x17    23  I<br>0x18    24  O<br>0x19    25  P<br>0x1A    26  Left Bracket<br>0x1B    27  Right Bracket<br>0x1C    28  Enter<br>0x1D    29  Left Control<br>0x1E    30  A<br>0x1F    31  S<br>0x20    32  D<br>0x21    33  F<br>0x22    34  G<br>0x23    35  H<br>0x24    36  J<br>0x25    37  K<br>0x26    38  L<br>0x27    39  Semicolon<br>0x28    40  Apostrophe<br>0x29    41  ~ (Console)<br>0x2A    42  Left Shift<br>0x2B    43  Back Slash<br>0x2C    44  Z<br>0x2D    45  X<br>0x2E    46  C<br>0x2F    47  V<br>0x30    48  B<br>0x31    49  N<br>0x32    50  M<br>0x33    51  Comma<br>0x34    52  Period<br>0x35    53  Forward Slash<br>0x36    54  Right Shift<br>0x37    55  NUM*<br>0x38    56  Left Alt<br>0x39    57  Spacebar<br>0x3A    58  Caps Lock<br>0x3B    59  F1<br>0x3C    60  F2<br>0x3D    61  F3<br>0x3E    62  F4<br>0x3F    63  F5<br>0x40    64  F6<br>0x41    65  F7<br>0x42    66  F8<br>0x43    67  F9<br>0x44    68  F10<br>0x45    69  Num Lock<br>0x46    70  Scroll Lock<br>0x47    71  NUM7<br>0x48    72  NUM8<br>0x49    73  NUM9<br>0x4A    74  NUM-<br>0x4B    75  NUM4<br>0x4C    76  NUM5<br>0x4D    77  NUM6<br>0x4E    78  NUM+<br>0x4F    79  NUM1<br>0x50    80  NUM2<br>0x51    81  NUM3<br>0x52    82  NUM0<br>0x53    83  NUM.<br>0x57    87  F11<br>0x58    88  F12<br>0x9C   156  NUM Enter<br>0x9D   157  Right Control<br>0xB5   181  NUM/<br>0xB8   184  Right Alt<br>0xC7   199  Home<br>0xC8   200  Up Arrow<br>0xC9   201  PgUp<br>0xCB   203  Left Arrow<br>0xCD   205  Right Arrow<br>0xCF   207  End<br>0xD0   208  Down Arrow<br>0xD1   209  PgDown<br>0xD2   210  Insert<br>0xD3   211  Delete<br>0x100  256  Left Mouse Button<br>0x101  257  Right Mouse Button<br>0x102  258  Middle/Wheel Mouse Button<br>0x103  259  Mouse Button 3<br>0x104  260  Mouse Button 4<br>0x105  261  Mouse Button 5<br>0x106  262  Mouse Button 6<br>0x107  263  Mouse Button 7<br>0x108  264  Mouse Wheel Up<br>0x109  265  Mouse Wheel Down</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章著作权归作者所有，禁止任何形式的转载。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/程序/">程序</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件/">软件</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2025/08/31/绘画（4）-简单又可爱的两幅图/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">绘画（4）- 简单又可爱的两幅图</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2025
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="⋄ Videre Invisibilia ⋄"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="250" height="52"
+        src="//music.163.com/outchain/player?type=2&id=29572578&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 40px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>
