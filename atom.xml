@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://caelica.github.io/"/>
-  <updated>2026-04-14T14:48:37.301Z</updated>
+  <updated>2026-05-14T05:11:16.823Z</updated>
   <id>https://caelica.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>VMware Workstation疑难杂症合集+解决方法（2026版）</title>
+    <link href="https://caelica.github.io/2026/05/13/VMware-Workstation%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87%E5%90%88%E9%9B%86-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%882026%E7%89%88%EF%BC%89/"/>
+    <id>https://caelica.github.io/2026/05/13/VMware-Workstation%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87%E5%90%88%E9%9B%86-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%882026%E7%89%88%EF%BC%89/</id>
+    <published>2026-05-13T07:03:25.000Z</published>
+    <updated>2026-05-14T05:11:16.823Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote><p>解决VMware Workstation运行老版本Windows系统时的一些常见问题，特别是在Win11环境下。<a id="more"></a></p></blockquote><p>&emsp;&emsp;VMware Workstation（简称VM）是一个很好用的虚拟机软件，能够允许用户在宿主机上像运行程序一样运行一些操作系统，通常能够从根本上解决因Windows版本问题而导致的兼容性问题，并且可以运行Linux、Android等其他操作系统或环境。我本人使用VM差不多有十年了，尤其是现在Win11系统成为PC电脑上的主流操作系统后，VMware出现了一些之前从来没有出现过的问题，这可能和微软自家自带的Hyper-V虚拟机有关。打算总结一些VMware使用中常见却较为难对付的一些疑难杂症及其解决方法，所有解决方法均为本人亲自验证有效，通常能够根治这些问题。</p><h2 id="序：个人推荐的VMware版本和Windows系统的对应关系"><a href="#序：个人推荐的VMware版本和Windows系统的对应关系" class="headerlink" title="序：个人推荐的VMware版本和Windows系统的对应关系"></a>序：个人推荐的VMware版本和Windows系统的对应关系</h2><p>建议Win7环境下安装VM10；Win10环境下安装VM15 Pro；Win11环境下安装VM17.6及以上版本。</p><p>安装包从Broadcom官网下载的话还得先注册用户，很麻烦，建议随便找个第三方下载就行。这里只提供序列号：<br>VM10使用这个序列号：1G4LV-FZ25P-0ZCN8-ZA3QH-8C00C<br>VM15使用这个序列号：UY758-0RXEQ-M81WP-8ZM7Z-Y3HDA<br>VMware从17.5.2版本之后因被Broadcom收购，彻底变为免费软件，且不再区分是否为Pro版（安装完都是Pro版），故不再需要序列号。</p><p>以下开始各种疑难杂症的解读和解决。操作环境如无特殊说明，均使用Windows11 25H2以及VMware Workstation Pro 17.6.3 build-24583834。</p><h2 id="一、在Win11操作系统上用VMware-Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题"><a href="#一、在Win11操作系统上用VMware-Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题" class="headerlink" title="一、在Win11操作系统上用VMware Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题"></a>一、在Win11操作系统上用VMware Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题</h2><p>在Win11操作系统上用VMware运行WindowsXP，WindowsXP系统一旦开机，这个症状就全程存在，具体表现和经验为：</p><blockquote><ol><li>WinXP操作系统慢如蜗牛，每进行一次操作都有严重的卡顿和停滞，跟CPU或内存占用满了一样，但任务管理器中各项性能指标均正常。且升级虚拟机配置无法对这个现象起到任何改善作用；</li><li>操作系统播放出的任何音效、音乐都会变成非常缓慢卡顿的杂音，例如开机启动音效；</li><li>经过反复测试，该现象只在Windows11下发作，而且几乎必定发作，而在Windows10及以下环境中均无此类现象；</li><li>在存在此类现象的Windows11环境下用VM虚拟机运行Windows98系统，操作系统通常会在启动后登录用户名时报大量错误并最终卡死，无法进入桌面；</li><li>在存在此类现象的Windows11环境下用VM虚拟机运行Windows7系统，影响不大，Win7系统可以正常使用；</li><li>此现象和VM版本无关，无论更换何种版本的VMware均不能解决问题；有人反映使用管理员权限启动VMware后就好了，但在我这里管理员权限并没有用；</li><li>此现象和VMware Tools的状态、安装与否均无关；</li></ol></blockquote><p>这个问题困扰我很久时间，经过研究终于得到了解决。首先应当尝试用管理员权限启动VMware然后运行操作系统，如果问题仍然存在，以下将详解这个问题真正的原因及操作过程：</p><p><strong>结论是微软自家自带的Hyper-V虚拟机和VMware存在严重冲突导致的</strong>。解决方法就是<strong>彻底</strong>禁用Hyper-V，但彻底禁用Hyper-V并不是一件容易的事情。</p><p>在【系统-可选功能-更多Windows功能】中，我们能够执行【启用或关闭Windows功能】：</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/1.jpg" title="a"><p>首先将这里的【Hyper-V】、【Windows沙盒】、【Windows虚拟机监控程序平台】、【适用于Linux的Windows子系统】、【虚拟机平台】前面的勾全部取消，然后应用更改（注意，某些版本的系统中这些条目可能未被完全汉化，可能存在为英文书写的情况，需要注意甄别）。但关键在于，这并不能彻底禁用Hyper-V，网上的各种说法基本上都止步于此。</p><p>若想真正彻底禁用Hyper-V，需要在【系统-隐私和安全性-Windows安全中心-设备安全性-内核隔离-内核隔离详细信息】中，<strong>关闭【内存完整性】和【固件保护】</strong>。【本地机构安全保护】和【Microsoft易受攻击的驱动程序阻止列表】可以保持开启不用关闭；关闭这些有什么不利影响？我认为没有什么不利影响，我所有的计算机都关闭了这些。如下图所示：</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/2.png" title="b"><p>有一些计算机可能在【内核隔离】中看不到【固件保护】这一个栏目，界面可能会是这样：</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/3.png" title="c"><p>这种情况需要在注册表编辑器（cmd然后regedit）中找到【计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard】，在这个文件夹中，可以看到一个名为【EnableVirtualizationBaseSecurity】的REG_DWORD值条目，双击打开它，将其值由1改为0，确定，关闭；</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/4.png" title="d"><p>再检查一下【计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard】中，是否存在一个名为【SystemGuard】的文件夹，若有，检查其下是否有名为Enabled的REG_DWORD值条目，若有，将其值改为0；如果找不到【SystemGuard】文件夹或者Enabled的值已经为0，可以不用管了。</p><p>然后找到命令提示符图标（通常在开始菜单-Windows系统中可以找到），右键单击并选择“以管理员身份运行”。输入以下命令：</p><p><code>bcdedit /set hypervisorlaunchtype off</code></p><p>回车执行，然后输入</p><p><code>DISM /Online /Disable-Feature:Microsoft-Hyper-V</code></p><p>再回车执行，结果如下图：</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/5.png" title="e"><p>这两步我认为似乎并没有什么特别大的用处，但还是建议执行。以上全部执行完毕后，重启计算机，再强调一次，必须重启计算机。重启后，再进入VMware中的WindowsXP系统，可以发现一切都正常了。再进入Windows98操作系统，也一切正常。</p><p>以上一些内容部分参考了来自于Virtualbox.org中的一篇帖子：<a href="https://forums.virtualbox.org/viewtopic.php?t=99390" target="_blank" rel="noopener">https://forums.virtualbox.org/viewtopic.php?t=99390</a> ，可以看到这个问题在2020年可能就已经出现在了Virtualbox虚拟机上（Win11于2021年发布）。故针对这个现象，个人猜想可能性最大的就是微软Win11的开发人员故意让Hyper-V和其他虚拟机软件发生冲突，且让Hyper-V不能被用户轻易关闭，从而挤占虚拟机软件的市场空间。当然还存在一种可能性（比较小）就是Win11和Win11开发人员实在太差劲以至于没有预料到Hyper-V和其他虚拟机发生冲突的情况。</p><p>（又是对抗微软垃圾工程师的一天..）</p><h2 id="二、从VMware-Workstation安装VMware-Tools跳报错框：“VMware-Tools不再随旧版客户机操作系统的VMware-Workstation一起提供…”，以及其他任何导致VMware-Tools不能从VMware-Workstation自动更新或安装的情况："><a href="#二、从VMware-Workstation安装VMware-Tools跳报错框：“VMware-Tools不再随旧版客户机操作系统的VMware-Workstation一起提供…”，以及其他任何导致VMware-Tools不能从VMware-Workstation自动更新或安装的情况：" class="headerlink" title="二、从VMware Workstation安装VMware Tools跳报错框：“VMware Tools不再随旧版客户机操作系统的VMware Workstation一起提供…”，以及其他任何导致VMware Tools不能从VMware Workstation自动更新或安装的情况："></a>二、从VMware Workstation安装VMware Tools跳报错框：“VMware Tools不再随旧版客户机操作系统的VMware Workstation一起提供…”，以及其他任何导致VMware Tools不能从VMware Workstation自动更新或安装的情况：</h2><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/6.png" title="f"><p>这个问题是由于VMware Workstation不再内置远古老版本操作系统的VMware Tools的安装包导致的。我们需要手动安装WMware Tools。</p><p>还是以WindowsXP为例，首先从这个网址下载适用于WindowsXP的VMware Tools镜像：<a href="https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso" target="_blank" rel="noopener">https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso</a> ，应该名为【winPreVista.iso】。若此链接失效，也可以从其他途径自行寻得。</p><p>确保虚拟机为关闭状态，在【编辑虚拟机设置】里，添加新硬件-CD/DVD驱动器，然后完成：</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/7.png" title="g"><p>选择这个新添加的CD/DVD驱动器，右侧【连接-使用ISO映像文件】，路径定位到刚才下载的VMware Tools镜像，我们这里是【winPreVista.iso】；</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/8.png" title="h"><p>添加完毕后，启动WindowsXP虚拟机，可以在“我的电脑”里看到一个新的光驱驱动器，卷标名为VMware Tools。双击它，即可开始安装VMware Tools。建议选择“完整安装”。</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/9.png" title="i"><h2 id="三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题"><a href="#三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题" class="headerlink" title="三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题"></a>三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题</h2><p>在【编辑虚拟机设置里】，点击【显示】，将右侧内容按照下图设置，重点是勾选“拉伸模式”。再进入操作系统后，桌面右键-显示，修改显示分辨率，改到合适的值即可。不要从宿主机的VMware兼容性里调整DPI缩放比例，没有用。</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/10.png" title="j"><h2 id="四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象"><a href="#四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象" class="headerlink" title="四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象"></a>四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象</h2><p>这个原理是当VMware在宿主机和虚拟机交换文件时，这个文件会被先暂存于C盘，然后再挪到虚拟机或主机中去。不论复制成功还是复制失败，该文件都会在C盘形成缓存；如果文件体积较小一般可以不用管，宿主机的Windows会定期清理这些缓存文件；但问题通常出在复制超大文件上，如果宿主机C盘容量不足则会导致复制失败，如果虚拟机硬盘容量不足也会导致复制失败，但就算是失败以后，这些缓存形成的文件仍然会留在了C盘的缓存路径里。这个路径为：</p><p><code>C:\Users\你的用户名\AppData\Local\Temp\vmware-你的用户名\VMwareDnD</code></p><p>故宿主机和虚拟机但凡交换过超大文件或者大量文件后，无论复制失败或成功，都有必要在这个目录检查一下，手动清理掉这些缓存文件。</p><h2 id="五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题"><a href="#五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题" class="headerlink" title="五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题"></a>五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题</h2><p>即已经彻底删除虚拟机中的大量体积的文件后，宿主机中的虚拟机系统文件（.vmdk文件）大小丝毫未减。此时应当在VMware主界面右键虚拟机-管理-清理磁盘，点击“立即清理”，即可释放这些空间：</p><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/11.png" title="k">]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;解决VMware Workstation运行老版本Windows系统时的一些常见问题，特别是在Win11环境下。&lt;/p&gt;&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="软件" scheme="https://caelica.github.io/tags/%E8%BD%AF%E4%BB%B6/"/>
+    
+      <category term="系统" scheme="https://caelica.github.io/tags/%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
   
   <entry>
     <title>从零到成品——用AI辅助造程序的完整操作流程</title>
@@ -481,30 +505,6 @@
     
     
       <category term="艺术" scheme="https://caelica.github.io/tags/%E8%89%BA%E6%9C%AF/"/>
-    
-      <category term="文化" scheme="https://caelica.github.io/tags/%E6%96%87%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>读胡适的《请大家来照照镜子》</title>
-    <link href="https://caelica.github.io/2022/08/27/%E8%AF%BB%E8%83%A1%E9%80%82%E7%9A%84%E3%80%8A%E8%AF%B7%E5%A4%A7%E5%AE%B6%E6%9D%A5%E7%85%A7%E7%85%A7%E9%95%9C%E5%AD%90%E3%80%8B/"/>
-    <id>https://caelica.github.io/2022/08/27/%E8%AF%BB%E8%83%A1%E9%80%82%E7%9A%84%E3%80%8A%E8%AF%B7%E5%A4%A7%E5%AE%B6%E6%9D%A5%E7%85%A7%E7%85%A7%E9%95%9C%E5%AD%90%E3%80%8B/</id>
-    <published>2022-08-27T07:31:55.000Z</published>
-    <updated>2022-12-23T07:55:11.462Z</updated>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote><p>一九二八年的文章。 <a id="more"></a></p></blockquote><p>《请大家来照照镜子》，可以在wiki页面直接查看原文：<a href="https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90" target="_blank" rel="noopener">https://zh.wikisource.org/zh-hans/%E8%AB%8B%E5%A4%A7%E5%AE%B6%E4%BE%86%E7%85%A7%E7%85%A7%E9%8F%A1%E5%AD%90</a></p><p>&emsp;&emsp;偶然看到这篇胡适先生在1928年写的文章，其文笔可谓锐利无比，在今天看来也很通俗易懂。我并没有读过太多胡适和鲁迅的文章，因为我个人来说其实向来都和鲁迅先生的那句话保持一致：“我以为要少——或者竟不——看中国书，多看外国书”。这不代表中国没有好书，只是实在少到可怜，与其在垃圾堆里找食，不如老老实实坐到餐桌前吃一顿好的。不过可以肯定的是，像鲁迅胡适这些人的作品在20世纪初无疑是具有启蒙性质和指导意义的，但对于今天的人来说，最让人感触颇深的却是意识到这是一百年前的文字，面对的居然是一百年都没有解决的难题。</p><p>&emsp;&emsp;在今天看来，一百年前安诺德先生提出的“三个大问题”：即全国的铁路和交通问题、教育和工业化问题、个人的责任心问题，似乎是被解决了，但我们也都明白，问题只是在表面上解决了，实际上并没有解决得很好很彻底。而胡适本人在文章中给出的两个解决方案：肯认错，和死心塌地的去学，则是决绝从来都没有做到过的。为什么我们永远都在落后，即使是眼看就要有那么一点追上的机会，却还是被一股怪力给无情地拉了回去？我想答案也很明白，就是我们从来都没有真正低头认错，而正是因为没有低头认错、承认自己不如人，才做不到“死心塌地的去学”，学不到“死心塌地”的核心内容。</p><blockquote><p>这种急需的新觉悟就是我们自己要认错。我们必须承认我们自己百事不如人，不但物质上不如人，不但机械上不如人，并且政治社会道德都不如人…</p></blockquote><blockquote><p>因为我们从不曾悔祸，从不曾彻底痛责自己，从不曾彻底认错。二三十年前，居然有点悔悟了，所以有许多遣责小说出来，暴扬我们自己官场的黑暗，社会的卑污，家庭的冷酷。十余年来，也还有一些人肯攻击中国的旧文学，旧思想，旧道德宗教，——肯承认西洋的精神文明远胜于我们自己。但现在这一点点悔悟的风气都消灭了。现在中国全部弥漫着一股夸大狂的空气：义和团都成了应该崇拜的英雄志士，而西洋文明只须“帝国主义”四个字便可轻轻抹煞！政府下令提倡旧礼教，而新少年高呼“打倒文化侵略！”。</p></blockquote><p>&emsp;&emsp;不论是鲁迅也好，胡适也好，还是文中的这位安诺德先生，不知这些老先生如果活到今天会是如何感想，不，他们都是没有“资格”活在这个社会的，这些人如果活到今天，都会被全网fs，重则那啥，虽然我们知道人家老爷子活着的时候早就远走高飞，62年就去世了。但我猜，就是强如他，智慧如他，他写这篇文章的时候恐怕也无法预料到一件事：</p><p>&emsp;&emsp;那就是低头认错、承认自己不如人，承认西洋的精神文明远胜于自己，居然是如此之难！简直难于上青天——难过了洋枪洋炮，难过了全民普及教育，难过了全国铁路交通网，难过了大学里的量子力学，难过了全国电气化、核电站和载人航天，难到了一百年都做不到的水平上。</p><p>&emsp;&emsp;古时候洋人送来咕咕钟，我们曰“淫技奇巧”；洋人送来洋枪洋炮，我们认为没比自家的好到哪去；终有一天洋人把步枪顶在头上了，才真正下决心去学点什么先进的东西，好来打败洋人。19世纪的人只看到了咕咕钟和洋枪洋炮背后的近代化工厂和生产线设备，却没有意识到工厂和设备的背后，是一套工业体系和适应工业化的社会结构；接下来的事情，我们这几十年的教科书的口径也都是这样完全一致的：从学西方人的技术到学西方人的思想和制度，似乎就是走上了正道。但后面这一百年的经历告诉我们，事情似乎远远不止这么简单。首先我们学来的所谓“思想”、所谓“制度”，其实更大程度上说是偏向政治和经济方面的思想和制度，这些所谓的制度和思想本质上来说是偏功利性的，是为了建设工业化社会的制度和思想。虽然功利性本不是坏事，但它们从来都没有在合理的框架下运行，各路先进的制度和思想到了这里就如同掉进了一个“大染缸”，产生出千奇百怪的“本地化版本”，连发达国家的人看了都要目瞪口呆。</p><p>&emsp;&emsp;而工业化的社会、制度、经济、政治等思想理论体系的背后是什么？这一层的概念因为脱离了直接利益，就很少有人去思考了。按照胡适那个年代的观点，可能会说是教育体系，是培养现代化人才的教育体系，只要有了列强们的教育体系，就有了可以比肩列强的人才，就能诞生后面的一切。就像胡适和安诺德提出的兴办教育的方案，“用教育来打倒愚昧，用实业来打倒贫穷，用机械来征服自然”，固然没错，但最关键的问题来了，教育体系和老师出了问题的教育还算不算教育？这样的教育还能不能打倒愚昧，成为后续一切内容的First Cause？</p><p>&emsp;&emsp;显然，不行。这也正是那个年代的人难以考虑到的问题，也是站在现代这个时间点才能得出的一个推想，这并不容易，放到发达国家，也起码得是第二次世界大战后才逐渐认识到这个问题：</p><p>&emsp;&emsp;教育体系的背后站着的是一个个大大小小的老师，而老师也是人，也是需要被培养被教育的。而这并不是一个鸡生蛋蛋生鸡的问题——因为人并不一定要有老师才能成为老师。这个概念最终推向的是什么才能真正培养人——即一个社会（注意，是社会，不是教育机构）如何培养出现代意义上的人的问题，再次强调是在排除了教育体系的情况下——一个没有老师、上不起学、没有文凭，甚至从来就没有踏官方进教育机构一天的人，能否在这个环境中成长为现代意义上的人的问题。最后我们发现，可能是一个社会的整体状态和精神风貌在影响着这个问题的结果，是它们决定了这个人在成长过程中能接触到什么东西，从而产生什么样的思考和判断。而老师们和教育机构只是这个大框架中的小小一环。</p><p>&emsp;&emsp;而这背后又是什么呢？很明显到了这一层，就相当的抽象了，它可能是一个社会芸芸众生的<strong>潜意识中</strong>对一些基本概念的认识理解程度，如对是非善恶、法治精神、信仰等的理解水平，对科学精神、人文精神的认同程度或持有状态，对自由和奴役、生存和死亡等终极问题的态度和思考，等等。<strong>这些东西甚至难以用语言表达，它们是人类精神活动的底层逻辑，是比白纸黑字的规章制度、思想理论更加虚无缥缈，更加看不见摸不着的东西</strong>。而教育机构从不能解决这些问题，我甚至认为，教育机构也不应负全责去处理这些问题，因为无论是官方的还是私人的教育机构，它们通常都是逐利的，或是带有某种目的的。即使是在发达国家，我们也能够看到传统教育机构在处理这些问题上的种种弊病。那些好的教育更多的也只是起到辅助作用，而一个坏的教育则是愚昧和谎言的制造工厂，是比核战争还可怕的东西，毒害了一代又一代的人。</p><p>&emsp;&emsp;答案到这里已经很明显，我们的落后是精神上、灵魂上的落后。甚至可以说如果不从这一层级上得到彻底解决，就没有资格成为真正意义上的现代人和现代社会，无论是学再多的先进技术、思想理论都没有用，也就永远追不上发达国家的步伐。就从这一层级上来说，即使是今天，我们中间认识到的人可谓是凤毛麟角，沧海一粟，否则这个问题也绝不会一百年都解决不了。即使是手里有了遍布全国的铁路，甚至有了航空母舰，精神上、灵魂上却仍是几千年前“忠孝礼义”那套。有人可能会不服，说古典希腊、罗马也有讲究什么“四主德（Cardinal Virtues）”，也有希波克拉底的传统医术，从而论证传统那套东西仍然可以全方位指导今天的事物。这是完全错误的，其区别就在于，西方的这些思想在两千年中经过了数不清的“版本更新迭代”，尤其是像宗教改革、启蒙运动这样革命性的进步，早已不可同日而语了，没有现代人会觉得靠希腊罗马的那套古典法律和精神就能直接对接现代社会，更别说用什么“四液学说”来行医治病；而在我们这里，什么“驭民五术”，什么“阴气阳气”、“精气血津液神”可是每天都在这个社会实打实地运行着，男人就是“忠孝礼义”，女人就是“三从四德”，几千年过去了却压根没怎么更新进化过！现在的人虽然嘴上不明说，但骨子里没变，并且一有机会就想把它们全捡回来，好好摆到庙堂上供一番。</p><p>&emsp;&emsp;这下算是说清楚了为什么一百年都没做到的原因，是人出了大问题：<strong>他目光太短浅，太急功近利，没有意识到那些不能直接给他带来物质利益的、看不见摸不着的东西的重要和伟大之所在</strong>；就算是有幸意识到了，却放不下那个架子，不肯改变自身的形象；他害怕新东西，不适应事情的变化，怕新事物超出了他的控制范围，最终却要去主动抵制这些新事物带来的变革。甚至我敢说，只要再有人认识不到、或是不承认这样的落后，这个国家就还要继续在这个荒唐的迷宫中兜兜转转下去，一百年都不止。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;一九二八年的文章。&lt;/p&gt;&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="随想" scheme="https://caelica.github.io/tags/%E9%9A%8F%E6%83%B3/"/>
     
       <category term="文化" scheme="https://caelica.github.io/tags/%E6%96%87%E5%8C%96/"/>
     

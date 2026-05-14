@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>✛VDERE⟡INVISI✛</title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+      
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+       <link rel="stylesheet" href="/dist/main.css">
+      <link rel="stylesheet" href="/css/fonts/remixicon.css">
+      <link rel="stylesheet" href="/css/fonts/AphroditeSlimText.css">
+      <link rel="stylesheet" href="/css/custom.css"> 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="⋄ Videre Invisibilia ⋄" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-VMware-Workstation疑难杂症合集-解决方法（2026版）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  VMware Workstation疑难杂症合集+解决方法（2026版）
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/" class="article-date">
+  <time datetime="2026-05-13T07:03:25.000Z" itemprop="datePublished">2026-05-13</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>解决VMware Workstation运行老版本Windows系统时的一些常见问题，特别是在Win11环境下。<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;VMware Workstation（简称VM）是一个很好用的虚拟机软件，能够允许用户在宿主机上像运行程序一样运行一些操作系统，通常能够从根本上解决因Windows版本问题而导致的兼容性问题，并且可以运行Linux、Android等其他操作系统或环境。我本人使用VM差不多有十年了，尤其是现在Win11系统成为PC电脑上的主流操作系统后，VMware出现了一些之前从来没有出现过的问题，这可能和微软自家自带的Hyper-V虚拟机有关。打算总结一些VMware使用中常见却较为难对付的一些疑难杂症及其解决方法，所有解决方法均为本人亲自验证有效，通常能够根治这些问题。</p>
+<h2 id="序：个人推荐的VMware版本和Windows系统的对应关系"><a href="#序：个人推荐的VMware版本和Windows系统的对应关系" class="headerlink" title="序：个人推荐的VMware版本和Windows系统的对应关系"></a>序：个人推荐的VMware版本和Windows系统的对应关系</h2><p>建议Win7环境下安装VM10；Win10环境下安装VM15 Pro；Win11环境下安装VM17.6及以上版本。</p>
+<p>安装包从Broadcom官网下载的话还得先注册用户，很麻烦，建议随便找个第三方下载就行。这里只提供序列号：<br>VM10使用这个序列号：1G4LV-FZ25P-0ZCN8-ZA3QH-8C00C<br>VM15使用这个序列号：UY758-0RXEQ-M81WP-8ZM7Z-Y3HDA<br>VMware从17.5.2版本之后因被Broadcom收购，彻底变为免费软件，且不再区分是否为Pro版（安装完都是Pro版），故不再需要序列号。</p>
+<p>以下开始各种疑难杂症的解读和解决。操作环境如无特殊说明，均使用Windows11 25H2以及VMware Workstation Pro 17.6.3 build-24583834。</p>
+<h2 id="一、在Win11操作系统上用VMware-Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题"><a href="#一、在Win11操作系统上用VMware-Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题" class="headerlink" title="一、在Win11操作系统上用VMware Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题"></a>一、在Win11操作系统上用VMware Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题</h2><p>在Win11操作系统上用VMware运行WindowsXP，WindowsXP系统一旦开机，这个症状就全程存在，具体表现和经验为：</p>
+<blockquote>
+<ol>
+<li>WinXP操作系统慢如蜗牛，每进行一次操作都有严重的卡顿和停滞，跟CPU或内存占用满了一样，但任务管理器中各项性能指标均正常。且升级虚拟机配置无法对这个现象起到任何改善作用；</li>
+<li>操作系统播放出的任何音效、音乐都会变成非常缓慢卡顿的杂音，例如开机启动音效；</li>
+<li>经过反复测试，该现象只在Windows11下发作，而且几乎必定发作，而在Windows10及以下环境中均无此类现象；</li>
+<li>在存在此类现象的Windows11环境下用VM虚拟机运行Windows98系统，操作系统通常会在启动后登录用户名时报大量错误并最终卡死，无法进入桌面；</li>
+<li>在存在此类现象的Windows11环境下用VM虚拟机运行Windows7系统，影响不大，Win7系统可以正常使用；</li>
+<li>此现象和VM版本无关，无论更换何种版本的VMware均不能解决问题；有人反映使用管理员权限启动VMware后就好了，但在我这里管理员权限并没有用；</li>
+<li>此现象和VMware Tools的状态、安装与否均无关；</li>
+</ol>
+</blockquote>
+<p>这个问题困扰我很久时间，经过研究终于得到了解决。首先应当尝试用管理员权限启动VMware然后运行操作系统，如果问题仍然存在，以下将详解这个问题真正的原因及操作过程：</p>
+<p><strong>结论是微软自家自带的Hyper-V虚拟机和VMware存在严重冲突导致的</strong>。解决方法就是<strong>彻底</strong>禁用Hyper-V，但彻底禁用Hyper-V并不是一件容易的事情。</p>
+<p>在【系统-可选功能-更多Windows功能】中，我们能够执行【启用或关闭Windows功能】：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/1.jpg" title="a">
+
+<p>首先将这里的【Hyper-V】、【Windows沙盒】、【Windows虚拟机监控程序平台】、【适用于Linux的Windows子系统】、【虚拟机平台】前面的勾全部取消，然后应用更改（注意，某些版本的系统中这些条目可能未被完全汉化，可能存在为英文书写的情况，需要注意甄别）。但关键在于，这并不能彻底禁用Hyper-V，网上的各种说法基本上都止步于此。</p>
+<p>若想真正彻底禁用Hyper-V，需要在【系统-隐私和安全性-Windows安全中心-设备安全性-内核隔离-内核隔离详细信息】中，<strong>关闭【内存完整性】和【固件保护】</strong>。【本地机构安全保护】和【Microsoft易受攻击的驱动程序阻止列表】可以保持开启不用关闭；关闭这些有什么不利影响？我认为没有什么不利影响，我所有的计算机都关闭了这些。如下图所示：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/2.png" title="b">
+
+<p>有一些计算机可能在【内核隔离】中看不到【固件保护】这一个栏目，界面可能会是这样：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/3.png" title="c">
+
+<p>这种情况需要在注册表编辑器（cmd然后regedit）中找到【计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard】，在这个文件夹中，可以看到一个名为【EnableVirtualizationBaseSecurity】的REG_DWORD值条目，双击打开它，将其值由1改为0，确定，关闭；</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/4.png" title="d">
+
+<p>再检查一下【计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard】中，是否存在一个名为【SystemGuard】的文件夹，若有，检查其下是否有名为Enabled的REG_DWORD值条目，若有，将其值改为0；如果找不到【SystemGuard】文件夹或者Enabled的值已经为0，可以不用管了。</p>
+<p>然后找到命令提示符图标（通常在开始菜单-Windows系统中可以找到），右键单击并选择“以管理员身份运行”。输入以下命令：</p>
+<p><code>bcdedit /set hypervisorlaunchtype off</code></p>
+<p>回车执行，然后输入</p>
+<p><code>DISM /Online /Disable-Feature:Microsoft-Hyper-V</code></p>
+<p>再回车执行，结果如下图：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/5.png" title="e">
+
+<p>这两步我认为似乎并没有什么特别大的用处，但还是建议执行。以上全部执行完毕后，重启计算机，再强调一次，必须重启计算机。重启后，再进入VMware中的WindowsXP系统，可以发现一切都正常了。再进入Windows98操作系统，也一切正常。</p>
+<p>以上一些内容部分参考了来自于Virtualbox.org中的一篇帖子：<a href="https://forums.virtualbox.org/viewtopic.php?t=99390" target="_blank" rel="noopener">https://forums.virtualbox.org/viewtopic.php?t=99390</a> ，可以看到这个问题在2020年可能就已经出现在了Virtualbox虚拟机上（Win11于2021年发布）。故针对这个现象，个人猜想可能性最大的就是微软Win11的开发人员故意让Hyper-V和其他虚拟机软件发生冲突，且让Hyper-V不能被用户轻易关闭，从而挤占虚拟机软件的市场空间。当然还存在一种可能性（比较小）就是Win11和Win11开发人员实在太差劲以至于没有预料到Hyper-V和其他虚拟机发生冲突的情况。</p>
+<p>（又是对抗微软垃圾工程师的一天..）</p>
+<h2 id="二、从VMware-Workstation安装VMware-Tools跳报错框：“VMware-Tools不再随旧版客户机操作系统的VMware-Workstation一起提供…”，以及其他任何导致VMware-Tools不能从VMware-Workstation自动更新或安装的情况："><a href="#二、从VMware-Workstation安装VMware-Tools跳报错框：“VMware-Tools不再随旧版客户机操作系统的VMware-Workstation一起提供…”，以及其他任何导致VMware-Tools不能从VMware-Workstation自动更新或安装的情况：" class="headerlink" title="二、从VMware Workstation安装VMware Tools跳报错框：“VMware Tools不再随旧版客户机操作系统的VMware Workstation一起提供…”，以及其他任何导致VMware Tools不能从VMware Workstation自动更新或安装的情况："></a>二、从VMware Workstation安装VMware Tools跳报错框：“VMware Tools不再随旧版客户机操作系统的VMware Workstation一起提供…”，以及其他任何导致VMware Tools不能从VMware Workstation自动更新或安装的情况：</h2><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/6.png" title="f">
+
+<p>这个问题是由于VMware Workstation不再内置远古老版本操作系统的VMware Tools的安装包导致的。我们需要手动安装WMware Tools。</p>
+<p>还是以WindowsXP为例，首先从这个网址下载适用于WindowsXP的VMware Tools镜像：<a href="https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso" target="_blank" rel="noopener">https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso</a> ，应该名为【winPreVista.iso】。若此链接失效，也可以从其他途径自行寻得。</p>
+<p>确保虚拟机为关闭状态，在【编辑虚拟机设置】里，添加新硬件-CD/DVD驱动器，然后完成：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/7.png" title="g">
+
+<p>选择这个新添加的CD/DVD驱动器，右侧【连接-使用ISO映像文件】，路径定位到刚才下载的VMware Tools镜像，我们这里是【winPreVista.iso】；</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/8.png" title="h">
+
+<p>添加完毕后，启动WindowsXP虚拟机，可以在“我的电脑”里看到一个新的光驱驱动器，卷标名为VMware Tools。双击它，即可开始安装VMware Tools。建议选择“完整安装”。</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/9.png" title="i">
+
+
+<h2 id="三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题"><a href="#三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题" class="headerlink" title="三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题"></a>三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题</h2><p>在【编辑虚拟机设置里】，点击【显示】，将右侧内容按照下图设置，重点是勾选“拉伸模式”。再进入操作系统后，桌面右键-显示，修改显示分辨率，改到合适的值即可。不要从宿主机的VMware兼容性里调整DPI缩放比例，没有用。</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/10.png" title="j">
+
+
+<h2 id="四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象"><a href="#四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象" class="headerlink" title="四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象"></a>四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象</h2><p>这个原理是当VMware在宿主机和虚拟机交换文件时，这个文件会被先暂存于C盘，然后再挪到虚拟机或主机中去。不论复制成功还是复制失败，该文件都会在C盘形成缓存；如果文件体积较小一般可以不用管，宿主机的Windows会定期清理这些缓存文件；但问题通常出在复制超大文件上，如果宿主机C盘容量不足则会导致复制失败，如果虚拟机硬盘容量不足也会导致复制失败，但就算是失败以后，这些缓存形成的文件仍然会留在了C盘的缓存路径里。这个路径为：</p>
+<p><code>C:\Users\你的用户名\AppData\Local\Temp\vmware-你的用户名\VMwareDnD</code></p>
+<p>故宿主机和虚拟机但凡交换过超大文件或者大量文件后，无论复制失败或成功，都有必要在这个目录检查一下，手动清理掉这些缓存文件。</p>
+<h2 id="五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题"><a href="#五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题" class="headerlink" title="五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题"></a>五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题</h2><p>即已经彻底删除虚拟机中的大量体积的文件后，宿主机中的虚拟机系统文件（.vmdk文件）大小丝毫未减。此时应当在VMware主界面右键虚拟机-管理-清理磁盘，点击“立即清理”，即可释放这些空间：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/11.png" title="k">
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章著作权归作者所有，禁止任何形式的转载。
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/系统/">系统</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/软件/">软件</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2026/04/14/从零到成品——用AI辅助造程序的完整操作流程/" class="article-nav-link">
+        <strong class="article-nav-caption">NextText</strong>
+        <div class="article-nav-title">从零到成品——用AI辅助造程序的完整操作流程</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2026
+        <i class="ri-heart-fill heart_icon"></i> Caelica
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/profile_184.png" alt="⋄ Videre Invisibilia ⋄"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">链接</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    <script src="/js/jquery-3.6.0.min.js"></script> <script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+ <script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+ <script src="/js/clickLove.js"></script> 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ <link rel="stylesheet" href="/css/clipboard.css"> <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+        <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="250" height="52"
+        src="//music.163.com/outchain/player?type=2&id=29572578&auto=0&height=32"></iframe>
+
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 40px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

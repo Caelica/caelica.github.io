@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
-    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
-</blockquote>
-<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
-<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
-<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
-<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
-<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
-<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
-<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
-<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
-<hr>
-<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
-<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
-<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-        <tag>服务器</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CSS中引入自定义字体</title>
     <url>/2022/04/18/CSS%E4%B8%AD%E5%BC%95%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -93,24 +50,46 @@
       </tags>
   </entry>
   <entry>
-    <title>Q版二头身第二弹</title>
-    <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
+    <title>MySQL命令行连接指定端口、以及修改数据库密码</title>
+    <url>/2022/06/06/MySQL%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3%E3%80%81%E4%BB%A5%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%86%E7%A0%81/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>再次挑战萌系二头身的制作 <a id="more"></a></p>
+<p>用cmd命令行及Navicat界面连接数据库，实现修改数据库密码、连接不同端口（如3307等）、以及解决MySQL server has gone away的问题。<a id="more"></a></p>
 </blockquote>
-<img src="/2022/11/12/Q版二头身第二弹/Caelica_C.png" title="You deserve this name">
+<p>首先说一下，如果只是为了解决问题的话，建议直接跳到文章中间从Navicat的方法进行，这里的cmd只是为了解释其机制。</p>
+<h2 id="1-命令行连接MySQL数据库"><a href="#1-命令行连接MySQL数据库" class="headerlink" title=" 1.命令行连接MySQL数据库"></a><p align="left"> 1.命令行连接MySQL数据库</p></h2><p>&emsp;&emsp;MySQL的配置一般由数据库Data目录下的<strong>my.ini</strong>文件控制（Windows环境下叫my.ini，而在Linux环境下则是my.cnf），虽然直接修改这个文件也能起到一定作用，但容易出事，故一般情况下要配置MySQL的话最好使用MySQL的命令行。从cmd就可以执行。从cmd连接MySQL数据库的方法如图所示：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/1.png" title="a">
+<p>&emsp;&emsp;因为我的MySQL装到了E盘上，而cmd默认路径在C盘的system32，所以我们首先得用<code>e:</code>换盘，否则怎么cd都没有用的。换盘后，cd路径到MySQL的<strong>bin</strong>目录下，即拥有mysqld.exe和mysql.exe的那个位置；<br>这里我采用的命令为：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">mysql -hlocalhost <span class="attribute">--port</span>=3306 -uroot -p</span><br></pre></td></tr></table></figure>
 
-<p>在上次制作了第一个二头身之后，有了更多的制作经验。这次应该说更加贴近冒险岛（Maplestory）近年来的画风了，事实上是因为我又玩了100多小时的美服冒险岛…不过话说回来，历史上那些艺术家们整天不上班，出去闲逛出去浪，那都不叫浪，曰采风也，像高更（Paul Gauguin）这样的人为了艺术般的生活都跑到太平洋上的小岛去了，咱因为太平洋加了盖，比不过他，那怎么办？遁入虚拟世界呗！所以咱玩游戏那能叫玩游戏吗，当然不叫玩了，故从今往后这就定调：再遇到normies觉得我老大一人怎么还玩游戏，我就笑笑，因为他们不明白——</p>
-<p>&emsp;&emsp;<em>normies玩游戏，叫打发时间，叫消磨人生。因为他们对游戏艺术和ACG文化没有信仰，所以连他们自己都会这么觉得；</em></p>
-<p>&emsp;&emsp;<em>我玩游戏，至少在我这里永远都不那样叫，现在我造了个新名词</em>——<strong><em>赛博采风（Cyber Art &amp; Design Tour）</em></strong>！！</p>
-<p>言归正传，相对于之前的作品，除了整体的画风比例之外，这次着重处理了线稿的粗细分布问题，花了不少功夫，但最终的实际效果让我觉得很值，这个粗细的感觉一出来整个画面都看起来舒服了许多。之前对最外层轮廓线做了加厚加深的优点也得到了进一步发挥。</p>
-<p>色彩上优化了一级阴影的分布，减弱了一级阴影的渐变程度，总之这次喷枪式的渐变用的很谨慎，这样整体看起来更“二次元”而不是像一个厚涂作品，这可能是近年来漫画插画的绘柄特点，观察冒险岛十年前的风格也能明显看出这个变化。</p>
-<p>最后采用了PS自带的噪声生成添加了一个噪声材质图层，并用波点式贴图处理了服饰的材质。这样能看起来不是那么单调。</p>
-<p>泳衣样式是临时起意搞得，因为有人说我画的女人个个都包的严严实实，不够色，所以身材故意弄的比较…前凸后翘的那种感觉。冒险岛本身其实一直还是比较子供向，大概是很难找到这种的，所以这样也不至于因过度模仿而失去特点。</p>
+<p>&emsp;&emsp;这个命令的好处是可以实现对接指定的端口（如3307）。因为我实际上装了两个不同版本的MySQL服务（MySQL5和MySQL8），分别控制着<strong>localhost_3306</strong>和<strong>localhost_3307</strong>。一般的那种不指定端口的常规命令会默认连到localhost_3306去，就无法连接到3307了。故我们只需要将命令中port的值改为3307即可连入3307的服务器控制台。</p>
+<p>&emsp;&emsp;接下来输入数据库密码，出现图中Welcome to the MySQL monitor等字样即说明连接成功。接下来即可执行其他命令。例如，我最近在导入大.sql文件（约200Mb）时遇到了<strong>“MySQL server has gone away”</strong>的问题，经查，这是由于数据库对导入的sql大小有限制导致的，需要修改这个限制值。首先通过命令来查看这个值：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'max_allowed_packet'</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/2.png" title="b">
+<p>&emsp;&emsp;然后修改它。这里的文件大小是用<strong>字节（Bytes）</strong>计算的，可以自行换算成Mb等单位，如：</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=157286400</span>;	<span class="comment">/* 设定为150Mb */</span></span><br><span class="line"><span class="keyword">set</span> global <span class="comment">max_allowed_packet=314572800</span>;	<span class="comment">/* 设定为300Mb */</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;最后可以再输入一次命令查看限制值，可以看到已经改成了300Mb。整个过程就如图所示。</p>
+<p>&emsp;&emsp;而实际上，在数据库管理工具（如Navicat）中也能实现这个功能，而且比cmd简单多了。这里我们就从Navicat上修改它。因为我现在已经放弃3307的端口（让二者共用3306，但冲突），故这里以3306为例：</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/3.png" title="c">
+<p>&emsp;&emsp;在localhost_3306上 右键&gt;命令列界面 就可以进入命令行状态，事实上选中3306后直接按<strong>F6</strong>也可以（在上面的“工具”栏），比从cmd上方便太多了。之后的步骤和上面就是一样的。所以如果遇到需要用命令行执行的操作，在Navicat等图形化工具上进行处理明显是更合适的方法。</p>
+<hr>
+<h2 id="2-修改数据库密码"><a href="#2-修改数据库密码" class="headerlink" title=" 2.修改数据库密码"></a><p align="left"> 2.修改数据库密码</p></h2><p>&emsp;&emsp;利用MySQL的命令行我们也可以修改数据库的密码。前提是得知道这个密码，这里不涉及忘了密码的情况（还没研究过…）。</p>
+<p>&emsp;&emsp;在Navicat上进入对应数据库连接的命令行界面，这里以3306为例，因为我们已经登录了这个连接，也就不需要再验证旧密码了，直接可以用命令新建密码。命令为：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> = <span class="keyword">password</span>(<span class="string">"新密码"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;将命令中“新密码”修改为需要设定的密码即可。因为密码已被修改，再在数据库中执行动作可能会导致数据库掉线或者密码报错，此时建议先关闭连接，再用新密码连接一遍数据库即可（右键&gt;编辑连接&gt;在“密码”处输入新的密码）。</p>
+<img src="/2022/06/06/MySQL命令行连接指定端口、以及修改数据库密码/4.png" title="d">
+
+
+
+
+
+
 ]]></content>
       <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
+        <tag>数据库</tag>
+        <tag>服务器</tag>
       </tags>
   </entry>
   <entry>
@@ -152,6 +131,36 @@
       </tags>
   </entry>
   <entry>
+    <title>Q版二头身第二弹</title>
+    <url>/2022/11/12/Q%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB%E7%AC%AC%E4%BA%8C%E5%BC%B9/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>再次挑战萌系二头身的制作 <a id="more"></a></p>
+</blockquote>
+<img src="/2022/11/12/Q版二头身第二弹/Caelica_C.png" title="You deserve this name">
+
+<p>在上次制作了第一个二头身之后，有了更多的制作经验。这次应该说更加贴近冒险岛（Maplestory）近年来的画风了，事实上是因为我又玩了100多小时的美服冒险岛…不过话说回来，历史上那些艺术家们整天不上班，出去闲逛出去浪，那都不叫浪，曰采风也，像高更（Paul Gauguin）这样的人为了艺术般的生活都跑到太平洋上的小岛去了，咱因为太平洋加了盖，比不过他，那怎么办？遁入虚拟世界呗！所以咱玩游戏那能叫玩游戏吗，当然不叫玩了，故从今往后这就定调：再遇到normies觉得我老大一人怎么还玩游戏，我就笑笑，因为他们不明白——</p>
+<p>&emsp;&emsp;<em>normies玩游戏，叫打发时间，叫消磨人生。因为他们对游戏艺术和ACG文化没有信仰，所以连他们自己都会这么觉得；</em></p>
+<p>&emsp;&emsp;<em>我玩游戏，至少在我这里永远都不那样叫，现在我造了个新名词</em>——<strong><em>赛博采风（Cyber Art &amp; Design Tour）</em></strong>！！</p>
+<p>言归正传，相对于之前的作品，除了整体的画风比例之外，这次着重处理了线稿的粗细分布问题，花了不少功夫，但最终的实际效果让我觉得很值，这个粗细的感觉一出来整个画面都看起来舒服了许多。之前对最外层轮廓线做了加厚加深的优点也得到了进一步发挥。</p>
+<p>色彩上优化了一级阴影的分布，减弱了一级阴影的渐变程度，总之这次喷枪式的渐变用的很谨慎，这样整体看起来更“二次元”而不是像一个厚涂作品，这可能是近年来漫画插画的绘柄特点，观察冒险岛十年前的风格也能明显看出这个变化。</p>
+<p>最后采用了PS自带的噪声生成添加了一个噪声材质图层，并用波点式贴图处理了服饰的材质。这样能看起来不是那么单调。</p>
+<p>泳衣样式是临时起意搞得，因为有人说我画的女人个个都包的严严实实，不够色，所以身材故意弄的比较…前凸后翘的那种感觉。冒险岛本身其实一直还是比较子供向，大概是很难找到这种的，所以这样也不至于因过度模仿而失去特点。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>This is for the Record</title>
+    <url>/2022/04/17/This-is-for-the-Record/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
+</blockquote>
+<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E64207365766572616C206469637461746F72732C20616E6420746865697220617574686F726974617269616E20726567696D65732E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C20736F6F6E2077652077696C6C206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C7920647269766520776F726C6420696E746F2061206D6F7265206465766173746174696E676C79207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
+]]></content>
+  </entry>
+  <entry>
     <title>Steam社区里利用高仿网站钓鱼的骗术</title>
     <url>/2020/02/09/Steam%E7%A4%BE%E5%8C%BA%E9%87%8C%E5%88%A9%E7%94%A8%E9%AB%98%E4%BB%BF%E7%BD%91%E7%AB%99%E9%92%93%E9%B1%BC%E7%9A%84%E9%AA%97%E6%9C%AF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -180,15 +189,6 @@
         <tag>游戏</tag>
         <tag>生活</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>This is for the Record</title>
-    <url>/2022/04/17/This-is-for-the-Record/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>5468697320697320666F7220746865205265636F72642E0D0A<a id="more"></a></p>
-</blockquote>
-<p>546865736520617265206E6F742069736F6C6174656420696E636964656E74732C2062757420776172732C2077617273206265747765656E2077686F6C6520636976696C697A6174696F6E20776F726C6420616E64207365766572616C206469637461746F72732C20616E6420746865697220617574686F726974617269616E20726567696D65732E0D0A0D0A496620746869732074696D65207765206C657420746865792074776F20776F6E2C20736F6F6E2077652077696C6C206861766520746F2061646D697420746861742061206E6577204178697320636F6D657320746F206F757220686973746F72792C20697420636F756C642066696E616C6C7920647269766520776F726C6420696E746F2061206D6F7265206465766173746174696E676C79207761722E0D0A0D0A706C6561736520616C6C2074686520636976696C697A65642070656F706C652C2077686F6576657220616E642077686572657665722C20646F20736F6D657468696E67206E6F773B2073746F7020737570706F7274696E67207468656D2C2073746F7020646973707574696E6720616E6420756E697465642C20616761696E737420746865736520656D7065726F72732C206372696D696E616C732C207761726D6F6E6765727320616E64207468656972206576696C20617869732E205468657365206F6E65732061726520617474656D7074696E6720746F2072657375727265637420746865697220656D7069726573206F6E207468697320706C616E65742C2074616B652074686F7365206F6C642C20666F7273616B656E2068756E6765727320616E6420636861696E732C20666561727320616E64206C6965732066726F6D20617368657320746F20746865207477656E74792D66697273742063656E747572792C2074686579204D5553542062652073746F707065642E204E4F572E</p>
-]]></content>
   </entry>
   <entry>
     <title>Win10家庭版启用远程桌面&amp;启用组策略</title>
@@ -279,6 +279,89 @@
       </tags>
   </entry>
   <entry>
+    <title>hexo中插入本地pdf文档</title>
+    <url>/2022/05/17/hexo%E4%B8%AD%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0pdf%E6%96%87%E6%A1%A3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>在hexo页面中实现浏览pdf文档的功能，以及过程中一些问题的解释<a id="more"></a></p>
+</blockquote>
+<p>在之前的文章：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a>中，实现了hexo页面插入pdf文档页面的功能。因为网上关于这里的内容写的不够细致，官方文档也写的不太行，种种原因导致我卡了一会坑。所以这次单独说一下这个功能。</p>
+<p>本功能是依靠一个叫hexo-pdf的插件实现的。这个插件的github项目地址为：<a href="https://github.com/superalsrk/hexo-pdf" target="_blank" rel="noopener">https://github.com/superalsrk/hexo-pdf</a></p>
+<p>首先我们需要安装这个插件。先从Git-Bash cd到hexo文件夹所在的目录（即_config.yml、source等文件所在的目录），然后执行npm安装命令：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ npm <span class="keyword">install</span> <span class="comment">--save hexo-pdf</span></span><br></pre></td></tr></table></figure>
+
+<p>回车后是这个样子：</p>
+<img src="/2022/05/17/hexo中插入本地pdf文档/1.png" title="a">
+<p>可以看到，npm install首先报出了很多WARN，其实，<strong>这些WARN大多数都是版本问题，我认为都可以不管。</strong>这里简单说一下这些WARN都是什么意思：</p>
+<p>第一条是指1.0.0版本的ejs太过老旧，建议升级到2.5.5。ejs是Node.js的模板引擎，在我们搭建hexo博客的时候默认就安装好了，一般都是是1.0版本的，这个是完全不影响的；</p>
+<p>第二条是说的是没有装版本号大于等于4.12.1的eslint。eslint是一个代码语法的检测工具，用来规范代码。这个也没啥用，可以忽略。修复的话也可以，输入<code>npm install --save-dev &quot;eslint@&gt;=4.12.1&quot;</code>即可安装一个版本号大于等于4.12.1的eslint；</p>
+<p>后面几条都是关于fsevents的，这个是因为我们使用了win/linux系统。因为fsevents是依赖mac操作系统的，也就是说别人在mac上做的东西放到win系统上就会报这个问题。所以也不管；</p>
+<p>我们只需要看到<code>+ hexo-pdf@1.1.1</code>以及下面的<code>updated X packages and audited...</code>就行了。</p>
+<p>最后是发现了多少个漏洞（vulnerabilities），统统不管。</p>
+<p>hexo-pdf插件装好后，就可以在.md文本中引入.pdf文件。和插入图片有些类似，首先我们得把_config.yml中的<code>post_asset_folder</code>的值改为true，这样就会在新建文章即hexo new的时候在source目录下生成一个与.md文本同名的空文件夹，也就是这个文章的资源存放文件夹。如果之前插入过图片的话应该本来就是true。然后我们把需要展示的.pdf文档放入这个文件夹中。</p>
+<img src="/2022/05/17/hexo中插入本地pdf文档/2.png" title="b">
+<p>接下来在.md文章中引入这个pdf，最基本的句法为：（如这里的pdf文件名为mydoc.pdf）</p>
+<figure class="highlight django"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">pdf</span> ./mydoc.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样写的话是使用相对路径，其实pdf文档放在source文件夹下的任何目录都是能用的，因为我的pdf不多，我习惯把pdf和图片都放在post_asset_folder生成的文件夹里。如果需要涉及到的pdf非常多的话，建议可以在source文件夹下开一个单独的文件夹存放pdf文档（可命名为files或pdf等），然后通过<code>hexo new page</code>新建一个栏目页面，这样可以从主页方便进入这个地方。</p>
+<p><strong>重点要说一下，这里就算引入成功了，也是不支持本地预览的！</strong>..通过<code>hexo s</code>或<code>hexo s -p XXXX</code>进行本地预览的话，会直接弹出下载这个pdf的下载框，并且看不到任何插件效果！<strong>如果你本地预览时弹出了下载pdf的框，而不是一行Cannot…就说明已经引入成功了！</strong>我之前就是因为看不到效果，以为是插件npm install报错的问题，实际上一点关系都没有，这个东西就是不支持本地预览，因为我们现在引入的pdf文档是在本地的，不是外部资源链接。</p>
+<p>后面发现这个句法不够灵活，使用下面的embed src句法能够通过调整width和height改变pdf文档框的大小，要更好一点，我这里就使用的是这个句法：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">&lt;embed <span class="attribute">src</span>=<span class="string">"./mydoc.pdf"</span> <span class="attribute">width</span>=<span class="string">"100%"</span> <span class="attribute">height</span>=<span class="string">"700"</span> <span class="attribute">type</span>=<span class="string">"application/pdf"</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用外部资源链接，如官方教程中的（仅参考其格式即可），使用外部链接的话应该是可以进行本地预览的，不过我没试过：</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;% pdf <span class="symbol">http:</span>/<span class="regexp">/7xov2f.com1.z0.glb.clouddn.com/bash</span>_freshman.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>最后就是hexo c、hexo g、hexo d提交部署，等一会后，就能在真实页面中看到实现后的效果：</p>
+<img src="/2022/05/17/hexo中插入本地pdf文档/3.png" title="c">
+
+
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>网页</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo添加网易云音乐播放器</title>
+    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
+</blockquote>
+<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
+<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
+
+<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
+<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
+<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
+<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
+<p>不再重叠了~</p>
+<hr>
+<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
+<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
+<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
+<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
+]]></content>
+      <tags>
+        <tag>网页</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《小李的选择》</title>
     <url>/2024/10/27/%E3%80%8A%E5%B0%8F%E6%9D%8E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%8B/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -327,89 +410,6 @@
         <tag>生活</tag>
         <tag>小说</tag>
         <tag>随想</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo添加网易云音乐播放器</title>
-    <url>/2020/05/03/hexo%E6%B7%BB%E5%8A%A0%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>给博客页面添加音乐的方法，简单可行，并通过网易云音乐的电台模式实现版权歌曲以及本地音乐的处理。<a id="more"></a></p>
-</blockquote>
-<p>给hexo添加音乐并不只有一这种方法，比如常见的next主题配合Aplayer似乎效果很好。采用网易云音乐则是看中了它比较方便，效果立竿见影。方法简述如下：</p>
-<p>1.首先打开网页版网易云音乐，客户端是无法操作的。找到目标音乐or歌单后点击“生成外链播放器”，单个音乐生成后就是这个音乐的外链，歌单生成此歌单的外链，如下图，当然周杰伦肯定是不行的，因为没有版权，不仅无法生成外链，连放都放不成，这里只是说明操作方法。</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/1.png" title="a"><img src="/2020/05/03/hexo添加网易云音乐播放器/2.png" title="b">
-
-<p>2.这里我们换一个音乐，外链生成成功后进入这个界面（车万没版权hhh）</p>
-<img src="/2020/05/03/hexo添加网易云音乐播放器/3.png" title="c">
-<p>这里选择iframe插件模式，尺寸有两种，这里选大的。自动播放选不选无所谓，它是由链接代码中auto=1这一项控制的，事后自己可以改成auto=0则为不自动播放。代码里的长宽高也是可以自己调整的，这里就默认不动。</p>
-<p>3.复制生成的HTML代码，添加到主题中你想要的位置，这个位置根据主题模板和你选择的不同而定。比如我在这个主题中想将它置于页面的最左下角，则在 source &gt;themes &gt;我的主题 &gt;layout &gt;_header.pug 中添加一个div标签，并将其中iframe部分替换为你的歌曲生成的代码。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">div.music</span><br><span class="line">  &lt;div <span class="attribute">id</span>=<span class="string">"music163player"</span>&gt;</span><br><span class="line">    &lt;iframe <span class="attribute">frameborder</span>=<span class="string">"no"</span> <span class="attribute">border</span>=<span class="string">"0"</span> <span class="attribute">marginwidth</span>=<span class="string">"0"</span> <span class="attribute">marginheight</span>=<span class="string">"0"</span> <span class="attribute">width</span>=330 <span class="attribute">height</span>=86 <span class="attribute">src</span>=<span class="string">"//music.163.com/outchain/player?type=3&amp;id=2063076946&amp;auto=0&amp;height=66"</span>&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
-
-<p>4.不出意外这时候已经可以在目标区域看到音乐播放器了，调整一下大小直接完工了。我这里为了把音乐播放器固定在博客左下角，还需在 source &gt;themes &gt;source &gt;styles &gt;header.styl 里给其定位：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 0px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<p>这里position fixed表示固定位置，用bottom和left距离设成0像素表示让其紧贴左下角。我发现紧贴下端的话会导致播放器按钮和网页左下角的指向链接框重合，所以将播放器提高10个像素位置：</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.music</span></span><br><span class="line">  <span class="attribute">position</span> fixed</span><br><span class="line">  <span class="attribute">bottom</span> 10px</span><br><span class="line">  <span class="attribute">left</span> 0px</span><br></pre></td></tr></table></figure>
-
-<img src="/2020/05/03/hexo添加网易云音乐播放器/4.png" title="d">
-<p>不再重叠了~</p>
-<hr>
-<p>现在来说说这种方法最大的两个问题。<br>第一，网易云音乐上大量歌曲因为版权问题是无法生成外链；<br>第二，如果我想添加一个网易云音乐上没有的音乐呢？</p>
-<p>我发现利用网易云音乐的个人电台可以一定程度上解决。比如本博客添加的音乐来自韩国游戏Soulworker，这个音乐不仅网易云没有，互联网都找不到。我在网易云音乐里自己创建一个包含这个音乐的个人电台，若电台上传成功，则可以通过个人电台来生成外链，效果和正常网易云一模一样，等于是把网易云当成了一个私人云端（跟用GitHub的库建hexo差不多的道理）。</p>
-<p>所以用这种方法能不能处理周杰伦这种版权重灾区？我觉得是不行的，因为看样子网易云的私人电台并不是完全不受监管，可以调查一下其他网易云用户创建的“私人周杰伦”，收藏人数很多，却基本已经没音乐了，说明这些电台曾经运转过，现在都挂掉了。当然如果你上传成私密电台，或者伪装手段做得足够好，或许也有可能达到目的，网易云也不会因为你传了版权歌就把你号封了，只是电台的歌曲会挂掉。</p>
-<p>总的来说，因为每个人听的音乐的情况不一样，使用网易云音乐播放器的效果也有区别。像如果一个车万人他即使有N多车万音乐也几乎遇不到这种问题，但是如果我就是非周杰伦不听，想添加一堆周杰伦上去，可能就比较困难了。</p>
-]]></content>
-      <tags>
-        <tag>网页</tag>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo中插入本地pdf文档</title>
-    <url>/2022/05/17/hexo%E4%B8%AD%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0pdf%E6%96%87%E6%A1%A3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>在hexo页面中实现浏览pdf文档的功能，以及过程中一些问题的解释<a id="more"></a></p>
-</blockquote>
-<p>在之前的文章：<a href="https://caelica.github.io/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/"><font color="blue">《魔兽世界日记》译文与译后感想</font></a>中，实现了hexo页面插入pdf文档页面的功能。因为网上关于这里的内容写的不够细致，官方文档也写的不太行，种种原因导致我卡了一会坑。所以这次单独说一下这个功能。</p>
-<p>本功能是依靠一个叫hexo-pdf的插件实现的。这个插件的github项目地址为：<a href="https://github.com/superalsrk/hexo-pdf" target="_blank" rel="noopener">https://github.com/superalsrk/hexo-pdf</a></p>
-<p>首先我们需要安装这个插件。先从Git-Bash cd到hexo文件夹所在的目录（即_config.yml、source等文件所在的目录），然后执行npm安装命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ npm <span class="keyword">install</span> <span class="comment">--save hexo-pdf</span></span><br></pre></td></tr></table></figure>
-
-<p>回车后是这个样子：</p>
-<img src="/2022/05/17/hexo中插入本地pdf文档/1.png" title="a">
-<p>可以看到，npm install首先报出了很多WARN，其实，<strong>这些WARN大多数都是版本问题，我认为都可以不管。</strong>这里简单说一下这些WARN都是什么意思：</p>
-<p>第一条是指1.0.0版本的ejs太过老旧，建议升级到2.5.5。ejs是Node.js的模板引擎，在我们搭建hexo博客的时候默认就安装好了，一般都是是1.0版本的，这个是完全不影响的；</p>
-<p>第二条是说的是没有装版本号大于等于4.12.1的eslint。eslint是一个代码语法的检测工具，用来规范代码。这个也没啥用，可以忽略。修复的话也可以，输入<code>npm install --save-dev &quot;eslint@&gt;=4.12.1&quot;</code>即可安装一个版本号大于等于4.12.1的eslint；</p>
-<p>后面几条都是关于fsevents的，这个是因为我们使用了win/linux系统。因为fsevents是依赖mac操作系统的，也就是说别人在mac上做的东西放到win系统上就会报这个问题。所以也不管；</p>
-<p>我们只需要看到<code>+ hexo-pdf@1.1.1</code>以及下面的<code>updated X packages and audited...</code>就行了。</p>
-<p>最后是发现了多少个漏洞（vulnerabilities），统统不管。</p>
-<p>hexo-pdf插件装好后，就可以在.md文本中引入.pdf文件。和插入图片有些类似，首先我们得把_config.yml中的<code>post_asset_folder</code>的值改为true，这样就会在新建文章即hexo new的时候在source目录下生成一个与.md文本同名的空文件夹，也就是这个文章的资源存放文件夹。如果之前插入过图片的话应该本来就是true。然后我们把需要展示的.pdf文档放入这个文件夹中。</p>
-<img src="/2022/05/17/hexo中插入本地pdf文档/2.png" title="b">
-<p>接下来在.md文章中引入这个pdf，最基本的句法为：（如这里的pdf文件名为mydoc.pdf）</p>
-<figure class="highlight django"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">pdf</span> ./mydoc.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>这样写的话是使用相对路径，其实pdf文档放在source文件夹下的任何目录都是能用的，因为我的pdf不多，我习惯把pdf和图片都放在post_asset_folder生成的文件夹里。如果需要涉及到的pdf非常多的话，建议可以在source文件夹下开一个单独的文件夹存放pdf文档（可命名为files或pdf等），然后通过<code>hexo new page</code>新建一个栏目页面，这样可以从主页方便进入这个地方。</p>
-<p><strong>重点要说一下，这里就算引入成功了，也是不支持本地预览的！</strong>..通过<code>hexo s</code>或<code>hexo s -p XXXX</code>进行本地预览的话，会直接弹出下载这个pdf的下载框，并且看不到任何插件效果！<strong>如果你本地预览时弹出了下载pdf的框，而不是一行Cannot…就说明已经引入成功了！</strong>我之前就是因为看不到效果，以为是插件npm install报错的问题，实际上一点关系都没有，这个东西就是不支持本地预览，因为我们现在引入的pdf文档是在本地的，不是外部资源链接。</p>
-<p>后面发现这个句法不够灵活，使用下面的embed src句法能够通过调整width和height改变pdf文档框的大小，要更好一点，我这里就使用的是这个句法：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">&lt;embed <span class="attribute">src</span>=<span class="string">"./mydoc.pdf"</span> <span class="attribute">width</span>=<span class="string">"100%"</span> <span class="attribute">height</span>=<span class="string">"700"</span> <span class="attribute">type</span>=<span class="string">"application/pdf"</span>&gt;</span><br></pre></td></tr></table></figure>
-
-<p>也可以使用外部资源链接，如官方教程中的（仅参考其格式即可），使用外部链接的话应该是可以进行本地预览的，不过我没试过：</p>
-<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;% pdf <span class="symbol">http:</span>/<span class="regexp">/7xov2f.com1.z0.glb.clouddn.com/bash</span>_freshman.pdf %&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>最后就是hexo c、hexo g、hexo d提交部署，等一会后，就能在真实页面中看到实现后的效果：</p>
-<img src="/2022/05/17/hexo中插入本地pdf文档/3.png" title="c">
-
-
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>网页</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -496,6 +496,23 @@
       </tags>
   </entry>
   <entry>
+    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
+    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
+</blockquote>
+<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
+<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
+<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
+<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
+<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
+]]></content>
+      <tags>
+        <tag>软件</tag>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用PS的液化工具绘制弯刀的曲线</title>
     <url>/2019/09/20/%E4%BD%BF%E7%94%A8PS%E7%9A%84%E6%B6%B2%E5%8C%96%E5%B7%A5%E5%85%B7%E7%BB%98%E5%88%B6%E5%BC%AF%E5%88%80%E7%9A%84%E6%9B%B2%E7%BA%BF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -522,23 +539,6 @@
       <tags>
         <tag>绘画</tag>
         <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于Photoshop中Alt键呼出菜单栏的问题</title>
-    <url>/2020/05/29/%E5%85%B3%E4%BA%8EPhotoshop%E4%B8%ADAlt%E9%94%AE%E5%91%BC%E5%87%BA%E8%8F%9C%E5%8D%95%E6%A0%8F%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>使用名为Apssistant的小程序即可解决，以及该程序失效的情况<a id="more"></a></p>
-</blockquote>
-<p>Alt键在windows系统中会默认呼出当前程序窗口的顶部菜单栏（文件、编辑、选项等那一行），作为一个Ps中不可能不用的键，该情况严重影响了操作。不清楚Mac系统的情况，但windows所有版本的Ps应该都会存在这种问题，十分令人头疼。</p>
-<p>最后找到了一个大佬制作的名为Apssistant的辅助程序，能够解决该问题。使用方法也很简单，启动后选择好Ps路径地址和版本就可以了。该程序兼容CC2019及其之前的各种版本的Photoshop。</p>
-<p>该程序直接可以从作者的Github项目上下载到：<br><a href="https://github.com/millionart/Apssistant" target="_blank" rel="noopener">https://github.com/millionart/Apssistant</a></p>
-<h2 id="失效情况"><a href="#失效情况" class="headerlink" title="失效情况"></a>失效情况</h2><p>最近更换机器以后，Apssistant功能失效，最后发现是360的锅，应该是360的键盘保护（防盗号一类的东西）阻止了该程序的功能，关掉360之后程序立刻生效。</p>
-<p>另外，现在不推荐使用CC2017之前的Ps版本（如CS6、CS5等），新版比旧版好得多，比如优化了撤销键跳回上一个图层的智障设定。老版本除了能兼容一些远古插件，以及对性能很差的机器比较友好以外再没什么优点了。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>软件</tag>
       </tags>
   </entry>
   <entry>
@@ -597,23 +597,6 @@
       </tags>
   </entry>
   <entry>
-    <title>动手画网页的favicon</title>
-    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
-</blockquote>
-<a id="more"></a>
-
-<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
-<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
-<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>博客建好了~</title>
     <url>/2019/09/01/%E5%8D%9A%E5%AE%A2%E5%BB%BA%E5%A5%BD%E4%BA%86/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -633,6 +616,23 @@
 <p>&emsp;&emsp;所以无论如何，我最终的目的都是投入创作，任何形式的创作。在马洛斯认为的需求理论中，自我超越（Self-Transcendence）被认为是超越最顶级的需求，而我认为，“自我超越”现象不属于任何一种需求等级，它其实很普遍，我相信世界上有才能的人不在少数，倘若某一天他发现自己一切的心血和努力都将被永久夺去，从此消失不见，那么他一定会舍命一搏，梵高说过一句话，“作品即是我的灵魂，为了它我甘愿失去生命”，看似很疯狂，却明确表示创作的价值可以大于个人生命，这难道不就是实打实的自我超越吗。但愿有一天，我也能创造出我敢拿命换的东西，我觉得这就是我想要实现的目标了。所以这里将会展示我的个人作品，以及创作想法和理念。</p>
 <p>&emsp;&emsp;最后，本文就当做这个博客的第一个作品了，正是火柴人大法——未有学习，创作先行。其实还有个目的就是练习一下组织语言的能力，前段时间为了剪辑一些视频，想写一个简单的文案，读一些稿子，却发现自己居然寸步难行，才感觉到别人出口成章真是一种强大的能力，想来想去觉得既是自己语言能力有限，再就是长期不写、不用导致表达能力衰减，这样下去我可能真就变成魔法师了，只会写前因后果的实验报告，情书都不会写了，岂不是大大的丢人。</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>动手画网页的favicon</title>
+    <url>/2019/09/10/%E5%8A%A8%E6%89%8B%E7%94%BB%E7%BD%91%E9%A1%B5%E7%9A%84favicon/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>为了让博客页面更加完整，一个看上去简单实用的favicon是少不了的。favicon全称是favorite icon，即网页的图标。那么作为一个DIY爱好者，哪怕再难看也得自己做一个吧，总比用别人的好。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>&emsp;&emsp;博客名字起成Clocktower了，那么就以“计时塔”为主题设计一个图案。一开始做的favicon参考了大本钟的指针，画了一个花里胡哨的钟表盘，改成32x32像素大小后直接测试。但是实际效果并不好，因为windows上一般浏览器实际显示出来是16x16分辨率的，导致图像又被压缩了一次，看着十分模糊。<br>&emsp;&emsp;搞来搞去发现16x16分辨率实在是太小了，至于直接做个堪比苹果的logo出来再缩略…抱歉咱目前还没那个本事。于是我又祭出了像素画的套路…这次画了一个钟表发条，因为据说大本钟也是发条驱动的呢。<br>把图片放大是这个样子的：</p>
+<img src="/2019/09/10/动手画网页的favicon/HD_ACclockwork.png" title="This is an test image">
+<p>&emsp;&emsp;实际效果还行，辨识度也不错，但是这种像素画的缺点就是只能适用于16x16的大小了，放大以后一定会变形或者模糊，必须再制作32x32的，如果你用的是Mac设备或者是别的什么浏览器，这可能就失效了。但是也未尝不是一种解决办法，毕竟很快就能完成，同时复古的像素画也能让博客页面看起来更有ACG的感觉。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+        <tag>设计</tag>
+      </tags>
   </entry>
   <entry>
     <title>如何移植hexo到新的设备上</title>
@@ -679,6 +679,23 @@
       </tags>
   </entry>
   <entry>
+    <title>测试一种新的画风</title>
+    <url>/2019/10/18/%E6%B5%8B%E8%AF%95%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84%E7%94%BB%E9%A3%8E/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>十月初画的一张图，目的是为了测试一下新画风和自己新整理的一些工具预设，感觉距离自己想要的效果还是差了一些</p>
+</blockquote>
+<a id="more"></a>
+
+<p>上图，因为是测试向作品，一开始参考了一些身边的人物形象，构型都很简易，背景也是后来画完了加上去的。</p>
+<img src="/2019/10/18/测试一种新的画风/1.jpg" title="ol_in_coat">
+<p>大概在前几个月我在制作一些表情包的时候发现自己的CS6版本出现了字体乱码问题，一直无法解决，于是换了CC2018，感觉还是比CS6要好用一些，同时也大致接触了一下Sai2，不得不说Sai这个软件真的还是很实用的，尤其是对付这种动漫画风。但是我PS实在是用习惯了，就尝试着在PS里模拟Sai里面的一些工具比如水彩笔、喷枪之类的效果，但除了喷枪做好了其他的都效果一般，于是用喷枪的渐变效果加上赛璐珞上色做了这么一张图，感觉还是很难实现Sai里面那种长距离渐变。</p>
+<p>虽然画人体时发现基础还是很垃圾，不过总体来说还是比我之前的动漫画风要满意一些了，以前我在处理阴影的时候总是喜欢像实体画那样涂很多层，而且还滥用高光，造成整个形象看上去就像一个塑料小人，总是形不成动漫画特有的那种平面感。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>用RGB通道还原色盲视角下的色盲图</title>
     <url>/2019/10/03/%E7%94%A8RGB%E9%80%9A%E9%81%93%E8%BF%98%E5%8E%9F%E8%89%B2%E7%9B%B2%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E8%89%B2%E7%9B%B2%E5%9B%BE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -714,6 +731,24 @@
       </tags>
   </entry>
   <entry>
+    <title>画一个库拉</title>
+    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
+</blockquote>
+<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
+<hr>
+<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
+<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
+<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
+<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
+<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画一个Q版二头身</title>
     <url>/2021/10/26/%E7%94%BB%E4%B8%80%E4%B8%AAQ%E7%89%88%E4%BA%8C%E5%A4%B4%E8%BA%AB/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -735,38 +770,34 @@
       </tags>
   </entry>
   <entry>
-    <title>测试一种新的画风</title>
-    <url>/2019/10/18/%E6%B5%8B%E8%AF%95%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84%E7%94%BB%E9%A3%8E/</url>
+    <title>画一个尖耳朵小姐姐</title>
+    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>十月初画的一张图，目的是为了测试一下新画风和自己新整理的一些工具预设，感觉距离自己想要的效果还是差了一些</p>
+<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
 </blockquote>
-<a id="more"></a>
-
-<p>上图，因为是测试向作品，一开始参考了一些身边的人物形象，构型都很简易，背景也是后来画完了加上去的。</p>
-<img src="/2019/10/18/测试一种新的画风/1.jpg" title="ol_in_coat">
-<p>大概在前几个月我在制作一些表情包的时候发现自己的CS6版本出现了字体乱码问题，一直无法解决，于是换了CC2018，感觉还是比CS6要好用一些，同时也大致接触了一下Sai2，不得不说Sai这个软件真的还是很实用的，尤其是对付这种动漫画风。但是我PS实在是用习惯了，就尝试着在PS里模拟Sai里面的一些工具比如水彩笔、喷枪之类的效果，但除了喷枪做好了其他的都效果一般，于是用喷枪的渐变效果加上赛璐珞上色做了这么一张图，感觉还是很难实现Sai里面那种长距离渐变。</p>
-<p>虽然画人体时发现基础还是很垃圾，不过总体来说还是比我之前的动漫画风要满意一些了，以前我在处理阴影的时候总是喜欢像实体画那样涂很多层，而且还滥用高光，造成整个形象看上去就像一个塑料小人，总是形不成动漫画特有的那种平面感。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>画一个库拉</title>
-    <url>/2021/08/02/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%BA%93%E6%8B%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>我们仍未掌握动漫插画上色的套路.jpg <a id="more"></a></p>
-</blockquote>
-<img src="/2021/08/02/画一个库拉/Kula.jpg" title="A">
+<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
 <hr>
-<p>所以说现在的二次元插画其实都不是赛璐珞纯平涂了吧…它其实是一种半厚涂？感觉可以叫做“赛厚珞”…管他呢反正怎么顺手怎么涂算了（狗头）</p>
-<p>咳咳..库拉（Kula）也算是我童年女神了，第一次见到库拉是小学在机房里玩一个叫Beats of Rage的横版过关游戏，因为那会流行的拳皇都是97，库拉基本见不着。当时就很喜欢库拉的形象，每次玩都选她。Beats of Rage好像后来还衍生出了叫OpenBOR的横版引擎，就像Mugen那种。或许就是从库拉这里开始我就萌上了齐刘海长直发的清纯妹妹形象，以前也画过几个类似的作品。</p>
-<p>从KOF 2000开始算，经过这么多年的换代，库拉的形象也有些改变，可能是因为主画师有所变化。2000里森气楼（Shinkiro）的库拉的发色明显较今天要更偏白一点，一直到11也差不多都是这个颜色为主，这里不得不提一个大概是从02开始参与KOF设计的画师桥本弘明（Hashimoto Hiroaki），据说Hiroaki在SNK里基本是作为森气楼的徒弟。我很喜欢Hiroaki的画风，很早以前还在NDS模拟器上玩过一个叫《高级战争：毁灭之日》的游戏，当时几乎是立刻就被它的立绘画风给吸引了，但到更后来才了解到这些都是出自Hiroaki之手。13版的KOF也是Hiroaki主导，也被认为是拳皇系列最受欢迎的一作。13以后也不知道为什么Kula的头发就越来越蓝了，后面基本就是蓝色为主，各种二创、同人作品有很多直接设计成蓝色的（如死或生），但我个人还是比较偏好以白色为主的早期设定，毕竟中国人人均白毛控，还有早年第一眼见到的那种第一印象加成。</p>
-<p>至于为啥突然想画库拉其实是前段时间玩了一个叫多娜多娜（ドーナドーナ）的游戏..关注了一下主画师鱼介（おののいもこ魚介），发现鱼介也是个超级库拉控，画了一堆库拉，不过话说回来多娜多娜的那种高饱和度的画风还的确挺适合Kula，毕竟拳皇里K’和Kula的打扮都有点赛博朋克的感觉。所以我也把反射度整高了一点，人体结构设计的还是有点问题，有些不自然，Kula的手也推倒重做了一遍，不过话说Kula到底是机械手还是戴手套可能SNK早年自己也没想好，现在应该基本确定是戴手套了，不过画起来还是有点麻烦，因为参考的每个版本的设计都不太一样，所以细节我干脆自己脑补了。</p>
-<p>背景又懒得画，于是整成了像杂志封面一样的简易效果，最后还是决定用个少女粉，不仅因为Kula本身很少女，而且因为据说粉色的钻石超级值钱呢。</p>
+<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
+<p>接下来说一下设计思路：</p>
+<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
+<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
+<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
+<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
+<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
+<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
+<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
+<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
+<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
+<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
+<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
+<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
+<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
+<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
+<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
 ]]></content>
       <tags>
         <tag>绘画</tag>
+        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
@@ -795,30 +826,29 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个尖耳朵小姐姐</title>
-    <url>/2021/05/21/%E7%94%BB%E4%B8%80%E4%B8%AA%E5%B0%96%E8%80%B3%E6%9C%B5%E5%B0%8F%E5%A7%90%E5%A7%90/</url>
+    <title>画一个罗斯贵族骑兵</title>
+    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>四月份做的一个动漫风的精灵游侠立绘~ <a id="more"></a></p>
+<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
 </blockquote>
-<img src="/2021/05/21/画一个尖耳朵小姐姐/a.jpg" title="a">
+<a id="more"></a>
+<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
+<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
+<p>大概描述一下几个部件的设计思路。</p>
+<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
+<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
+<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
+<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
+<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
+<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
+<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
 <hr>
-<p>总的来说..二次元啥的一点都不简单啊…因为线稿和平涂技巧都不太行，就尝试用半厚涂的方法进行上色，感觉也就头发和胸甲看得过去，衣服斗篷什么的实在没有花时间去设计，看起来没太多立体感。这张之后打算再研究一下平涂，争取做出一个看得过去的平涂作品。</p>
-<p>接下来说一下设计思路：</p>
-<p>因为上个月刚好赶上《魔戒》重制版上映，朋友圈又刮起一阵奇幻风，咱作为从来不去电影院的穷人只能翻出了硬盘里的老版本三部曲看了一遍也算是致敬。看了一遍发现里面各种什么游侠的是真的好看，莱格拉斯这种就不说了，法拉米尔和他带领的人类游侠也帅的不行。这再一次强化了我关于那种罗宾汉式形象的喜爱程度：即披着苔绿色斗篷，带着兜帽，手拿弓箭百发百中的经典形象。于是就打算画一个精灵游侠，虽然魔戒里好像女游侠很少，但是魔兽或者其他的奇幻作品里它多啊xD</p>
-<p>头发我选择了一个看起来比较像东方人形象的长直发高马尾发型，但颜色还是用了传统的金黄色。在精灵文明中加入东方元素也是挺常见的手法，如《上古卷轴》、《魔兽世界》等作品里均能看到类似的元素搭配。</p>
-<p>关于更进一步的形象就有一个欧美系精灵和日系精灵的区别，简单来说，以《魔戒》为代表的欧洲人关于精灵（Elf）的设定，是那种高冷俊美帝王面相的贵族形象，通常拥有比人类强好几个级别的文化文明实力，说着人类听不懂的高级语言，还能略微运用上古传下来的魔法（魔法这玩意通常跟科技相反，都是越古老越强），切合的是它的低魔设定，总的来说他们是一种比人类更高级的智慧生物，对人类来说他们就跟神一样；而以《罗德岛战记》蒂德莉特衍生出日系精灵通常看起来都更像正常人类，生活习性和人类社会并无太大差异，无非是保留了一些诸如寿命长、居住在森林里或是爱用弓箭的传统设定。</p>
-<p>其实在魔戒体系下的精灵并无太强调精灵们偏好什么样的武器装备，因为精灵都活得太久，拥有比人类多得多的时间学习，可以说刀枪剑戟琴棋书画样样精通，人均六边形战士。而日系精灵则通常只保留了精通弓箭的特点，通常在近身格斗中很吃亏，需要他人保护。</p>
-<p>个人是偏好日系精灵的形象的，毕竟看起来要更可爱一些，但我也欣赏欧美系精灵的一些传统设定，所以我认为的游侠（Rangers）至少也应该是精通多种作战形式的、类似特种部队的形象，他们量少而精，通常以小队形式出没，执行那些侦察、破坏等任务而尽力避免和敌军正规部队发生冲突。所以我给角色设计的装备都比较偏写实，感觉就像是精灵从人类市场上直接买来的一样。</p>
-<p>为了强调这一点，我给她设计了一块坚实的胸甲和一把剑。弓箭手穿护甲其实太常见了，从历史画作可以看到欧洲15世纪的很多弓箭手、弩兵都装备着很好的锁子甲（Chainmail）、甚至是板甲衣（Brigandine）和胸甲（Cuirass），是职业军人，可以说他们只要放下弓箭就是实实在在的Man-at-Arms。</p>
-<p>胸甲采用了18世纪胸甲骑兵的一体式的完整胸甲，这种胸甲可以说有着非常好的“塑型”作用，我觉得对女性来说太适合不过了。而佩剑综合了长剑（Longsword）和刺剑（Rapier）的特点，优雅而不失威力，毕竟我还是偏好女性使用Rapier这种司空见惯的设定。</p>
-<p>远程武器我也是更偏好长弓，女生用长弓怎么看都比那种突骑短弓优雅多了，但是关于远程武器的携带方式却有很多问题：</p>
-<p>首先是长弓怎么背的问题，说实话这个问题并不简单，一个普遍观点是长弓手在行军途中的弓箭均以下弦形式携带，下弦后的长弓就变成了一根“长棍”，可以装进一个布包里背在身上。这倒是没错，但我不太想让我的角色背着一个辨识度很差的“布包”。而且如果长弓手面真的临着短途突袭的作战情况时，为了应对突发事件弓弦则不能随意放下来，这时候该如何背上长弓呢？</p>
-<p>我们先看骑马与砍杀（Mount&amp;Blade）这款游戏里的做法，弓箭手将长弓套在躯干上，以弓弦和弓身的压力将其固定在躯干之上。这种背法我在现实中尝试过，确实能背，但是不太方便，瘦的人可能容易掉，胖的人又会觉得太紧，而且长弓也会和其他武器发生干涉。</p>
-<p>于是发现Youtube上因为2月的又一个著名的“长弓穿甲”测试而在冷兵器圈带起一阵长弓讨论，其中一些博主讨论到了类似的问题，可以参考如下的链接：</p>
-<p>Dawson Ehlke关于对长弓及长兵器背法的演示：<br><a href="https://www.youtube.com/watch?v=THTmeM4wTzI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=THTmeM4wTzI</a></p>
-<p>Shadiversity设计了一个长弓背法，对套躯干背法的评论以及对Ehlke背法的评论：<br><a href="https://www.youtube.com/watch?v=3Ua5PkxaDMY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3Ua5PkxaDMY</a></p>
-<p>Shad是一个很考究的冷兵器学者，他在视频中承认，从历史资料中我们并不能找到这个问题的答案，并给予了Dawson Ehlke的肯定。所以我更倾向的解释是：即在突袭中长弓可以套在躯干上，但若具有专门的携带工具（如Ehlke背法中的绳子），则也可以用工具背在背上。于是决定在作品中没有体现携带工具，让它看起来就像是一般游戏中简单的处理方式——贴在背上一样。毕竟从正面看也看不出太多区别。</p>
-<p>再一个关键问题就是箭筒（Quiver）和斗篷的冲突问题。试想既然角色先穿上了一个大披风，再怎么把箭筒挂在背上呢？有人可能说把箭筒挂到大腿上不就没这个问题了吗，但是我觉得出于艺术考虑，从肩膀上抽出弓箭怎么也要比挂腿上好看。于是我又回去看了一下《指环王》，在某些镜头里确实回答了这个问题：直接把箭筒套在披风上会导致披风全都收缩在箭筒下面，看起来很难看，而的确有很多演员是这么做的…但另一个手段是他们在披风上开了一个洞，让箭筒的背带从洞里穿过，这样就解决了问题。所以我决定参考第二种做法，毕竟这都是为了一种艺术形象的考虑，因为我们看到历史资料中的长弓手不是紧身短打就是护甲在身，到底有没有长弓手会穿这样一个臃肿的斗篷都是一个很值得怀疑的问题。所以可以推测，经典的“罗宾汉”小绿人形象也是人们想象而成的作品，比如在2010年的《罗宾汉》电影里的罗宾汉完全不是这种样子，说实话虽然这部电影在市场上不那么叫好，但我很欣赏这部电影敢于还原一个真实的形象。</p>
+<p>接下来说一下画的过程中的想法。</p>
+<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
+<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
+<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
+<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
+<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
 ]]></content>
       <tags>
         <tag>绘画</tag>
@@ -861,36 +891,6 @@
       </tags>
   </entry>
   <entry>
-    <title>画一个罗斯贵族骑兵</title>
-    <url>/2020/10/08/%E7%94%BB%E4%B8%80%E4%B8%AA%E7%BD%97%E6%96%AF%E8%B4%B5%E6%97%8F%E9%AA%91%E5%85%B5/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>上个月做的一个东欧风格的骑士画像，基本是想到哪画哪</p>
-</blockquote>
-<a id="more"></a>
-<img src="/2020/10/08/画一个罗斯贵族骑兵/Boyar.jpg" title="Boyar">
-<p>如果是非常熟悉盔甲历史的朋友，可能会觉得这种风格并不是很严格的historical，的确，就像意大利人拍的西部对决里必须是飞沙走石中飘过一卷风滚草一样，我构思的这个造型基本出自我对罗斯时代的一种刻板印象，所以就变成了一个同时带了北欧和亚洲风格的波耶（Boyar），至于为什么要加入10世纪瓦良格人的风格，因为我觉得这就很cool，没有战斗元素的战斗民族还算战斗民族吗…<del>我不会告诉你们我跟骑砍2学的</del></p>
-<p>大概描述一下几个部件的设计思路。</p>
-<p>这种弧度很大的尖顶盔其实是突厥化时代的样式，具有明显的亚洲民族的特征，再搭配上眼罩般的维京面甲。覆盖全脸的护颈锁甲是一开始就确定好的思路，也是我这次打算挑战的一个重点，这种设计也常见于罗斯时代的骑兵头盔上。</p>
-<p>但是这里有几个小问题，一个是与头盔的连接方式，首先可以肯定的是这种锁甲面甲一般都直接或间接固定在盔体上（无法拆卸），但是在头盔本身加装了一部分护脸的情况下该如何与锁甲连接？如果根据一些东欧民族的头盔设计，其实很多也有类似的上半护面，一般都是把这部分锁甲做出一个缺口，这样所有的部分几乎都可以用铁环连在护面上。但是我在一开始并没有考虑到这个问题，最后只能做出一个半连接的方式，只连接了盔体主体而没有连接这个眼罩护面，姑且认为这样的头盔也能正常工作吧。</p>
-<p>再一个就是护颈锁甲的下摆长度问题，我个人非常偏好那种14世纪的长型锁甲护颈，比如当时西欧典型的bascinet头盔（俗称猪面盔），其锁甲也是直接固定在盔体上，下摆甚至能长到肩膀上，目的是为了让这部分锁甲也具有肩甲的功能。锁甲直接固定在盔体上的好处就是可以淘汰掉十字军时代那种巨盔（great helmet）套锁甲帽的穿搭，14世纪甚至出现了巨盔套头盔再套锁甲帽，让骑士头重脚轻，骑马还好，但是很不适合步战，所以bascinet算是一种新式的轻量化设计，也可以看出锁甲已经慢慢让位于板甲了。</p>
-<p>一般来讲，这种带长款锁甲的头盔在穿戴顺序上都是最后一个，也就是说，最后长长的锁甲护颈应该置于肩甲之上。但我又不想让整个画面都充斥着锁甲环，于是就把札甲护肩强行置于了锁甲之上，讲道理札甲护肩一般都会和札甲胸甲的肩带有一个连接点，这么搞会导致连接不能…所以我也没有把锁甲做得太长，这样看起来冲突不会那么严重。</p>
-<p>选择札甲也是为了增加有别于西欧的东方特色，我对札甲甲片的编排方式知之甚少，本次是参考了几个老外做的“罗斯札甲”的复原物，可能是15世纪的样式。</p>
-<p>多说一句，俄罗斯人自己似乎对这种突厥风格的尖顶头盔感情很深，苏俄内战时期有一种经典服饰叫做布琼尼式军帽（budenovka，俄语Будёновка），就是<del>钢炼</del>《钢铁是怎样炼成的》里面保尔柯察金那套装扮，这种军帽是当时一位叫维克托·瓦斯涅佐夫（Viktor Vasnetsov)）的著名画家设计的，据说正是参考了古代罗斯勇士的头盔风格，旨在让古代勇士的精神激励苏军战士（笑）</p>
-<p>背景就算说完了，因为咱作为一个盔甲爱好者那必须是要严谨的，即使是出了bug也得分析一下么不是。</p>
-<hr>
-<p>接下来说一下画的过程中的想法。</p>
-<p>其实我真的是第一次练习画这种写实风，突然想到画这个是因为看到了一个朋友画了一个厚涂的希腊头盔，觉得很有意思，因为我以前都是画那种日漫风格的，所以我还是用了最顺手的线稿起稿的做法，而不是厚涂大佬们那样直接色块起步。不过一来二去也算是摸到了一点感觉，最初那层定下主色调和明暗基本就不会偏到哪里去了。我一开始定的色调就是蓝紫色，想表现那种阴冷的雪原气氛，冷色调和金属材质也是很搭配。金黄色的铜铆钉则是为了让盔体颜色不那么单调（已经够单调了），金黄色也能多一点贵族元素，毕竟咱的主角可不是游牧小兵。</p>
-<p>整个头盔主体没有特别大的难度，我用了一层材质笔刷“做旧”，并添加了一些划刻的印记，在亮部还专门给了一些深红色的材质模拟较新的锈斑。</p>
-<p>蓝眼睛是为了复刻早期罗斯首领的北欧血统，进一步增加维京元素。</p>
-<p>锁子甲其实才是这次的重点，因为以前亲手编制过一些简单的对接锁甲，所以还是比较熟悉这种结构的，这次想表现那种锁甲扭转后的独特效果，画起来感觉还是有点困难的，起码推倒重做了四五遍，耗费了很多时间，很多锁甲环也画乱了，最后这个效果也只能算是凑合看得过去。</p>
-<p>画札甲护肩的时候已经没啥耐心了，采用了画出单个甲片复制成一行当作贴图，再变形强行扭出弧线的形状的方法，包括胸甲在内的所有札甲都是这么复制出来的。主要的两块肩甲的甲片做了一点整修，但还是看起来整体有点扁平，毕竟皮革连接线也是有厚度的。次要的肩甲和胸甲均只做了明暗。为了将焦点移开，最后用模糊工具虚化了这些部分。本来想表现雪原草地的背景也没有花什么功夫去做（老毛病了）。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
-        <tag>设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>绘画（3）</title>
     <url>/2025/08/31/%E7%BB%98%E7%94%BB%EF%BC%883%EF%BC%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -917,6 +917,23 @@
       </tags>
   </entry>
   <entry>
+    <title>绘画（1）</title>
+    <url>/2024/01/31/%E7%BB%98%E7%94%BB%EF%BC%881%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>近期两张完成度比较高的插画作品<a id="more"></a></p>
+</blockquote>
+<img src="/2024/01/31/绘画（1）/a.jpg" title="a">
+<img src="/2024/01/31/绘画（1）/b.jpg" title="b">
+
+<hr>
+<p>以前很少画背景图，最近专门花时间整了两个。以后的绘画作品都这么简单展示好了，内容啥的实在是懒得写那么多了，因为整个2023年对我来说就像是一场fever dream，事实证明wlb确实是一个非常非常重要的东西，至少现在在我看来，这比几块钱的收入要重要得多，因为如果人几乎把所有时间精力都花在给别人打工上，如现在随处可见的996、886、007等工作模式，长时间的这么干下去，每天累到只想睡觉的话，真的是就连思考的权利都会被剥夺掉的！更别谈再有什么系统性的学习和提升，再有什么有意义的创作。那样真就彻底变成机器了——“..在生活和精神面貌上都变成了一个真正的学徒…甚至记不起世界上有过罗马人”。</p>
+<p>除了艺术方面以外，今年还有一个值得期待的开端，就是真正开始了一门编程语言的系统性学习，目前的进度是写了一个能够真正对付一些实际问题的控制台小程序，也就100来行，不过目前的代码还不够健壮，当大部分内容得到改进后，我会在这里新开一章放上源码。</p>
+]]></content>
+      <tags>
+        <tag>绘画</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>考古一个小众老游戏出色的音乐</title>
     <url>/2020/01/25/%E8%80%83%E5%8F%A4%E4%B8%80%E4%B8%AA%E5%B0%8F%E4%BC%97%E8%80%81%E6%B8%B8%E6%88%8F%E5%87%BA%E8%89%B2%E7%9A%84%E9%9F%B3%E4%B9%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -936,23 +953,6 @@
       <tags>
         <tag>游戏</tag>
         <tag>音乐</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>绘画（1）</title>
-    <url>/2024/01/31/%E7%BB%98%E7%94%BB%EF%BC%881%EF%BC%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>近期两张完成度比较高的插画作品<a id="more"></a></p>
-</blockquote>
-<img src="/2024/01/31/绘画（1）/a.jpg" title="a">
-<img src="/2024/01/31/绘画（1）/b.jpg" title="b">
-
-<hr>
-<p>以前很少画背景图，最近专门花时间整了两个。以后的绘画作品都这么简单展示好了，内容啥的实在是懒得写那么多了，因为整个2023年对我来说就像是一场fever dream，事实证明wlb确实是一个非常非常重要的东西，至少现在在我看来，这比几块钱的收入要重要得多，因为如果人几乎把所有时间精力都花在给别人打工上，如现在随处可见的996、886、007等工作模式，长时间的这么干下去，每天累到只想睡觉的话，真的是就连思考的权利都会被剥夺掉的！更别谈再有什么系统性的学习和提升，再有什么有意义的创作。那样真就彻底变成机器了——“..在生活和精神面貌上都变成了一个真正的学徒…甚至记不起世界上有过罗马人”。</p>
-<p>除了艺术方面以外，今年还有一个值得期待的开端，就是真正开始了一门编程语言的系统性学习，目前的进度是写了一个能够真正对付一些实际问题的控制台小程序，也就100来行，不过目前的代码还不够健壮，当大部分内容得到改进后，我会在这里新开一章放上源码。</p>
-]]></content>
-      <tags>
-        <tag>绘画</tag>
       </tags>
   </entry>
   <entry>
@@ -1080,6 +1080,112 @@
       </tags>
   </entry>
   <entry>
+    <title>2014-2021年Steam全球流量统计图</title>
+    <url>/2021/08/12/2014-2021%E5%B9%B4Steam%E5%85%A8%E7%90%83%E6%B5%81%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%9B%BE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>这里汇总了近八年来的Steam全球流量的统计图（卫星视图），以及一些分析。 <a id="more"></a></p>
+</blockquote>
+<p>Steam全球流量统计可以直接从这里看到：<a href="https://store.steampowered.com/stats/content/" target="_blank" rel="noopener">https://store.steampowered.com/stats/content/</a></p>
+<p>选择卫星视图，每个点代表最近 24 小时内来自至少一名 Steam 用户的 Steam 下载活动情况。也就是说，绿点越密集代表执行下载动作的用户越多。该数据能够直观地说明地球上的哪些地方拥有互联网络娱乐活动，其密度一定程度上反映了该地区的现代化水平程度，其结果有点类似于“夜间卫星照片”中的灯光密集程度，所不同的是它是“网络数据版的”。如果将历年来的数据整合到一起，则还可以得出更多的信息。有必要说明的是，这项工作是具有实验性的，因普通用户只能从Steam官方页面得到当天的数据报告，而无法调查历史数据，这造成了数据的稀缺性。所以直到目前为止，我还没有看到有人在互联网上发布过对Steam全球流量统计历史的系统性分析。</p>
+<p>需要注意的是：</p>
+<ol>
+<li><p>本次收集的绝大部分数据来自互联网（各种论坛、Twitter等），它们的时间戳都经过我的仔细比对，但我仍无法保证所有数据的时间戳的准确性。</p>
+</li>
+<li><p>经测试，该数据在一天之内就存在一个较为明显的波动情况，所以单看一天的数据并没有特别大的参考价值，只有在数据比较多的情况下才能观察出大体趋势。</p>
+</li>
+<li><p>因为本文中的数据可能来自于各个国家的各个时间段，为了处理数据波动的影响，如果在±1、2月内存在多个数据则取中间值为准，某些季度可获得的数据太少，只有一个，则不做处理。</p>
+</li>
+<li><p>Steam官方的页面只提供分辨率为1280*720分辨率的图像，所以这里尽量只挑选该分辨率的原图，一些分辨率较差的图片只用作当前季度的数据稳定性参考，而不列出。因图片分辨率一致，想要更好了解数据的变化细节，建议将图片单独右键打开或下载，通过翻页观看就可以很直观地进行比对。</p>
+</li>
+</ol>
+<hr>
+<h3 id="2014-02-06"><a href="#2014-02-06" class="headerlink" title="2014.02.06"></a>2014.02.06</h3><p>我无法确定Valve是什么时候上线这个全球流量统计页面的，但这张来自2014年2月的数据几乎是互联网上能找到最早的数据图之一，经常在各种媒体网站被引用。可以看到在这个时候绿点基本只有欧洲、美国东部和西海岸线，以及巴西里约热内卢附近较为密集。大多数非洲和中亚国家基本只有在他们的首都位置有一个点。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2014.02.06.png" title="2014.02.06">
+
+<h3 id="2014-06-30"><a href="#2014-06-30" class="headerlink" title="2014.06.30"></a>2014.06.30</h3><p>较之前稍微增多，在泰国、日本、韩国、澳大利亚增加明显，中国、俄罗斯和印度也有所增长。索马里首次出现一个点，位于首都摩加迪沙。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2014.06.30.png" title="2014.06.30">
+
+<h3 id="2015-01-21"><a href="#2015-01-21" class="headerlink" title="2015.01.21"></a>2015.01.21</h3><p>这张图看起来要比上一张的点少了一些，应该是由于数据波动导致的。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2015.01.21.png" title="2015.01.21">
+
+<h3 id="2015-09-13"><a href="#2015-09-13" class="headerlink" title="2015.09.13"></a>2015.09.13</h3><p>中国、泰国、菲律宾、日本、韩国、墨西哥（墨西哥城）增加明显。这张图最大的特点在于，朝鲜（平壤）和古巴（哈瓦那）首次出现了一个点，尤其是位于平壤的那个点，将在这之后作为朝鲜境内的唯一的数据点并且几乎一直存在着。这个神秘用户的身份引来了不少人的猜测，甚至有人开玩笑认为这个用户就是金将军本人。由于这个数据常年不灭，所以听起来更靠谱的说法是，这些数据是朝鲜军方用来做一些研究用的。在俄罗斯最东端首次出现一个点，可能是普罗维杰尼亚港（Provideniya）。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2015.09.13.png" title="2015.09.13">
+
+<h3 id="2015-11-02"><a href="#2015-11-02" class="headerlink" title="2015.11.02"></a>2015.11.02</h3><p>数据密度看起来比之前高了很多，这可能是由于Valve修改了该视图的表示标准，之前的绿点其实更细小，不过毫无疑问的是，Steam的用户正在全球范围急速增长，欧洲和美国东部的绿点几乎已经连成了一片。巴尔干半岛、乌克兰、越南、土耳其半岛地区以及俄罗斯的非一线区增长明显，不过增长最显著的应该是印度和巴基斯坦，还有古巴。位于挪威北部接近北极点的斯瓦尔巴群岛（Svalbard Archipelago）也首次出现一个点，位置可能是朗伊尔城（Longyearbyen）。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2015.11.02.png" title="2015.11.02">
+
+<h3 id="2016-02-13"><a href="#2016-02-13" class="headerlink" title="2016.02.13"></a>2016.02.13</h3><p>这张图看起来和上一张区别并不是很大，并在接下来的时间里大体保持这个规模，可见Steam的用户已经发展到了一个相对饱和的状态。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2016.02.13.png" title="2016.02.13">
+
+<h3 id="2016-07-26"><a href="#2016-07-26" class="headerlink" title="2016.07.26"></a>2016.07.26</h3><p>2016年的一些数据中卫星视图又被改回了细点状态，国界线也重新回来了，我不清楚这是什么原因导致的，因为用户并不能选择细点还是粗点以及是否显示国界线，我觉得细点和有国界线明显要更好看一点。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2016.07.26.png" title="2016.07.26">
+
+<h3 id="2017-07-01"><a href="#2017-07-01" class="headerlink" title="2017.07.01"></a>2017.07.01</h3><p>没找到2017年上半年的数据。可以看到中国地区的数据流量变得更多，应该是和2017年《绝地求生》开始流行有关系。位于加拿大最北端的伊丽莎白女王群岛（Queen Elizabeth Islands）出现了一个点，这里几乎快要接近北极点了，不过看样子位置并不在那里唯一的居住点阿勒特（Alert），所以他的网是从哪来的？。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2017.07.01.png" title="2017.07.01">
+
+<h3 id="2017-10-01"><a href="#2017-10-01" class="headerlink" title="2017.10.01"></a>2017.10.01</h3><p>几乎就是上一张图的粗点版本。不过明显能够看出朝鲜的那个点居然换了位置，这期间还有数据显示朝鲜境内同时出现两个点。有人认为这有可能是其他地区的用户使用VPN造成被定位在朝鲜导致的。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2017.10.01.png" title="2017.10.01">
+
+<h3 id="2017-12-04"><a href="#2017-12-04" class="headerlink" title="2017.12.04"></a>2017.12.04</h3><p>在地图右下角首次出现了位于南极洲的点，可能是美国的麦克默多科学考察站(McMurdo Station)，是南极洲最大的科考站。位于印度洋的南部的凯尔盖朗岛（Kerguelen islands）也出现了一个点，这个岛离哪个大陆都很远，有人称它是“地球上最孤独的岛”，岛上拥有一些气象观测站。这些地方的数据流量可能是由科考人员产生的。另外，世界最不发达国家之一的中非共和国首次在首都班吉（Bangui）附近出现第二个点。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2017.12.04.jpg" title="2017.12.04">
+
+<h3 id="2018-01-04"><a href="#2018-01-04" class="headerlink" title="2018.01.04"></a>2018.01.04</h3><p>数据很稳定，几乎看不出什么变化。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2018.01.04.png" class="asset_img" title="2018.01.04">
+
+<h3 id="2018-07-28"><a href="#2018-07-28" class="headerlink" title="2018.07.28"></a>2018.07.28</h3><p>位于伊丽莎白女王群岛的同一个点再次亮了起来。看样子这里可能有人长期居留。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2018.07.28.jpg" title="2018.07.28">
+
+<h3 id="2019-01-25"><a href="#2019-01-25" class="headerlink" title="2019.01.25"></a>2019.01.25</h3><p>2019年初的这张图是笔者当时自己截的。可以看到中国地区的密度在此之后有所下降，应该是和《绝地求生》热度在中国逐渐退潮有关。从其他来源收集到的2019年前三季度的数据基本都和这张图差不多，这里就不放了。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2019.01.25.png" title="2019.01.25">
+
+<h3 id="2019-11-20"><a href="#2019-11-20" class="headerlink" title="2019.11.20"></a>2019.11.20</h3><p>伊朗的数据密度出现骤降，可能是由于著名的“全国断网”事件。伊朗政府在2019年11月15日宣布油价暴涨引发抗议，最终演变为大规模骚乱，伊朗政府进而在16日切断了全国的互联网，这一断就是近一周时间，11月23日之后才逐步放开互联网管制，据称26号仍未恢复移动网络。一些报道显示，断网期间伊朗当地的某些网站还是可以使用的，外国网站是彻底用不成了，按理说Steam也用不了，不过我们可以看到20日Steam仍在首都德黑兰附近有着较为可观的流量密度，在境内的其他地方也存在绿点。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2019.11.20.png" title="2019.11.20">
+
+<h3 id="2020-03-16"><a href="#2020-03-16" class="headerlink" title="2020.03.16"></a>2020.03.16</h3><p>伊朗的数据几乎完全恢复到之前的原样。中国地区的密度继续降低，虽然这个时候正是武汉封城期间，不过我认为COVID应该影响不了Steam的数据密度，而且居家人员变多应该密度更大才对，反正我那会几乎关在家里天天玩电脑。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2020.03.16.png" title="2020.03.16">
+
+<h3 id="2020-04-27"><a href="#2020-04-27" class="headerlink" title="2020.04.27"></a>2020.04.27</h3><p>位于平壤的唯一的点消失了，虽然它在第二天就得到恢复，却一度以“金将军怎么不玩游戏了”引发了很多的猜测。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2020.04.27.png" title="2020.04.27">
+
+<h3 id="2020-10-18"><a href="#2020-10-18" class="headerlink" title="2020.10.18"></a>2020.10.18</h3><p>一切似乎又回到了老样子。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2020.10.18.jpg" title="2020.10.18">
+
+<h3 id="2021-04-17"><a href="#2021-04-17" class="headerlink" title="2021.04.17"></a>2021.04.17</h3><p>该视图似乎不再提供国境线了，看起来不是很舒服，不过用2014年那张带国境线的图来进行比对还是比较容易确定位置的。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2021.04.17.png" title="2021.04.17">
+
+<h3 id="2021-08-11"><a href="#2021-08-11" class="headerlink" title="2021.08.11"></a>2021.08.11</h3><p>到了本文创作的现在，这张图也是笔者自己截的。中国地区的流量密度基本回到了绝地求生流行之前的2016年的水平上，现象级游戏“吃鸡”终于在中国凉了下来。</p>
+<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2021.08.11.png" title="2021.08.11">
+
+<hr>
+<p>这里大概介绍一下Steam发展历程中的一些关键时间点，以更好地解释某些现象。</p>
+<p>Steam是目前全球最大的游戏平台，于2003年9月12日开放账号注册。Steam最初作为Valve（以下简称V社）开发的平台，可以说是给当时V社自家的经典游戏《半条命（Half-life）》量身定做的启动器，2004年的《半条命2》直接是Steam独占，后来慢慢上线了很多非V社的游戏，逐步变成一个综合性游戏平台。Steam用户从2014年之后的急速增长当然是V社十年如一日的苦心经营的结果，但也离不开几款经典游戏的作用。至今为止Steam平台大概有这么三个游戏热度极高并且流行时间较长，影响较大，按照它们在Steam的上线时间顺序是：</p>
+<p>2012.8.22   《反恐精英：全球攻势》（CS:GO）<br>2013.7.10   DotA2（PC正式版）<br>2017.3.23   《绝地求生》（PLAYERUNKNOWN’S BATTLEGROUNDS 或 PUBG）</p>
+<p>三者均为网络游戏，其中CSGO和Dota2是Valve亲自开发的。这些游戏并非一出来就那么流行，不同地区的速度并不一样。这里就拿全球同时在线用户峰值举例，CS:GO在2020年4月18日达到了同时在线玩家的历史峰值，为130万；Dota2在2016年3月达到同时在线129万；绝地求生则在2018年1月13日达到了同时在线324万的最高纪录。还要提到一个吊足了玩家胃口的新游戏《赛博朋克2077》，它在2020年12月10日也就是发售日达到了105万的同时在线水平，《2077》作为单机游戏达到了每日百万在线创造了能和网络游戏抗衡的记录，但《2077》后续暴露出许多问题导致它很快便跌下这个一瞬间的单机王座，故并没有造成太大影响。</p>
+<p>各个游戏的全球热度趋势也可以在Steam的统计页面直接查看：<a href="https://steamstats.cn/" target="_blank" rel="noopener">https://steamstats.cn/</a></p>
+<p>而在中国地区，一些游戏的流行要稍后一点。CS和Dota在国内有着悠久的前作基础，但真正让CS:GO流行起来的原因恐怕还是2018年底的免费政策，到了2019年以后才在国内开始具有一定规模的玩家群体，CS:GO这两年整体还是处于一个上升趋势；Dota2作为免费游戏一直和同类游戏《英雄联盟》分占国内MOBA市场，Dota2真正在国内流行起来可能得到了2015年之后，2015、2016两年应该是Dota2在国内也是全球最火的两年，那会网吧里基本Dota2和英雄联盟都能对半分，在2019年自走棋火了一阵后呈现缓慢下降的趋势；而《绝地求生》可能是国内这几年最具现象级的游戏，这款游戏在2017年下半年几乎火爆到占据了中国网吧的所有位置。不过在《绝地求生》于2017年12月10日推出1.0版本之后，就由于其优化差、外挂泛滥等原因一路走上下坡路，但瘦死的骆驼比马大，直到今天PUBG仍有50万的全球日在线用户，相当于《侠盗猎车手5》在2015年的巅峰水平。</p>
+<p>另一个对于中国用户很重要的就是支付手段，Steam于2016年初开通了支付宝支付，2016年10月之后开始加入微信支付，虽然在这之前中国用户也能通过银联（Unionpay）网银来支付，但这个举措显然减少了国内玩家购买国外游戏产品的种种阻力。</p>
+<p>下一个有机会占据Steam百万级别榜单位置的游戏可能是《Apex英雄》，这款游戏的热度上升明显，虽然还是“吃鸡”的那套玩法，但这种玩法明显仍具有持续的生命力，Apex或许能够占据吃鸡市场，走到类似MOBA界英雄联盟那样的位置上。</p>
+<hr>
+<p>从发展图上还可以看出一些有意思的特点：</p>
+<ol>
+<li><p>白俄罗斯（Belarus）在密度最大的欧洲几乎是唯一一个数据稀缺处，可能和白俄罗斯政府对互联网的封闭政策有关，Steam社区的一位可能来自白俄罗斯的用户表示，白俄罗斯正面临一场“革命”，而之后的网络将会更开放，他希望Valve官方给Steam添加白俄罗斯语。还有人反映白俄罗斯区定价远高于俄罗斯（俄罗斯是低价区）的不合理现象。</p>
+</li>
+<li><p>墨西哥的流量虽然绝大部分聚集在首都墨西哥城，但北方明显更少，可能是由于北方较为干旱、经济落后以及社会不稳定导致的。</p>
+</li>
+<li><p>缅甸、柬埔寨、老挝仍然是东南亚最不发达的地区。越南并不落后，几乎和中国是同一水平。</p>
+</li>
+<li><p>整个小亚细亚半岛都拥有很高的密度，甚至是新闻里经常和土耳其打仗的“库尔德斯坦”地区看起来流量也挺多。</p>
+</li>
+<li><p>西撒哈拉地区似乎从来没有出现过数据迹象。</p>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>网页</tag>
+        <tag>游戏</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SPT-AKI常用功能修改指南</title>
     <url>/2022/12/16/SPT-AKI%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD%E4%BF%AE%E6%94%B9%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1195,109 +1301,81 @@
       </tags>
   </entry>
   <entry>
-    <title>2014-2021年Steam全球流量统计图</title>
-    <url>/2021/08/12/2014-2021%E5%B9%B4Steam%E5%85%A8%E7%90%83%E6%B5%81%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%9B%BE/</url>
+    <title>VMware Workstation疑难杂症合集+解决方法（2026版）</title>
+    <url>/2026/05/13/VMware-Workstation%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87%E5%90%88%E9%9B%86-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%882026%E7%89%88%EF%BC%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>这里汇总了近八年来的Steam全球流量的统计图（卫星视图），以及一些分析。 <a id="more"></a></p>
+<p>解决VMware Workstation运行老版本Windows系统时的一些常见问题，特别是在Win11环境下。<a id="more"></a></p>
 </blockquote>
-<p>Steam全球流量统计可以直接从这里看到：<a href="https://store.steampowered.com/stats/content/" target="_blank" rel="noopener">https://store.steampowered.com/stats/content/</a></p>
-<p>选择卫星视图，每个点代表最近 24 小时内来自至少一名 Steam 用户的 Steam 下载活动情况。也就是说，绿点越密集代表执行下载动作的用户越多。该数据能够直观地说明地球上的哪些地方拥有互联网络娱乐活动，其密度一定程度上反映了该地区的现代化水平程度，其结果有点类似于“夜间卫星照片”中的灯光密集程度，所不同的是它是“网络数据版的”。如果将历年来的数据整合到一起，则还可以得出更多的信息。有必要说明的是，这项工作是具有实验性的，因普通用户只能从Steam官方页面得到当天的数据报告，而无法调查历史数据，这造成了数据的稀缺性。所以直到目前为止，我还没有看到有人在互联网上发布过对Steam全球流量统计历史的系统性分析。</p>
-<p>需要注意的是：</p>
+<p>&emsp;&emsp;VMware Workstation（简称VM）是一个很好用的虚拟机软件，能够允许用户在宿主机上像运行程序一样运行一些操作系统，通常能够从根本上解决因Windows版本问题而导致的兼容性问题，并且可以运行Linux、Android等其他操作系统或环境。我本人使用VM差不多有十年了，尤其是现在Win11系统成为PC电脑上的主流操作系统后，VMware出现了一些之前从来没有出现过的问题，这可能和微软自家自带的Hyper-V虚拟机有关。打算总结一些VMware使用中常见却较为难对付的一些疑难杂症及其解决方法，所有解决方法均为本人亲自验证有效，通常能够根治这些问题。</p>
+<h2 id="序：个人推荐的VMware版本和Windows系统的对应关系"><a href="#序：个人推荐的VMware版本和Windows系统的对应关系" class="headerlink" title="序：个人推荐的VMware版本和Windows系统的对应关系"></a>序：个人推荐的VMware版本和Windows系统的对应关系</h2><p>建议Win7环境下安装VM10；Win10环境下安装VM15 Pro；Win11环境下安装VM17.6及以上版本。</p>
+<p>安装包从Broadcom官网下载的话还得先注册用户，很麻烦，建议随便找个第三方下载就行。这里只提供序列号：<br>VM10使用这个序列号：1G4LV-FZ25P-0ZCN8-ZA3QH-8C00C<br>VM15使用这个序列号：UY758-0RXEQ-M81WP-8ZM7Z-Y3HDA<br>VMware从17.5.2版本之后因被Broadcom收购，彻底变为免费软件，且不再区分是否为Pro版（安装完都是Pro版），故不再需要序列号。</p>
+<p>以下开始各种疑难杂症的解读和解决。操作环境如无特殊说明，均使用Windows11 25H2以及VMware Workstation Pro 17.6.3 build-24583834。</p>
+<h2 id="一、在Win11操作系统上用VMware-Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题"><a href="#一、在Win11操作系统上用VMware-Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题" class="headerlink" title="一、在Win11操作系统上用VMware Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题"></a>一、在Win11操作系统上用VMware Workstation运行WindowsXP时，虚拟机出现极其严重的性能问题</h2><p>在Win11操作系统上用VMware运行WindowsXP，WindowsXP系统一旦开机，这个症状就全程存在，具体表现和经验为：</p>
+<blockquote>
 <ol>
-<li><p>本次收集的绝大部分数据来自互联网（各种论坛、Twitter等），它们的时间戳都经过我的仔细比对，但我仍无法保证所有数据的时间戳的准确性。</p>
-</li>
-<li><p>经测试，该数据在一天之内就存在一个较为明显的波动情况，所以单看一天的数据并没有特别大的参考价值，只有在数据比较多的情况下才能观察出大体趋势。</p>
-</li>
-<li><p>因为本文中的数据可能来自于各个国家的各个时间段，为了处理数据波动的影响，如果在±1、2月内存在多个数据则取中间值为准，某些季度可获得的数据太少，只有一个，则不做处理。</p>
-</li>
-<li><p>Steam官方的页面只提供分辨率为1280*720分辨率的图像，所以这里尽量只挑选该分辨率的原图，一些分辨率较差的图片只用作当前季度的数据稳定性参考，而不列出。因图片分辨率一致，想要更好了解数据的变化细节，建议将图片单独右键打开或下载，通过翻页观看就可以很直观地进行比对。</p>
-</li>
+<li>WinXP操作系统慢如蜗牛，每进行一次操作都有严重的卡顿和停滞，跟CPU或内存占用满了一样，但任务管理器中各项性能指标均正常。且升级虚拟机配置无法对这个现象起到任何改善作用；</li>
+<li>操作系统播放出的任何音效、音乐都会变成非常缓慢卡顿的杂音，例如开机启动音效；</li>
+<li>经过反复测试，该现象只在Windows11下发作，而且几乎必定发作，而在Windows10及以下环境中均无此类现象；</li>
+<li>在存在此类现象的Windows11环境下用VM虚拟机运行Windows98系统，操作系统通常会在启动后登录用户名时报大量错误并最终卡死，无法进入桌面；</li>
+<li>在存在此类现象的Windows11环境下用VM虚拟机运行Windows7系统，影响不大，Win7系统可以正常使用；</li>
+<li>此现象和VM版本无关，无论更换何种版本的VMware均不能解决问题；有人反映使用管理员权限启动VMware后就好了，但在我这里管理员权限并没有用；</li>
+<li>此现象和VMware Tools的状态、安装与否均无关；</li>
 </ol>
-<hr>
-<h3 id="2014-02-06"><a href="#2014-02-06" class="headerlink" title="2014.02.06"></a>2014.02.06</h3><p>我无法确定Valve是什么时候上线这个全球流量统计页面的，但这张来自2014年2月的数据几乎是互联网上能找到最早的数据图之一，经常在各种媒体网站被引用。可以看到在这个时候绿点基本只有欧洲、美国东部和西海岸线，以及巴西里约热内卢附近较为密集。大多数非洲和中亚国家基本只有在他们的首都位置有一个点。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2014.02.06.png" title="2014.02.06">
+</blockquote>
+<p>这个问题困扰我很久时间，经过研究终于得到了解决。首先应当尝试用管理员权限启动VMware然后运行操作系统，如果问题仍然存在，以下将详解这个问题真正的原因及操作过程：</p>
+<p><strong>结论是微软自家自带的Hyper-V虚拟机和VMware存在严重冲突导致的</strong>。解决方法就是<strong>彻底</strong>禁用Hyper-V，但彻底禁用Hyper-V并不是一件容易的事情。</p>
+<p>在【系统-可选功能-更多Windows功能】中，我们能够执行【启用或关闭Windows功能】：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/1.jpg" title="a">
 
-<h3 id="2014-06-30"><a href="#2014-06-30" class="headerlink" title="2014.06.30"></a>2014.06.30</h3><p>较之前稍微增多，在泰国、日本、韩国、澳大利亚增加明显，中国、俄罗斯和印度也有所增长。索马里首次出现一个点，位于首都摩加迪沙。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2014.06.30.png" title="2014.06.30">
+<p>首先将这里的【Hyper-V】、【Windows沙盒】、【Windows虚拟机监控程序平台】、【适用于Linux的Windows子系统】、【虚拟机平台】前面的勾全部取消，然后应用更改（注意，某些版本的系统中这些条目可能未被完全汉化，可能存在为英文书写的情况，需要注意甄别）。但关键在于，这并不能彻底禁用Hyper-V，网上的各种说法基本上都止步于此。</p>
+<p>若想真正彻底禁用Hyper-V，需要在【系统-隐私和安全性-Windows安全中心-设备安全性-内核隔离-内核隔离详细信息】中，<strong>关闭【内存完整性】和【固件保护】</strong>。【本地机构安全保护】和【Microsoft易受攻击的驱动程序阻止列表】可以保持开启不用关闭；关闭这些有什么不利影响？我认为没有什么不利影响，我所有的计算机都关闭了这些。如下图所示：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/2.png" title="b">
 
-<h3 id="2015-01-21"><a href="#2015-01-21" class="headerlink" title="2015.01.21"></a>2015.01.21</h3><p>这张图看起来要比上一张的点少了一些，应该是由于数据波动导致的。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2015.01.21.png" title="2015.01.21">
+<p>有一些计算机可能在【内核隔离】中看不到【固件保护】这一个栏目，界面可能会是这样：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/3.png" title="c">
 
-<h3 id="2015-09-13"><a href="#2015-09-13" class="headerlink" title="2015.09.13"></a>2015.09.13</h3><p>中国、泰国、菲律宾、日本、韩国、墨西哥（墨西哥城）增加明显。这张图最大的特点在于，朝鲜（平壤）和古巴（哈瓦那）首次出现了一个点，尤其是位于平壤的那个点，将在这之后作为朝鲜境内的唯一的数据点并且几乎一直存在着。这个神秘用户的身份引来了不少人的猜测，甚至有人开玩笑认为这个用户就是金将军本人。由于这个数据常年不灭，所以听起来更靠谱的说法是，这些数据是朝鲜军方用来做一些研究用的。在俄罗斯最东端首次出现一个点，可能是普罗维杰尼亚港（Provideniya）。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2015.09.13.png" title="2015.09.13">
+<p>这种情况需要在注册表编辑器（cmd然后regedit）中找到【计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard】，在这个文件夹中，可以看到一个名为【EnableVirtualizationBaseSecurity】的REG_DWORD值条目，双击打开它，将其值由1改为0，确定，关闭；</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/4.png" title="d">
 
-<h3 id="2015-11-02"><a href="#2015-11-02" class="headerlink" title="2015.11.02"></a>2015.11.02</h3><p>数据密度看起来比之前高了很多，这可能是由于Valve修改了该视图的表示标准，之前的绿点其实更细小，不过毫无疑问的是，Steam的用户正在全球范围急速增长，欧洲和美国东部的绿点几乎已经连成了一片。巴尔干半岛、乌克兰、越南、土耳其半岛地区以及俄罗斯的非一线区增长明显，不过增长最显著的应该是印度和巴基斯坦，还有古巴。位于挪威北部接近北极点的斯瓦尔巴群岛（Svalbard Archipelago）也首次出现一个点，位置可能是朗伊尔城（Longyearbyen）。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2015.11.02.png" title="2015.11.02">
+<p>再检查一下【计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard】中，是否存在一个名为【SystemGuard】的文件夹，若有，检查其下是否有名为Enabled的REG_DWORD值条目，若有，将其值改为0；如果找不到【SystemGuard】文件夹或者Enabled的值已经为0，可以不用管了。</p>
+<p>然后找到命令提示符图标（通常在开始菜单-Windows系统中可以找到），右键单击并选择“以管理员身份运行”。输入以下命令：</p>
+<p><code>bcdedit /set hypervisorlaunchtype off</code></p>
+<p>回车执行，然后输入</p>
+<p><code>DISM /Online /Disable-Feature:Microsoft-Hyper-V</code></p>
+<p>再回车执行，结果如下图：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/5.png" title="e">
 
-<h3 id="2016-02-13"><a href="#2016-02-13" class="headerlink" title="2016.02.13"></a>2016.02.13</h3><p>这张图看起来和上一张区别并不是很大，并在接下来的时间里大体保持这个规模，可见Steam的用户已经发展到了一个相对饱和的状态。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2016.02.13.png" title="2016.02.13">
+<p>这两步我认为似乎并没有什么特别大的用处，但还是建议执行。以上全部执行完毕后，重启计算机，再强调一次，必须重启计算机。重启后，再进入VMware中的WindowsXP系统，可以发现一切都正常了。再进入Windows98操作系统，也一切正常。</p>
+<p>以上一些内容部分参考了来自于Virtualbox.org中的一篇帖子：<a href="https://forums.virtualbox.org/viewtopic.php?t=99390" target="_blank" rel="noopener">https://forums.virtualbox.org/viewtopic.php?t=99390</a> ，可以看到这个问题在2020年可能就已经出现在了Virtualbox虚拟机上（Win11于2021年发布）。故针对这个现象，个人猜想可能性最大的就是微软Win11的开发人员故意让Hyper-V和其他虚拟机软件发生冲突，且让Hyper-V不能被用户轻易关闭，从而挤占虚拟机软件的市场空间。当然还存在一种可能性（比较小）就是Win11和Win11开发人员实在太差劲以至于没有预料到Hyper-V和其他虚拟机发生冲突的情况。</p>
+<p>（又是对抗微软垃圾工程师的一天..）</p>
+<h2 id="二、从VMware-Workstation安装VMware-Tools跳报错框：“VMware-Tools不再随旧版客户机操作系统的VMware-Workstation一起提供…”，以及其他任何导致VMware-Tools不能从VMware-Workstation自动更新或安装的情况："><a href="#二、从VMware-Workstation安装VMware-Tools跳报错框：“VMware-Tools不再随旧版客户机操作系统的VMware-Workstation一起提供…”，以及其他任何导致VMware-Tools不能从VMware-Workstation自动更新或安装的情况：" class="headerlink" title="二、从VMware Workstation安装VMware Tools跳报错框：“VMware Tools不再随旧版客户机操作系统的VMware Workstation一起提供…”，以及其他任何导致VMware Tools不能从VMware Workstation自动更新或安装的情况："></a>二、从VMware Workstation安装VMware Tools跳报错框：“VMware Tools不再随旧版客户机操作系统的VMware Workstation一起提供…”，以及其他任何导致VMware Tools不能从VMware Workstation自动更新或安装的情况：</h2><img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/6.png" title="f">
 
-<h3 id="2016-07-26"><a href="#2016-07-26" class="headerlink" title="2016.07.26"></a>2016.07.26</h3><p>2016年的一些数据中卫星视图又被改回了细点状态，国界线也重新回来了，我不清楚这是什么原因导致的，因为用户并不能选择细点还是粗点以及是否显示国界线，我觉得细点和有国界线明显要更好看一点。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2016.07.26.png" title="2016.07.26">
+<p>这个问题是由于VMware Workstation不再内置远古老版本操作系统的VMware Tools的安装包导致的。我们需要手动安装WMware Tools。</p>
+<p>还是以WindowsXP为例，首先从这个网址下载适用于WindowsXP的VMware Tools镜像：<a href="https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso" target="_blank" rel="noopener">https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso</a> ，应该名为【winPreVista.iso】。若此链接失效，也可以从其他途径自行寻得。</p>
+<p>确保虚拟机为关闭状态，在【编辑虚拟机设置】里，添加新硬件-CD/DVD驱动器，然后完成：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/7.png" title="g">
 
-<h3 id="2017-07-01"><a href="#2017-07-01" class="headerlink" title="2017.07.01"></a>2017.07.01</h3><p>没找到2017年上半年的数据。可以看到中国地区的数据流量变得更多，应该是和2017年《绝地求生》开始流行有关系。位于加拿大最北端的伊丽莎白女王群岛（Queen Elizabeth Islands）出现了一个点，这里几乎快要接近北极点了，不过看样子位置并不在那里唯一的居住点阿勒特（Alert），所以他的网是从哪来的？。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2017.07.01.png" title="2017.07.01">
+<p>选择这个新添加的CD/DVD驱动器，右侧【连接-使用ISO映像文件】，路径定位到刚才下载的VMware Tools镜像，我们这里是【winPreVista.iso】；</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/8.png" title="h">
 
-<h3 id="2017-10-01"><a href="#2017-10-01" class="headerlink" title="2017.10.01"></a>2017.10.01</h3><p>几乎就是上一张图的粗点版本。不过明显能够看出朝鲜的那个点居然换了位置，这期间还有数据显示朝鲜境内同时出现两个点。有人认为这有可能是其他地区的用户使用VPN造成被定位在朝鲜导致的。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2017.10.01.png" title="2017.10.01">
+<p>添加完毕后，启动WindowsXP虚拟机，可以在“我的电脑”里看到一个新的光驱驱动器，卷标名为VMware Tools。双击它，即可开始安装VMware Tools。建议选择“完整安装”。</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/9.png" title="i">
 
-<h3 id="2017-12-04"><a href="#2017-12-04" class="headerlink" title="2017.12.04"></a>2017.12.04</h3><p>在地图右下角首次出现了位于南极洲的点，可能是美国的麦克默多科学考察站(McMurdo Station)，是南极洲最大的科考站。位于印度洋的南部的凯尔盖朗岛（Kerguelen islands）也出现了一个点，这个岛离哪个大陆都很远，有人称它是“地球上最孤独的岛”，岛上拥有一些气象观测站。这些地方的数据流量可能是由科考人员产生的。另外，世界最不发达国家之一的中非共和国首次在首都班吉（Bangui）附近出现第二个点。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2017.12.04.jpg" title="2017.12.04">
 
-<h3 id="2018-01-04"><a href="#2018-01-04" class="headerlink" title="2018.01.04"></a>2018.01.04</h3><p>数据很稳定，几乎看不出什么变化。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2018.01.04.png" class="asset_img" title="2018.01.04">
+<h2 id="三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题"><a href="#三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题" class="headerlink" title="三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题"></a>三、虚拟机的显示分辨率不能以正确比例缩放，图标过大或过小，窗口大小调整后导致黑屏、花屏、桌面消失、资源管理器只有框等类似的问题</h2><p>在【编辑虚拟机设置里】，点击【显示】，将右侧内容按照下图设置，重点是勾选“拉伸模式”。再进入操作系统后，桌面右键-显示，修改显示分辨率，改到合适的值即可。不要从宿主机的VMware兼容性里调整DPI缩放比例，没有用。</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/10.png" title="j">
 
-<h3 id="2018-07-28"><a href="#2018-07-28" class="headerlink" title="2018.07.28"></a>2018.07.28</h3><p>位于伊丽莎白女王群岛的同一个点再次亮了起来。看样子这里可能有人长期居留。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2018.07.28.jpg" title="2018.07.28">
 
-<h3 id="2019-01-25"><a href="#2019-01-25" class="headerlink" title="2019.01.25"></a>2019.01.25</h3><p>2019年初的这张图是笔者当时自己截的。可以看到中国地区的密度在此之后有所下降，应该是和《绝地求生》热度在中国逐渐退潮有关。从其他来源收集到的2019年前三季度的数据基本都和这张图差不多，这里就不放了。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2019.01.25.png" title="2019.01.25">
+<h2 id="四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象"><a href="#四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象" class="headerlink" title="四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象"></a>四、虚拟机和宿主机之间复制超大文件，结果导致宿主机C盘容量骤减甚至爆满的现象</h2><p>这个原理是当VMware在宿主机和虚拟机交换文件时，这个文件会被先暂存于C盘，然后再挪到虚拟机或主机中去。不论复制成功还是复制失败，该文件都会在C盘形成缓存；如果文件体积较小一般可以不用管，宿主机的Windows会定期清理这些缓存文件；但问题通常出在复制超大文件上，如果宿主机C盘容量不足则会导致复制失败，如果虚拟机硬盘容量不足也会导致复制失败，但就算是失败以后，这些缓存形成的文件仍然会留在了C盘的缓存路径里。这个路径为：</p>
+<p><code>C:\Users\你的用户名\AppData\Local\Temp\vmware-你的用户名\VMwareDnD</code></p>
+<p>故宿主机和虚拟机但凡交换过超大文件或者大量文件后，无论复制失败或成功，都有必要在这个目录检查一下，手动清理掉这些缓存文件。</p>
+<h2 id="五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题"><a href="#五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题" class="headerlink" title="五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题"></a>五、虚拟机系统删除文件后，宿主机硬盘空间未被正确释放的问题</h2><p>即已经彻底删除虚拟机中的大量体积的文件后，宿主机中的虚拟机系统文件（.vmdk文件）大小丝毫未减。此时应当在VMware主界面右键虚拟机-管理-清理磁盘，点击“立即清理”，即可释放这些空间：</p>
+<img src="/2026/05/13/VMware-Workstation疑难杂症合集-解决方法（2026版）/11.png" title="k">
 
-<h3 id="2019-11-20"><a href="#2019-11-20" class="headerlink" title="2019.11.20"></a>2019.11.20</h3><p>伊朗的数据密度出现骤降，可能是由于著名的“全国断网”事件。伊朗政府在2019年11月15日宣布油价暴涨引发抗议，最终演变为大规模骚乱，伊朗政府进而在16日切断了全国的互联网，这一断就是近一周时间，11月23日之后才逐步放开互联网管制，据称26号仍未恢复移动网络。一些报道显示，断网期间伊朗当地的某些网站还是可以使用的，外国网站是彻底用不成了，按理说Steam也用不了，不过我们可以看到20日Steam仍在首都德黑兰附近有着较为可观的流量密度，在境内的其他地方也存在绿点。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2019.11.20.png" title="2019.11.20">
-
-<h3 id="2020-03-16"><a href="#2020-03-16" class="headerlink" title="2020.03.16"></a>2020.03.16</h3><p>伊朗的数据几乎完全恢复到之前的原样。中国地区的密度继续降低，虽然这个时候正是武汉封城期间，不过我认为COVID应该影响不了Steam的数据密度，而且居家人员变多应该密度更大才对，反正我那会几乎关在家里天天玩电脑。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2020.03.16.png" title="2020.03.16">
-
-<h3 id="2020-04-27"><a href="#2020-04-27" class="headerlink" title="2020.04.27"></a>2020.04.27</h3><p>位于平壤的唯一的点消失了，虽然它在第二天就得到恢复，却一度以“金将军怎么不玩游戏了”引发了很多的猜测。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2020.04.27.png" title="2020.04.27">
-
-<h3 id="2020-10-18"><a href="#2020-10-18" class="headerlink" title="2020.10.18"></a>2020.10.18</h3><p>一切似乎又回到了老样子。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2020.10.18.jpg" title="2020.10.18">
-
-<h3 id="2021-04-17"><a href="#2021-04-17" class="headerlink" title="2021.04.17"></a>2021.04.17</h3><p>该视图似乎不再提供国境线了，看起来不是很舒服，不过用2014年那张带国境线的图来进行比对还是比较容易确定位置的。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2021.04.17.png" title="2021.04.17">
-
-<h3 id="2021-08-11"><a href="#2021-08-11" class="headerlink" title="2021.08.11"></a>2021.08.11</h3><p>到了本文创作的现在，这张图也是笔者自己截的。中国地区的流量密度基本回到了绝地求生流行之前的2016年的水平上，现象级游戏“吃鸡”终于在中国凉了下来。</p>
-<img src="/2021/08/12/2014-2021年Steam全球流量统计图/2021.08.11.png" title="2021.08.11">
-
-<hr>
-<p>这里大概介绍一下Steam发展历程中的一些关键时间点，以更好地解释某些现象。</p>
-<p>Steam是目前全球最大的游戏平台，于2003年9月12日开放账号注册。Steam最初作为Valve（以下简称V社）开发的平台，可以说是给当时V社自家的经典游戏《半条命（Half-life）》量身定做的启动器，2004年的《半条命2》直接是Steam独占，后来慢慢上线了很多非V社的游戏，逐步变成一个综合性游戏平台。Steam用户从2014年之后的急速增长当然是V社十年如一日的苦心经营的结果，但也离不开几款经典游戏的作用。至今为止Steam平台大概有这么三个游戏热度极高并且流行时间较长，影响较大，按照它们在Steam的上线时间顺序是：</p>
-<p>2012.8.22   《反恐精英：全球攻势》（CS:GO）<br>2013.7.10   DotA2（PC正式版）<br>2017.3.23   《绝地求生》（PLAYERUNKNOWN’S BATTLEGROUNDS 或 PUBG）</p>
-<p>三者均为网络游戏，其中CSGO和Dota2是Valve亲自开发的。这些游戏并非一出来就那么流行，不同地区的速度并不一样。这里就拿全球同时在线用户峰值举例，CS:GO在2020年4月18日达到了同时在线玩家的历史峰值，为130万；Dota2在2016年3月达到同时在线129万；绝地求生则在2018年1月13日达到了同时在线324万的最高纪录。还要提到一个吊足了玩家胃口的新游戏《赛博朋克2077》，它在2020年12月10日也就是发售日达到了105万的同时在线水平，《2077》作为单机游戏达到了每日百万在线创造了能和网络游戏抗衡的记录，但《2077》后续暴露出许多问题导致它很快便跌下这个一瞬间的单机王座，故并没有造成太大影响。</p>
-<p>各个游戏的全球热度趋势也可以在Steam的统计页面直接查看：<a href="https://steamstats.cn/" target="_blank" rel="noopener">https://steamstats.cn/</a></p>
-<p>而在中国地区，一些游戏的流行要稍后一点。CS和Dota在国内有着悠久的前作基础，但真正让CS:GO流行起来的原因恐怕还是2018年底的免费政策，到了2019年以后才在国内开始具有一定规模的玩家群体，CS:GO这两年整体还是处于一个上升趋势；Dota2作为免费游戏一直和同类游戏《英雄联盟》分占国内MOBA市场，Dota2真正在国内流行起来可能得到了2015年之后，2015、2016两年应该是Dota2在国内也是全球最火的两年，那会网吧里基本Dota2和英雄联盟都能对半分，在2019年自走棋火了一阵后呈现缓慢下降的趋势；而《绝地求生》可能是国内这几年最具现象级的游戏，这款游戏在2017年下半年几乎火爆到占据了中国网吧的所有位置。不过在《绝地求生》于2017年12月10日推出1.0版本之后，就由于其优化差、外挂泛滥等原因一路走上下坡路，但瘦死的骆驼比马大，直到今天PUBG仍有50万的全球日在线用户，相当于《侠盗猎车手5》在2015年的巅峰水平。</p>
-<p>另一个对于中国用户很重要的就是支付手段，Steam于2016年初开通了支付宝支付，2016年10月之后开始加入微信支付，虽然在这之前中国用户也能通过银联（Unionpay）网银来支付，但这个举措显然减少了国内玩家购买国外游戏产品的种种阻力。</p>
-<p>下一个有机会占据Steam百万级别榜单位置的游戏可能是《Apex英雄》，这款游戏的热度上升明显，虽然还是“吃鸡”的那套玩法，但这种玩法明显仍具有持续的生命力，Apex或许能够占据吃鸡市场，走到类似MOBA界英雄联盟那样的位置上。</p>
-<hr>
-<p>从发展图上还可以看出一些有意思的特点：</p>
-<ol>
-<li><p>白俄罗斯（Belarus）在密度最大的欧洲几乎是唯一一个数据稀缺处，可能和白俄罗斯政府对互联网的封闭政策有关，Steam社区的一位可能来自白俄罗斯的用户表示，白俄罗斯正面临一场“革命”，而之后的网络将会更开放，他希望Valve官方给Steam添加白俄罗斯语。还有人反映白俄罗斯区定价远高于俄罗斯（俄罗斯是低价区）的不合理现象。</p>
-</li>
-<li><p>墨西哥的流量虽然绝大部分聚集在首都墨西哥城，但北方明显更少，可能是由于北方较为干旱、经济落后以及社会不稳定导致的。</p>
-</li>
-<li><p>缅甸、柬埔寨、老挝仍然是东南亚最不发达的地区。越南并不落后，几乎和中国是同一水平。</p>
-</li>
-<li><p>整个小亚细亚半岛都拥有很高的密度，甚至是新闻里经常和土耳其打仗的“库尔德斯坦”地区看起来流量也挺多。</p>
-</li>
-<li><p>西撒哈拉地区似乎从来没有出现过数据迹象。</p>
-</li>
-</ol>
 ]]></content>
       <tags>
-        <tag>网页</tag>
-        <tag>游戏</tag>
+        <tag>软件</tag>
+        <tag>系统</tag>
       </tags>
   </entry>
   <entry>
@@ -1401,6 +1479,58 @@
       </tags>
   </entry>
   <entry>
+    <title>当年那些经典的Windows迷你小游戏</title>
+    <url>/2021/09/22/%E5%BD%93%E5%B9%B4%E9%82%A3%E4%BA%9B%E7%BB%8F%E5%85%B8%E7%9A%84Windows%E8%BF%B7%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>考古1999年前后的一批Windows小游戏的真名及其背景等。<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;说到99年前后的游戏相信很多人第一反应都是红警、星际、帝国、CS等根本不用叫全名就耳熟能详的大作，当然还有暗黑2、仙剑1、英雄无敌3、大航海4、三国群英传等等经典作品，这些当年的“3A大作”的名字已经成为游戏玩家们最深刻的记忆，有的甚至开创了一个系列的作品。但是游戏世界从来都不是只是由大作，还有那些同样经典但却没人能叫得出来名字的小游戏们，它们基本都是由那个年代的独立开发者们制作的，没想到也居然成了很多人的重要回忆，所以今天说的这些小游戏，或许其中也有你玩过但不知道名字的那一款？</p>
+<p>&emsp;&emsp;那时候大概是2002年，家里新买了电脑不久，家人在一次逛街的时候去软件影音店里买软件，那时候都是用光盘的，我记得当时其中有一个红色光盘，这个光盘等于是店家自己将金山画王2002（这个也挺好玩的）、瑞星杀毒2002等常用软件做成的盗版盘合集，当年的新电脑嘛总要装点这些玩意。然而就在这时..命运的齿轮它转动了！我爸买完那些光盘后居然顺手又买了一个“迷你GAMES超市”的小游戏光盘，我的家人其实几乎完全不和游戏打交道的，于是这个盘就到我手里了，接下来的时间里我将玩遍这个盘里几乎所有的游戏…它的盘面有一个画风很九十年代的卡通少女，其实我记得还有个塑料包装盒和纸质说明书的，包装盒和这个盘面差不多，而那个纸质说明书很关键，因为好多游戏都是英文的，而这个说明书则用中文介绍了大部分游戏的简介内容，应该是光盘制作者自己编写的。虽然它没有包含这个盘里所有的游戏，却给了我不小的帮助。遗憾的是包装盒和纸质说明书早已不知道丢在哪里了，只有这个盘我一直还保存了下来：</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/0.png" title="a">
+<p>&emsp;&emsp;光盘启动后可以进入这样一个界面。右边居然是拳皇里的马克西玛么？不过我那时还没玩过KOF…</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/1.png" title="b">
+<p>&emsp;&emsp;总共被分了六类的游戏一共有大概230个左右，大部分都是以安装包/压缩包的形式保存在光盘里的。话不多说，搬出我的旧电脑（新电脑没光驱…）用UltraISO直接将光盘做成.ISO，同样也顺便对那张也保存至今的红色光盘再加上一个《雷曼2》的光盘也都做了镜像。将这些ISO都复制到新电脑上就好处理多了。打开的时候我惊奇地发现，光盘内容里原来一直躺着一个txt文本，里面正是丢失掉的那张纸质说明书的内容！感觉又一次验证了“信息不灭理论”啊…于是解压了一连串的游戏之后我又开开心心地都打了一遍，总结了以下十几个我当年就觉得很好玩的游戏，并且简单考证了它们的内容、背景以及发行的时间。因为很多游戏过于古老无法在Win10及64位系统上运行，虚拟机我也懒得去开了，所以这里有些游戏的画面就直接截自Youtube上的视频。</p>
+<hr>
+<p><strong>《暴力摩托2000（Road Rush）》</strong>，2000年。这个不解释了，经典刘沛松战庄臣。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/2.png" title="c">
+<p><strong>《反潜驱逐战（SuperDepth）》</strong>，1999年。也就是俗称的军舰炸潜艇，很多人应该都玩过。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/3.png" title="d">
+<p><strong>《Mario &amp; Luigi (DOS)》</strong>，1994年。这个马里奥游戏是由Mike Wiering于1994年制作的DOS系统的重制版，属于同人作品，但是质量非常优秀。这个游戏当年在国内很流行，几乎每个”电脑房”的某几台机器上都会有一个，这也是我玩的第一款马里奥游戏，之后才接触到FC。不过我小时候玩的那个版本好像还没做完，打到第四关会被困在关底的黑色长廊中无法继续前进。我后来还玩过完整版，黑色长廊里有很多金币，过了就是NG+了。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/4.png" title="e">
+<p><strong>《おでんととどのお鱼钓りゲーム☆》</strong>，1997年。翻译过来其实叫【关东煮和北海狮的钓鱼游戏】，这个游戏很多人应该都玩过，音效超级魔性洗脑的…</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/5.png" title="f">
+<p><strong>《Zeek the geek》</strong>，1995年。一个吃花过关的益智小游戏。这下才发现游戏背景音乐基本都是一些很有名的美国民歌，Little Brown Jug、Oh Susanna、I’ve Been Working on The Railroad等等。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/6.png" title="g">
+<p><strong>《Troy 2000》</strong>，2000年。一个恐龙吐泡泡闯关的游戏，画风精致也很好玩，试玩版只能玩20关。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/7.png" title="h">
+<p><strong>《紫色小精灵（Dweep）》</strong>，1999年。超可爱的小游戏，音乐也很好听，就是后面关卡难度对小学生来说还是挺高的。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/8.png" title="i">
+
+<p>下面几个游戏从Youtube上看关注度都比较高，应该是很多老外的童年回忆了，虽然国内玩过的人可能不多：</p>
+<p><strong>《Kung Fu Kim》</strong>，1997年。主角明显是一个跆拳练习者，用四个方向键阻挡异物的进攻，可以不断升级腰带，玩起来的确能感受到一点练功的意境。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/9.png" title="j">
+<p><strong>《Rat Poker》</strong>，1997年。微软做的一个拼同色老鼠的游戏，这游戏的背景音乐超级好听。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/10.png" title="k">
+<p><strong>《Hot Wheels: Crash!》</strong>，1999年。看起来应该是美泰公司旗下的车模品牌Hot Wheels（风火轮）和车模玩具同步推广的游戏，游戏内容就是发射一辆“自爆卡车”撞毁建筑、汽车和公共设施，破坏得越厉害得分越高。这个游戏确实有意思，因为它是真3D游戏（99年那会真3D真的很少的），并且拥有简单的物理引擎。每次发射车辆还有跟电影镜头一样的特效，看着很爽。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/11.png" title="l">
+<p><strong>《Elf Bowling》</strong>，1998年。圣诞老人扔保龄球砸小矮人的搞笑游戏，保龄球甚至能在特定角度砸倒路过的动物，很有意思。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/12.png" title="m">
+<p><strong>《Baroque Shooting》</strong>，2000年。一个名为《巴洛克（Baroque）》的日本游戏衍生的STG游戏，末世世界观和哥特恐怖题材画风，感兴趣的可以Google一下这个游戏的历史，讲道理这种玩意对小学生来说还是有点吓人的，小时候放大招弹出的那个娃娃感觉有点恐怖。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/13.png" title="n">
+
+<p>&emsp;&emsp;最后当这个光盘点击退出的时候，还会出来个八神和京的背景，这张图应该是拳皇97的CG，背景音乐还是仙剑1主题曲，感觉直接是把仙剑的MIDI复制过来了。</p>
+<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/14.png" title="b">
+
+<p>&emsp;&emsp;总的来说可以看出，这些游戏基本都是国外独立制作者们在网站上放出的免费试玩版，或者是Demo，往往只能体验游戏的一部分内容，而要想购买完整版则差不多都需要付费5-10美元不等。而光盘的制作者“佳鑫科技”则是将这些免费试玩版都收录了下来，然后放到国内市场上售卖。现在想想好像是有点“恰烂钱”的感觉，不过能将这么多经典游戏收录到一起也未尝不是一项有意义的工作，也让我们这帮小学生能够玩到当时国际上的经典作品。</p>
+<p>&emsp;&emsp;其实这件事的契机是有一个人问我一款20年前的Windows飞镖小游戏的名字，我刚好记得我那张光盘里有那个小游戏，最后考证出游戏是一个叫Dart’m up的荷兰游戏，被翻译成“休闲飞镖”。于是借着这个机会才重新审阅了那张远古游戏光盘，我相信学历史的人都一定有着深厚的考古情节吧，借助技术手段复原那些被遗忘的信息，还原出更清晰的“我的历史”，似乎觉得自己对自己的认识又上了一层，确实是一种很奇妙的感觉。</p>
+<p>&emsp;&emsp;最后还有一个推断。既然那么多“机房”都安装着这些游戏，说明很多人手里也都有类似的光盘（当年没U盘，流行的3.5inch软盘只有1.44MB容量），你手里有这种光盘吗？会不会和我的一样？</p>
+]]></content>
+      <tags>
+        <tag>游戏</tag>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>小荷尔拜因-吕策尔伯格《死亡之舞》全套高清图</title>
     <url>/2022/09/11/%E5%B0%8F%E8%8D%B7%E5%B0%94%E6%8B%9C%E5%9B%A0-%E5%90%95%E7%AD%96%E5%B0%94%E4%BC%AF%E6%A0%BC%E3%80%8A%E6%AD%BB%E4%BA%A1%E4%B9%8B%E8%88%9E%E3%80%8B%E5%85%A8%E5%A5%97%E9%AB%98%E6%B8%85%E5%9B%BE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1488,58 +1618,6 @@
         <tag>软件</tag>
         <tag>游戏</tag>
         <tag>攻略</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>当年那些经典的Windows迷你小游戏</title>
-    <url>/2021/09/22/%E5%BD%93%E5%B9%B4%E9%82%A3%E4%BA%9B%E7%BB%8F%E5%85%B8%E7%9A%84Windows%E8%BF%B7%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>考古1999年前后的一批Windows小游戏的真名及其背景等。<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;说到99年前后的游戏相信很多人第一反应都是红警、星际、帝国、CS等根本不用叫全名就耳熟能详的大作，当然还有暗黑2、仙剑1、英雄无敌3、大航海4、三国群英传等等经典作品，这些当年的“3A大作”的名字已经成为游戏玩家们最深刻的记忆，有的甚至开创了一个系列的作品。但是游戏世界从来都不是只是由大作，还有那些同样经典但却没人能叫得出来名字的小游戏们，它们基本都是由那个年代的独立开发者们制作的，没想到也居然成了很多人的重要回忆，所以今天说的这些小游戏，或许其中也有你玩过但不知道名字的那一款？</p>
-<p>&emsp;&emsp;那时候大概是2002年，家里新买了电脑不久，家人在一次逛街的时候去软件影音店里买软件，那时候都是用光盘的，我记得当时其中有一个红色光盘，这个光盘等于是店家自己将金山画王2002（这个也挺好玩的）、瑞星杀毒2002等常用软件做成的盗版盘合集，当年的新电脑嘛总要装点这些玩意。然而就在这时..命运的齿轮它转动了！我爸买完那些光盘后居然顺手又买了一个“迷你GAMES超市”的小游戏光盘，我的家人其实几乎完全不和游戏打交道的，于是这个盘就到我手里了，接下来的时间里我将玩遍这个盘里几乎所有的游戏…它的盘面有一个画风很九十年代的卡通少女，其实我记得还有个塑料包装盒和纸质说明书的，包装盒和这个盘面差不多，而那个纸质说明书很关键，因为好多游戏都是英文的，而这个说明书则用中文介绍了大部分游戏的简介内容，应该是光盘制作者自己编写的。虽然它没有包含这个盘里所有的游戏，却给了我不小的帮助。遗憾的是包装盒和纸质说明书早已不知道丢在哪里了，只有这个盘我一直还保存了下来：</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/0.png" title="a">
-<p>&emsp;&emsp;光盘启动后可以进入这样一个界面。右边居然是拳皇里的马克西玛么？不过我那时还没玩过KOF…</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/1.png" title="b">
-<p>&emsp;&emsp;总共被分了六类的游戏一共有大概230个左右，大部分都是以安装包/压缩包的形式保存在光盘里的。话不多说，搬出我的旧电脑（新电脑没光驱…）用UltraISO直接将光盘做成.ISO，同样也顺便对那张也保存至今的红色光盘再加上一个《雷曼2》的光盘也都做了镜像。将这些ISO都复制到新电脑上就好处理多了。打开的时候我惊奇地发现，光盘内容里原来一直躺着一个txt文本，里面正是丢失掉的那张纸质说明书的内容！感觉又一次验证了“信息不灭理论”啊…于是解压了一连串的游戏之后我又开开心心地都打了一遍，总结了以下十几个我当年就觉得很好玩的游戏，并且简单考证了它们的内容、背景以及发行的时间。因为很多游戏过于古老无法在Win10及64位系统上运行，虚拟机我也懒得去开了，所以这里有些游戏的画面就直接截自Youtube上的视频。</p>
-<hr>
-<p><strong>《暴力摩托2000（Road Rush）》</strong>，2000年。这个不解释了，经典刘沛松战庄臣。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/2.png" title="c">
-<p><strong>《反潜驱逐战（SuperDepth）》</strong>，1999年。也就是俗称的军舰炸潜艇，很多人应该都玩过。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/3.png" title="d">
-<p><strong>《Mario &amp; Luigi (DOS)》</strong>，1994年。这个马里奥游戏是由Mike Wiering于1994年制作的DOS系统的重制版，属于同人作品，但是质量非常优秀。这个游戏当年在国内很流行，几乎每个”电脑房”的某几台机器上都会有一个，这也是我玩的第一款马里奥游戏，之后才接触到FC。不过我小时候玩的那个版本好像还没做完，打到第四关会被困在关底的黑色长廊中无法继续前进。我后来还玩过完整版，黑色长廊里有很多金币，过了就是NG+了。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/4.png" title="e">
-<p><strong>《おでんととどのお鱼钓りゲーム☆》</strong>，1997年。翻译过来其实叫【关东煮和北海狮的钓鱼游戏】，这个游戏很多人应该都玩过，音效超级魔性洗脑的…</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/5.png" title="f">
-<p><strong>《Zeek the geek》</strong>，1995年。一个吃花过关的益智小游戏。这下才发现游戏背景音乐基本都是一些很有名的美国民歌，Little Brown Jug、Oh Susanna、I’ve Been Working on The Railroad等等。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/6.png" title="g">
-<p><strong>《Troy 2000》</strong>，2000年。一个恐龙吐泡泡闯关的游戏，画风精致也很好玩，试玩版只能玩20关。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/7.png" title="h">
-<p><strong>《紫色小精灵（Dweep）》</strong>，1999年。超可爱的小游戏，音乐也很好听，就是后面关卡难度对小学生来说还是挺高的。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/8.png" title="i">
-
-<p>下面几个游戏从Youtube上看关注度都比较高，应该是很多老外的童年回忆了，虽然国内玩过的人可能不多：</p>
-<p><strong>《Kung Fu Kim》</strong>，1997年。主角明显是一个跆拳练习者，用四个方向键阻挡异物的进攻，可以不断升级腰带，玩起来的确能感受到一点练功的意境。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/9.png" title="j">
-<p><strong>《Rat Poker》</strong>，1997年。微软做的一个拼同色老鼠的游戏，这游戏的背景音乐超级好听。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/10.png" title="k">
-<p><strong>《Hot Wheels: Crash!》</strong>，1999年。看起来应该是美泰公司旗下的车模品牌Hot Wheels（风火轮）和车模玩具同步推广的游戏，游戏内容就是发射一辆“自爆卡车”撞毁建筑、汽车和公共设施，破坏得越厉害得分越高。这个游戏确实有意思，因为它是真3D游戏（99年那会真3D真的很少的），并且拥有简单的物理引擎。每次发射车辆还有跟电影镜头一样的特效，看着很爽。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/11.png" title="l">
-<p><strong>《Elf Bowling》</strong>，1998年。圣诞老人扔保龄球砸小矮人的搞笑游戏，保龄球甚至能在特定角度砸倒路过的动物，很有意思。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/12.png" title="m">
-<p><strong>《Baroque Shooting》</strong>，2000年。一个名为《巴洛克（Baroque）》的日本游戏衍生的STG游戏，末世世界观和哥特恐怖题材画风，感兴趣的可以Google一下这个游戏的历史，讲道理这种玩意对小学生来说还是有点吓人的，小时候放大招弹出的那个娃娃感觉有点恐怖。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/13.png" title="n">
-
-<p>&emsp;&emsp;最后当这个光盘点击退出的时候，还会出来个八神和京的背景，这张图应该是拳皇97的CG，背景音乐还是仙剑1主题曲，感觉直接是把仙剑的MIDI复制过来了。</p>
-<img src="/2021/09/22/当年那些经典的Windows迷你小游戏/14.png" title="b">
-
-<p>&emsp;&emsp;总的来说可以看出，这些游戏基本都是国外独立制作者们在网站上放出的免费试玩版，或者是Demo，往往只能体验游戏的一部分内容，而要想购买完整版则差不多都需要付费5-10美元不等。而光盘的制作者“佳鑫科技”则是将这些免费试玩版都收录了下来，然后放到国内市场上售卖。现在想想好像是有点“恰烂钱”的感觉，不过能将这么多经典游戏收录到一起也未尝不是一项有意义的工作，也让我们这帮小学生能够玩到当时国际上的经典作品。</p>
-<p>&emsp;&emsp;其实这件事的契机是有一个人问我一款20年前的Windows飞镖小游戏的名字，我刚好记得我那张光盘里有那个小游戏，最后考证出游戏是一个叫Dart’m up的荷兰游戏，被翻译成“休闲飞镖”。于是借着这个机会才重新审阅了那张远古游戏光盘，我相信学历史的人都一定有着深厚的考古情节吧，借助技术手段复原那些被遗忘的信息，还原出更清晰的“我的历史”，似乎觉得自己对自己的认识又上了一层，确实是一种很奇妙的感觉。</p>
-<p>&emsp;&emsp;最后还有一个推断。既然那么多“机房”都安装着这些游戏，说明很多人手里也都有类似的光盘（当年没U盘，流行的3.5inch软盘只有1.44MB容量），你手里有这种光盘吗？会不会和我的一样？</p>
-]]></content>
-      <tags>
-        <tag>游戏</tag>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1784,6 +1862,105 @@
       </tags>
   </entry>
   <entry>
+    <title>云服务器搭建游戏服务端实战</title>
+    <url>/2021/09/01/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E6%B8%B8%E6%88%8F%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>在云服务器上实现了冒险岛V079和魔兽世界1.12的公网开服，并和朋友成功进行联机游玩。<a id="more"></a></p>
+</blockquote>
+<p>&emsp;&emsp;最近和朋友商讨中提出了将网游单机版（其实本质上是将服务端架设在本地以服务本机）的服务端架设到云服务器上，以实现不同地区联机游戏的设想，相当于公网开服。虽然我和朋友都没有类似的经验，但以前买过Vultur的VPS做过一点V2Ray也算是初步了解了一点类似的东西，经过近一周的尝试后在冒险岛V079和魔兽世界1.12都成功开服，虽然服务端都是取自别人现成做好的，但搭建期间各种数据库、源码、环境问题也是搞的我们这群小白头疼不已，不过好在最终还是将问题一一攻克，看着我和小伙伴们在自己的世界里聊天做任务修bug，还是挺开心的。</p>
+<p>&emsp;&emsp;本文就解释一下开服需要做哪些工作，我力求让本文具有实战操作性，目的是即使读者是像我一样从来没有接触过类似的东西的小白也能够搭建起自己喜爱游戏的私人服务器，和朋友联机玩，不过不同游戏的不同服务器搭建过程中的细节实在是太多，没法每条都写那么细，所以我认为关键还是掌握原理，因为有了冒险岛开服的经验，魔兽世界1.12的开服我基本是在没有教程的情况下自己就摸索出来了。另外还是得说，这种私服只能用来学习研究，切不可商用哦。</p>
+<hr>
+<p>&emsp;&emsp;提前先说一下，要想和朋友开服联机除了租服务器以外还有一个似乎更简单一点的办法，就是把你自己的电脑当成服务端运行，这大概率需要用到“内网穿透”功能，不过把自己的电脑当服务器的弊端也很明显，就是你的电脑必须要像商业服务器一样24/7连续运行，关机就相当于关服，这是很不方便的，而且还可能涉及到端口映射等操作，故本文只讨论租商业服务器+配置服务端的标准玩法，简单模拟商业级实战价值。</p>
+<p>&emsp;&emsp;其次另一个重要的问题就是选好你想做的游戏，一定要是你非常熟悉且了解的游戏，这样在后续调试和游玩中才有内容可言，而且不同游戏的私服也不太一样。一般来说，私人服务器比较普遍的应该是我的世界（Minecraft）、饥荒（Don’t Starve Together）、泰拉瑞亚（Terraria）等等独立游戏，这种独立游戏的为了让玩家们实现联机功能，一般都是官方直接给出服务端，故相对来说比较容易，网上的教程也很多。而如魔兽、冒险岛、传奇私服这些MMORPG类型的游戏则只能用非官方渠道的服务端，很多都经过不知几手的修改，相对来说更不稳定，不过可DIY的性能也大大加强，并且MMORPG本身体量远大于独立游戏，数据结构极其复杂，实属一个大坑，所以这次上来就弄MMO还是有点挑战性的，冒险岛V079和魔兽世界1.12均属于历史经典版本，我们在网上能找到很多基于这些版本的私服。这次主要以冒险岛（Maplestory）的V079版本为例。</p>
+<p>&emsp;&emsp;首先我建议先找服务端，找到一个开源能用的服务端不是很容易的事，但仍然能从网上找到一些可用的端。如魔兽世界（World of Warcraft）的私人服务端基本都是基于一个叫MaNGOS（或称芒果）的开源项目发展而来，冒险岛的中文服务端基本都是野生的，用一些网盘搜索工具就能够找到一些简单能用的端，带教程的最好。不同服务端的配置方式一般都很不一样，但原理上都大同小异，这里建议找适合Windows系统的端。如果你下载好了，基本这些端里面都带着一些好用的环境组件安装包如数据库、源码编译等。客户端当然也是必须得有，这个一般不难弄，只要找到一个纯净原版的客户端基本都是能用的。如果找到了客户端建议直接安装到本地机器上，因为我们后面还要提取一些客户端的文件。</p>
+<p>总的来说，搭建MMO类网游服务端绕不开以下几个关键内容：</p>
+ <p align="left">1. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。
+
+</p><p>&emsp;&emsp;本次使用阿里云作为云服务器，新用户可获得一个月的免费试用期。并且还要实现与服务器之间快速交换大型资源。</p>
+ <p align="left">2. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。
+
+</p><p>&emsp;&emsp;很多服务端（不止游戏）直接是基于linux（Ubuntu、CentOS等）系统运作的，需要很特殊的条件。我这次搭建的服务端均选用Windows环境（系统为Windows Server 2019，和Win10很相似），上手比较容易，但就算是Windows下也需要配置一些环境，如目前在市面上能找到的冒险岛服务端基本都是Java写的，则需要安装Java对应的环境。数据库的话也是当然要有的了，游戏里的一切数据都保存在一个数据库里，这里一般情况下都使用MySQL数据库。数据库管理软件使用Navicat 8.2 for MySQL，简称Navicat。也有使用SQLyog、phpMyAdmin等的，大同小异，建议就用Navicat，用起来还是挺方便的。</p>
+ <p align="left">3. 服务端配置具体文件和信息，以实现和数据库的对接。
+
+</p><p>&emsp;&emsp;MMO其实有一部分游戏内容是保存在服务端里的，具体原因下面会提到，需要将这些文件解进服务端内。而和数据库对接则需要在服务端设置好数据库的名称、密码、端口以及公网IP地址等信息。</p>
+ <p align="left">4. 调整客户端，开服游玩。
+
+
+</p><p>本文就基于以上四点具体展开解释：</p>
+<h3 id="一-服务器选择和配置"><a href="#一-服务器选择和配置" class="headerlink" title="一.服务器选择和配置"></a>一.服务器选择和配置</h3><p>&emsp;&emsp;本次使用阿里云服务器，国内基本只有阿里云和腾讯云这两家比较合适，阿里云使用支付宝就能注册，阿里云的1核2G内存的ECS目前得要大概70块左右一个月（跟魔兽月卡也差不多嘛…），腾讯云也差不多是这个价钱，好像还贵一点。不过新注册用户可以有机会获得一个月的免费试用期，我们就用这个试用期来白嫖练手，当然免费试用的都是些感觉快要报废的垃圾机子，不过跑一个十几年前的网游负载十来个用户肯定是没啥问题的，除非你打算拉几十上百个人进来一块玩。腾讯云可以选择据说也有15天的免费期。阿里云目前的免费服务器需要每天早上10点抢资格，我试了一下不是很难抢，应该只是个噱头，这里我们就选一款免费1个月的ECS的试用，阿里云的政策可能会随着时间变化，总之这次的配置是1核2G内存40G硬盘，如下图所示：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/1.png" title="a">
+<p>创建时建议直接把系统选成Windows Server 2019 x64，服务器地址无所谓，创建好实例以后在ECS界面中是这样：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/2.png" title="b">
+<p>图上需要配置的有4点：</p>
+<ol>
+<li><p>修改实例名，这个必须改，默认的实例名太长会导致不能远程桌面连接。</p>
+</li>
+<li><p>更换操作系统，如果创建时选了别的，这里就把操作系统换成Windows Server 2019 x64，换系统得先点右上方的停止先关掉实例才能点这个按钮。</p>
+</li>
+<li><p>公网IP，这个就是服务器的地址，十分重要，建议复制下来抄到本地。这里顺便解释一下公网IP是什么东西，这里所称的公网指的是广域网（Wide Area Network，WAN），通常又称公网、外网，这个外网和魔法上网那个外网不是一回事，它是和局域网（Local Area Network，LAN）相对的概念，这个问题归根结底是因为IPv4不够用导致的，IPv4形如255.255.255.255理论上最多只有255^4个地址，这个数目大概是42亿，为了解决不够用的问题，很多网络运营商采用NAT（Network Address Translation，网络地址转换）方式，将一个公网IP映射给多个用户，而这些用户均使用局域网IP，这样就节约了IP资源。但我们要建服务器的话，就必须要有一个公网IP地址，不然别人是找不到你的地址的。很形象的例子就是局域网IP相当于酒店的305房间号，公网IP相当于酒店的地址，要想让其他地区的用户联系到你则必须告诉他酒店地址，而不是305房间号，因为每个酒店可能都有一个305房间。</p>
+<p> 想直接获得公网IP可以尝试打电话给运营商要，不过现在如果你是移动或者广电的用户基本是搞不到的，电信的话好像听说可以。不走运营商的话也有办法，就是上面说到的那个内网穿透就是干这个事的，不过我们这里直接拥有了阿里云的云服务器，自带了公网IP地址，也就解决了这个问题。</p>
+</li>
+<li><p>远程连接。上面的都做完了就可以尝试点一下远程连接，大概率能进到服务器的Windows桌面上去。现在考虑怎么把本机的东西上传到服务器上。</p>
+<p> 有一种方法是可以通过Win10自带的远程桌面连接云服务器，这种办法的好处就是不用再登录网页端的阿里云账号了，管理起来比较便捷，然后再通过共享文件就能直接把本地的文件复制进去。但是经过我操作发现不是很容易，因为MMO类型的网游的很多运算工作是直接在服务端完成的，服务端自身就会拥有相当一部分的游戏内容，一般都是地图、模组、怪物AI、音乐等，服务端运算可以有效防止用户自行修改客户端造成的问题，所以网游的服务端都不会太小，其中必然拥有一些大型文件，通过文件共享来向这个服务器传输超过100MB的文件属实困难，基本必定出现内存不足而卡死，可能是由于免费服务器自身质量问题导致的。</p>
+<p> 而且还有一个很麻烦的问题是，Win10虽然自带了远程桌面功能，但并不是所有Win10的版本都开启了这个功能，家庭版直接封锁了它。解除封锁的具体操作也有点麻烦，可参考本blog之前的文章：<a href="https://caelica.github.io/2021/09/01/Win10%E5%AE%B6%E5%BA%AD%E7%89%88%E5%90%AF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2and%E5%90%AF%E7%94%A8%E7%BB%84%E7%AD%96%E7%95%A5/"><font color="blue">Win10家庭版启用远程桌面&amp;启用组策略</font></a>。</p>
+</li>
+</ol>
+<p>&emsp;&emsp;所以经过尝试我发现百度网盘还是比较方便，因为服务器的下载功能没啥大毛病，只要能够下载到一个百度网盘客户端，基本就可以用百度网盘来进行文件中转了，阿里云服务器本身的IE下载权限管理的比较死，下载东西需要开一些权限，在服务器管理界面（仪表板）&gt;左边窗格切换至【本地服务器】，在右边【内容】中，选择【IE增强的安全配置】-&gt;配置界面上的2个选项都设置为禁用-&gt;确定</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/3.png" title="c">
+<p>&emsp;&emsp;喜欢远程桌面的也可以去捣鼓一下远程桌面，进去了都一个样，服务器的远程桌面开关也在上面这个控制页面里。</p>
+<p>&emsp;&emsp;基本到这里这个服务器就locked and loaded了，我们可以开始向其中添加自己的东西，服务器可以不关机，反正是免费的东西不要怕放开整。以下提到的组件安装包等均默认是在互联网上下载的，若上面下载的服务端自己带了这些组件的安装包也可以直接复制到服务器使用。</p>
+<h3 id="二-运行环境以及数据库"><a href="#二-运行环境以及数据库" class="headerlink" title="二.运行环境以及数据库"></a>二.运行环境以及数据库</h3><p>&emsp;&emsp;冒险岛作为一个老游戏其服务端模拟器写成的时间也相对来说比较早，这里我们给服务器安装64位Java1.7（Java1.7叫Java7，类似的如Java8实际上是Java1.8），也就是jdk-7u80-windows-x64这个文件，网上也是能下到这种老版本的，我这里其实直接使用了安装包里自带的文件，因为我发现Java1.8就已经开始不能读取一些服务端的JavaScript了，会报错。Java默认安装到了C盘的C:\Program Files\Java 中（服务器也只有一个C盘），在这个目录可以看到两个文件夹，jdk1.7.0_80 和 jre7，是Java开发工具包和运行环境。安装完成后运行&gt;cmd输入<code>java -version</code>，如果出现了版本号则说明安装成功。</p>
+<p>&emsp;&emsp;接下来安装数据库，这里安装MySQL数据库，建议安装5.5版本的，又稳定又简单。安装中选Custum模式，端口默认的3306并勾选Add firewall exception for this port，关键的是下一步的数据库编码必须选择gb2312，不然中文会乱码:</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/4.png" title="d">
+<p>&emsp;&emsp;服务名选MySQL5，数据库root用户名和密码均写成root，当然密码也可以自定义，不过密码忘了很难办而且后面还得改服务端配置文件里的密码，这里就建议root。最后点Execute安装。</p>
+<p>&emsp;&emsp;MySQL安装完毕后进 任务管理器&gt;服务 检查一下服务名为MySQL5的服务是不是正在运行，再到进程里看是不是有一个Mysqld.exe的进程在运行，都有则说明完成。</p>
+<p>&emsp;&emsp;接下来安装数据库管理工具Navicat8，安装完成后点连接，直接连接默认的localhost_3306，密码填刚才设定好的root：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/5.png" title="e">
+<p>&emsp;&emsp;可以看到localhost_3306里已经有了几个固定的数据库，这里我们需要再新建一个或多个，右键连接&gt;创建新的数据库 可新建一个，当然也可以删掉，不过系统自带的那几个数据库不要删了就行。</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/6.png" title="f">
+
+<p>&emsp;&emsp;最关键的来了，导入初始数据库数据。说白了要的就是这个东西，它一般都在下载的服务端里自己配套的有的，不过数据库文件的保存形式有很多种，最常见的是.sql脚本文件，还有.db甚至是.xml等，也有可能是一个别人做好的后缀为.psc的数据库备份。冒险岛的服务端一般只有一个数据库，我们新建一个，数据库名可以自定义，这里示例为thisisadatabase，字符集也可以不管因为可以改。如果是.sql文件的话，右键自己建的数据库&gt;运行SQL文件 则可导入.sql文件的内容，然后在表上右键刷新即可看到导入后的内容。如果是.psc数据库备份文件的话，先选中数据库中的【备份】，再点击上方的恢复备份，给定路径导入一个.psc备份，导入完成后刷新即可看到数据库，这些数据表都是可以修改的，我们在之后的游戏中即可修改对应的栏目（如用户、角色数据等），以自定义我们的游戏数据。这里演示了如何使用.psc导入数据库信息：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/7.png" title="g">
+<p>&emsp;&emsp;同理数据能导入也一定能作导出。创建新备份则直接点【创建备份】即可创建当前的数据库备份，创建的备份被默认保存在了我的文档里，即C:\Users\设备用户名\Documents\Navicat\MySQL\servers\localhost_3306\ 下，为.psc格式，可将其复制到别的地方作保存。也可以保存为.sql格式，右键&gt;转储SQL文件即可将数据库保存为.sql文件。</p>
+<h3 id="三-配置服务端文件"><a href="#三-配置服务端文件" class="headerlink" title="三.配置服务端文件"></a>三.配置服务端文件</h3><p>&emsp;&emsp;以冒险岛为例，诸如地图、模组、怪物AI、音乐等文件均是以.wz的格式保存的（如Character.wz, Mob.wz等等），我们需要一个叫 HaRepacker.exe 的wz文件修改工具，选择【导出为私服所需XML】，目标选择客户端的所有.wz文件，导出后将这些文件保存在一个名为wz的文件夹中，并将这个文件夹放到服务端的根目录里。</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/8.png" title="h">
+<p>&emsp;&emsp;服务端配置一般都会有一个.ini或.info文件，在里面的对应地方填入数据库名（就是上面自定义的数据库名）、确认数据库用户（user）和密码（password）是否正确，如果没有自定义的话应该都是root。最关键的是配置文件中的IP地址，这个IP在没修改前往往是127.0.0.1，即本机回环地址，等于就是自己。如果这个服务端本身在本地运行，而地址设为127.0.0.1的话，再把客户端的目标IP改为127.0.0.1，你会发现客户端是能连进去玩的，这实际上构成了一个单机版网游，所以就像一开始说的，单机版网游结构的本质其实就是服务端架设在本机上并指向本机。但我们想要这个服务端能够给不同地区的小伙伴都提供服务，则需要将服务端放在服务器上，并将这个IP改为这个云服务器的公网IP，公网IP我们已经获得了，直接填进去就行。</p>
+<p>&emsp;&emsp;冒险岛的服务端要想正常运行一般还得替换服务器C盘的Java环境，以及编译一个源码凭据至于服务端文件夹内，这点上来源不同的端操作也不同，在下载的服务端里一般都会有具体指示。</p>
+<p>&emsp;&emsp;如果一切都配置完成，则开启服务端，如果报错了首先记录下报错信息，看看哪一步出问题的可能性比较大，有针对性地检查并解决问题。</p>
+<p>&emsp;&emsp;如果弄好了则记录下服务端所使用的端口，它们一般类似于：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">数据库端口：	<span class="number">3306</span></span><br><span class="line">登录端口：	<span class="number">9595</span></span><br><span class="line">频道端口：	<span class="number">7575</span><span class="number">-7578</span>  	<span class="comment">//五六七八共四个频道（Channel），对应游戏中的1234线</span></span><br><span class="line">商城端口：	<span class="number">8600</span>		<span class="comment">//冒险岛商城使用一个独立的端口</span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;同样也需要关注一下我们的服务器实例的安全策略是否允许这些端口的上下行，以及服务器的Windows系统是否开启了防火墙，这些都有可能导致登陆失败。</p>
+<h3 id="四-调整客户端"><a href="#四-调整客户端" class="headerlink" title="四.调整客户端"></a>四.调整客户端</h3><p>&emsp;&emsp;服务器弄好了就可以说是万事具备，对于冒险岛的话，首先得让客户端绕过一个叫HackShield（以下简称HS）的反外挂程序，冒险岛当年的外挂也是挺出名的，故这个HS的作用就是联网比对客户端和服务端的一些信息是否一致，以防止用户通过第三方程序私自修改客户端。我们现在的客户端早就过期十几年了，HS自然会卡住不动。所以这里需要一个叫“Win10强力过HS补丁”的经过某大神修改过的HS对冒险岛原本的HS进行替换，HS位于客户端根目录的“HShield”文件夹中，将整个文件夹替换即可，并且还需要手动修改一下路径才能生效：打开HShield文件夹，找到ehsvc.ini配置文件，打开后修改里面的文件存放路径，把maplestory.exe这个文件的存放路径改成你自己的后保存即可。这个“强力过HS补丁”在网上并不难找，而且一般下载的服务端内也都自带的有。</p>
+<p>&emsp;&emsp;第二步是给客户端定位我们的服务器地址，方法是在客户端根目录新建一个.bat，内容为<code>MapleStory.exe 000.000.000.000 9595</code>，四个000换成你的公网IP地址，9595是一般的冒险岛服务端的登录端口，若服务端给出的登陆端口不是9595则需要改成对应的。修改好保存这个bat，可以将该bat重命名为【登陆器】。以后都不要点客户端里的MapleStory.exe或者Patcher.exe这些了，有可能触发自动更新或者别的问题。</p>
+<p>&emsp;&emsp;别着急，还需修改MapleStory.exe的兼容性，否则会在启动时弹一个error的错误框。兼容性设为WinXP SP3，管理员权限打勾：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/9.png" title="i">
+<p>&emsp;&emsp;运行【登陆器.bat】进入游戏，若进入大区界面则说明过HS成功，此时点击“风之大陆”，若弹出“系统错误，无法连接”则说明服务端没有配置好，检查一下服务端文件的IP是否已经配置为公网IP。第一次弄估计大概率是进不去…总之这玩意还是挺费事的，不过弄好了也是真的开心。</p>
+<p>&emsp;&emsp;如果进入了输入账号密码的页面，基本就算是成功了。不同的服务端都有自行注册账号密码的方法，自己搞一个账号进去测试一下。保持服务端程序的运行就可以关掉远程连接的窗口了，让服务端自己跑去。这下可以体验一把服务器管理员的感觉，只要有需要打开远程连接看一下服务端程序正不正常就行了。</p>
+<h3 id="还没完（玩）呢！"><a href="#还没完（玩）呢！" class="headerlink" title="还没完（玩）呢！"></a>还没完（玩）呢！</h3><p>&emsp;&emsp;现在我们玩的内容就不局限于打怪升级了，可以尝试在服务器上修改数据库（某些东西不能热修，建议先关掉服务端），以实现自定义我们的角色。冒险岛这个游戏属实是音乐画面一流而游戏性拉跨的典型，玩了几年才六十多级，小时候为了刷冒险岛不知道挨了家人多少“教育”，通过自定义角色我总算是实现了小时候的“龙骑梦”，而且既然我们是公网开服当然要叫小伙伴来玩了，最后也和朋友一起成功四转（四转的技能任务也真的变态，是人做的么…）。想要更加深入地DIY这种MMORPG游戏并不是一件简单的事，尤其是像魔兽世界这样一个当年的世界第一，数据库极其庞大且复杂，深入研究魔兽世界的数据库那估计又得是另一个故事了…不过这些端也多多少少有些BUG，冒险岛的问题尤其多，动不动就掉线卡号，不过话说当年盛大开的官服也是动不动掉线卡号，可能是跟游戏本身有关系。</p>
+<p>&emsp;&emsp;开个玩笑，因为最近刚好出了个事，版薯发布了《关于进一步严格管理切实防止XX年人沉迷网络游戏的通知》，要求网络游戏供应商只能让XX年人在周末每天晚上玩一个小时游戏，中小学生们都哭了，那我可建议小朋友们都来学学怎么开私服，只要搞得到服务器，你自己就是麻花疼了！要问小学生怎么供得起云服务器？不是有免费一个月嘛，凑齐一个班不就能白嫖几年了吗哇哈哈哈…</p>
+<p>&emsp;&emsp;最后感谢PercySu、仓鼠以及各路沙雕网友提供相关的技术帮助，以及八尾旅人同学参与服务器测试（其实就是陪我玩！）</p>
+<p>放两个玩的时候截的图：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/10.png" title="j">
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/11.png" title="k">
+
+<hr>
+<p>经过调整将魔兽世界1.12和冒险岛V079的数据库整合到了一块，这样可以同时在服务器上开启两个游戏的服务端。</p>
+<p>同时因为终于没有点卡问题拦路，尝试了一下五开，用世界同步器实现“五火球神教”。使用风铃世界同步器V2.1共享版，但目前还不知道怎么做到同步交接任务，五个角色之间的配合也不是很理想，可能是同步器太垃圾，或者没找到付费版的原因。</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/12.jpg" title="l">
+
+<p>调整过程中发现一个MySQL的问题：有时候localhost_3306会连不上，报出以下错误：</p>
+<img src="/2021/09/01/云服务器搭建游戏服务器实战/13.png" title="m">
+<p>可能是由于数据库服务（Mysql或Mysqld）冲突导致的，有可能是因为运行了多个MySQL程序，通常右键断线数据库再连接即可解决这个问题。</p>
+<p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
+]]></content>
+      <tags>
+        <tag>服务器</tag>
+        <tag>软件</tag>
+        <tag>游戏</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《魔兽世界日记》译文与译后感想</title>
     <url>/2022/05/16/%E3%80%8A%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C%E6%97%A5%E8%AE%B0%E3%80%8B%E8%AF%91%E6%96%87%E4%B8%8E%E8%AF%91%E5%90%8E%E6%84%9F%E6%83%B3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
@@ -1897,105 +2074,6 @@
         <tag>游戏</tag>
         <tag>生活</tag>
         <tag>文化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>云服务器搭建游戏服务端实战</title>
-    <url>/2021/09/01/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E6%B8%B8%E6%88%8F%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E6%88%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>在云服务器上实现了冒险岛V079和魔兽世界1.12的公网开服，并和朋友成功进行联机游玩。<a id="more"></a></p>
-</blockquote>
-<p>&emsp;&emsp;最近和朋友商讨中提出了将网游单机版（其实本质上是将服务端架设在本地以服务本机）的服务端架设到云服务器上，以实现不同地区联机游戏的设想，相当于公网开服。虽然我和朋友都没有类似的经验，但以前买过Vultur的VPS做过一点V2Ray也算是初步了解了一点类似的东西，经过近一周的尝试后在冒险岛V079和魔兽世界1.12都成功开服，虽然服务端都是取自别人现成做好的，但搭建期间各种数据库、源码、环境问题也是搞的我们这群小白头疼不已，不过好在最终还是将问题一一攻克，看着我和小伙伴们在自己的世界里聊天做任务修bug，还是挺开心的。</p>
-<p>&emsp;&emsp;本文就解释一下开服需要做哪些工作，我力求让本文具有实战操作性，目的是即使读者是像我一样从来没有接触过类似的东西的小白也能够搭建起自己喜爱游戏的私人服务器，和朋友联机玩，不过不同游戏的不同服务器搭建过程中的细节实在是太多，没法每条都写那么细，所以我认为关键还是掌握原理，因为有了冒险岛开服的经验，魔兽世界1.12的开服我基本是在没有教程的情况下自己就摸索出来了。另外还是得说，这种私服只能用来学习研究，切不可商用哦。</p>
-<hr>
-<p>&emsp;&emsp;提前先说一下，要想和朋友开服联机除了租服务器以外还有一个似乎更简单一点的办法，就是把你自己的电脑当成服务端运行，这大概率需要用到“内网穿透”功能，不过把自己的电脑当服务器的弊端也很明显，就是你的电脑必须要像商业服务器一样24/7连续运行，关机就相当于关服，这是很不方便的，而且还可能涉及到端口映射等操作，故本文只讨论租商业服务器+配置服务端的标准玩法，简单模拟商业级实战价值。</p>
-<p>&emsp;&emsp;其次另一个重要的问题就是选好你想做的游戏，一定要是你非常熟悉且了解的游戏，这样在后续调试和游玩中才有内容可言，而且不同游戏的私服也不太一样。一般来说，私人服务器比较普遍的应该是我的世界（Minecraft）、饥荒（Don’t Starve Together）、泰拉瑞亚（Terraria）等等独立游戏，这种独立游戏的为了让玩家们实现联机功能，一般都是官方直接给出服务端，故相对来说比较容易，网上的教程也很多。而如魔兽、冒险岛、传奇私服这些MMORPG类型的游戏则只能用非官方渠道的服务端，很多都经过不知几手的修改，相对来说更不稳定，不过可DIY的性能也大大加强，并且MMORPG本身体量远大于独立游戏，数据结构极其复杂，实属一个大坑，所以这次上来就弄MMO还是有点挑战性的，冒险岛V079和魔兽世界1.12均属于历史经典版本，我们在网上能找到很多基于这些版本的私服。这次主要以冒险岛（Maplestory）的V079版本为例。</p>
-<p>&emsp;&emsp;首先我建议先找服务端，找到一个开源能用的服务端不是很容易的事，但仍然能从网上找到一些可用的端。如魔兽世界（World of Warcraft）的私人服务端基本都是基于一个叫MaNGOS（或称芒果）的开源项目发展而来，冒险岛的中文服务端基本都是野生的，用一些网盘搜索工具就能够找到一些简单能用的端，带教程的最好。不同服务端的配置方式一般都很不一样，但原理上都大同小异，这里建议找适合Windows系统的端。如果你下载好了，基本这些端里面都带着一些好用的环境组件安装包如数据库、源码编译等。客户端当然也是必须得有，这个一般不难弄，只要找到一个纯净原版的客户端基本都是能用的。如果找到了客户端建议直接安装到本地机器上，因为我们后面还要提取一些客户端的文件。</p>
-<p>总的来说，搭建MMO类网游服务端绕不开以下几个关键内容：</p>
- <p align="left">1. 拥有一个你能够随时访问、交互并有权限管理的服务器，并进行配置。
-
-</p><p>&emsp;&emsp;本次使用阿里云作为云服务器，新用户可获得一个月的免费试用期。并且还要实现与服务器之间快速交换大型资源。</p>
- <p align="left">2. 服务端程序拥有运行环境，服务器拥有数据库，并且能够对其进行管理。
-
-</p><p>&emsp;&emsp;很多服务端（不止游戏）直接是基于linux（Ubuntu、CentOS等）系统运作的，需要很特殊的条件。我这次搭建的服务端均选用Windows环境（系统为Windows Server 2019，和Win10很相似），上手比较容易，但就算是Windows下也需要配置一些环境，如目前在市面上能找到的冒险岛服务端基本都是Java写的，则需要安装Java对应的环境。数据库的话也是当然要有的了，游戏里的一切数据都保存在一个数据库里，这里一般情况下都使用MySQL数据库。数据库管理软件使用Navicat 8.2 for MySQL，简称Navicat。也有使用SQLyog、phpMyAdmin等的，大同小异，建议就用Navicat，用起来还是挺方便的。</p>
- <p align="left">3. 服务端配置具体文件和信息，以实现和数据库的对接。
-
-</p><p>&emsp;&emsp;MMO其实有一部分游戏内容是保存在服务端里的，具体原因下面会提到，需要将这些文件解进服务端内。而和数据库对接则需要在服务端设置好数据库的名称、密码、端口以及公网IP地址等信息。</p>
- <p align="left">4. 调整客户端，开服游玩。
-
-
-</p><p>本文就基于以上四点具体展开解释：</p>
-<h3 id="一-服务器选择和配置"><a href="#一-服务器选择和配置" class="headerlink" title="一.服务器选择和配置"></a>一.服务器选择和配置</h3><p>&emsp;&emsp;本次使用阿里云服务器，国内基本只有阿里云和腾讯云这两家比较合适，阿里云使用支付宝就能注册，阿里云的1核2G内存的ECS目前得要大概70块左右一个月（跟魔兽月卡也差不多嘛…），腾讯云也差不多是这个价钱，好像还贵一点。不过新注册用户可以有机会获得一个月的免费试用期，我们就用这个试用期来白嫖练手，当然免费试用的都是些感觉快要报废的垃圾机子，不过跑一个十几年前的网游负载十来个用户肯定是没啥问题的，除非你打算拉几十上百个人进来一块玩。腾讯云可以选择据说也有15天的免费期。阿里云目前的免费服务器需要每天早上10点抢资格，我试了一下不是很难抢，应该只是个噱头，这里我们就选一款免费1个月的ECS的试用，阿里云的政策可能会随着时间变化，总之这次的配置是1核2G内存40G硬盘，如下图所示：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/1.png" title="a">
-<p>创建时建议直接把系统选成Windows Server 2019 x64，服务器地址无所谓，创建好实例以后在ECS界面中是这样：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/2.png" title="b">
-<p>图上需要配置的有4点：</p>
-<ol>
-<li><p>修改实例名，这个必须改，默认的实例名太长会导致不能远程桌面连接。</p>
-</li>
-<li><p>更换操作系统，如果创建时选了别的，这里就把操作系统换成Windows Server 2019 x64，换系统得先点右上方的停止先关掉实例才能点这个按钮。</p>
-</li>
-<li><p>公网IP，这个就是服务器的地址，十分重要，建议复制下来抄到本地。这里顺便解释一下公网IP是什么东西，这里所称的公网指的是广域网（Wide Area Network，WAN），通常又称公网、外网，这个外网和魔法上网那个外网不是一回事，它是和局域网（Local Area Network，LAN）相对的概念，这个问题归根结底是因为IPv4不够用导致的，IPv4形如255.255.255.255理论上最多只有255^4个地址，这个数目大概是42亿，为了解决不够用的问题，很多网络运营商采用NAT（Network Address Translation，网络地址转换）方式，将一个公网IP映射给多个用户，而这些用户均使用局域网IP，这样就节约了IP资源。但我们要建服务器的话，就必须要有一个公网IP地址，不然别人是找不到你的地址的。很形象的例子就是局域网IP相当于酒店的305房间号，公网IP相当于酒店的地址，要想让其他地区的用户联系到你则必须告诉他酒店地址，而不是305房间号，因为每个酒店可能都有一个305房间。</p>
-<p> 想直接获得公网IP可以尝试打电话给运营商要，不过现在如果你是移动或者广电的用户基本是搞不到的，电信的话好像听说可以。不走运营商的话也有办法，就是上面说到的那个内网穿透就是干这个事的，不过我们这里直接拥有了阿里云的云服务器，自带了公网IP地址，也就解决了这个问题。</p>
-</li>
-<li><p>远程连接。上面的都做完了就可以尝试点一下远程连接，大概率能进到服务器的Windows桌面上去。现在考虑怎么把本机的东西上传到服务器上。</p>
-<p> 有一种方法是可以通过Win10自带的远程桌面连接云服务器，这种办法的好处就是不用再登录网页端的阿里云账号了，管理起来比较便捷，然后再通过共享文件就能直接把本地的文件复制进去。但是经过我操作发现不是很容易，因为MMO类型的网游的很多运算工作是直接在服务端完成的，服务端自身就会拥有相当一部分的游戏内容，一般都是地图、模组、怪物AI、音乐等，服务端运算可以有效防止用户自行修改客户端造成的问题，所以网游的服务端都不会太小，其中必然拥有一些大型文件，通过文件共享来向这个服务器传输超过100MB的文件属实困难，基本必定出现内存不足而卡死，可能是由于免费服务器自身质量问题导致的。</p>
-<p> 而且还有一个很麻烦的问题是，Win10虽然自带了远程桌面功能，但并不是所有Win10的版本都开启了这个功能，家庭版直接封锁了它。解除封锁的具体操作也有点麻烦，可参考本blog之前的文章：<a href="https://caelica.github.io/2021/09/01/Win10%E5%AE%B6%E5%BA%AD%E7%89%88%E5%90%AF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2and%E5%90%AF%E7%94%A8%E7%BB%84%E7%AD%96%E7%95%A5/"><font color="blue">Win10家庭版启用远程桌面&amp;启用组策略</font></a>。</p>
-</li>
-</ol>
-<p>&emsp;&emsp;所以经过尝试我发现百度网盘还是比较方便，因为服务器的下载功能没啥大毛病，只要能够下载到一个百度网盘客户端，基本就可以用百度网盘来进行文件中转了，阿里云服务器本身的IE下载权限管理的比较死，下载东西需要开一些权限，在服务器管理界面（仪表板）&gt;左边窗格切换至【本地服务器】，在右边【内容】中，选择【IE增强的安全配置】-&gt;配置界面上的2个选项都设置为禁用-&gt;确定</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/3.png" title="c">
-<p>&emsp;&emsp;喜欢远程桌面的也可以去捣鼓一下远程桌面，进去了都一个样，服务器的远程桌面开关也在上面这个控制页面里。</p>
-<p>&emsp;&emsp;基本到这里这个服务器就locked and loaded了，我们可以开始向其中添加自己的东西，服务器可以不关机，反正是免费的东西不要怕放开整。以下提到的组件安装包等均默认是在互联网上下载的，若上面下载的服务端自己带了这些组件的安装包也可以直接复制到服务器使用。</p>
-<h3 id="二-运行环境以及数据库"><a href="#二-运行环境以及数据库" class="headerlink" title="二.运行环境以及数据库"></a>二.运行环境以及数据库</h3><p>&emsp;&emsp;冒险岛作为一个老游戏其服务端模拟器写成的时间也相对来说比较早，这里我们给服务器安装64位Java1.7（Java1.7叫Java7，类似的如Java8实际上是Java1.8），也就是jdk-7u80-windows-x64这个文件，网上也是能下到这种老版本的，我这里其实直接使用了安装包里自带的文件，因为我发现Java1.8就已经开始不能读取一些服务端的JavaScript了，会报错。Java默认安装到了C盘的C:\Program Files\Java 中（服务器也只有一个C盘），在这个目录可以看到两个文件夹，jdk1.7.0_80 和 jre7，是Java开发工具包和运行环境。安装完成后运行&gt;cmd输入<code>java -version</code>，如果出现了版本号则说明安装成功。</p>
-<p>&emsp;&emsp;接下来安装数据库，这里安装MySQL数据库，建议安装5.5版本的，又稳定又简单。安装中选Custum模式，端口默认的3306并勾选Add firewall exception for this port，关键的是下一步的数据库编码必须选择gb2312，不然中文会乱码:</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/4.png" title="d">
-<p>&emsp;&emsp;服务名选MySQL5，数据库root用户名和密码均写成root，当然密码也可以自定义，不过密码忘了很难办而且后面还得改服务端配置文件里的密码，这里就建议root。最后点Execute安装。</p>
-<p>&emsp;&emsp;MySQL安装完毕后进 任务管理器&gt;服务 检查一下服务名为MySQL5的服务是不是正在运行，再到进程里看是不是有一个Mysqld.exe的进程在运行，都有则说明完成。</p>
-<p>&emsp;&emsp;接下来安装数据库管理工具Navicat8，安装完成后点连接，直接连接默认的localhost_3306，密码填刚才设定好的root：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/5.png" title="e">
-<p>&emsp;&emsp;可以看到localhost_3306里已经有了几个固定的数据库，这里我们需要再新建一个或多个，右键连接&gt;创建新的数据库 可新建一个，当然也可以删掉，不过系统自带的那几个数据库不要删了就行。</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/6.png" title="f">
-
-<p>&emsp;&emsp;最关键的来了，导入初始数据库数据。说白了要的就是这个东西，它一般都在下载的服务端里自己配套的有的，不过数据库文件的保存形式有很多种，最常见的是.sql脚本文件，还有.db甚至是.xml等，也有可能是一个别人做好的后缀为.psc的数据库备份。冒险岛的服务端一般只有一个数据库，我们新建一个，数据库名可以自定义，这里示例为thisisadatabase，字符集也可以不管因为可以改。如果是.sql文件的话，右键自己建的数据库&gt;运行SQL文件 则可导入.sql文件的内容，然后在表上右键刷新即可看到导入后的内容。如果是.psc数据库备份文件的话，先选中数据库中的【备份】，再点击上方的恢复备份，给定路径导入一个.psc备份，导入完成后刷新即可看到数据库，这些数据表都是可以修改的，我们在之后的游戏中即可修改对应的栏目（如用户、角色数据等），以自定义我们的游戏数据。这里演示了如何使用.psc导入数据库信息：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/7.png" title="g">
-<p>&emsp;&emsp;同理数据能导入也一定能作导出。创建新备份则直接点【创建备份】即可创建当前的数据库备份，创建的备份被默认保存在了我的文档里，即C:\Users\设备用户名\Documents\Navicat\MySQL\servers\localhost_3306\ 下，为.psc格式，可将其复制到别的地方作保存。也可以保存为.sql格式，右键&gt;转储SQL文件即可将数据库保存为.sql文件。</p>
-<h3 id="三-配置服务端文件"><a href="#三-配置服务端文件" class="headerlink" title="三.配置服务端文件"></a>三.配置服务端文件</h3><p>&emsp;&emsp;以冒险岛为例，诸如地图、模组、怪物AI、音乐等文件均是以.wz的格式保存的（如Character.wz, Mob.wz等等），我们需要一个叫 HaRepacker.exe 的wz文件修改工具，选择【导出为私服所需XML】，目标选择客户端的所有.wz文件，导出后将这些文件保存在一个名为wz的文件夹中，并将这个文件夹放到服务端的根目录里。</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/8.png" title="h">
-<p>&emsp;&emsp;服务端配置一般都会有一个.ini或.info文件，在里面的对应地方填入数据库名（就是上面自定义的数据库名）、确认数据库用户（user）和密码（password）是否正确，如果没有自定义的话应该都是root。最关键的是配置文件中的IP地址，这个IP在没修改前往往是127.0.0.1，即本机回环地址，等于就是自己。如果这个服务端本身在本地运行，而地址设为127.0.0.1的话，再把客户端的目标IP改为127.0.0.1，你会发现客户端是能连进去玩的，这实际上构成了一个单机版网游，所以就像一开始说的，单机版网游结构的本质其实就是服务端架设在本机上并指向本机。但我们想要这个服务端能够给不同地区的小伙伴都提供服务，则需要将服务端放在服务器上，并将这个IP改为这个云服务器的公网IP，公网IP我们已经获得了，直接填进去就行。</p>
-<p>&emsp;&emsp;冒险岛的服务端要想正常运行一般还得替换服务器C盘的Java环境，以及编译一个源码凭据至于服务端文件夹内，这点上来源不同的端操作也不同，在下载的服务端里一般都会有具体指示。</p>
-<p>&emsp;&emsp;如果一切都配置完成，则开启服务端，如果报错了首先记录下报错信息，看看哪一步出问题的可能性比较大，有针对性地检查并解决问题。</p>
-<p>&emsp;&emsp;如果弄好了则记录下服务端所使用的端口，它们一般类似于：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">数据库端口：	<span class="number">3306</span></span><br><span class="line">登录端口：	<span class="number">9595</span></span><br><span class="line">频道端口：	<span class="number">7575</span><span class="number">-7578</span>  	<span class="comment">//五六七八共四个频道（Channel），对应游戏中的1234线</span></span><br><span class="line">商城端口：	<span class="number">8600</span>		<span class="comment">//冒险岛商城使用一个独立的端口</span></span><br></pre></td></tr></table></figure>
-
-<p>&emsp;&emsp;同样也需要关注一下我们的服务器实例的安全策略是否允许这些端口的上下行，以及服务器的Windows系统是否开启了防火墙，这些都有可能导致登陆失败。</p>
-<h3 id="四-调整客户端"><a href="#四-调整客户端" class="headerlink" title="四.调整客户端"></a>四.调整客户端</h3><p>&emsp;&emsp;服务器弄好了就可以说是万事具备，对于冒险岛的话，首先得让客户端绕过一个叫HackShield（以下简称HS）的反外挂程序，冒险岛当年的外挂也是挺出名的，故这个HS的作用就是联网比对客户端和服务端的一些信息是否一致，以防止用户通过第三方程序私自修改客户端。我们现在的客户端早就过期十几年了，HS自然会卡住不动。所以这里需要一个叫“Win10强力过HS补丁”的经过某大神修改过的HS对冒险岛原本的HS进行替换，HS位于客户端根目录的“HShield”文件夹中，将整个文件夹替换即可，并且还需要手动修改一下路径才能生效：打开HShield文件夹，找到ehsvc.ini配置文件，打开后修改里面的文件存放路径，把maplestory.exe这个文件的存放路径改成你自己的后保存即可。这个“强力过HS补丁”在网上并不难找，而且一般下载的服务端内也都自带的有。</p>
-<p>&emsp;&emsp;第二步是给客户端定位我们的服务器地址，方法是在客户端根目录新建一个.bat，内容为<code>MapleStory.exe 000.000.000.000 9595</code>，四个000换成你的公网IP地址，9595是一般的冒险岛服务端的登录端口，若服务端给出的登陆端口不是9595则需要改成对应的。修改好保存这个bat，可以将该bat重命名为【登陆器】。以后都不要点客户端里的MapleStory.exe或者Patcher.exe这些了，有可能触发自动更新或者别的问题。</p>
-<p>&emsp;&emsp;别着急，还需修改MapleStory.exe的兼容性，否则会在启动时弹一个error的错误框。兼容性设为WinXP SP3，管理员权限打勾：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/9.png" title="i">
-<p>&emsp;&emsp;运行【登陆器.bat】进入游戏，若进入大区界面则说明过HS成功，此时点击“风之大陆”，若弹出“系统错误，无法连接”则说明服务端没有配置好，检查一下服务端文件的IP是否已经配置为公网IP。第一次弄估计大概率是进不去…总之这玩意还是挺费事的，不过弄好了也是真的开心。</p>
-<p>&emsp;&emsp;如果进入了输入账号密码的页面，基本就算是成功了。不同的服务端都有自行注册账号密码的方法，自己搞一个账号进去测试一下。保持服务端程序的运行就可以关掉远程连接的窗口了，让服务端自己跑去。这下可以体验一把服务器管理员的感觉，只要有需要打开远程连接看一下服务端程序正不正常就行了。</p>
-<h3 id="还没完（玩）呢！"><a href="#还没完（玩）呢！" class="headerlink" title="还没完（玩）呢！"></a>还没完（玩）呢！</h3><p>&emsp;&emsp;现在我们玩的内容就不局限于打怪升级了，可以尝试在服务器上修改数据库（某些东西不能热修，建议先关掉服务端），以实现自定义我们的角色。冒险岛这个游戏属实是音乐画面一流而游戏性拉跨的典型，玩了几年才六十多级，小时候为了刷冒险岛不知道挨了家人多少“教育”，通过自定义角色我总算是实现了小时候的“龙骑梦”，而且既然我们是公网开服当然要叫小伙伴来玩了，最后也和朋友一起成功四转（四转的技能任务也真的变态，是人做的么…）。想要更加深入地DIY这种MMORPG游戏并不是一件简单的事，尤其是像魔兽世界这样一个当年的世界第一，数据库极其庞大且复杂，深入研究魔兽世界的数据库那估计又得是另一个故事了…不过这些端也多多少少有些BUG，冒险岛的问题尤其多，动不动就掉线卡号，不过话说当年盛大开的官服也是动不动掉线卡号，可能是跟游戏本身有关系。</p>
-<p>&emsp;&emsp;开个玩笑，因为最近刚好出了个事，版薯发布了《关于进一步严格管理切实防止XX年人沉迷网络游戏的通知》，要求网络游戏供应商只能让XX年人在周末每天晚上玩一个小时游戏，中小学生们都哭了，那我可建议小朋友们都来学学怎么开私服，只要搞得到服务器，你自己就是麻花疼了！要问小学生怎么供得起云服务器？不是有免费一个月嘛，凑齐一个班不就能白嫖几年了吗哇哈哈哈…</p>
-<p>&emsp;&emsp;最后感谢PercySu、仓鼠以及各路沙雕网友提供相关的技术帮助，以及八尾旅人同学参与服务器测试（其实就是陪我玩！）</p>
-<p>放两个玩的时候截的图：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/10.png" title="j">
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/11.png" title="k">
-
-<hr>
-<p>经过调整将魔兽世界1.12和冒险岛V079的数据库整合到了一块，这样可以同时在服务器上开启两个游戏的服务端。</p>
-<p>同时因为终于没有点卡问题拦路，尝试了一下五开，用世界同步器实现“五火球神教”。使用风铃世界同步器V2.1共享版，但目前还不知道怎么做到同步交接任务，五个角色之间的配合也不是很理想，可能是同步器太垃圾，或者没找到付费版的原因。</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/12.jpg" title="l">
-
-<p>调整过程中发现一个MySQL的问题：有时候localhost_3306会连不上，报出以下错误：</p>
-<img src="/2021/09/01/云服务器搭建游戏服务器实战/13.png" title="m">
-<p>可能是由于数据库服务（Mysql或Mysqld）冲突导致的，有可能是因为运行了多个MySQL程序，通常右键断线数据库再连接即可解决这个问题。</p>
-<p>还有就是不要开Windows自带的IIS（Internet Information Services）服务，因为如果开了这个东西，127.0.0.1会直接跳转到IIS服务页面，使得通过Apache实现的账号注册页面失效。如果该服务被开启，可在【打开或关闭Windows服务】中关掉IIS有关的内容，可能需要重启设备。正常情况下访问127.0.0.1应该是显示“无法访问此网站”的。</p>
-]]></content>
-      <tags>
-        <tag>服务器</tag>
-        <tag>软件</tag>
-        <tag>游戏</tag>
       </tags>
   </entry>
   <entry>
@@ -2146,6 +2224,146 @@
       <tags>
         <tag>生活</tag>
         <tag>翻译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows环境下编译TrinityCore</title>
+    <url>/2022/05/24/Windows%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%BC%96%E8%AF%91TrinityCore/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>在Windows环境下通过基于TrinityCore的项目源码编译4.3.4-15595版本的服务端，以及服务端、客户端的配置工作，服务端的启动等及过程中的解释说明等。<a id="more"></a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p align="left">前言</p></h2><p>在之前的工作（见<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>）中，在不涉及源码编译的情况下，对Trinity服务端进行了简单的介绍，介绍了一些Trinity服务端的基本常识内容，并用别人编译好的服务端实现了3.3.5的WLK版本的服务端搭建。但由于服务端仍是使用现成的构建，略过了编译环节，也就导致一些功能无法实现，如自行提取对应版本的地图资源文件等，因为很多工具只有通过TrinityCore的源码编译才能生成。为了最大程度避免这些问题，从源码开始自行编译构建服务端无疑是最彻底的方案，故本次就从基于TrinityCore的项目进行源码编译。选择了一个基于TrinityCore的非官方分支项目即The-Cataclysm-Preservation-Project，也就是4.3.4版本的端，项目位于：<a href="https://github.com/The-Cataclysm-Preservation-Project" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project</a></p>
+<p>本次说明中的资源都可以在这里找到，该分支项目也给出了TrinityCore的官方编译指南，即：<a href="https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation</a> 。可以说，这次写的这个文章基本可以算是我对这篇TrinityCore官方文档的具体尝试，因为我也是初学者，认识浅薄，有能力的同学可以结合这个官方给出的文档共同参考，我这里重点是写出我自己在编译过程中遇到的具体问题，因为官方文档并不能够面面俱到。并且，这更多是出于我的“本地完备”的技术原则，这只是个占位符名称，因为目前我还没有想到（或学到、找到）一个词汇能够描述这个概念：<strong>即保证个人能够在彻底脱离国际互联网之后还能够以一定的资源开展一定形式的工作</strong>，这不是说我敌视互联网，而是为了应对最极端的情况，是类似于个人化的“防核地堡”的概念。</p>
+<h3 id="什么是编译"><a href="#什么是编译" class="headerlink" title="什么是编译"></a><p align="left">什么是编译</p></h3><p>我觉得有必要以通俗的语言简单重复一下这个概念。<strong>编译实际上可以理解为一种计算机语言之间的“翻译”过程</strong>，即将程序开发者（人）书写的源代码“翻译”——源代码通常是以人可以识别的“高级语言”书写的（如C++、Java等等），翻译成由计算机（机器）才能识别的汇编语言或二进制机器语言等“低级语言”。并且最终由计算机输出生成在某个平台环境下运行的可执行程序，也就是我们平常看到的程序本身，相对于把译文打印装订成书。这个过程就叫编译。</p>
+<p>（事实一再证明，很多基本问题从来不受重视，从来没有哪个老师真正能够告诉我（或试图告诉我）三极管、互联网、宪法以及文学艺术对个人和人类社会到底有什么意义，因为考试永远不会考你自己的理解，他们要的只是工具和程序）</p>
+<h3 id="为什么选择4-3-4（CTM）"><a href="#为什么选择4-3-4（CTM）" class="headerlink" title="为什么选择4.3.4（CTM）"></a><p align="left">为什么选择4.3.4（CTM）</p></h3><p>回到正题，首先说一下为什么选择4.3.4的端。不仅是因为之前已经实现过3.3.5的搭建，更多的是出于游戏性的考虑。熟悉这个游戏的人都知道，CTM版本实际上对这个游戏系统做出了相当大的改动，这在曾经是有争议的（即使是放在今天来说可能也如此）。不过，对于私人搭建的服务端来说，CTM版本的改动无疑是再适合不过的——它将WOW的单机玩法提升到了前所未有的水平，无论是难度曲线还是改版后艾泽拉斯的地图任务的故事情节，要比老版本出色太多了。<strong>单从这一点来讲，我个人就对CTM版本有着非常高的评价</strong>。况且这个版本还新加入了大量优秀动听的音乐，并重新设计了艾泽拉斯的美景，所以说只作为单机游戏看待的话，CTM无疑比之前的老版本更好玩，也更具收藏价值。</p>
+<p>接下来说一下4.3.4端普遍存在的问题。美中不足的事总是有的，因为现在CTM的端大多基于TrinityCore衍生而来，并非是Trinity官方的项目，故这方面的工作仍然不够充分。上面提到的CTM版本设计精良的任务需要复杂的脚本代码机制来实现，比起老版本简单枯燥的任务来说是好玩了不少，但也导致其修复难度较大。种种原因导致现在市面上的4.3.4版本的服务端源代码普遍没有3.3.5那么完善，这点也是不得不接受的事实。不过从这次我亲自测试的结果来看，即使有着很多bug问题，对于单机模式的游戏性来说，我仍更倾向于选择4.3.4版本。</p>
+<h3 id="客户端准备"><a href="#客户端准备" class="headerlink" title="客户端准备"></a><p align="left">客户端准备</p></h3><p>在编译工作开始之前，我建议先下载好这个服务端对应的4.3.4-15595的客户端文件，即通过下面的工具：<br>通过运行wowregeneration下载客户端Data文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/wowregeneration" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/wowregeneration</a><br>通过运行ClientDownloader下载客户端其他文件（如wow.exe等）：<a href="https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader</a><br>这里不用clone代码，直接Download ZIP，解压后就可以运行下载器。全部下完后，将Data文件夹和其他文件放在一个目录下，拼合成完整客户端。这里的完整的4.3.4-15595客户端总大小约15.6GB。</p>
+<p>以及TDB_full_434数据库信息文件（.sql文件）：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z</a></p>
+<p>本次测试不使用远程服务器，即在本地（127.0.0.1）进行测试。</p>
+<p>好了，编译工作现在开始。</p>
+<h2 id="1-Windows上的环境配置"><a href="#1-Windows上的环境配置" class="headerlink" title="1. Windows上的环境配置"></a><p align="left">1. Windows上的环境配置</p></h2><p>对于Windows系统，为了进行编译，我们需要以下工具和环境：</p>
+<blockquote>
+<p>Git-2.23<br>gitExtensions-3.4.3.9999<br>cmake 3.22.1 （版本≥ 3.18.4）<br>boost 1.73.0（版本≥ 1.73.0）<br>Win64OpenSSL 1.1.1o<br>mysql community 8.0.29 (版本≥ mysql5)<br>Navicat8 或 Navicat premium<br>当然还必须要有Visual Studio，这里选择Visual Studio Community 2019，在配置时勾选上C++开发模块即可（此模块需要数个G的空间）。</p>
+</blockquote>
+<p>简单说一下每个东西的用途：</p>
+<blockquote>
+<p>git和gitExtension用来拉取GitHub项目端的源代码到本地，这里我们用clone的方式；<br>cmake用来把源代码编译成提供给Visual Studio的工程文件；<br>Visual Studio就是所谓的“宇宙第一IDE”，集成了各种开发工具和环境。这里我们主要用它来生成构建。<br>boost是为C++标准库提供扩展的扩展库；<br>OpenSSL是一个加密工具，通过SSL协议实现传输的加密对接；<br>mysql提供服务器系统；Navicat则提供数据库的图形化管理功能。</p>
+</blockquote>
+<p>安装每个工具的过程详见：<a href="https://www.trinitycore.info/en/install/requirements/windows" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/requirements/windows</a></p>
+<p>别的基本都没什么变数，这里主要说一下MySQL 8.0的安装。这里选择mysql community 8.0.29，安装包下载地址为：<a href="https://dev.mysql.com/downloads/windows/installer/8.0.html" target="_blank" rel="noopener">https://dev.mysql.com/downloads/windows/installer/8.0.html</a> ，选择432mb大小的那个msi进行下载。安装时首先选择Custom模式，因为若不选择Custom，MySQL是默认安装到C盘的，只有选Custom才能在之后的选项中改变安装路径，产品（product）中只需要选择安装MySQL Server 8.0.24-x64即可，别的是关于数据库的开发组件，不选。然后建议点击Advanced Options，自定义一个安装目录。将Install Directory（主程序目录）和Data Directory（数据库目录）定位到不同的两个文件夹里。如果之前装过MySQL的话可能会有个叹号提示，无视即可。这里我直接使用网络上找到教程的图片：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/1.png" title="a">
+<p>然后是填入默认数据库端口。端口一般默认是3306就行，直接next。但我因为之前还装过一个老版本的MySQL为3.3.5的端提供服务（同时还集成了V079冒险岛的数据库），我就改了一个3307，最后在服务端的配置文件（.conf）中将所有数据库的端口都改成3307即可。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/2.png" title="b">
+<p>最后是输入默认数据库名、数据库密码，这里建议都填root。若自定义的话这两个一定不能忘，否则会很麻烦。MySQL的服务名是无所谓的，建议就默认的MySQL80。</p>
+<p>所以说，一个设备上安装两个MySQL版本是可行的，我这里就成功安装了两个版本的MySQL，算上冒险岛的话，已经在一台设备上集成了三个服务端。不过不推荐这样的做法，因为这样没法同时运行，两个MySQL的服务窗口和进程都是冲突的。若想运行旧版本的MySQL，则需在任务管理器&gt;服务中手动停止相关的进程（一般是mysqld），并停用相关的服务（MySQL80）。以后会想办法把旧的数据库都集成到MySQL8中。</p>
+<p>MySQL安装完成后，建议直接用Navicat尝试连接localhost_3306的数据库，能连进去就说明数据库服务在正常运行。</p>
+<h2 id="2-拉取源代码"><a href="#2-拉取源代码" class="headerlink" title="2. 拉取源代码"></a><p align="left">2. 拉取源代码</p></h2><p>用Git Extensions从<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore</a> 拉取源代码。安装Git Extensions后，右键菜单栏会多出一些栏目，我这里在C盘新建一个TRINITY 4.3.4的文件夹，在其中右键选择GitExt Clone…，可将源代码克隆到本地：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/3.png" title="c">
+<p>分支（Branch）选择需要注意，这里的branch建议选HEAD或master，因为只有4.3.4相关的内容。我这里对源代码克隆经常显示失败，通常错误是没有Github端的响应，可能是因为我的全局魔法不够厉害导致的，不过多试几次后还是成功了。</p>
+<h2 id="3-CMake生成C-方案和工程"><a href="#3-CMake生成C-方案和工程" class="headerlink" title="3. CMake生成C++方案和工程"></a><p align="left">3. CMake生成C++方案和工程</p></h2><p>先简单说一下这个CMake是干什么的，它可以从源代码生成不同平台或不同编译器需要的makefile（优化的编译方案）以及构建的工程文件。首先我们先建立一个名为Build的文件夹，如C:\Build。然后打开CMake工具（cmake-gui.exe），指定Browse Source（源码路径）和Browse Build（Build的路径，即这里的C:\Build）。然后点左下的Configure配置目标的工程平台，这里当然就选择Visual Studio 2019。下面两个不填，最后点击finish：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/4.png" title="d">
+<p>finish后，将会生成一些配置的缓存。首先检查Configuring是否成功完毕，即下方的框中是否存在Could not Found…之类的错误（如Could not Found OpenSSL、Could not Found MySQL等），如果有这类错误，说明对应的环境没有配置好，或是OpenSSL没有配置环境变量；如果黑字全部显示Found…，一般就能够成功Configuring done。在上方的红色区域，我们需要重点检查的是Tools选项是否被打勾，这个关系到是否编译出工具文件，这里必须打勾。确认Configuring和Tools都无误后，再点击一遍Configure，确认所有的目标（所有红色会消失），然后点击Generate生成构建方案：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/5.png" title="e">
+
+<h2 id="4-编译源代码"><a href="#4-编译源代码" class="headerlink" title="4. 编译源代码"></a><p align="left">4. 编译源代码</p></h2><p>Generate完成后，会有一个Open Project的按钮，点击即可从VS2019打开这个项目。也可以从C:/Trinity/Build/TrinityCore.sln的.sln文件利用VS打开这个项目（可能需要等待一小会让代码加载完毕）。从顶部的【生成】&gt;【配置管理器】中，将“活动解决方案配置”由默认的Debug模式改为RelwithDebinfo，这是一种介于Debug（调试模式）和Release（发布模式）之间的模式。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/6.png" title="f">
+<p>最后，我们在右边的 “解决方案资源管理器” 中右键ALL_BUILD（一定要点在All_build上），点击“清理”。清理完成后，再次右键，点击“生成”。这是最终的编译步骤，可能需要一小段时间（依机器配置不同），这一步我大概消耗了十几二十分钟。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/7.png" title="g">
+<p>编译完成后，先检查一下VS中输出的编译结果，即形如<code>Build: 22 succeeded, 0 failed, 0 up-to-date, 1 skipped</code>的最后一行，这里的数字不是定死的，我们只要确定没有failed的项目就行了。这样就可以在C:\build\bin\RelWithDebInfo中看到生成的文件。</p>
+<p>检查一下生成的文件，这里面.pdb文件是编译时生成的数据库文件，可以不用管。我们首先将编译出的工具移动到一个独立的位置。并保存好。这里的工具有两种，第一个是connection_patcher.exe，用来patch客户端程序；第二种则是地图数据提取工具，即mapextractor.exe、mmaps_generator.exe、vmap4assembler.exe、vmap4extractor.exe四个.exe。</p>
+<p>虽然编译已经完成，但编译结果不要删掉了，先留着，后面可能有用。</p>
+<h2 id="5-拼合完整的服务端文件"><a href="#5-拼合完整的服务端文件" class="headerlink" title="5. 拼合完整的服务端文件"></a><p align="left">5. 拼合完整的服务端文件</p></h2><p>接下来的任务就是要用这里剩下的文件拼凑出一个完整的服务端。关于Trinity服务端的文件结构，之前在《<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>》进行过描述。首先将这里的两个配置文件（worldserver.conf.dist、authserver.conf.dist / bnetserver.conf.dist或形如此类的文件）删去后缀.dist，使其变成worldserver.conf和authserver.conf / bnetserver.conf。然后将worldserver.exe、authserver/bnetserver.exe以及两个配置文件worldserver.conf、authserver/bnetserver.conf四个文件都移动到一个独立文件夹内，这个文件夹将成为服务端文件夹，文件夹名不能含汉字或特殊字符。authserver.conf和bnetserver.conf实际上作用相同，是一个东西，只是看这个源码版本里叫什么罢了。</p>
+<p>然后，在这里复制放入三个.dll文件，这些dll文件通过OpenSSL控制服务端和数据库的对接，它们是：libmysql.dll、libeay32.dll、ssleay32.dll。这三个.dll都可以从环境程序中手动复制提取：</p>
+<p>libmysql.dll位于MySQL主程序的lib目录下，如C:\Program Files\MySQL\MySQL Server 5.x\lib，复制其放入服务端文件夹；</p>
+<p>libeay32.dll和ssleay32.dll位于OpenSSL主程序根目录中，如C:\OpenSSL-Win64\或C:\OpenSSL-Win32\（取决于你安装的是32位还是64位）；这里要说的是，新版本的32位OpenSSL中这两个.dll已经被改名为libssl-1_1.dll和libcrypto-1_1.dll；在64位新版本OpenSSL中叫libssl-1_1-x64.dll、libcrypto-1_1-x64.dll。如我们之前安装的是64位的OpenSSL，这里就复制libssl-1_1-x64.dll和libcrypto-1_1-x64.dll到服务端文件夹中即可。</p>
+<h3 id="提取地图资源文件"><a href="#提取地图资源文件" class="headerlink" title="提取地图资源文件"></a><p align="left">提取地图资源文件</p></h3><p><strong>注意！这一步相当耗时，可能需要数个小时（依机器配置不同），建议留有充足的时间。</strong></p>
+<p>我们先编写一个简单的.bat，将其命名为【提取Vmaps文件.bat】：</p>
+<figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>                    Welcome to the vmaps extractor and assembler</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> 解压时您的磁盘剩余空必须要大于<span class="number">2</span>GB, 按CTRL+C 退出</span><br><span class="line"><span class="built_in">echo</span> 按回车键开始解压 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">EXIST</span> buildings\<span class="built_in">dir</span> (<span class="built_in">ECHO</span> The buildings folder already <span class="keyword">exist</span> <span class="keyword">do</span> you want to delete it?</span><br><span class="line"><span class="built_in">echo</span> <span class="keyword">If</span> YES hit Enter to continue <span class="keyword">if</span> no CLOSE the program now! . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">DEL</span> /S /Q buildings)</span><br><span class="line">vmap4extractor.exe</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap extract tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Vmaps extracted check log.txt <span class="keyword">for</span> errors, now it's <span class="built_in">time</span> to assemble the vmaps press any key to continue . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">md</span> vmaps</span><br><span class="line">vmap4assembler.exe buildings vmaps</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap assembler tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续. . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Process done! <span class="built_in">copy</span> vmaps folder to the MaNGOS main directory</span><br><span class="line"><span class="built_in">echo</span> 按任意按钮退出 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br></pre></td></tr></table></figure>
+
+<p>然后准备提取地图资源：</p>
+<blockquote>
+<ol>
+<li>将【4. 编译源代码】中获取的工具文件即mapextractor.exe、vmap4assembler.exe、vmap4extractor.exe、mmaps_generator.exe四个.exe文件，以及【提取Vmaps文件.bat】，全部复制到下载好的纯净版wow客户端根目录下，必须全部复制，缺一不可。</li>
+<li>执行【mapextractor.exe】，解出maps、dbc、Cameras文件夹，解包完毕后退出；</li>
+<li>上一步运行完毕后，执行【提取Vmaps文件.bat】。等待运行完毕，这一步约需要30-60分钟。跑完后解出vmaps文件夹；</li>
+<li>上一步运行完毕后，执行【mmaps_generator.exe】。如果是带扩展包的wow版本，这一步将会非常非常慢，需要约一个多小时时间。最终解出mmaps文件夹；</li>
+<li>全部执行完毕后，将maps、dbc、Cameras、vmaps、mmaps文件夹全部放到我们的服务端文件夹内。在客户端通常还会生成一个叫building的文件夹，是没有用的，可以删掉。</li>
+</ol>
+</blockquote>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/8.png" title="h">
+
+<p>至此，我们已经拥有了所有服务端的文件，即在服务端文件夹下应包含：</p>
+<blockquote>
+<p>Cameras<br>dbc<br>maps<br>mmaps<br>vmaps<br>bnetserver.conf（或称作authserver）<br>bnetserver.exe（或称作authserver）<br>worldserver.conf<br>worldserver.exe<br>libmysql.dll<br>libeay32.dll（或不同的名称）<br>ssleay32.dll（或不同的名称）</p>
+</blockquote>
+<p>至少的12个项目。如图：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/9.png" title="i">
+
+<p>关于服务端最后我们需要配置的是：两个配置文件中所有需要填入数据库名、数据库端口和数据库密码的位置，否则服务端找不到MySQL数据库。如图（图中只是一部分，端口这里设为3306）：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/10.png" title="j">
+
+<p>服务端到此配置完毕。</p>
+<h2 id="6-填充TrinityCore的数据库"><a href="#6-填充TrinityCore的数据库" class="headerlink" title="6. 填充TrinityCore的数据库"></a><p align="left">6. 填充TrinityCore的数据库</p></h2><p>服务端已经配置好了，但我们现在打开Navicat连接数据库可以发现，localhost_3306下是没有什么东西的（顶多只有几个默认的数据库如information_schema等）。我们需要导入TrinityCore的数据库。TrinityCore的数据库由以下几个数据库构成：</p>
+<blockquote>
+<p>auth - 帐户数据 - 用户名、密码、GM权限、服务器域等的信息；<br>characters - 角色数据 - 创建的角色及其公会、银行、背包、任务状态等信息；<br>world - 游戏内容 - 如NPC，任务，物品等；<br>hotfixes（仅master版本使用） - 保留尚未添加到核心或其他官方数据库的修补程序。</p>
+</blockquote>
+<p>如果是3.3.5a的Trinity，是没有hotfixes数据库的。我们这里是4.3.4版本，则需要这个数据库。</p>
+<p>我们解压之前下载好的TDB_full_434数据库文件（.sql），这里是两个.sql文件：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">TDB_full_world_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br><span class="line"><span class="selector-tag">TDB_full_hotfixes_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br></pre></td></tr></table></figure>
+
+<p>分别对应world数据库和hotfixes数据库。这里我们不要从Navicat手动导入这个.sql（会慢到你怀疑人生）。先在<a href="https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql" target="_blank" rel="noopener">https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql</a> 上下载sql，在localhost中运行它，即可创建这几个空的数据库。实际上，我认为在Navicat中手动建立这四个数据库也是可以的，即使其包含有auth、characters、world、hotfixes这四个空的数据库就可以了。然后我们将TDB_full_434中解压出的两个.sql文件复制进服务端文件夹内，然后启动一次worldserver.exe，worldserver会自动发现没有内容的数据库，并填入对应的数据。不需要多长时间就可以完成。</p>
+<p>数据库中环节的最后一步，我们必须进入数据库auth下realmlist表中，将两个ip地址（address和localaddress）改为本地的127.0.0.1（如果是远程服务器的话就是服务器的公网IP地址），并确认世界服务器端口（这里通常是8085）、gamebuild（必须是15595）。有兴趣的话也可以将服务器名改为你喜欢的名字，这样在游戏中就会显示出这个自定义的服务器域（realm）名。</p>
+<h2 id="7-Patch客户端程序"><a href="#7-Patch客户端程序" class="headerlink" title="7. Patch客户端程序"></a><p align="left">7. Patch客户端程序</p></h2><p>新版本的wow由于对接了战网（Battle.net），Patch起来较为复杂。首先我们配置auth。需要获取AuthModules，即两个.auth文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/AuthModules" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/AuthModules</a> ，下载这里Windows下的x64和x86的两个.auth，然后将x64和x86两个文件分别放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache下的文件夹内，路径规则为：<strong>以.auth文件的前4个字符为参考，放入对应的路径。</strong></p>
+<blockquote>
+<p>如x64.auth文件的前4个字符为0a3a，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\0a\3a 之下；<br>x86的前4个为8f52，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\8f\52 之下。</p>
+</blockquote>
+<p>然后将【4. 编译源代码】中获得的connection_patcher.exe放入wow客户端根目录下。首先将wow.exe拖到connection_patcher.exe上，对它进行patch：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/11.png" title="k">
+<p>这里一定要注意这个黑框是否输出successully的结果，如果命令框在某一步直接闪退，则patch失败，需要重新patch。之前的auth模块如果没有配置正确的话，很可能在Patching module这一步闪退，并在客户端目录生成一个Crash文件夹。这一步我失败了很多次，后来在Discord上询问了服务端开发者本人后，发现先配置好auth后再进行patch就成功了。但他们有人表示，auth模块可以在patch过程中自行生成，但在我这里就不成功（还有另一个人也不成功）。故如果遇到类似的问题的话，首先配置好auth再进行patch，则可解决。</p>
+<p>wow.exe的patch完成后，我们再对wow-64.exe进行patch，这样一共会生成出Wow_patched.exe、Battle.net_patched.dll以及Wow-64_patched.exe、Battle-64.net_patched.dll共四个文件（两个exe、两个dll）。接下来，将原始的wow.exe、wow-64.exe、Battle.net.dll、Battle-64.net.dll四个文件以及launcher.exe都移走到其他独立目录中（或直接删除，只要你有备份的话）。移走它们后，将剩下的带_patched的四个文件改名回原来的样子（即删掉名称中的_patched，如将Battle.net_patched.dll改为Battle.net.dll），完成“狸猫换太子”的步骤。</p>
+<p>这一步仍有问题的可参考项目端给出的troubleshooting：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting</a></p>
+<p>其他启动客户端时的奇怪问题（如“无法传输所需的压缩数据”等）可能与WoW.mfil文件有关，这点可参考之前的文章。</p>
+<h2 id="8-启动"><a href="#8-启动" class="headerlink" title="8. 启动"></a><p align="left">8. 启动</p></h2><p>这样，一切都配置完成了。我们先运行bnetserver.exe和worldserver.exe，正常运行后，启动客户端的wow.exe或wow-64.exe，看看是否能正常进入登陆页面。万事俱备只欠东风，我们似乎还没有注册账号。我们自己编译的服务端由于没有单独制作注册页面，需要手动从worldserver控制台中用服务端命令注册账号，也就是我们打开的worldserver.exe的框。这里简述一下worldserver中与创建账号相关的基础命令：</p>
+<blockquote>
+<p><strong>Trinitycore worldserver控制台基础命令（账户相关）:</strong><br>创建普通账号：account create <user> <password><br>例如：account create admin admin。这样就创建了一个用户名为admin，密码为admin的普通账号<br>注意：普通账号只适用于Trinity 3.3.5（WLK）及其之前版本的Trinitycore中，之后的版本（即master，如4.3.4）必须使用<strong>战网邮箱账号</strong>登录，普通账号几乎已经不起作用。<br>创建战网邮箱账号： bnet create &lt;user@xxxx&gt; <password><br>例如：bnet create admin<span></span>@qq.com admin。这样就创建了一个用户名为admin<span></span>@qq.com，密码为admin的战网邮箱账号。<br>该账号适用于需要战网邮箱账号登录的Trinitycore版本。在创建成功后，数据库auth下的account中将会生成该账号的username，通常形如2#1、3#1。<br>给予账号GM权限：从数据库查看账号的username（形如2#1、3#1的）。如这里要将ID为3#1的账号调整为GM最高权限：<br>account set gmlevel 3#1 3 -1<br>这里的3是指GM的权限等级，3是最高权限，拥有删除普通账号、以及关闭服务器的权力。-1则是指将该账号下的全部服务器都给予该权限。</password></password></user></p>
+</blockquote>
+<p>我们这里<strong>只需要注册战网邮箱账号</strong>。注册好后，输入邮箱和密码即可连接了。若显示“无法连接至服务器”大概率是由于patch失败导致的。然后要想玩的顺利的话，强烈建议认真阅读一下worldserver.conf中的每条内容，尝试理解它们是在控制哪些因素。比如很多人都遇到的一个问题，即GM命令中的.kill不起作用，且.die命令无法拾取战利品，怎么办？这是因为TrinityCore和Mangos不同，需要在worldserver.conf中搜索条目.die，找到<code>Die.Command.Mode = 1</code>，将其值改成0，即可在.die命令时获取战利品。另外如果发现vmaps不生效，通常也是由于worldserver.conf中没有启用vmaps、mmaps（其值为0），将其启用即可。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/12.png" title="l">
+<img src="/2022/05/24/Windows环境下编译TrinityCore/13.png" title="m">
+<p><strong><center>“我重回战场！”</center></strong></p>
+<hr>
+<h2 id="有趣的故事"><a href="#有趣的故事" class="headerlink" title="有趣的故事"></a><p align="left">有趣的故事</p></h2><p>还得感谢这位叫funjoker的服务端开发者耐心地为我和另一个法国老哥（遇到了同样的问题）解决有关客户端patch的问题，最后，我们都成功解决了，给那个法国哥们开心的说了一大串法语（真地看不懂），funjoker和另一个开发者还打趣地说guess why i am bald，xDDD</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/14.png" title="n">
+<p>最后的最后是一个有意思的东西，因为在之前的《魔兽世界日记》中了解到了“程序员岛（ProgrammerIsle）”的存在，我尝试传送“程序员岛”，这个GM命令是<code>.go xyz 16304 16318 69 451</code>，即约翰·斯塔茨在书中所说的坐标16000,16000（之后我也许会单独开一个文章讲Trinity端的GM命令）。结果…账号直接崩溃了，因为服务端无法加载“程序员岛”对应的地图资源：</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/15.png" title="o">
+<p>这导致这个角色再也无法正常登录，因为角色已经传送，一登陆就要立即加载“程序员岛”，则又会导致崩溃，进入死循环。所以不得不从Navicat中修改了角色的坐标位置到正常地带，这才将角色救回来…</p>
+<p>451这个地图（即Development Land，台版似乎译为“開發之地”），应该是早已不存在于现有的服务端了，故无法加载。所以这次我也更深入地了解了一下wow的地图结构，每个编号都是一个空间，可以理解为一个位面下。0是东部王国，1是卡利姆多，故有大量的地图带有0和1。而外域的位面号为530，任何TBC版本的地图都位于这个位面下。通过GM的飞行权限以及一些其他手段，我们可以实现从外域直接“飞到”奎尔丹纳斯岛或者秘蓝岛，而不经过黑暗之门，这是因为它们都处在同一位面下。奎岛究竟在外域的哪个方向呢？答案是大约在东北方向，远在地图UI界面的可视范围之外（约6000个坐标单位）；而秘蓝岛则在更加遥远的东方，大概在外域地狱火半岛的10000个坐标单位之外。</p>
+<img src="/2022/05/24/Windows环境下编译TrinityCore/16.jpg" title="p">
+<img src="/2022/05/24/Windows环境下编译TrinityCore/17.jpg" title="q">
+<center>GM岛的真正位置，其位于卡利姆多（即位面1）的最西北角</center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>服务器</tag>
+        <tag>软件</tag>
+        <tag>游戏</tag>
       </tags>
   </entry>
   <entry>
@@ -2422,146 +2640,6 @@ table th:nth-of-type(3) {
 ]]></content>
       <tags>
         <tag>服务器</tag>
-        <tag>游戏</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Windows环境下编译TrinityCore</title>
-    <url>/2022/05/24/Windows%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%BC%96%E8%AF%91TrinityCore/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>在Windows环境下通过基于TrinityCore的项目源码编译4.3.4-15595版本的服务端，以及服务端、客户端的配置工作，服务端的启动等及过程中的解释说明等。<a id="more"></a></p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p align="left">前言</p></h2><p>在之前的工作（见<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>）中，在不涉及源码编译的情况下，对Trinity服务端进行了简单的介绍，介绍了一些Trinity服务端的基本常识内容，并用别人编译好的服务端实现了3.3.5的WLK版本的服务端搭建。但由于服务端仍是使用现成的构建，略过了编译环节，也就导致一些功能无法实现，如自行提取对应版本的地图资源文件等，因为很多工具只有通过TrinityCore的源码编译才能生成。为了最大程度避免这些问题，从源码开始自行编译构建服务端无疑是最彻底的方案，故本次就从基于TrinityCore的项目进行源码编译。选择了一个基于TrinityCore的非官方分支项目即The-Cataclysm-Preservation-Project，也就是4.3.4版本的端，项目位于：<a href="https://github.com/The-Cataclysm-Preservation-Project" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project</a></p>
-<p>本次说明中的资源都可以在这里找到，该分支项目也给出了TrinityCore的官方编译指南，即：<a href="https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/Core-Installation/windows-core-installation</a> 。可以说，这次写的这个文章基本可以算是我对这篇TrinityCore官方文档的具体尝试，因为我也是初学者，认识浅薄，有能力的同学可以结合这个官方给出的文档共同参考，我这里重点是写出我自己在编译过程中遇到的具体问题，因为官方文档并不能够面面俱到。并且，这更多是出于我的“本地完备”的技术原则，这只是个占位符名称，因为目前我还没有想到（或学到、找到）一个词汇能够描述这个概念：<strong>即保证个人能够在彻底脱离国际互联网之后还能够以一定的资源开展一定形式的工作</strong>，这不是说我敌视互联网，而是为了应对最极端的情况，是类似于个人化的“防核地堡”的概念。</p>
-<h3 id="什么是编译"><a href="#什么是编译" class="headerlink" title="什么是编译"></a><p align="left">什么是编译</p></h3><p>我觉得有必要以通俗的语言简单重复一下这个概念。<strong>编译实际上可以理解为一种计算机语言之间的“翻译”过程</strong>，即将程序开发者（人）书写的源代码“翻译”——源代码通常是以人可以识别的“高级语言”书写的（如C++、Java等等），翻译成由计算机（机器）才能识别的汇编语言或二进制机器语言等“低级语言”。并且最终由计算机输出生成在某个平台环境下运行的可执行程序，也就是我们平常看到的程序本身，相对于把译文打印装订成书。这个过程就叫编译。</p>
-<p>（事实一再证明，很多基本问题从来不受重视，从来没有哪个老师真正能够告诉我（或试图告诉我）三极管、互联网、宪法以及文学艺术对个人和人类社会到底有什么意义，因为考试永远不会考你自己的理解，他们要的只是工具和程序）</p>
-<h3 id="为什么选择4-3-4（CTM）"><a href="#为什么选择4-3-4（CTM）" class="headerlink" title="为什么选择4.3.4（CTM）"></a><p align="left">为什么选择4.3.4（CTM）</p></h3><p>回到正题，首先说一下为什么选择4.3.4的端。不仅是因为之前已经实现过3.3.5的搭建，更多的是出于游戏性的考虑。熟悉这个游戏的人都知道，CTM版本实际上对这个游戏系统做出了相当大的改动，这在曾经是有争议的（即使是放在今天来说可能也如此）。不过，对于私人搭建的服务端来说，CTM版本的改动无疑是再适合不过的——它将WOW的单机玩法提升到了前所未有的水平，无论是难度曲线还是改版后艾泽拉斯的地图任务的故事情节，要比老版本出色太多了。<strong>单从这一点来讲，我个人就对CTM版本有着非常高的评价</strong>。况且这个版本还新加入了大量优秀动听的音乐，并重新设计了艾泽拉斯的美景，所以说只作为单机游戏看待的话，CTM无疑比之前的老版本更好玩，也更具收藏价值。</p>
-<p>接下来说一下4.3.4端普遍存在的问题。美中不足的事总是有的，因为现在CTM的端大多基于TrinityCore衍生而来，并非是Trinity官方的项目，故这方面的工作仍然不够充分。上面提到的CTM版本设计精良的任务需要复杂的脚本代码机制来实现，比起老版本简单枯燥的任务来说是好玩了不少，但也导致其修复难度较大。种种原因导致现在市面上的4.3.4版本的服务端源代码普遍没有3.3.5那么完善，这点也是不得不接受的事实。不过从这次我亲自测试的结果来看，即使有着很多bug问题，对于单机模式的游戏性来说，我仍更倾向于选择4.3.4版本。</p>
-<h3 id="客户端准备"><a href="#客户端准备" class="headerlink" title="客户端准备"></a><p align="left">客户端准备</p></h3><p>在编译工作开始之前，我建议先下载好这个服务端对应的4.3.4-15595的客户端文件，即通过下面的工具：<br>通过运行wowregeneration下载客户端Data文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/wowregeneration" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/wowregeneration</a><br>通过运行ClientDownloader下载客户端其他文件（如wow.exe等）：<a href="https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/ClientDownloader</a><br>这里不用clone代码，直接Download ZIP，解压后就可以运行下载器。全部下完后，将Data文件夹和其他文件放在一个目录下，拼合成完整客户端。这里的完整的4.3.4-15595客户端总大小约15.6GB。</p>
-<p>以及TDB_full_434数据库信息文件（.sql文件）：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/releases/download/TDB434.22011/TDB_full_434.22011_2022_01_09.7z</a></p>
-<p>本次测试不使用远程服务器，即在本地（127.0.0.1）进行测试。</p>
-<p>好了，编译工作现在开始。</p>
-<h2 id="1-Windows上的环境配置"><a href="#1-Windows上的环境配置" class="headerlink" title="1. Windows上的环境配置"></a><p align="left">1. Windows上的环境配置</p></h2><p>对于Windows系统，为了进行编译，我们需要以下工具和环境：</p>
-<blockquote>
-<p>Git-2.23<br>gitExtensions-3.4.3.9999<br>cmake 3.22.1 （版本≥ 3.18.4）<br>boost 1.73.0（版本≥ 1.73.0）<br>Win64OpenSSL 1.1.1o<br>mysql community 8.0.29 (版本≥ mysql5)<br>Navicat8 或 Navicat premium<br>当然还必须要有Visual Studio，这里选择Visual Studio Community 2019，在配置时勾选上C++开发模块即可（此模块需要数个G的空间）。</p>
-</blockquote>
-<p>简单说一下每个东西的用途：</p>
-<blockquote>
-<p>git和gitExtension用来拉取GitHub项目端的源代码到本地，这里我们用clone的方式；<br>cmake用来把源代码编译成提供给Visual Studio的工程文件；<br>Visual Studio就是所谓的“宇宙第一IDE”，集成了各种开发工具和环境。这里我们主要用它来生成构建。<br>boost是为C++标准库提供扩展的扩展库；<br>OpenSSL是一个加密工具，通过SSL协议实现传输的加密对接；<br>mysql提供服务器系统；Navicat则提供数据库的图形化管理功能。</p>
-</blockquote>
-<p>安装每个工具的过程详见：<a href="https://www.trinitycore.info/en/install/requirements/windows" target="_blank" rel="noopener">https://www.trinitycore.info/en/install/requirements/windows</a></p>
-<p>别的基本都没什么变数，这里主要说一下MySQL 8.0的安装。这里选择mysql community 8.0.29，安装包下载地址为：<a href="https://dev.mysql.com/downloads/windows/installer/8.0.html" target="_blank" rel="noopener">https://dev.mysql.com/downloads/windows/installer/8.0.html</a> ，选择432mb大小的那个msi进行下载。安装时首先选择Custom模式，因为若不选择Custom，MySQL是默认安装到C盘的，只有选Custom才能在之后的选项中改变安装路径，产品（product）中只需要选择安装MySQL Server 8.0.24-x64即可，别的是关于数据库的开发组件，不选。然后建议点击Advanced Options，自定义一个安装目录。将Install Directory（主程序目录）和Data Directory（数据库目录）定位到不同的两个文件夹里。如果之前装过MySQL的话可能会有个叹号提示，无视即可。这里我直接使用网络上找到教程的图片：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/1.png" title="a">
-<p>然后是填入默认数据库端口。端口一般默认是3306就行，直接next。但我因为之前还装过一个老版本的MySQL为3.3.5的端提供服务（同时还集成了V079冒险岛的数据库），我就改了一个3307，最后在服务端的配置文件（.conf）中将所有数据库的端口都改成3307即可。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/2.png" title="b">
-<p>最后是输入默认数据库名、数据库密码，这里建议都填root。若自定义的话这两个一定不能忘，否则会很麻烦。MySQL的服务名是无所谓的，建议就默认的MySQL80。</p>
-<p>所以说，一个设备上安装两个MySQL版本是可行的，我这里就成功安装了两个版本的MySQL，算上冒险岛的话，已经在一台设备上集成了三个服务端。不过不推荐这样的做法，因为这样没法同时运行，两个MySQL的服务窗口和进程都是冲突的。若想运行旧版本的MySQL，则需在任务管理器&gt;服务中手动停止相关的进程（一般是mysqld），并停用相关的服务（MySQL80）。以后会想办法把旧的数据库都集成到MySQL8中。</p>
-<p>MySQL安装完成后，建议直接用Navicat尝试连接localhost_3306的数据库，能连进去就说明数据库服务在正常运行。</p>
-<h2 id="2-拉取源代码"><a href="#2-拉取源代码" class="headerlink" title="2. 拉取源代码"></a><p align="left">2. 拉取源代码</p></h2><p>用Git Extensions从<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore</a> 拉取源代码。安装Git Extensions后，右键菜单栏会多出一些栏目，我这里在C盘新建一个TRINITY 4.3.4的文件夹，在其中右键选择GitExt Clone…，可将源代码克隆到本地：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/3.png" title="c">
-<p>分支（Branch）选择需要注意，这里的branch建议选HEAD或master，因为只有4.3.4相关的内容。我这里对源代码克隆经常显示失败，通常错误是没有Github端的响应，可能是因为我的全局魔法不够厉害导致的，不过多试几次后还是成功了。</p>
-<h2 id="3-CMake生成C-方案和工程"><a href="#3-CMake生成C-方案和工程" class="headerlink" title="3. CMake生成C++方案和工程"></a><p align="left">3. CMake生成C++方案和工程</p></h2><p>先简单说一下这个CMake是干什么的，它可以从源代码生成不同平台或不同编译器需要的makefile（优化的编译方案）以及构建的工程文件。首先我们先建立一个名为Build的文件夹，如C:\Build。然后打开CMake工具（cmake-gui.exe），指定Browse Source（源码路径）和Browse Build（Build的路径，即这里的C:\Build）。然后点左下的Configure配置目标的工程平台，这里当然就选择Visual Studio 2019。下面两个不填，最后点击finish：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/4.png" title="d">
-<p>finish后，将会生成一些配置的缓存。首先检查Configuring是否成功完毕，即下方的框中是否存在Could not Found…之类的错误（如Could not Found OpenSSL、Could not Found MySQL等），如果有这类错误，说明对应的环境没有配置好，或是OpenSSL没有配置环境变量；如果黑字全部显示Found…，一般就能够成功Configuring done。在上方的红色区域，我们需要重点检查的是Tools选项是否被打勾，这个关系到是否编译出工具文件，这里必须打勾。确认Configuring和Tools都无误后，再点击一遍Configure，确认所有的目标（所有红色会消失），然后点击Generate生成构建方案：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/5.png" title="e">
-
-<h2 id="4-编译源代码"><a href="#4-编译源代码" class="headerlink" title="4. 编译源代码"></a><p align="left">4. 编译源代码</p></h2><p>Generate完成后，会有一个Open Project的按钮，点击即可从VS2019打开这个项目。也可以从C:/Trinity/Build/TrinityCore.sln的.sln文件利用VS打开这个项目（可能需要等待一小会让代码加载完毕）。从顶部的【生成】&gt;【配置管理器】中，将“活动解决方案配置”由默认的Debug模式改为RelwithDebinfo，这是一种介于Debug（调试模式）和Release（发布模式）之间的模式。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/6.png" title="f">
-<p>最后，我们在右边的 “解决方案资源管理器” 中右键ALL_BUILD（一定要点在All_build上），点击“清理”。清理完成后，再次右键，点击“生成”。这是最终的编译步骤，可能需要一小段时间（依机器配置不同），这一步我大概消耗了十几二十分钟。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/7.png" title="g">
-<p>编译完成后，先检查一下VS中输出的编译结果，即形如<code>Build: 22 succeeded, 0 failed, 0 up-to-date, 1 skipped</code>的最后一行，这里的数字不是定死的，我们只要确定没有failed的项目就行了。这样就可以在C:\build\bin\RelWithDebInfo中看到生成的文件。</p>
-<p>检查一下生成的文件，这里面.pdb文件是编译时生成的数据库文件，可以不用管。我们首先将编译出的工具移动到一个独立的位置。并保存好。这里的工具有两种，第一个是connection_patcher.exe，用来patch客户端程序；第二种则是地图数据提取工具，即mapextractor.exe、mmaps_generator.exe、vmap4assembler.exe、vmap4extractor.exe四个.exe。</p>
-<p>虽然编译已经完成，但编译结果不要删掉了，先留着，后面可能有用。</p>
-<h2 id="5-拼合完整的服务端文件"><a href="#5-拼合完整的服务端文件" class="headerlink" title="5. 拼合完整的服务端文件"></a><p align="left">5. 拼合完整的服务端文件</p></h2><p>接下来的任务就是要用这里剩下的文件拼凑出一个完整的服务端。关于Trinity服务端的文件结构，之前在《<a href="https://caelica.github.io/2021/12/16/TrinityCore%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/"><font color="blue">TrinityCore服务端的初步认识</font></a>》进行过描述。首先将这里的两个配置文件（worldserver.conf.dist、authserver.conf.dist / bnetserver.conf.dist或形如此类的文件）删去后缀.dist，使其变成worldserver.conf和authserver.conf / bnetserver.conf。然后将worldserver.exe、authserver/bnetserver.exe以及两个配置文件worldserver.conf、authserver/bnetserver.conf四个文件都移动到一个独立文件夹内，这个文件夹将成为服务端文件夹，文件夹名不能含汉字或特殊字符。authserver.conf和bnetserver.conf实际上作用相同，是一个东西，只是看这个源码版本里叫什么罢了。</p>
-<p>然后，在这里复制放入三个.dll文件，这些dll文件通过OpenSSL控制服务端和数据库的对接，它们是：libmysql.dll、libeay32.dll、ssleay32.dll。这三个.dll都可以从环境程序中手动复制提取：</p>
-<p>libmysql.dll位于MySQL主程序的lib目录下，如C:\Program Files\MySQL\MySQL Server 5.x\lib，复制其放入服务端文件夹；</p>
-<p>libeay32.dll和ssleay32.dll位于OpenSSL主程序根目录中，如C:\OpenSSL-Win64\或C:\OpenSSL-Win32\（取决于你安装的是32位还是64位）；这里要说的是，新版本的32位OpenSSL中这两个.dll已经被改名为libssl-1_1.dll和libcrypto-1_1.dll；在64位新版本OpenSSL中叫libssl-1_1-x64.dll、libcrypto-1_1-x64.dll。如我们之前安装的是64位的OpenSSL，这里就复制libssl-1_1-x64.dll和libcrypto-1_1-x64.dll到服务端文件夹中即可。</p>
-<h3 id="提取地图资源文件"><a href="#提取地图资源文件" class="headerlink" title="提取地图资源文件"></a><p align="left">提取地图资源文件</p></h3><p><strong>注意！这一步相当耗时，可能需要数个小时（依机器配置不同），建议留有充足的时间。</strong></p>
-<p>我们先编写一个简单的.bat，将其命名为【提取Vmaps文件.bat】：</p>
-<figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>                    Welcome to the vmaps extractor and assembler</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> 解压时您的磁盘剩余空必须要大于<span class="number">2</span>GB, 按CTRL+C 退出</span><br><span class="line"><span class="built_in">echo</span> 按回车键开始解压 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">EXIST</span> buildings\<span class="built_in">dir</span> (<span class="built_in">ECHO</span> The buildings folder already <span class="keyword">exist</span> <span class="keyword">do</span> you want to delete it?</span><br><span class="line"><span class="built_in">echo</span> <span class="keyword">If</span> YES hit Enter to continue <span class="keyword">if</span> no CLOSE the program now! . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">DEL</span> /S /Q buildings)</span><br><span class="line">vmap4extractor.exe</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap extract tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Vmaps extracted check log.txt <span class="keyword">for</span> errors, now it's <span class="built_in">time</span> to assemble the vmaps press any key to continue . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">md</span> vmaps</span><br><span class="line">vmap4assembler.exe buildings vmaps</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="variable">%ERRORLEVEL%</span> <span class="keyword">LEQ</span> <span class="number">1</span> (<span class="built_in">echo</span> The vmap assembler tool finalized with errors.</span><br><span class="line"><span class="built_in">echo</span> 按回车键继续. . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span>)</span><br><span class="line"><span class="built_in">cls</span></span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span>.</span><br><span class="line"><span class="built_in">echo</span> Process done! <span class="built_in">copy</span> vmaps folder to the MaNGOS main directory</span><br><span class="line"><span class="built_in">echo</span> 按任意按钮退出 . . .</span><br><span class="line"><span class="built_in">pause</span>&gt;<span class="built_in">nul</span></span><br></pre></td></tr></table></figure>
-
-<p>然后准备提取地图资源：</p>
-<blockquote>
-<ol>
-<li>将【4. 编译源代码】中获取的工具文件即mapextractor.exe、vmap4assembler.exe、vmap4extractor.exe、mmaps_generator.exe四个.exe文件，以及【提取Vmaps文件.bat】，全部复制到下载好的纯净版wow客户端根目录下，必须全部复制，缺一不可。</li>
-<li>执行【mapextractor.exe】，解出maps、dbc、Cameras文件夹，解包完毕后退出；</li>
-<li>上一步运行完毕后，执行【提取Vmaps文件.bat】。等待运行完毕，这一步约需要30-60分钟。跑完后解出vmaps文件夹；</li>
-<li>上一步运行完毕后，执行【mmaps_generator.exe】。如果是带扩展包的wow版本，这一步将会非常非常慢，需要约一个多小时时间。最终解出mmaps文件夹；</li>
-<li>全部执行完毕后，将maps、dbc、Cameras、vmaps、mmaps文件夹全部放到我们的服务端文件夹内。在客户端通常还会生成一个叫building的文件夹，是没有用的，可以删掉。</li>
-</ol>
-</blockquote>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/8.png" title="h">
-
-<p>至此，我们已经拥有了所有服务端的文件，即在服务端文件夹下应包含：</p>
-<blockquote>
-<p>Cameras<br>dbc<br>maps<br>mmaps<br>vmaps<br>bnetserver.conf（或称作authserver）<br>bnetserver.exe（或称作authserver）<br>worldserver.conf<br>worldserver.exe<br>libmysql.dll<br>libeay32.dll（或不同的名称）<br>ssleay32.dll（或不同的名称）</p>
-</blockquote>
-<p>至少的12个项目。如图：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/9.png" title="i">
-
-<p>关于服务端最后我们需要配置的是：两个配置文件中所有需要填入数据库名、数据库端口和数据库密码的位置，否则服务端找不到MySQL数据库。如图（图中只是一部分，端口这里设为3306）：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/10.png" title="j">
-
-<p>服务端到此配置完毕。</p>
-<h2 id="6-填充TrinityCore的数据库"><a href="#6-填充TrinityCore的数据库" class="headerlink" title="6. 填充TrinityCore的数据库"></a><p align="left">6. 填充TrinityCore的数据库</p></h2><p>服务端已经配置好了，但我们现在打开Navicat连接数据库可以发现，localhost_3306下是没有什么东西的（顶多只有几个默认的数据库如information_schema等）。我们需要导入TrinityCore的数据库。TrinityCore的数据库由以下几个数据库构成：</p>
-<blockquote>
-<p>auth - 帐户数据 - 用户名、密码、GM权限、服务器域等的信息；<br>characters - 角色数据 - 创建的角色及其公会、银行、背包、任务状态等信息；<br>world - 游戏内容 - 如NPC，任务，物品等；<br>hotfixes（仅master版本使用） - 保留尚未添加到核心或其他官方数据库的修补程序。</p>
-</blockquote>
-<p>如果是3.3.5a的Trinity，是没有hotfixes数据库的。我们这里是4.3.4版本，则需要这个数据库。</p>
-<p>我们解压之前下载好的TDB_full_434数据库文件（.sql），这里是两个.sql文件：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">TDB_full_world_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br><span class="line"><span class="selector-tag">TDB_full_hotfixes_434</span><span class="selector-class">.22011_2022_01_09</span><span class="selector-class">.sql</span></span><br></pre></td></tr></table></figure>
-
-<p>分别对应world数据库和hotfixes数据库。这里我们不要从Navicat手动导入这个.sql（会慢到你怀疑人生）。先在<a href="https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql" target="_blank" rel="noopener">https://github.com/TrinityCore/TrinityCore/blob/master/sql/create/create_mysql.sql</a> 上下载sql，在localhost中运行它，即可创建这几个空的数据库。实际上，我认为在Navicat中手动建立这四个数据库也是可以的，即使其包含有auth、characters、world、hotfixes这四个空的数据库就可以了。然后我们将TDB_full_434中解压出的两个.sql文件复制进服务端文件夹内，然后启动一次worldserver.exe，worldserver会自动发现没有内容的数据库，并填入对应的数据。不需要多长时间就可以完成。</p>
-<p>数据库中环节的最后一步，我们必须进入数据库auth下realmlist表中，将两个ip地址（address和localaddress）改为本地的127.0.0.1（如果是远程服务器的话就是服务器的公网IP地址），并确认世界服务器端口（这里通常是8085）、gamebuild（必须是15595）。有兴趣的话也可以将服务器名改为你喜欢的名字，这样在游戏中就会显示出这个自定义的服务器域（realm）名。</p>
-<h2 id="7-Patch客户端程序"><a href="#7-Patch客户端程序" class="headerlink" title="7. Patch客户端程序"></a><p align="left">7. Patch客户端程序</p></h2><p>新版本的wow由于对接了战网（Battle.net），Patch起来较为复杂。首先我们配置auth。需要获取AuthModules，即两个.auth文件：<a href="https://github.com/The-Cataclysm-Preservation-Project/AuthModules" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/AuthModules</a> ，下载这里Windows下的x64和x86的两个.auth，然后将x64和x86两个文件分别放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache下的文件夹内，路径规则为：<strong>以.auth文件的前4个字符为参考，放入对应的路径。</strong></p>
-<blockquote>
-<p>如x64.auth文件的前4个字符为0a3a，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\0a\3a 之下；<br>x86的前4个为8f52，则放入C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\8f\52 之下。</p>
-</blockquote>
-<p>然后将【4. 编译源代码】中获得的connection_patcher.exe放入wow客户端根目录下。首先将wow.exe拖到connection_patcher.exe上，对它进行patch：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/11.png" title="k">
-<p>这里一定要注意这个黑框是否输出successully的结果，如果命令框在某一步直接闪退，则patch失败，需要重新patch。之前的auth模块如果没有配置正确的话，很可能在Patching module这一步闪退，并在客户端目录生成一个Crash文件夹。这一步我失败了很多次，后来在Discord上询问了服务端开发者本人后，发现先配置好auth后再进行patch就成功了。但他们有人表示，auth模块可以在patch过程中自行生成，但在我这里就不成功（还有另一个人也不成功）。故如果遇到类似的问题的话，首先配置好auth再进行patch，则可解决。</p>
-<p>wow.exe的patch完成后，我们再对wow-64.exe进行patch，这样一共会生成出Wow_patched.exe、Battle.net_patched.dll以及Wow-64_patched.exe、Battle-64.net_patched.dll共四个文件（两个exe、两个dll）。接下来，将原始的wow.exe、wow-64.exe、Battle.net.dll、Battle-64.net.dll四个文件以及launcher.exe都移走到其他独立目录中（或直接删除，只要你有备份的话）。移走它们后，将剩下的带_patched的四个文件改名回原来的样子（即删掉名称中的_patched，如将Battle.net_patched.dll改为Battle.net.dll），完成“狸猫换太子”的步骤。</p>
-<p>这一步仍有问题的可参考项目端给出的troubleshooting：<a href="https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting" target="_blank" rel="noopener">https://github.com/The-Cataclysm-Preservation-Project/TrinityCore/wiki/Setup-and-troubleshooting-for-connecting</a></p>
-<p>其他启动客户端时的奇怪问题（如“无法传输所需的压缩数据”等）可能与WoW.mfil文件有关，这点可参考之前的文章。</p>
-<h2 id="8-启动"><a href="#8-启动" class="headerlink" title="8. 启动"></a><p align="left">8. 启动</p></h2><p>这样，一切都配置完成了。我们先运行bnetserver.exe和worldserver.exe，正常运行后，启动客户端的wow.exe或wow-64.exe，看看是否能正常进入登陆页面。万事俱备只欠东风，我们似乎还没有注册账号。我们自己编译的服务端由于没有单独制作注册页面，需要手动从worldserver控制台中用服务端命令注册账号，也就是我们打开的worldserver.exe的框。这里简述一下worldserver中与创建账号相关的基础命令：</p>
-<blockquote>
-<p><strong>Trinitycore worldserver控制台基础命令（账户相关）:</strong><br>创建普通账号：account create <user> <password><br>例如：account create admin admin。这样就创建了一个用户名为admin，密码为admin的普通账号<br>注意：普通账号只适用于Trinity 3.3.5（WLK）及其之前版本的Trinitycore中，之后的版本（即master，如4.3.4）必须使用<strong>战网邮箱账号</strong>登录，普通账号几乎已经不起作用。<br>创建战网邮箱账号： bnet create &lt;user@xxxx&gt; <password><br>例如：bnet create admin<span></span>@qq.com admin。这样就创建了一个用户名为admin<span></span>@qq.com，密码为admin的战网邮箱账号。<br>该账号适用于需要战网邮箱账号登录的Trinitycore版本。在创建成功后，数据库auth下的account中将会生成该账号的username，通常形如2#1、3#1。<br>给予账号GM权限：从数据库查看账号的username（形如2#1、3#1的）。如这里要将ID为3#1的账号调整为GM最高权限：<br>account set gmlevel 3#1 3 -1<br>这里的3是指GM的权限等级，3是最高权限，拥有删除普通账号、以及关闭服务器的权力。-1则是指将该账号下的全部服务器都给予该权限。</password></password></user></p>
-</blockquote>
-<p>我们这里<strong>只需要注册战网邮箱账号</strong>。注册好后，输入邮箱和密码即可连接了。若显示“无法连接至服务器”大概率是由于patch失败导致的。然后要想玩的顺利的话，强烈建议认真阅读一下worldserver.conf中的每条内容，尝试理解它们是在控制哪些因素。比如很多人都遇到的一个问题，即GM命令中的.kill不起作用，且.die命令无法拾取战利品，怎么办？这是因为TrinityCore和Mangos不同，需要在worldserver.conf中搜索条目.die，找到<code>Die.Command.Mode = 1</code>，将其值改成0，即可在.die命令时获取战利品。另外如果发现vmaps不生效，通常也是由于worldserver.conf中没有启用vmaps、mmaps（其值为0），将其启用即可。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/12.png" title="l">
-<img src="/2022/05/24/Windows环境下编译TrinityCore/13.png" title="m">
-<p><strong><center>“我重回战场！”</center></strong></p>
-<hr>
-<h2 id="有趣的故事"><a href="#有趣的故事" class="headerlink" title="有趣的故事"></a><p align="left">有趣的故事</p></h2><p>还得感谢这位叫funjoker的服务端开发者耐心地为我和另一个法国老哥（遇到了同样的问题）解决有关客户端patch的问题，最后，我们都成功解决了，给那个法国哥们开心的说了一大串法语（真地看不懂），funjoker和另一个开发者还打趣地说guess why i am bald，xDDD</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/14.png" title="n">
-<p>最后的最后是一个有意思的东西，因为在之前的《魔兽世界日记》中了解到了“程序员岛（ProgrammerIsle）”的存在，我尝试传送“程序员岛”，这个GM命令是<code>.go xyz 16304 16318 69 451</code>，即约翰·斯塔茨在书中所说的坐标16000,16000（之后我也许会单独开一个文章讲Trinity端的GM命令）。结果…账号直接崩溃了，因为服务端无法加载“程序员岛”对应的地图资源：</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/15.png" title="o">
-<p>这导致这个角色再也无法正常登录，因为角色已经传送，一登陆就要立即加载“程序员岛”，则又会导致崩溃，进入死循环。所以不得不从Navicat中修改了角色的坐标位置到正常地带，这才将角色救回来…</p>
-<p>451这个地图（即Development Land，台版似乎译为“開發之地”），应该是早已不存在于现有的服务端了，故无法加载。所以这次我也更深入地了解了一下wow的地图结构，每个编号都是一个空间，可以理解为一个位面下。0是东部王国，1是卡利姆多，故有大量的地图带有0和1。而外域的位面号为530，任何TBC版本的地图都位于这个位面下。通过GM的飞行权限以及一些其他手段，我们可以实现从外域直接“飞到”奎尔丹纳斯岛或者秘蓝岛，而不经过黑暗之门，这是因为它们都处在同一位面下。奎岛究竟在外域的哪个方向呢？答案是大约在东北方向，远在地图UI界面的可视范围之外（约6000个坐标单位）；而秘蓝岛则在更加遥远的东方，大概在外域地狱火半岛的10000个坐标单位之外。</p>
-<img src="/2022/05/24/Windows环境下编译TrinityCore/16.jpg" title="p">
-<img src="/2022/05/24/Windows环境下编译TrinityCore/17.jpg" title="q">
-<center>GM岛的真正位置，其位于卡利姆多（即位面1）的最西北角</center>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>服务器</tag>
-        <tag>软件</tag>
         <tag>游戏</tag>
       </tags>
   </entry>
